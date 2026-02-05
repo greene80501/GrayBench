@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graybench"
+version = "1.0.0"
+description = "Gray Area Labs Benchmark Suite for Qiskit HumanEval"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10,<3.12"
+authors = [
+    {name = "Gray Area Labs"}
+]
+keywords = ["benchmark", "qiskit", "quantum computing", "llm", "evaluation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+dependencies = [
+    # CLI
+    "typer[all]>=0.9.0",
+    "rich>=13.0.0",
+    
+    # Data handling
+    "datasets>=2.14.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    
+    # Database
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    
+    # HTTP clients
+    "httpx>=0.25.0",
+    "aiohttp>=3.9.0",
+    
+    # Provider SDKs
+    "openai>=1.0.0",
+    "anthropic>=0.18.0",
+    "google-generativeai>=0.3.0",
+    
+    # Qiskit ecosystem
+    "qiskit>=1.0.0",
+    "qiskit-aer>=0.13.0",
+    "qiskit-ibm-runtime>=0.20.0",
+    
+    # Utilities
+    "numpy>=1.24.0",
+    "tenacity>=8.2.0",
+    "tqdm>=4.66.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+]
+
+[project.scripts]
+graybench = "graybench.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/grayarealabs/graybench"
+Documentation = "https://github.com/grayarealabs/graybench#readme"
+Repository = "https://github.com/grayarealabs/graybench"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["graybench*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

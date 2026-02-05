@@ -1,0 +1,72 @@
+[
+  {
+    "provider": "moonshot",
+    "model": "kimi-k2.5",
+    "pass_rate": 1.0,
+    "total_tasks": 1,
+    "passed": 1,
+    "total_cost_usd": 0.0047328,
+    "created_at": "2026-01-30T02:22:17.913786",
+    "run_id": "46f57047"
+  },
+  {
+    "provider": "google",
+    "model": "gemini-3-flash-preview",
+    "pass_rate": 0.5562913907284768,
+    "total_tasks": 151,
+    "passed": 84,
+    "total_cost_usd": 0.2623355,
+    "created_at": "2026-01-29T22:01:29.529837",
+    "run_id": "4a101373"
+  },
+  {
+    "provider": "google",
+    "model": "gemini-3-pro-preview",
+    "pass_rate": 0.4768211920529801,
+    "total_tasks": 151,
+    "passed": 72,
+    "total_cost_usd": 0.596004,
+    "created_at": "2026-01-30T01:03:49.387076",
+    "run_id": "78de66bb"
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5.2",
+    "pass_rate": 0.41721854304635764,
+    "total_tasks": 151,
+    "passed": 63,
+    "total_cost_usd": 0.6618115,
+    "created_at": "2026-01-30T01:26:15.999493",
+    "run_id": "31cc0296"
+  },
+  {
+    "provider": "moonshot",
+    "model": "kimi-k2.5",
+    "pass_rate": 0.3841059602649007,
+    "total_tasks": 151,
+    "passed": 58,
+    "total_cost_usd": 1.3174644,
+    "created_at": "2026-01-30T02:23:34.070123",
+    "run_id": "e86b3315"
+  },
+  {
+    "provider": "moonshot",
+    "model": "kimi-k2.5",
+    "pass_rate": 0.0,
+    "total_tasks": 151,
+    "passed": 0,
+    "total_cost_usd": 0.0,
+    "created_at": "2026-01-30T01:55:28.205279",
+    "run_id": "ad4867fa"
+  },
+  {
+    "provider": "moonshot",
+    "model": "kimi-k2.5",
+    "pass_rate": 0.0,
+    "total_tasks": 1,
+    "passed": 0,
+    "total_cost_usd": 0.0,
+    "created_at": "2026-01-30T02:20:11.827153",
+    "run_id": "c71e276b"
+  }
+]

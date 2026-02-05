@@ -1,0 +1,256 @@
+# Gray Area Labs Benchmark Suite (graybench)
+
+A comprehensive benchmark suite for evaluating LLM performance on [Qiskit HumanEval](https://huggingface.co/datasets/ibm-research/qiskit-humaneval) tasks. 
+
+## Features
+
+- **Multi-Provider Support**: OpenAI, Anthropic, Google Gemini, DeepSeek, Moonshot (Kimi)
+- **Fair Evaluation**: Deterministic settings (temperature=0), no hints in hard mode
+- **Detailed Outcomes**: Fine-grained error categorization (syntax, import, runtime, test failures)
+- **Cost Tracking**: Accurate token usage and cost calculation per provider
+- **Parallel Execution**: Configurable concurrent task execution
+- **Reproducible Results**: Pinned dataset versions, SQLite storage, JSONL export
+
+## Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/grayarealabs/graybench.git
+cd graybench
+
+# Create virtual environment (Python 3.10.x required)
+python3.10 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -e .
+
+# Install Qiskit (required for test execution)
+pip install qiskit qiskit-aer qiskit-ibm-runtime
+```
+
+### Configuration
+
+Create a `.env` file with your API keys:
+
+```bash
+# Required: At least one provider
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_API_KEY=...
+DEEPSEEK_API_KEY=...
+MOONSHOT_API_KEY=...
+
+# Optional: IBM Quantum (for full task coverage)
+IBM_QUANTUM_TOKEN=...
+```
+
+### Running Benchmarks
+
+```bash
+# List available models
+graybench models list
+
+# Check API key configuration
+graybench models check
+
+# Run a single benchmark
+graybench run -p openai -m gpt-4o -s normal -w 8
+
+# Run with limited tasks (for testing)
+graybench run -p anthropic -m claude-3-5-sonnet-20241022 -s normal -l 10
+
+# Run on hard suite (no hints)
+graybench run -p deepseek -m deepseek-chat -s hard -w 4
+```
+
+### Viewing Results
+
+```bash
+# List runs
+graybench results list
+
+# Show run details
+graybench results show <run_id>
+
+# View leaderboard
+graybench results leaderboard -s normal
+
+# Export results
+graybench results export -o ./exports
+```
+
+## CLI Reference
+
+### Run Commands
+
+```bash
+graybench run [OPTIONS]
+  -p, --provider TEXT    Provider name (openai, anthropic, google, deepseek, moonshot)
+  -m, --model TEXT       Model ID to benchmark
+  -s, --suite TEXT       Dataset suite: 'normal' or 'hard' [default: normal]
+  -w, --workers INT      Number of concurrent tasks [default: 4]
+  -t, --timeout INT      Timeout per task in seconds [default: 120]
+  --max-tokens INT       Maximum tokens to generate [default: 4096]
+  --temperature FLOAT    Sampling temperature [default: 0.0]
+  -l, --limit INT        Limit number of tasks (for testing)
+  --task-ids TEXT        Comma-separated task IDs to run
+  -o, --output PATH      Output directory for results
+  --dry-run              Show what would be run without executing
+```
+
+### Sweep (Multiple Runs)
+
+```bash
+graybench sweep matrix.yaml -w 8 -o ./results
+```
+
+Example `matrix.yaml`:
+```yaml
+- suite: normal
+  provider: openai
+  models: [gpt-4o, gpt-4o-mini]
+- suite: normal
+  provider: anthropic
+  models: [claude-3-5-sonnet-20241022]
+- suite: hard
+  provider: deepseek
+  models: [deepseek-chat, deepseek-reasoner]
+```
+
+### Validation
+
+```bash
+# Validate harness with canonical solutions
+graybench validate canonical -s normal
+
+# Check environment setup
+graybench validate environment
+
+# Analyze imports across dataset
+graybench validate imports
+```
+
+## Supported Providers & Models
+
+### OpenAI
+- `gpt-4o`, `gpt-4o-mini`
+- `gpt-4-turbo`
+- `o1`, `o1-mini`, `o1-pro`
+
+### Anthropic
+- `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`
+- `claude-sonnet-4-20250514`, `claude-opus-4-20250514`
+- `claude-opus-4-5-20251101`, `claude-sonnet-4-5-20250929`
+
+### Google Gemini
+- `gemini-1.5-pro`, `gemini-1.5-flash`
+- `gemini-2.0-flash-exp`
+
+### DeepSeek
+- `deepseek-chat` (V3.2)
+- `deepseek-reasoner` (with chain-of-thought)
+
+### Moonshot (Kimi)
+- `kimi-k2.5`
+- `kimi-k2-0711-preview`
+- `moonshot-v1-128k`, `moonshot-v1-32k`, `moonshot-v1-8k`
+
+## Evaluation Methodology
+
+### Pass@1 Metric
+Each task gets a single attempt. A solution passes if all tests succeed on the first try.
+
+### Deterministic Decoding
+All evaluations use `temperature=0, top_p=1` for fair comparison across models.
+
+### No Self-Repair
+Models do not receive error feedback or retry opportunities in the baseline evaluation.
+
+### Prompt Formats
+
+**Normal Suite**: Includes function signature, docstring, and imports from the original dataset.
+
+**Hard Suite**: Raw problem statement only - no imports, no function signature, no hints.
+
+### Generous Timeouts
+Tasks are allowed up to 120 seconds (configurable) to account for quantum circuit simulations.
+
+### Outcome Categories
+
+| Category | Description |
+|----------|-------------|
+| `pass` | All tests passed |
+| `fail_test` | Tests ran but assertions failed |
+| `fail_syntax` | Python syntax error |
+| `fail_import` | Missing module/import error |
+| `fail_runtime` | Runtime error (TypeError, ValueError, etc.) |
+| `timeout` | Execution exceeded time limit |
+| `extraction_failed` | Could not extract code from model output |
+
+## Data Storage
+
+Results are stored in SQLite (`~/.graybench/results.db`) with three tables:
+- `runs`: High-level metadata per benchmark run
+- `attempts`: Individual task attempts with prompts, completions, and outcomes
+- `scores`: Aggregated statistics per run
+
+Export formats:
+- JSONL (for data exchange)
+- JSON (for website leaderboards)
+- CSV (for analysis)
+
+## Environment Requirements
+
+- **OS**: Ubuntu 24.04+ (tested on WSL2)
+- **Python**: 3.10.x (required by Qiskit)
+- **Qiskit**: 1.0+ with qiskit-aer
+- **Memory**: 4GB+ recommended for quantum simulations
+
+## Project Structure
+
+```
+graybench/
+├── graybench/
+│   ├── __init__.py           # Package exports
+│   ├── cli.py                # Command-line interface
+│   ├── config.py             # Configuration management
+│   ├── dataset/              # Dataset loading
+│   │   ├── loader.py         # HuggingFace loader
+│   │   └── models.py         # Task data models
+│   ├── execution/            # Code execution
+│   │   ├── harness.py        # Test harness
+│   │   ├── outcomes.py       # Outcome categories
+│   │   └── code_extractor.py # Code extraction
+│   ├── providers/            # LLM API adapters
+│   │   ├── base.py           # Base adapter class
+│   │   ├── openai_adapter.py
+│   │   ├── anthropic_adapter.py
+│   │   ├── google_adapter.py
+│   │   ├── deepseek_adapter.py
+│   │   └── moonshot_adapter.py
+│   └── storage/              # Result storage
+│       ├── database.py       # SQLite backend
+│       └── exporter.py       # Export utilities
+├── pyproject.toml            # Package configuration
+├── requirements.txt          # Dependencies
+└── README.md                 # This file
+```
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Contributing
+
+Contributions welcome! Please ensure:
+1. All tests pass: `pytest tests/`
+2. Code is formatted: `black graybench/`
+3. Types check: `mypy graybench/`
+
+## Acknowledgments
+
+- [Qiskit HumanEval](https://arxiv.org/abs/2406.01265) dataset by IBM Research
+- Inspired by OpenAI's HumanEval benchmark
