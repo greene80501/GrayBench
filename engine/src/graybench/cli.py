@@ -10,6 +10,7 @@ from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
 from graybench.identity import canonical
 from graybench.ledger import Ledger
+from graybench.model_discovery import observe_run
 from graybench.provenance import environment
 from graybench.providers import adapter
 from graybench.transport import Transport
@@ -30,6 +31,11 @@ def main():
     summary.add_argument("run_id")
     discover = commands.add_parser("discover", help="Read model/server metadata without generation")
     discover.add_argument("model_spec", type=Path)
+    observe = commands.add_parser(
+        "campaign-observe", help="Save provider metadata and establish a discovery baseline"
+    )
+    observe.add_argument("ledger", type=Path)
+    observe.add_argument("run_id")
     catalog = commands.add_parser(
         "inventory", help="Import both pinned suites and emit review cards"
     )
@@ -66,6 +72,19 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "campaign-observe":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            transport = Transport(ledger.protocol(args.run_id).model)
+            try:
+                result = observe_run(ledger, args.run_id, transport)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
     elif args.command == "campaign-plan":
         model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
         all_tasks = tuple(

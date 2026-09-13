@@ -120,6 +120,11 @@ can currently be exercised programmatically with explicit frozen requests.
    `accepted_returned_models` list backed by `model_identity_evidence`. Missing/unexpected
    names retain answers but stop dispatch and suppress aggregate accuracy. This is a provider
    name check, not weight verification. Protocol 3.0 runs need their original engine for replay.
+   `campaign-observe LEDGER RUN_ID` saves provider discovery evidence. Once a baseline exists,
+   generation steps refresh it before dispatch; missing/changed discovery identity stops the
+   run and suppresses aggregate accuracy. Ollama comparison uses the exact catalog model digest,
+   server version and show configuration; volatile load state remains recorded separately.
+   Discovery is currently optional for development runs and hosted extraction is incomplete.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score
    compatibility records; and a release manifest anchored outside candidate execution.

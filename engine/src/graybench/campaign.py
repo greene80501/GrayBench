@@ -7,6 +7,7 @@ component of the campaign, not task eligibility certification or a complete scor
 
 from graybench.contracts import PreparedRequest
 from graybench.ledger import Ledger, StateError
+from graybench.model_discovery import observe_run
 from graybench.provenance import source_manifest
 from graybench.providers import adapter
 from graybench.transport import Delivery, Transport
@@ -44,6 +45,9 @@ class GenerationRunner:
             if state["state"] != "ready":
                 continue
             request = self.requests[sample["task_key"]]
+            if self.ledger.discovery_status(self.run_id)["status"] != "not_observed":
+                if observe_run(self.ledger, self.run_id, self.transport)["status"] == "unresolved":
+                    return {"state": "stopped", "reason": "model_discovery_unresolved"}
             # Concurrent dispatch claims and the clock are rechecked inside the transaction.
             attempt = self.ledger.begin_attempt(sample["id"], request)
             try:

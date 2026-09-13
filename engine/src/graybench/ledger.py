@@ -36,6 +36,10 @@ CREATE TABLE IF NOT EXISTS samples (
 CREATE TABLE IF NOT EXISTS run_contexts (
  run_id TEXT PRIMARY KEY REFERENCES runs(id), content TEXT NOT NULL REFERENCES blobs(digest)
 );
+CREATE TABLE IF NOT EXISTS model_observations (
+ id INTEGER PRIMARY KEY, run_id TEXT NOT NULL REFERENCES runs(id),
+ content TEXT NOT NULL REFERENCES blobs(digest), recorded_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS attempts (
  id TEXT PRIMARY KEY, sample_id TEXT NOT NULL REFERENCES samples(id),
  ordinal INTEGER NOT NULL CHECK(ordinal>=1), request TEXT NOT NULL REFERENCES blobs(digest),
@@ -85,6 +89,7 @@ class Ledger:
             "blobs",
             "runs",
             "run_contexts",
+            "model_observations",
             "samples",
             "attempts",
             "deliveries",
@@ -160,6 +165,46 @@ class Ledger:
             raise StateError("Run has no frozen execution context")
         return self.blob(row[0])
 
+    def record_model_observation(self, run_id: str, observation: dict) -> dict:
+        if observation.get("model_spec_digest") != self.protocol(run_id).model.digest:
+            raise StateError("Discovery observation belongs to a different model specification")
+        with self.transaction():
+            artifact = self._blob(observation)
+            self.db.execute(
+                "INSERT INTO model_observations(run_id,content,recorded_at) VALUES (?,?,?)",
+                (run_id, artifact, now()),
+            )
+            self._event("model_observed", run_id=run_id, observation=artifact)
+        return self.discovery_status(run_id)
+
+    def discovery_status(self, run_id: str) -> dict:
+        records = [
+            self.blob(row[0])
+            for row in self.db.execute(
+                "SELECT content FROM model_observations WHERE run_id=? ORDER BY id", (run_id,)
+            )
+        ]
+        if not records:
+            return {"status": "not_observed"}
+        identities = [record["identity"] for record in records]
+        if any(i["status"] != "observed" for i in identities):
+            return {
+                "status": "unresolved",
+                "reason": "identity unavailable",
+                "observations": len(records),
+            }
+        if len({i["digest"] for i in identities}) != 1:
+            return {
+                "status": "unresolved",
+                "reason": "discovery identity changed",
+                "observations": len(records),
+            }
+        return {
+            "status": "stable_observed",
+            "observations": len(records),
+            "digest": identities[0]["digest"],
+        }
+
     def protocol(self, run_id: str) -> Protocol:
         row = self.db.execute("SELECT manifest FROM runs WHERE id=?", (run_id,)).fetchone()
         if not row:
@@ -183,6 +228,8 @@ class Ledger:
             protocol = self.protocol(sample["run_id"])
             if self.model_identity(sample["run_id"])["status"] == "unresolved":
                 raise StateError("Returned model identity requires adjudication")
+            if self.discovery_status(sample["run_id"])["status"] == "unresolved":
+                raise StateError("Model discovery requires adjudication")
             if request.model != protocol.model.model or request.adapter != protocol.model.adapter:
                 raise StateError("Request does not match frozen model identity")
             if self.db.execute(
@@ -350,6 +397,8 @@ class Ledger:
         )
         model_identity = self.model_identity(run_id)
         complete = complete and model_identity["status"] != "unresolved"
+        discovery = self.discovery_status(run_id)
+        complete = complete and discovery["status"] != "unresolved"
         return {
             "run_id": run_id,
             "protocol_digest": protocol.digest,
@@ -362,6 +411,7 @@ class Ledger:
             "pass_at_1": outcomes.count("pass") / len(rows) if complete else None,
             "certification": "not_certified",
             "model_identity": model_identity,
+            "model_discovery": discovery,
         }
 
     def model_identity(self, run_id: str) -> dict:
