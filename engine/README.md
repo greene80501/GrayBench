@@ -153,6 +153,11 @@ for commands, statistical assumptions and the remaining calibration requirements
 
 ## Adversarial Docker tests
 
+The reusable oracle-review runner records authored counterexamples separately from
+model scores. [Task0/1 review](../docs/reliability-evidence/task0-1-review.md) reproduces
+upstream false accepts and documents the explicit task0 size revision. Task1 still
+needs a contract decision about what returned counts can establish.
+
 Candidate output files can be captured as opaque bytes while all candidate processes
 remain frozen. The isolated workspace uses a bounded ephemeral tmpfs volume. See
 [file capture](../docs/reliability-evidence/file-capture.md) for the initial boundary

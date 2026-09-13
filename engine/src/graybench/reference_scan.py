@@ -12,9 +12,20 @@ from graybench.provenance import source_manifest
 
 def run_reference_scan(tasks, judge, output: Path, *, selection=None):
     tasks = tuple(tasks)
-    keys = [f"{t.public.suite}/{t.public.task_id}" for t in tasks]
+    return run_evidence_cases(
+        [(f"{t.public.suite}/{t.public.task_id}", t.digest, t) for t in tasks],
+        lambda task: judge.evaluate(task, task.canonical_solution),
+        output,
+        purpose="reference interface calibration; not model scoring",
+        selection=selection,
+    )
+
+
+def run_evidence_cases(items, evaluate, output: Path, *, purpose, selection=None):
+    items = tuple(items)
+    keys = [item[0] for item in items]
     if not keys or len(set(keys)) != len(keys):
-        raise ValueError("Reference scan requires unique, nonempty tasks")
+        raise ValueError("Evidence scan requires unique, nonempty case keys")
     source = source_manifest()
     previous, sequence = "0" * 64, 0
     # Reserve before executing anything. Existing evidence is never overwritten or appended
@@ -34,18 +45,18 @@ def run_reference_scan(tasks, judge, output: Path, *, selection=None):
         append(
             {
                 "kind": "header",
-                "purpose": "reference interface calibration; not model scoring",
+                "purpose": purpose,
                 "created_at": now(),
                 "source": source,
                 "selection": selection or {},
-                "tasks": {key: task.digest for key, task in zip(keys, tasks, strict=True)},
+                "tasks": {key: digest for key, digest, _ in items},
             }
         )
-        for key, task in zip(keys, tasks, strict=True):
+        for key, _, case in items:
             if source_manifest() != source:
                 raise ValueError("Reference source changed during scan")
             append({"kind": "started", "task_key": key, "at": now()})
-            result = judge.evaluate(task, task.canonical_solution)
+            result = evaluate(case)
             if source_manifest() != source:
                 raise ValueError("Reference source changed during invocation")
             append(

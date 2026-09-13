@@ -24,6 +24,15 @@ PINS = {
 }
 # Explicit provisional inventory, not discovered by whether a candidate happens to pass.
 EXTERNAL_IDS = frozenset({43, 97, 98, 122, 129, 133, 134, 146})
+KNOWN_FINDINGS = {
+    0: ["Upstream accepts a constant three-qubit circuit that ignores the requested size"],
+    1: ["Upstream accepts fabricated balanced counts, negative counts and fractional counts"],
+    9: ["Upstream accepts an RX-only non-entangling ansatz"],
+    14: ["Upstream accepts two shots instead of the explicitly requested 100"],
+    20: ["Empty circuit with correct layout accepted by upstream oracle"],
+    32: ["Oracle depends on an undisclosed signed observable coefficient"],
+    35: ["Oracle depends on undisclosed variational parameter preparation"],
+}
 
 
 class JudgeTask(Contract):
@@ -118,9 +127,7 @@ def inventory(tasks: tuple[JudgeTask, ...]) -> dict:
                 "independent_alternatives": [],
                 "mutation_results": [],
                 "release_eligible": False,
-                "known_findings": ["Empty circuit with correct layout accepted by upstream oracle"]
-                if number == 20
-                else [],
+                "known_findings": KNOWN_FINDINGS.get(number, []),
             }
         )
     return {
