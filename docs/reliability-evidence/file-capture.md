@@ -1,5 +1,8 @@
 # Candidate file capture boundary
 
+This records the capture-only milestone at 563cae5. Subsequent task-82 parsing and
+oracle work is documented separately in the [semantic track](task82-semantic-track.md).
+
 Task 82 explicitly asks for `bell.qpy`; the pinned check calls the candidate, then
 loads that file. Separate candidate and judge filesystems currently make the
 upstream check fail with a missing file even for the canonical answer.

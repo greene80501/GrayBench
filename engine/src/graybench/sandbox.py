@@ -60,7 +60,12 @@ class Candidate:
         output_limit: int = 1024 * 1024,
         docker: str = "docker",
         public_prefix: str = "",
+        opaque_input: bytes | None = None,
     ):
+        if opaque_input is not None and (
+            type(opaque_input) is not bytes or len(opaque_input) > MAX_ARTIFACT_BYTES
+        ):
+            raise ValueError("Opaque input exceeds artifact byte limit")
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", image):
             raise ValueError("Candidate runtime must use an immutable local image digest")
         if not math.isfinite(timeout) or timeout <= 0:
@@ -86,6 +91,8 @@ class Candidate:
         self.workspace = self.name + "-workspace"
         self.workspace_created = False
         directory = Path(self.directory.name)
+        if opaque_input is not None:
+            (directory / "artifact.bin").write_bytes(opaque_input)
         (directory / "candidate.py").write_text(code, encoding="utf-8")
         if public_prefix:
             (directory / "public_prefix.py").write_text(public_prefix, encoding="utf-8")
@@ -292,7 +299,7 @@ class Candidate:
         """Return untrusted wire data without reconstructing candidate objects on the host."""
         return self.call_encoded(entry_point, encode(args), encode(kwargs))
 
-    def call_encoded(self, entry_point: str, args_wire, kwargs_wire):
+    def call_encoded(self, entry_point: str, args_wire, kwargs_wire, *, discard_result=False):
         """Forward a trusted judge's typed inputs without host object reconstruction."""
         self.sequence += 1
         request = (
@@ -302,6 +309,7 @@ class Candidate:
                     "args": args_wire,
                     "kwargs": kwargs_wire,
                     "sequence": self.sequence,
+                    "discard_result": discard_result,
                 },
                 allow_nan=False,
             ).encode()

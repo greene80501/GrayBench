@@ -4,10 +4,13 @@ import json
 from pathlib import Path
 
 from circuit_wire import WireError
-from oracles import ghz_custom_layout
+from oracles import bell_file_circuits, ghz_custom_layout
 from value_wire import decode
 
-ORACLES = {"task20-ghz-state-v1": ghz_custom_layout}
+ORACLES = {
+    "task20-ghz-state-v1": ghz_custom_layout,
+    "task82-bell-file-state-v1": bell_file_circuits,
+}
 
 
 def main():

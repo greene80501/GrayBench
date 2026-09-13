@@ -32,11 +32,14 @@ def main():
                 args, kwargs = decode(request["args"]), decode(request["kwargs"])
                 phase = "execution"
                 result = namespace[request["entry_point"]](*args, **kwargs)
+                if request.get("discard_result") is True:
+                    # Match an ignored Python call result, including prompt finalization.
+                    result = None
             phase = "encoding"
             response = {
                 "protocol": 3,
                 "sequence": request["sequence"],
-                "value": encode(result),
+                "value": None if request.get("discard_result") is True else encode(result),
                 "args_after": encode(args),
                 "kwargs_after": encode(kwargs),
             }

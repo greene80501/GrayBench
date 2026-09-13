@@ -26,7 +26,7 @@ JUDGE_FILES = (
     "symbolic_wire.py",
     "preparation_wire.py",
 )
-ORACLES = frozenset({"task20-ghz-state-v1"})
+ORACLES = frozenset({"task20-ghz-state-v1", "task82-bell-file-state-v1"})
 
 
 @dataclass(frozen=True)

@@ -1,6 +1,35 @@
 """Trusted semantic checks; these functions and expectations never enter candidate execution."""
 
 
+def bell_file_circuits(circuits) -> dict:
+    """Task 82 semantic track: first serialized circuit prepares Phi+, up to global phase."""
+    import numpy as np
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector
+
+    if type(circuits) is not list or not circuits:
+        return {"passed": False, "reason": "expected at least one serialized circuit"}
+    circuit = circuits[0]
+    if not isinstance(circuit, QuantumCircuit) or circuit.num_qubits != 2:
+        return {"passed": False, "reason": "expected a two-qubit circuit"}
+    try:
+        state = Statevector.from_instruction(circuit).data
+    except Exception as exc:
+        return {
+            "passed": False,
+            "reason": "not a pure state preparation",
+            "exception": type(exc).__name__,
+        }
+    expected = np.array([1, 0, 0, 1], dtype=complex) / np.sqrt(2)
+    fidelity = float(abs(np.vdot(expected, state)) ** 2)
+    return {
+        "passed": bool(np.isclose(fidelity, 1.0, atol=1e-10, rtol=0)),
+        "state_fidelity": fidelity,
+        "serialized_circuit_count": len(circuits),
+        "oracle": "task82-bell-file-state-v1",
+    }
+
+
 def ghz_custom_layout(circuit) -> dict:
     """Task 20's strengthened semantic check, distinct from the upstream shape-only oracle.
 

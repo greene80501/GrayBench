@@ -143,8 +143,11 @@ No existing result has become a certified score merely because these foundation 
 
 Candidate output files can be captured as opaque bytes while all candidate processes
 remain frozen. The isolated workspace uses a bounded ephemeral tmpfs volume. See
-[file capture](../docs/reliability-evidence/file-capture.md) for the boundary and the
-remaining parser/oracle work; this does not yet enable scoring file-dependent tasks.
+[file capture](../docs/reliability-evidence/file-capture.md) for the initial boundary
+and limitations; capture alone does not establish file correctness.
+The separate development `QpyFileJudge` now implements a three-container task-82
+[semantic track](../docs/reliability-evidence/task82-semantic-track.md). It is not
+silently enabled for upstream campaigns and remains release-ineligible.
 
 Large circuit exchange uses bounded lossless compression without removing gates.
 Wire capacity failures remain unscored; diagnostic floods remain resource failures.
