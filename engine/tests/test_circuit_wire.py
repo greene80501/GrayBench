@@ -21,6 +21,29 @@ def test_numeric_roundtrip_preserves_operator_and_registers():
     assert Operator(restored).equiv(Operator(source))
     assert restored == source
     assert [(r.name, len(r)) for r in restored.qregs] == [(r.name, len(r)) for r in source.qregs]
+    assert restored.data[0] == source.data[0]
+    assert restored.qubits == source.qubits
+
+
+def test_loose_bits_are_not_invented_as_registered_bits():
+    from qiskit.circuit import QuantumRegister, Qubit
+
+    bits = [Qubit(), Qubit()]
+    circuit = QuantumCircuit(bits)
+    circuit.add_register(QuantumRegister(name="alias", bits=bits))
+    restored = decode_circuit(encode_circuit(circuit))
+    assert all(bit._register is None for bit in restored.qubits)
+    assert restored.qregs[0].name == "alias"
+
+
+def test_registered_bit_origins_cannot_alias_or_overallocate():
+    data = encode_circuit(QuantumCircuit(2))
+    data["qubit_origins"][1] = data["qubit_origins"][0]
+    with pytest.raises(WireError, match="Duplicate"):
+        decode_circuit(data)
+    data["qubit_origins"][1] = ["too-large", 1000000000, 0]
+    with pytest.raises(WireError):
+        decode_circuit(data)
 
 
 @pytest.mark.parametrize("mutation", ["qubits", "constructor", "arity", "layout", "nan"])

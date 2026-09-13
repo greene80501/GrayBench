@@ -77,11 +77,18 @@ def encode_circuit(circuit):
             "initial": circuit.layout.initial_index_layout(filter_ancillas=False),
             "routing": circuit.layout.routing_permutation(),
             "input_count": len(circuit.layout.final_index_layout()),
+            "virtual_bits": bit_origins(
+                sorted(
+                    circuit.layout.input_qubit_mapping, key=circuit.layout.input_qubit_mapping.get
+                )
+            ),
         }
     return {
-        "kind": "numeric_circuit_v1",
+        "kind": "numeric_circuit_v2",
         "qubits": circuit.num_qubits,
         "clbits": circuit.num_clbits,
+        "qubit_origins": bit_origins(circuit.qubits),
+        "clbit_origins": bit_origins(circuit.clbits),
         "phase": number(circuit.global_phase),
         "qregs": [[r.name, [circuit.find_bit(b).index for b in r]] for r in circuit.qregs],
         "cregs": [[r.name, [circuit.find_bit(b).index for b in r]] for r in circuit.cregs],
@@ -90,13 +97,72 @@ def encode_circuit(circuit):
     }
 
 
+def bit_origins(bits):
+    return [
+        None if bit._register is None else [bit._register.name, len(bit._register), bit._index]
+        for bit in bits
+    ]
+
+
+def validate_origins(origins, count):
+    if type(origins) is not list or len(origins) != count:
+        raise WireError("Invalid bit-origin list")
+    registers, seen = set(), set()
+    for item in origins:
+        if item is None:
+            continue
+        if type(item) is not list or len(item) != 3:
+            raise WireError("Invalid bit origin")
+        name, size, index = item
+        if type(name) is not str or not 1 <= len(name) <= 256:
+            raise WireError("Invalid backing register name")
+        if not integer(size) or type(index) is not int or not 0 <= index < size:
+            raise WireError("Invalid backing register position")
+        if tuple(item) in seen:
+            raise WireError("Duplicate registered bit origin")
+        seen.add(tuple(item))
+        registers.add((name, size))
+    if sum(size for _, size in registers) > 8192:
+        raise WireError("Backing-register allocation exceeds limit")
+
+
+def build_bits(origins, bit_type, register_type):
+    registers = {}
+    bits = []
+    for origin in origins:
+        if origin is None:
+            bits.append(bit_type())
+        else:
+            name, size, index = origin
+            if (name, size) not in registers:
+                registers[name, size] = register_type(size, name)
+            bits.append(registers[name, size][index])
+    return bits
+
+
 def decode_circuit(value):
     # Validate all sizes, tags, indices and numeric parameters before constructing anything.
-    fields(value, {"kind", "qubits", "clbits", "phase", "qregs", "cregs", "operations", "layout"})
-    if value["kind"] != "numeric_circuit_v1":
+    fields(
+        value,
+        {
+            "kind",
+            "qubits",
+            "clbits",
+            "phase",
+            "qregs",
+            "cregs",
+            "operations",
+            "layout",
+            "qubit_origins",
+            "clbit_origins",
+        },
+    )
+    if value["kind"] != "numeric_circuit_v2":
         raise WireError("Unknown circuit codec")
     nq, nc = integer(value["qubits"]), integer(value["clbits"])
     number(value["phase"])
+    validate_origins(value["qubit_origins"], nq)
+    validate_origins(value["clbit_origins"], nc)
     for key, count in (("qregs", nq), ("cregs", nc)):
         regs = value[key]
         if type(regs) is not list or len(regs) > 512:
@@ -144,7 +210,8 @@ def decode_circuit(value):
             raise WireError("Unexpected instruction unit")
     layout = value["layout"]
     if layout is not None:
-        fields(layout, {"initial", "routing", "input_count"})
+        fields(layout, {"initial", "routing", "input_count", "virtual_bits"})
+        validate_origins(layout["virtual_bits"], nq)
         for key in ("initial", "routing"):
             if len(indices(layout[key], nq)) != nq:
                 raise WireError("Layout must be a complete permutation")
@@ -154,7 +221,8 @@ def decode_circuit(value):
     from qiskit.circuit import Barrier, ClassicalRegister, Clbit, QuantumRegister, Qubit
     from qiskit.transpiler import Layout, TranspileLayout
 
-    qubits, clbits = [Qubit() for _ in range(nq)], [Clbit() for _ in range(nc)]
+    qubits = build_bits(value["qubit_origins"], Qubit, QuantumRegister)
+    clbits = build_bits(value["clbit_origins"], Clbit, ClassicalRegister)
     circuit = QuantumCircuit(qubits, clbits)
     for name, bits in value["qregs"]:
         circuit.add_register(QuantumRegister(name=name, bits=[qubits[i] for i in bits]))
@@ -170,7 +238,7 @@ def decode_circuit(value):
             instruction = standard[op["name"]].base_class(*op["params"])
         circuit.append(instruction, op["qubits"], op["clbits"])
     if layout is not None:
-        virtual = [Qubit() for _ in range(nq)]
+        virtual = build_bits(layout["virtual_bits"], Qubit, QuantumRegister)
         circuit._layout = TranspileLayout(
             Layout({virtual[i]: p for i, p in enumerate(layout["initial"])}),
             {bit: i for i, bit in enumerate(virtual)},

@@ -65,7 +65,7 @@ def decode(value, depth=0, budget=None):
         "operator_v1",
     }:
         return decode_scientific(value)
-    if type(value) is dict and value.get("kind") == "numeric_circuit_v1":
+    if type(value) is dict and value.get("kind") == "numeric_circuit_v2":
         return decode_circuit(value)
     if type(value) is not dict or set(value) != {"kind", "items"}:
         raise WireError("Invalid result wire type")

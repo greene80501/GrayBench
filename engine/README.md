@@ -54,6 +54,15 @@ can currently be exercised programmatically with explicit frozen requests.
   memory, CPU, wall time and output. Its provenance binds source files, image, resource policy
   and exact input hash. Judge failures remain unscored infrastructure outcomes. The current
   registry contains the task-20 behavioral oracle; the full upstream-test bridge is unfinished.
+- `UpstreamJudge` now runs the pinned upstream `check` function in a separate trusted container
+  and proxies calls into the candidate container without host object reconstruction. It records
+  complete bounded wire transcripts and source/input identities, invokes `check` once, and
+  preserves candidate state between calls. Input mutation and unsupported value interfaces
+  remain explicit unresolved outcomes. Non-assertion test errors remain unscored pending review.
+- The first full reference-interface scan ran all 143 offline tasks in each suite: 80 passed
+  in each, with the other outcomes retained for diagnosis. This is not model accuracy. It exposed
+  register-backed bit identity loss; circuit wire format v2 fixes that and all four affected
+  normal/hard task-38/task-87 cases pass a separate replay. Full scan and replay remain distinct.
 - A separate strengthened task-20 oracle checks mapped GHZ+ state fidelity, following final
   logical-qubit positions and accepting global phase. Two positive constructions pass and four
   shape-compatible mutants fail. It does not prove which pass-manager algorithm generated a
@@ -67,9 +76,11 @@ can currently be exercised programmatically with explicit frozen requests.
 ## Required work before release
 
 1. Rich, bounded Qiskit value codecs; mutations to arguments; files; transformation-pass callbacks;
-   type fidelity; and the full upstream-test bridge through the independent judge. The current
+   type fidelity; and complete upstream-proxy semantics through the independent judge. The current
    scientific-value/numeric-circuit worker is not a complete Qiskit executor. Candidate-reported
    errors are untrusted.
+   Candidate timing currently includes idle time between calls; separating active execution
+   without allowing unmetered background computation remains a release gate.
 2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
    positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
    rejects the reproduced empty-circuit false acceptance, but its complete specification review
