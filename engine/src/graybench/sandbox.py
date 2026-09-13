@@ -216,14 +216,17 @@ class Candidate:
 
     def call_wire(self, entry_point: str, *args, **kwargs):
         """Return untrusted wire data without reconstructing candidate objects on the host."""
-        # Inputs use the same typed codec as outputs; no implicit str conversion.
+        return self.call_encoded(entry_point, encode(args), encode(kwargs))
+
+    def call_encoded(self, entry_point: str, args_wire, kwargs_wire):
+        """Forward a trusted judge's typed inputs without host object reconstruction."""
         self.sequence += 1
         request = (
             json.dumps(
                 {
                     "entry_point": entry_point,
-                    "args": encode(args),
-                    "kwargs": encode(kwargs),
+                    "args": args_wire,
+                    "kwargs": kwargs_wire,
                     "sequence": self.sequence,
                 },
                 allow_nan=False,
