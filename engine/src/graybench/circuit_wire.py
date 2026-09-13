@@ -47,6 +47,11 @@ def indices(value, count):
 def encode_circuit(circuit):
     from qiskit.circuit.library import get_standard_gate_name_mapping
 
+    try:
+        from .symbolic_wire import encode_parameter
+    except ImportError:
+        from symbolic_wire import encode_parameter
+
     standard = get_standard_gate_name_mapping()
     operations = []
     for item in circuit.data:
@@ -54,7 +59,7 @@ def encode_circuit(circuit):
         if op.name == "barrier":
             params = []
         elif op.name in standard and op.base_class is standard[op.name].base_class:
-            params = [number(p) for p in op.params]
+            params = [encode_parameter(p) for p in op.params]
             if getattr(op, "ctrl_state", None) not in (
                 None,
                 2 ** getattr(op, "num_ctrl_qubits", 0) - 1,
@@ -84,12 +89,12 @@ def encode_circuit(circuit):
             ),
         }
     return {
-        "kind": "numeric_circuit_v2",
+        "kind": "circuit_v3",
         "qubits": circuit.num_qubits,
         "clbits": circuit.num_clbits,
         "qubit_origins": bit_origins(circuit.qubits),
         "clbit_origins": bit_origins(circuit.clbits),
-        "phase": number(circuit.global_phase),
+        "phase": encode_parameter(circuit.global_phase),
         "qregs": [[r.name, [circuit.find_bit(b).index for b in r]] for r in circuit.qregs],
         "cregs": [[r.name, [circuit.find_bit(b).index for b in r]] for r in circuit.cregs],
         "operations": operations,
@@ -141,6 +146,10 @@ def build_bits(origins, bit_type, register_type):
 
 
 def decode_circuit(value):
+    try:
+        from .symbolic_wire import decode_parameter
+    except ImportError:
+        from symbolic_wire import decode_parameter
     # Validate all sizes, tags, indices and numeric parameters before constructing anything.
     fields(
         value,
@@ -157,10 +166,12 @@ def decode_circuit(value):
             "clbit_origins",
         },
     )
-    if value["kind"] != "numeric_circuit_v2":
+    if value["kind"] != "circuit_v3":
         raise WireError("Unknown circuit codec")
     nq, nc = integer(value["qubits"]), integer(value["clbits"])
-    number(value["phase"])
+    context = {"parameters": {}, "vectors": {}}
+    budget = [100000]
+    phase = decode_parameter(value["phase"], context, budget=budget)
     validate_origins(value["qubit_origins"], nq)
     validate_origins(value["clbit_origins"], nc)
     for key, count in (("qregs", nq), ("cregs", nc)):
@@ -182,14 +193,14 @@ def decode_circuit(value):
     from qiskit.circuit.library import get_standard_gate_name_mapping
 
     standard = get_standard_gate_name_mapping()
+    decoded_params = []
     for op in ops:
         fields(op, {"name", "params", "qubits", "clbits", "unit"})
         if type(op["name"]) is not str or op["name"] not in {*standard, "barrier"}:
             raise WireError("Instruction is not in the fixed constructor registry")
         if type(op["params"]) is not list or len(op["params"]) > 8:
             raise WireError("Invalid parameter list")
-        for p in op["params"]:
-            number(p)
+        decoded_params.append([decode_parameter(p, context, budget=budget) for p in op["params"]])
         indices(op["qubits"], nq)
         indices(op["clbits"], nc)
         if op["name"] == "barrier":
@@ -228,14 +239,14 @@ def decode_circuit(value):
         circuit.add_register(QuantumRegister(name=name, bits=[qubits[i] for i in bits]))
     for name, bits in value["cregs"]:
         circuit.add_register(ClassicalRegister(name=name, bits=[clbits[i] for i in bits]))
-    circuit.global_phase = value["phase"]
-    for op in ops:
+    circuit.global_phase = phase
+    for op, params in zip(ops, decoded_params, strict=True):
         if op["name"] == "barrier":
             instruction = Barrier(len(op["qubits"]))
         elif op["name"] == "delay":
-            instruction = standard["delay"].base_class(*op["params"], unit=op["unit"])
+            instruction = standard["delay"].base_class(*params, unit=op["unit"])
         else:
-            instruction = standard[op["name"]].base_class(*op["params"])
+            instruction = standard[op["name"]].base_class(*params)
         circuit.append(instruction, op["qubits"], op["clbits"])
     if layout is not None:
         virtual = build_bits(layout["virtual_bits"], Qubit, QuantumRegister)

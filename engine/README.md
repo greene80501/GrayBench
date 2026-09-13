@@ -38,10 +38,12 @@ can currently be exercised programmatically with explicit frozen requests.
 - A candidate-only Docker worker: no tests, reference answers, credentials, or Docker socket
   are mounted. The host decodes bounded plain values and makes the correctness decision.
   Candidate stdout has no verdict authority. Runtime images must use immutable local IDs.
-- A bounded numeric-circuit codec exchanges standard instructions, registers, global phase,
+- A bounded circuit codec exchanges standard instructions, registers, global phase,
   and initial/routing permutations using a fixed constructor registry. No QPY or pickle is
-  deserialized. Symbolic parameters, custom instructions, open controls and control flow are
-  explicitly unsupported until their representations are implemented. It is not a complete
+  deserialized. Circuit wire v3 preserves parameter UUIDs, vector ordering and a bounded fixed
+  vocabulary of symbolic operations. Reconstruction uses the pinned Qiskit 2.4 structured replay
+  interface, never expression-string evaluation. Custom instructions, open controls and control
+  flow remain unsupported. It is not a complete
   serialization of circuit metadata, labels or original virtual-qubit identity.
 - Explicit `call_with_updates` records changed arguments. The simpler read-only call refuses
   to silently discard mutations. An upstream-compatible mutation/alias bridge is still required.
@@ -63,6 +65,11 @@ can currently be exercised programmatically with explicit frozen requests.
   in each, with the other outcomes retained for diagnosis. This is not model accuracy. It exposed
   register-backed bit identity loss; circuit wire format v2 fixes that and all four affected
   normal/hard task-38/task-87 cases pass a separate replay. Full scan and replay remain distinct.
+- Targeted symbolic and NumPy-parameter replays now pass tasks 7, 8, 9, 99, 111 and 127 in both
+  suites. This is compatibility evidence, not a rerun of the full scan or task certification.
+- Worker protocol 3 separates execution exceptions from decoding/encoding diagnostics. Codec
+  diagnostics produce unscored unsupported outcomes pending adjudication. A candidate can spoof
+  such a diagnostic, but cannot earn a pass or complete aggregate score through it.
 - A separate strengthened task-20 oracle checks mapped GHZ+ state fidelity, following final
   logical-qubit positions and accepting global phase. Two positive constructions pass and four
   shape-compatible mutants fail. It does not prove which pass-manager algorithm generated a

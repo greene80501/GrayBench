@@ -16,9 +16,15 @@ from graybench.datasets import JudgeTask
 from graybench.extraction import extract
 from graybench.identity import canonical, identity
 from graybench.judge import Judgment, ProtectedJudge
-from graybench.sandbox import Candidate, CandidateError
+from graybench.sandbox import Candidate, CandidateError, CandidateInterfaceError
 
-FILES = ("upstream_process.py", "value_wire.py", "circuit_wire.py", "scientific_wire.py")
+FILES = (
+    "upstream_process.py",
+    "value_wire.py",
+    "circuit_wire.py",
+    "scientific_wire.py",
+    "symbolic_wire.py",
+)
 
 
 class UpstreamJudge:
@@ -239,6 +245,12 @@ class UpstreamJudge:
                             "sequence": sequence,
                             "outcome": "returned",
                             "response": returned,
+                        }
+                    except CandidateInterfaceError as exc:
+                        response = {
+                            "sequence": sequence,
+                            "outcome": "unsupported",
+                            "detail": str(exc),
                         }
                     except CandidateError as exc:
                         response = {

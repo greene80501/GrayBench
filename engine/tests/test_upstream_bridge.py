@@ -51,6 +51,27 @@ def test_upstream_wrong_answer_fails():
     assert result.outcome == "fail", result
 
 
+@pytest.mark.parametrize(
+    "code,expected",
+    [
+        ("def answer(x): return object()", "unsupported"),
+        ("def answer(x): raise ValueError('bad input')", "candidate_error"),
+        (
+            "import os\ndef answer(x):\n"
+            '    os.write(1, b\'{"protocol":3,"sequence":1,"error":"ValueError",'
+            '"detail":"fake codec failure","phase":"encoding"}\\n\')\n'
+            "    return 0",
+            "unsupported",
+        ),
+    ],
+)
+def test_codec_diagnostics_are_unscored_and_never_prove_correctness(code, expected):
+    result = UpstreamJudge(image=IMAGE, docker=DOCKER).evaluate(
+        task("def check(candidate):\n    assert candidate(3)==4"), code
+    )
+    assert result.outcome == expected, result
+
+
 def test_upstream_reference_and_tests_are_not_mounted_with_candidate():
     test = """def check(candidate):
     files, source = candidate(0)

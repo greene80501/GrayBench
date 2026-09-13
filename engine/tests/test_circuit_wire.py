@@ -65,13 +65,14 @@ def test_malformed_circuit_rejected_before_execution(mutation):
         decode_circuit(data)
 
 
-def test_symbolic_values_are_explicitly_unsupported():
+def test_symbolic_values_preserve_parameter_identity():
     from qiskit.circuit import Parameter
 
     source = QuantumCircuit(1)
     source.rx(Parameter("theta"), 0)
-    with pytest.raises(WireError):
-        encode_circuit(source)
+    restored = decode_circuit(encode_circuit(source))
+    assert restored.parameters == source.parameters
+    assert restored == source
 
 
 def test_open_controls_not_silently_changed():

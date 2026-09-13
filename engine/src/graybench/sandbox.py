@@ -23,6 +23,10 @@ class CandidateError(RuntimeError):
     pass
 
 
+class CandidateInterfaceError(CandidateError):
+    """Untrusted codec diagnostic requiring adjudication, never a scored verdict."""
+
+
 class UnsupportedInterface(RuntimeError):
     pass
 
@@ -78,6 +82,9 @@ class Candidate:
         shutil.copyfile(Path(__file__).with_name("value_wire.py"), directory / "value_wire.py")
         shutil.copyfile(
             Path(__file__).with_name("scientific_wire.py"), directory / "scientific_wire.py"
+        )
+        shutil.copyfile(
+            Path(__file__).with_name("symbolic_wire.py"), directory / "symbolic_wire.py"
         )
         args = [
             docker,
@@ -135,7 +142,7 @@ class Candidate:
             for reader in self.readers:
                 reader.start()
             self.deadline = time.monotonic() + timeout
-            if self._receive() != {"protocol": 2, "ready": True}:
+            if self._receive() != {"protocol": 3, "ready": True}:
                 raise CandidateError("Candidate did not initialize the value protocol")
         except BaseException:
             self.close()
@@ -253,12 +260,19 @@ class Candidate:
         if write_errors:
             raise CandidateError("Candidate closed its input") from write_errors[0]
         response = self._receive()
-        if type(response) is not dict or response.get("protocol") != 2:
+        if type(response) is not dict or response.get("protocol") != 3:
             raise CandidateError("Invalid candidate value envelope")
         if type(response.get("sequence")) is not int or response["sequence"] != self.sequence:
             raise CandidateError("Unmatched candidate response")
-        if set(response) == {"protocol", "sequence", "error", "detail"}:
-            # Worker errors are untrusted diagnostics, never proof of an infrastructure defect.
+        if set(response) == {"protocol", "sequence", "error", "detail", "phase"}:
+            # A spoofed diagnostic can block completeness, but cannot earn correctness.
+            # Codec failures require adjudication rather than penalizing a valid representation.
+            if response["phase"] in ("decoding", "encoding"):
+                raise CandidateInterfaceError(
+                    str(response["error"]) + ": " + str(response["detail"])
+                )
+            if response["phase"] != "execution":
+                raise CandidateError("Invalid candidate error phase")
             raise CandidateError(str(response["error"]) + ": " + str(response["detail"]))
         if set(response) != {"protocol", "sequence", "value", "args_after", "kwargs_after"}:
             raise CandidateError("Unexpected candidate envelope fields")

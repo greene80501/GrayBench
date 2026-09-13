@@ -32,6 +32,14 @@ def encode(item, depth=0):
             "items": [[encode(k, depth + 1), encode(v, depth + 1)] for k, v in item.items()],
         }
     from qiskit import QuantumCircuit
+    from qiskit.circuit import ParameterExpression
+
+    if isinstance(item, ParameterExpression):
+        try:
+            from .symbolic_wire import encode_parameter
+        except ImportError:
+            from symbolic_wire import encode_parameter
+        return encode_parameter(item)
 
     if isinstance(item, QuantumCircuit):
         return encode_circuit(item)
@@ -65,7 +73,17 @@ def decode(value, depth=0, budget=None):
         "operator_v1",
     }:
         return decode_scientific(value)
-    if type(value) is dict and value.get("kind") == "numeric_circuit_v2":
+    if type(value) is dict and value.get("kind") in {
+        "parameter_v1",
+        "vector_element_v1",
+        "expression_v1",
+    }:
+        try:
+            from .symbolic_wire import decode_parameter
+        except ImportError:
+            from symbolic_wire import decode_parameter
+        return decode_parameter(value)
+    if type(value) is dict and value.get("kind") == "circuit_v3":
         return decode_circuit(value)
     if type(value) is not dict or set(value) != {"kind", "items"}:
         raise WireError("Invalid result wire type")

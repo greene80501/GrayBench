@@ -23,15 +23,18 @@ def main():
             exec(compile(prefix.read_text(encoding="utf-8"), "public_prefix.py", "exec"), namespace)
         with open("/input/candidate.py", encoding="utf-8") as source:
             exec(compile(source.read(), "candidate.py", "exec"), namespace)
-    print(json.dumps({"protocol": 2, "ready": True}), file=channel, flush=True)
+    print(json.dumps({"protocol": 3, "ready": True}), file=channel, flush=True)
     for line in sys.stdin:
         request = json.loads(line)
+        phase = "decoding"
         try:
             with contextlib.redirect_stdout(sys.stderr):
                 args, kwargs = decode(request["args"]), decode(request["kwargs"])
+                phase = "execution"
                 result = namespace[request["entry_point"]](*args, **kwargs)
+            phase = "encoding"
             response = {
-                "protocol": 2,
+                "protocol": 3,
                 "sequence": request["sequence"],
                 "value": encode(result),
                 "args_after": encode(args),
@@ -39,9 +42,10 @@ def main():
             }
         except BaseException as exc:
             response = {
-                "protocol": 2,
+                "protocol": 3,
                 "sequence": request["sequence"],
                 "error": type(exc).__name__,
+                "phase": phase,
                 "detail": str(exc)[:4096],
             }
         print(json.dumps(response, allow_nan=False), file=channel, flush=True)

@@ -23,6 +23,7 @@ JUDGE_FILES = (
     "value_wire.py",
     "circuit_wire.py",
     "scientific_wire.py",
+    "symbolic_wire.py",
 )
 ORACLES = frozenset({"task20-ghz-state-v1"})
 
