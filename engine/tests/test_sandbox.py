@@ -90,7 +90,13 @@ def answer():
 """
     with Candidate(code, image=IMAGE, docker=DOCKER) as candidate:
         files, keys = candidate.call("answer")
-        assert files == ["candidate.py", "circuit_wire.py", "value_wire.py", "worker.py"]
+        assert files == [
+            "candidate.py",
+            "circuit_wire.py",
+            "scientific_wire.py",
+            "value_wire.py",
+            "worker.py",
+        ]
         # The Python image has a public GPG_KEY fingerprint; it is not an API credential.
         assert not set(keys) & {"OPENAI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"}
 

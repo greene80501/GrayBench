@@ -76,6 +76,9 @@ class Candidate:
         shutil.copyfile(Path(__file__).with_name("worker.py"), directory / "worker.py")
         shutil.copyfile(Path(__file__).with_name("circuit_wire.py"), directory / "circuit_wire.py")
         shutil.copyfile(Path(__file__).with_name("value_wire.py"), directory / "value_wire.py")
+        shutil.copyfile(
+            Path(__file__).with_name("scientific_wire.py"), directory / "scientific_wire.py"
+        )
         args = [
             docker,
             "run",
@@ -200,6 +203,19 @@ class Candidate:
         return result.value
 
     def call_with_updates(self, entry_point: str, *args, **kwargs):
+        response = self.call_wire(entry_point, *args, **kwargs)
+        args_after, kwargs_after = decode(response["args_after"]), decode(response["kwargs_after"])
+        if (
+            type(args_after) is not tuple
+            or len(args_after) != len(args)
+            or type(kwargs_after) is not dict
+            or set(kwargs_after) != set(kwargs)
+        ):
+            raise CandidateError("Invalid call argument snapshot")
+        return CallResult(decode(response["value"]), args_after, kwargs_after)
+
+    def call_wire(self, entry_point: str, *args, **kwargs):
+        """Return untrusted wire data without reconstructing candidate objects on the host."""
         # Inputs use the same typed codec as outputs; no implicit str conversion.
         self.sequence += 1
         request = (
@@ -243,15 +259,7 @@ class Candidate:
             raise CandidateError(str(response["error"]) + ": " + str(response["detail"]))
         if set(response) != {"protocol", "sequence", "value", "args_after", "kwargs_after"}:
             raise CandidateError("Unexpected candidate envelope fields")
-        args_after, kwargs_after = decode(response["args_after"]), decode(response["kwargs_after"])
-        if (
-            type(args_after) is not tuple
-            or len(args_after) != len(args)
-            or type(kwargs_after) is not dict
-            or set(kwargs_after) != set(kwargs)
-        ):
-            raise CandidateError("Invalid call argument snapshot")
-        return CallResult(decode(response["value"]), args_after, kwargs_after)
+        return response
 
     def close(self):
         if self.closed:

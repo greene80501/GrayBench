@@ -45,6 +45,15 @@ can currently be exercised programmatically with explicit frozen requests.
   serialization of circuit metadata, labels or original virtual-qubit identity.
 - Explicit `call_with_updates` records changed arguments. The simpler read-only call refuses
   to silently discard mutations. An upstream-compatible mutation/alias bridge is still required.
+- Numeric arrays and NumPy scalars retain dtype, byte order, shape and exact numeric bytes;
+  object/string/structured dtypes and oversized allocations are rejected. Statevectors,
+  density matrices and rectangular operators retain their subsystem dimensions. Complex
+  array values, signed zero and non-finite numeric array values are not silently repaired.
+- `Candidate.call_wire` forwards typed data without host object reconstruction. `ProtectedJudge`
+  runs fixed trusted semantic oracles in a separate container with disjoint mounts and bounded
+  memory, CPU, wall time and output. Its provenance binds source files, image, resource policy
+  and exact input hash. Judge failures remain unscored infrastructure outcomes. The current
+  registry contains the task-20 behavioral oracle; the full upstream-test bridge is unfinished.
 - A separate strengthened task-20 oracle checks mapped GHZ+ state fidelity, following final
   logical-qubit positions and accepting global phase. Two positive constructions pass and four
   shape-compatible mutants fail. It does not prove which pass-manager algorithm generated a
@@ -58,8 +67,9 @@ can currently be exercised programmatically with explicit frozen requests.
 ## Required work before release
 
 1. Rich, bounded Qiskit value codecs; mutations to arguments; files; transformation-pass callbacks;
-   type fidelity; and independent judge resource limits. The current plain-value/numeric-circuit
-   worker is a tested foundation, not a complete Qiskit executor. Candidate errors are untrusted.
+   type fidelity; and the full upstream-test bridge through the independent judge. The current
+   scientific-value/numeric-circuit worker is not a complete Qiskit executor. Candidate-reported
+   errors are untrusted.
 2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
    positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
    rejects the reproduced empty-circuit false acceptance, but its complete specification review
