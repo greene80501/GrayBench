@@ -31,7 +31,6 @@ from graybench.providers.deepseek_adapter import DeepSeekAdapter, DEEPSEEK_PRICI
 from graybench.providers.moonshot_adapter import MoonshotAdapter, MOONSHOT_PRICING
 from graybench.providers.graygate_adapter import GrayGateAdapter, GRAYGATE_PRICING
 
-
 # Registry of available adapters
 ADAPTER_REGISTRY = {
     "openai": OpenAIAdapter,
@@ -53,33 +52,29 @@ PRICING = {
 }
 
 
-def get_adapter(
-    provider: str,
-    api_key: Optional[str] = None,
-    **kwargs
-) -> ProviderAdapter:
+def get_adapter(provider: str, api_key: Optional[str] = None, **kwargs) -> ProviderAdapter:
     """
     Get a provider adapter by name.
-    
+
     Args:
         provider: Provider name (openai, anthropic, google, deepseek, moonshot)
         api_key: Optional API key (otherwise loaded from environment)
         **kwargs: Additional provider-specific options
-    
+
     Returns:
         Configured ProviderAdapter instance
-    
+
     Raises:
         ValueError: If provider is not supported
     """
     provider = provider.lower()
-    
+
     if provider not in ADAPTER_REGISTRY:
         available = ", ".join(ADAPTER_REGISTRY.keys())
         raise ValueError(f"Unknown provider '{provider}'. Available: {available}")
-    
+
     adapter_class = ADAPTER_REGISTRY[provider]
-    
+
     if api_key is None:
         config = get_global_config()
         provider_config = config.get_provider(provider)
@@ -97,16 +92,16 @@ def list_providers() -> list[str]:
 def get_pricing(provider: str, model: str) -> dict:
     """
     Get pricing information for a specific provider and model.
-    
+
     Args:
         provider: Provider name
         model: Model identifier
-    
+
     Returns:
         Dictionary with 'input' and 'output' prices per 1M tokens
     """
     provider_pricing = PRICING.get(provider.lower(), {})
-    return provider_pricing.get(model, {"input": 0.0, "output": 0.0})
+    return provider_pricing.get(model, {})
 
 
 __all__ = [

@@ -1,256 +1,77 @@
-# Gray Area Labs Benchmark Suite (graybench)
+# GrayBench 2
 
-A comprehensive benchmark suite for evaluating LLM performance on [Qiskit HumanEval](https://huggingface.co/datasets/ibm-research/qiskit-humaneval) tasks. 
+Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
-## Features
+See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.
 
-- **Multi-Provider Support**: OpenAI, Anthropic, Google Gemini, DeepSeek, Moonshot (Kimi)
-- **Fair Evaluation**: Deterministic settings (temperature=0), no hints in hard mode
-- **Detailed Outcomes**: Fine-grained error categorization (syntax, import, runtime, test failures)
-- **Cost Tracking**: Accurate token usage and cost calculation per provider
-- **Parallel Execution**: Configurable concurrent task execution
-- **Reproducible Results**: Pinned dataset versions, SQLite storage, JSONL export
+## Setup (Python 3.12)
 
-## Quick Start
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/grayarealabs/graybench.git
-cd graybench
-
-# Create virtual environment (Python 3.10.x required)
-python3.10 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -e .
-
-# Install Qiskit (required for test execution)
-pip install qiskit qiskit-aer qiskit-ibm-runtime
+```sh
+git clone https://github.com/greene80501/GrayBench.git
+cd GrayBench
+uv sync --locked --extra dev
 ```
 
-### Configuration
+The project pins Python 3.12 and the Qiskit runtime stack. `uv.lock` locks transitive dependencies. `requirements.lock` is a hash-checked export used by the evaluator container. Run `uv lock` and regenerate that export deliberately when updating dependencies; revalidate references afterward.
 
-Create a `.env` file with your API keys:
+Create a local `.env` using `.env.example`. Keep it out of source control. `graybench models check` checks presence, not remote authentication. Model lists are examples; exact API snapshot IDs are accepted.
 
-```bash
-# Required: At least one provider
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
-GOOGLE_API_KEY=...
-DEEPSEEK_API_KEY=...
-MOONSHOT_API_KEY=...
+## Validate before spending
 
-# Optional: IBM Quantum (for full task coverage)
-IBM_QUANTUM_TOKEN=...
+```sh
+# Read-only dataset inspection and planning
+uv run graybench dataset -s normal
+uv run graybench run -p openai -m gpt-4o-mini-2024-07-18 -s normal --dry-run
+
+# Local reference audit only (never executes model output)
+uv run graybench validate canonical -s normal --backend local -o data/local-normal.json
+
+# Build a disposable Linux evaluator with Graphviz and the locked dependencies
+docker build -t graybench-evaluator:2.0 .
+uv run graybench validate canonical -s normal --backend docker -o data/preflight-normal.json
+uv run graybench validate canonical -s hard --backend docker -o data/preflight-hard.json
 ```
 
-### Running Benchmarks
+Reference validation writes a complete report even when some references fail and exits nonzero in that case. Inspect the report. Its eligible task IDs are frozen before generation; unavailable tasks remain listed with reasons. Live runs accept only Docker preflights, and use their immutable image IDs. Changing dependencies, dataset identity or task selection changes comparability.
 
-```bash
-# List available models
-graybench models list
+The offline profile excludes external IBM-service tasks. It does not substitute fake successes. A partial validated set is explicitly an **offline subset**, not an official full-suite score.
 
-# Check API key configuration
-graybench models check
+## Run a benchmark
 
-# Run a single benchmark
-graybench run -p openai -m gpt-4o -s normal -w 8
-
-# Run with limited tasks (for testing)
-graybench run -p anthropic -m claude-3-5-sonnet-20241022 -s normal -l 10
-
-# Run on hard suite (no hints)
-graybench run -p deepseek -m deepseek-chat -s hard -w 4
+```sh
+uv run graybench run -p openai -m gpt-4o-mini-2024-07-18 -s normal --preflight data/preflight-normal.json --max-tokens 16384 --budget 5 -o results/openai-normal
+uv run graybench run -p google -m gemini-3.6-flash -s hard --preflight data/preflight-hard.json --max-tokens 16384 --budget 10 -o results/google-hard
 ```
 
-### Viewing Results
+`--budget` is a per-run estimated USD ceiling, checked conservatively before requests. It is not a provider billing limit. Verify rates and account billing before large runs. Unknown pricing blocks automatic live runs. For a smoke test, add `--limit 3`; never compare that score with a full run.
 
-```bash
-# List runs
-graybench results list
+One returned answer per task; no repair, test feedback, tools or extra attempt for an empty response. Only explicit rate-limit errors may be retried. The default cap is 16,384 output tokens. Reasoning models can consume their limit without delivering an answer; retain finish reasons and compare caps as separate experiments. Actual provider settings are saved with responses. Temperature zero is not a guarantee of deterministic output.
 
-# Show run details
-graybench results show <run_id>
+The evaluator has no network, credentials, user-profile mount or host repository mount, runs as an unprivileged user, and has CPU/memory/process limits. Only disposable task files are mounted, read-only. This reduces execution risk; it does not prove that hostile code cannot exploit a runtime flaw or inspect in-process tests.
 
-# View leaderboard
-graybench results leaderboard -s normal
+## Results
 
-# Export results
-graybench results export -o ./exports
+```sh
+uv run graybench results list
+uv run graybench results show RUN_ID --verbose
+uv run graybench results leaderboard -s hard
+uv run graybench results export --run RUN_ID --output results/export
+uv run graybench results rescore RUN_ID --preflight data/preflight-normal.json --output results/rescored.json
+uv run pytest
 ```
 
-## CLI Reference
+Results default to `data/results.db`. JSONL exports include prompts, full responses, usage and outcomes. Comparison groups separate datasets, selected tasks, runtime images, settings and agent-system tracks. Historical unvalidated runs remain accessible through results list/export but are not silently mixed into the new comparison groups. A rescore writes a separate report and preserves the original run and answers; it makes no provider requests. Unknown cost stays unknown. Scores include Wilson intervals and numerator/denominator; incomplete and duplicate attempts cannot be marked complete.
 
-### Run Commands
+A sweep YAML may contain `provider`, `models`, `suite`, `preflight`, `budget` and `max_tokens` per entry. Budgets apply per model run; a sweep is not a single shared spending allowance. GrayGate is a separate agent-system integration and has no assumed zero cost or fabricated token counts.
 
-```bash
-graybench run [OPTIONS]
-  -p, --provider TEXT    Provider name (openai, anthropic, google, deepseek, moonshot)
-  -m, --model TEXT       Model ID to benchmark
-  -s, --suite TEXT       Dataset suite: 'normal' or 'hard' [default: normal]
-  -w, --workers INT      Number of concurrent tasks [default: 4]
-  -t, --timeout INT      Timeout per task in seconds [default: 120]
-  --max-tokens INT       Maximum tokens to generate [default: 4096]
-  --temperature FLOAT    Sampling temperature [default: 0.0]
-  -l, --limit INT        Limit number of tasks (for testing)
-  --task-ids TEXT        Comma-separated task IDs to run
-  -o, --output PATH      Output directory for results
-  --dry-run              Show what would be run without executing
+## Development
+
+```sh
+uv run pytest
+uv run ruff check graybench tests --select E9,F63,F7,F82
+uv run black --check graybench tests
 ```
 
-### Sweep (Multiple Runs)
+Normal-suite prefixes and hard-suite argument contracts are part of the official task. Never strip required interfaces in pursuit of a harder test, patch generated imports, modify tests to fit model outputs, or select favorable repeated runs.
 
-```bash
-graybench sweep matrix.yaml -w 8 -o ./results
-```
-
-Example `matrix.yaml`:
-```yaml
-- suite: normal
-  provider: openai
-  models: [gpt-4o, gpt-4o-mini]
-- suite: normal
-  provider: anthropic
-  models: [claude-3-5-sonnet-20241022]
-- suite: hard
-  provider: deepseek
-  models: [deepseek-chat, deepseek-reasoner]
-```
-
-### Validation
-
-```bash
-# Validate harness with canonical solutions
-graybench validate canonical -s normal
-
-# Check environment setup
-graybench validate environment
-
-# Analyze imports across dataset
-graybench validate imports
-```
-
-## Supported Providers & Models
-
-### OpenAI
-- `gpt-4o`, `gpt-4o-mini`
-- `gpt-4-turbo`
-- `o1`, `o1-mini`, `o1-pro`
-
-### Anthropic
-- `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`
-- `claude-sonnet-4-20250514`, `claude-opus-4-20250514`
-- `claude-opus-4-5-20251101`, `claude-sonnet-4-5-20250929`
-
-### Google Gemini
-- `gemini-1.5-pro`, `gemini-1.5-flash`
-- `gemini-2.0-flash-exp`
-
-### DeepSeek
-- `deepseek-chat` (V3.2)
-- `deepseek-reasoner` (with chain-of-thought)
-
-### Moonshot (Kimi)
-- `kimi-k2.5`
-- `kimi-k2-0711-preview`
-- `moonshot-v1-128k`, `moonshot-v1-32k`, `moonshot-v1-8k`
-
-## Evaluation Methodology
-
-### Pass@1 Metric
-Each task gets a single attempt. A solution passes if all tests succeed on the first try.
-
-### Deterministic Decoding
-All evaluations use `temperature=0, top_p=1` for fair comparison across models.
-
-### No Self-Repair
-Models do not receive error feedback or retry opportunities in the baseline evaluation.
-
-### Prompt Formats
-
-**Normal Suite**: Includes function signature, docstring, and imports from the original dataset.
-
-**Hard Suite**: Raw problem statement only - no imports, no function signature, no hints.
-
-### Generous Timeouts
-Tasks are allowed up to 120 seconds (configurable) to account for quantum circuit simulations.
-
-### Outcome Categories
-
-| Category | Description |
-|----------|-------------|
-| `pass` | All tests passed |
-| `fail_test` | Tests ran but assertions failed |
-| `fail_syntax` | Python syntax error |
-| `fail_import` | Missing module/import error |
-| `fail_runtime` | Runtime error (TypeError, ValueError, etc.) |
-| `timeout` | Execution exceeded time limit |
-| `extraction_failed` | Could not extract code from model output |
-
-## Data Storage
-
-Results are stored in SQLite (`~/.graybench/results.db`) with three tables:
-- `runs`: High-level metadata per benchmark run
-- `attempts`: Individual task attempts with prompts, completions, and outcomes
-- `scores`: Aggregated statistics per run
-
-Export formats:
-- JSONL (for data exchange)
-- JSON (for website leaderboards)
-- CSV (for analysis)
-
-## Environment Requirements
-
-- **OS**: Ubuntu 24.04+ (tested on WSL2)
-- **Python**: 3.10.x (required by Qiskit)
-- **Qiskit**: 1.0+ with qiskit-aer
-- **Memory**: 4GB+ recommended for quantum simulations
-
-## Project Structure
-
-```
-graybench/
-├── graybench/
-│   ├── __init__.py           # Package exports
-│   ├── cli.py                # Command-line interface
-│   ├── config.py             # Configuration management
-│   ├── dataset/              # Dataset loading
-│   │   ├── loader.py         # HuggingFace loader
-│   │   └── models.py         # Task data models
-│   ├── execution/            # Code execution
-│   │   ├── harness.py        # Test harness
-│   │   ├── outcomes.py       # Outcome categories
-│   │   └── code_extractor.py # Code extraction
-│   ├── providers/            # LLM API adapters
-│   │   ├── base.py           # Base adapter class
-│   │   ├── openai_adapter.py
-│   │   ├── anthropic_adapter.py
-│   │   ├── google_adapter.py
-│   │   ├── deepseek_adapter.py
-│   │   └── moonshot_adapter.py
-│   └── storage/              # Result storage
-│       ├── database.py       # SQLite backend
-│       └── exporter.py       # Export utilities
-├── pyproject.toml            # Package configuration
-├── requirements.txt          # Dependencies
-└── README.md                 # This file
-```
-
-## License
-
-MIT License - see LICENSE file for details.
-
-## Contributing
-
-Contributions welcome! Please ensure:
-1. All tests pass: `pytest tests/`
-2. Code is formatted: `black graybench/`
-3. Types check: `mypy graybench/`
-
-## Acknowledgments
-
-- [Qiskit HumanEval](https://arxiv.org/abs/2406.01265) dataset by IBM Research
-- Inspired by OpenAI's HumanEval benchmark
+MIT licensed application; the upstream dataset is Apache-2.0. See upstream dataset terms and attribution in [methodology](docs/METHODOLOGY.md).

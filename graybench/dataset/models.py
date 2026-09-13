@@ -9,12 +9,13 @@ from typing import Any, Optional
 
 class TaskDifficulty(Enum):
     """Task difficulty levels from the Qiskit HumanEval dataset."""
-    
+
     BASIC = "basic"
     INTERMEDIATE = "intermediate"
     ADVANCED = "advanced"
+    DIFFICULT = "difficult"
     UNKNOWN = "unknown"
-    
+
     @classmethod
     def from_string(cls, value: str) -> "TaskDifficulty":
         """Parse difficulty from string."""
@@ -27,7 +28,7 @@ class TaskDifficulty(Enum):
 
 class SuiteType(Enum):
     """Benchmark suite types."""
-    
+
     NORMAL = "normal"
     HARD = "hard"
 
@@ -36,7 +37,7 @@ class SuiteType(Enum):
 class Task:
     """
     Represents a single benchmark task.
-    
+
     Attributes:
         task_id: Unique identifier for the task (e.g., "qiskitHumanEval/48")
         prompt: The prompt text to give to the model
@@ -47,7 +48,7 @@ class Task:
         suite: Which suite this task belongs to (normal or hard)
         metadata: Additional metadata from the dataset
     """
-    
+
     task_id: str
     prompt: str
     entry_point: str
@@ -56,7 +57,7 @@ class Task:
     difficulty: TaskDifficulty = TaskDifficulty.UNKNOWN
     suite: SuiteType = SuiteType.NORMAL
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     @property
     def task_number(self) -> int:
         """Extract the numeric task ID."""
@@ -67,34 +68,34 @@ class Task:
             return int(self.task_id)
         except (ValueError, IndexError):
             return -1
-    
+
     @property
     def short_id(self) -> str:
         """Get a short version of the task ID."""
         if "/" in self.task_id:
             return self.task_id.split("/")[-1]
         return self.task_id
-    
+
     def get_prompt_for_model(self, include_hints: bool = True) -> str:
         """
         Get the prompt to send to the model.
-        
+
         For 'hard' suite tasks, this returns just the raw prompt with no hints.
         For 'normal' suite tasks, this includes any provided context.
-        
+
         Args:
             include_hints: Whether to include any hints or context (ignored for hard suite)
-        
+
         Returns:
             The prompt string for the model
         """
         if self.suite == SuiteType.HARD:
             # Hard mode: raw problem statement only, no imports or signatures
             return self.prompt
-        
+
         # Normal mode: include the full prompt as-is
         return self.prompt
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
@@ -107,7 +108,7 @@ class Task:
             "suite": self.suite.value,
             "metadata": self.metadata,
         }
-    
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Task":
         """Create a Task from a dictionary."""
@@ -127,7 +128,7 @@ class Task:
 class TaskAttempt:
     """
     Represents a single attempt at solving a task.
-    
+
     Attributes:
         task: The task being attempted
         model_output: Raw output from the model
@@ -138,7 +139,7 @@ class TaskAttempt:
         cost_usd: Cost of this attempt in USD
         latency_ms: Time taken for generation in milliseconds
     """
-    
+
     task: Task
     model_output: str
     extracted_code: Optional[str] = None
@@ -147,7 +148,7 @@ class TaskAttempt:
     tokens_completion: int = 0
     cost_usd: float = 0.0
     latency_ms: float = 0.0
-    
+
     @property
     def passed(self) -> bool:
         """Check if this attempt passed all tests."""
@@ -160,7 +161,7 @@ class TaskAttempt:
 class ExecutionResult:
     """
     Result of executing a code solution.
-    
+
     Attributes:
         passed: Whether all tests passed
         outcome: Detailed outcome category
@@ -170,7 +171,7 @@ class ExecutionResult:
         error_message: Error message if any
         execution_time_ms: Time taken to execute in milliseconds
     """
-    
+
     passed: bool
     outcome: str  # Will be OutcomeCategory value
     stdout: str = ""
@@ -178,7 +179,7 @@ class ExecutionResult:
     error_type: Optional[str] = None
     error_message: Optional[str] = None
     execution_time_ms: float = 0.0
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
