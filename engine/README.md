@@ -146,6 +146,11 @@ New ledgers also bind exact database records into their event history. The
 [row-binding verifier](../docs/reliability-evidence/event-row-bindings.md) rejects
 unrecorded or inconsistent answers/judgments. Legacy logs require their original engine.
 
+`comparison-plan` and `compare` provide explicit development comparisons with paired
+task-family resampling. They require matched, complete protocols and retain normal/hard
+variants together. See [paired comparisons](../docs/reliability-evidence/paired-comparisons.md)
+for commands, statistical assumptions and the remaining calibration requirements.
+
 ## Adversarial Docker tests
 
 Candidate output files can be captured as opaque bytes while all candidate processes

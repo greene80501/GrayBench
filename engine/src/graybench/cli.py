@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
+from graybench.comparison import ComparisonPlan, compare_runs, make_plan
 from graybench.contracts import ModelSpec, Protocol
 from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
@@ -22,6 +23,27 @@ def main():
     parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor", help="Record relevant runtime and source provenance")
+    comparison_plan = commands.add_parser(
+        "comparison-plan", help="Freeze an explicit paired family analysis"
+    )
+    comparison_plan.add_argument("left_setup", type=Path)
+    comparison_plan.add_argument("right_setup", type=Path)
+    comparison_plan.add_argument("cache", type=Path)
+    comparison_plan.add_argument("output", type=Path)
+    comparison_plan.add_argument("--seed", type=int, required=True)
+    comparison_plan.add_argument("--resamples", type=int, default=10000)
+    comparison_plan.add_argument("--confidence", type=float, default=0.95)
+    comparison_plan.add_argument("--configuration-comparison", required=True)
+    comparison = commands.add_parser(
+        "compare", help="Compare complete frozen cohorts; development only"
+    )
+    comparison.add_argument("plan", type=Path)
+    comparison.add_argument("left_ledger", type=Path)
+    comparison.add_argument("left_run")
+    comparison.add_argument("right_ledger", type=Path)
+    comparison.add_argument("right_run")
+    comparison.add_argument("cache", type=Path)
+    comparison.add_argument("output", type=Path)
     reference = commands.add_parser(
         "reference-scan", help="Calibrate pinned references; never a model score"
     )
@@ -89,6 +111,50 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "comparison-plan":
+        left = CampaignSetup.model_validate_json(args.left_setup.read_bytes())
+        right = CampaignSetup.model_validate_json(args.right_setup.read_bytes())
+        tasks = left.tasks(args.cache)
+        right.tasks(args.cache)
+        plan = make_plan(
+            left.protocol,
+            right.protocol,
+            tasks,
+            seed=args.seed,
+            resamples=args.resamples,
+            confidence=args.confidence,
+            configuration_comparison=args.configuration_comparison,
+        )
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command == "compare":
+        plan = ComparisonPlan.model_validate_json(args.plan.read_bytes())
+        tasks = tuple(
+            task
+            for suite in ("normal", "hard")
+            for task in load_suite(suite, args.cache)
+            if f"{suite}/{task.public.task_id}" in plan.left.task_keys
+        )
+        if not args.left_ledger.is_file() or not args.right_ledger.is_file():
+            parser.error("Comparison ledgers must already exist")
+        left, right = Ledger(args.left_ledger), Ledger(args.right_ledger)
+        try:
+            report = compare_runs(plan, left, args.left_run, right, args.right_run, tasks=tasks)
+        finally:
+            left.close()
+            right.close()
+        with args.output.open("xb") as stream:
+            stream.write(canonical(report))
+        result = {
+            "output": str(args.output),
+            "status": report["status"],
+            "comparison": report["comparison"],
+        }
     elif args.command == "reference-inspect":
         result = inspect_reference_scan(args.path)
     elif args.command == "reference-scan":
