@@ -1,7 +1,7 @@
-"""Bounded data-only circuit exchange for numeric standard instructions.
+"""Bounded data-only circuit exchange for explicitly supported instructions.
 
 No QPY, pickle, Python expressions, dynamic imports, or candidate-selected constructors.
-This codec is deliberately explicit about unsupported symbolic/custom/control-flow operations.
+This codec is deliberately explicit about unsupported custom/control-flow operations.
 Those interfaces require their own validated representation before a task can be admitted.
 """
 
@@ -45,11 +45,13 @@ def indices(value, count):
 
 
 def encode_circuit(circuit):
-    from qiskit.circuit.library import get_standard_gate_name_mapping
+    from qiskit.circuit.library import UnitaryGate, get_standard_gate_name_mapping
 
     try:
+        from .scientific_wire import array_record
         from .symbolic_wire import encode_parameter
     except ImportError:
+        from scientific_wire import array_record
         from symbolic_wire import encode_parameter
 
     standard = get_standard_gate_name_mapping()
@@ -58,6 +60,8 @@ def encode_circuit(circuit):
         op = item.operation
         if op.name == "barrier":
             params = []
+        elif op.name == "unitary" and op.base_class is UnitaryGate:
+            params = [array_record(op.params[0])]
         elif op.name in standard and op.base_class is standard[op.name].base_class:
             params = [encode_parameter(p) for p in op.params]
             if getattr(op, "ctrl_state", None) not in (
@@ -74,6 +78,7 @@ def encode_circuit(circuit):
                 "qubits": [circuit.find_bit(q).index for q in item.qubits],
                 "clbits": [circuit.find_bit(c).index for c in item.clbits],
                 "unit": op.unit if op.name == "delay" else None,
+                "label": op.label,
             }
         )
     layout = None
@@ -89,7 +94,7 @@ def encode_circuit(circuit):
             ),
         }
     return {
-        "kind": "circuit_v3",
+        "kind": "circuit_v4",
         "qubits": circuit.num_qubits,
         "clbits": circuit.num_clbits,
         "qubit_origins": bit_origins(circuit.qubits),
@@ -166,7 +171,7 @@ def decode_circuit(value):
             "clbit_origins",
         },
     )
-    if value["kind"] != "circuit_v3":
+    if value["kind"] != "circuit_v4":
         raise WireError("Unknown circuit codec")
     nq, nc = integer(value["qubits"]), integer(value["clbits"])
     context = {"parameters": {}, "vectors": {}}
@@ -190,23 +195,45 @@ def decode_circuit(value):
     ops = value["operations"]
     if type(ops) is not list or len(ops) > 20_000:
         raise WireError("Instruction count exceeds codec limit")
-    from qiskit.circuit.library import get_standard_gate_name_mapping
+    from qiskit.circuit.library import UnitaryGate, get_standard_gate_name_mapping
+
+    try:
+        from .scientific_wire import decode_array
+    except ImportError:
+        from scientific_wire import decode_array
 
     standard = get_standard_gate_name_mapping()
     decoded_params = []
+    matrix_bytes = 0
     for op in ops:
-        fields(op, {"name", "params", "qubits", "clbits", "unit"})
-        if type(op["name"]) is not str or op["name"] not in {*standard, "barrier"}:
+        fields(op, {"name", "params", "qubits", "clbits", "unit", "label"})
+        if op["label"] is not None and (type(op["label"]) is not str or len(op["label"]) > 4096):
+            raise WireError("Invalid instruction label")
+        if type(op["name"]) is not str or op["name"] not in {*standard, "barrier", "unitary"}:
             raise WireError("Instruction is not in the fixed constructor registry")
         if type(op["params"]) is not list or len(op["params"]) > 8:
             raise WireError("Invalid parameter list")
-        decoded_params.append([decode_parameter(p, context, budget=budget) for p in op["params"]])
         indices(op["qubits"], nq)
         indices(op["clbits"], nc)
+        if op["name"] == "unitary":
+            if len(op["params"]) != 1 or op["clbits"] or not 1 <= len(op["qubits"]) <= 7:
+                raise WireError("Invalid matrix instruction arity")
+            matrix = decode_array(op["params"][0])
+            size = 2 ** len(op["qubits"])
+            if matrix.shape != (size, size) or matrix.dtype.kind != "c":
+                raise WireError("Invalid matrix instruction shape or dtype")
+            matrix_bytes += matrix.nbytes
+            if matrix_bytes > 512 * 1024:
+                raise WireError("Total matrix storage exceeds limit")
+            decoded_params.append([matrix])
+        else:
+            decoded_params.append(
+                [decode_parameter(p, context, budget=budget) for p in op["params"]]
+            )
         if op["name"] == "barrier":
             if op["params"] or op["clbits"]:
                 raise WireError("Invalid barrier")
-        else:
+        elif op["name"] != "unitary":
             template = standard[op["name"]]
             if (
                 len(op["qubits"]) != template.num_qubits
@@ -245,8 +272,15 @@ def decode_circuit(value):
             instruction = Barrier(len(op["qubits"]))
         elif op["name"] == "delay":
             instruction = standard["delay"].base_class(*params, unit=op["unit"])
+        elif op["name"] == "unitary":
+            # Preserve submitted values, including nonunitary matrices constructed with checks
+            # disabled. Shape/allocation are validated above; correctness belongs to the judge.
+            instruction = UnitaryGate(params[0], check_input=False, num_qubits=len(op["qubits"]))
         else:
             instruction = standard[op["name"]].base_class(*params)
+        if op["label"] is not None:
+            instruction = instruction.to_mutable()
+            instruction.label = op["label"]
         circuit.append(instruction, op["qubits"], op["clbits"])
     if layout is not None:
         virtual = build_bits(layout["virtual_bits"], Qubit, QuantumRegister)

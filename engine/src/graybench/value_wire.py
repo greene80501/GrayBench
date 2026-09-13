@@ -83,7 +83,7 @@ def decode(value, depth=0, budget=None):
         except ImportError:
             from symbolic_wire import decode_parameter
         return decode_parameter(value)
-    if type(value) is dict and value.get("kind") == "circuit_v3":
+    if type(value) is dict and value.get("kind") == "circuit_v4":
         return decode_circuit(value)
     if type(value) is not dict or set(value) != {"kind", "items"}:
         raise WireError("Invalid result wire type")

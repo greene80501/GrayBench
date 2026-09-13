@@ -40,11 +40,12 @@ can currently be exercised programmatically with explicit frozen requests.
   Candidate stdout has no verdict authority. Runtime images must use immutable local IDs.
 - A bounded circuit codec exchanges standard instructions, registers, global phase,
   and initial/routing permutations using a fixed constructor registry. No QPY or pickle is
-  deserialized. Circuit wire v3 preserves parameter UUIDs, vector ordering and a bounded fixed
+  deserialized. Circuit wire v4 preserves parameter UUIDs, vector ordering and a bounded fixed
   vocabulary of symbolic operations. Reconstruction uses the pinned Qiskit 2.4 structured replay
   interface, never expression-string evaluation. Custom instructions, open controls and control
-  flow remain unsupported. It is not a complete
-  serialization of circuit metadata, labels or original virtual-qubit identity.
+  flow remain unsupported. Matrix-defined UnitaryGate instructions preserve their numeric data
+  without repairing nonunitary values, and supported instruction labels survive transport.
+  It is not a complete serialization of circuit metadata or original virtual-qubit identity.
 - Explicit `call_with_updates` records changed arguments. The simpler read-only call refuses
   to silently discard mutations. An upstream-compatible mutation/alias bridge is still required.
 - Numeric arrays and NumPy scalars retain dtype, byte order, shape and exact numeric bytes;
