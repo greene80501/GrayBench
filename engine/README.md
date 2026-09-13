@@ -99,9 +99,12 @@ can currently be exercised programmatically with explicit frozen requests.
    positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
    rejects the reproduced empty-circuit false acceptance, but its complete specification review
    is unfinished. The inventory explicitly marks every task unreviewed.
-3. A durable orchestrator enforcing predeclared backoff, model drift checks, complete provenance,
-   crash recovery, and eligibility before generation. Backoff is currently a contract; there is
-   no campaign scheduler yet. Pending/ambiguous attempts intentionally block retries.
+3. Complete campaign orchestration with model drift checks, full provenance and eligibility
+   before generation. `GenerationRunner.step()` now dispatches at most one frozen request,
+   checks source/request/endpoint identities, and resumes from the ledger. Retry backoff is
+   enforced transactionally across restarts; pending/ambiguous delivery stops dispatch.
+   Admission, judge scheduling and the user-facing campaign CLI remain required. This internal
+   generation component is not a release eligibility check or a complete scoring runner.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score
    compatibility records; and a release manifest anchored outside candidate execution.

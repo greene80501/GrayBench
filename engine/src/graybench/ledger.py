@@ -8,7 +8,7 @@ import contextlib
 import json
 import sqlite3
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -167,7 +167,8 @@ class Ledger:
             ).fetchone():
                 raise StateError("A returned answer cannot be replaced")
             prior = self.db.execute(
-                "SELECT a.*,d.kind,d.http_status FROM attempts a LEFT JOIN deliveries d "
+                "SELECT a.*,d.kind,d.http_status,d.finished_at FROM attempts a "
+                "LEFT JOIN deliveries d "
                 "ON a.id=d.attempt_id WHERE a.sample_id=? ORDER BY ordinal DESC LIMIT 1",
                 (sample_id,),
             ).fetchone()
@@ -183,6 +184,12 @@ class Ledger:
                 ordinal = prior["ordinal"] + 1
             if ordinal > protocol.retry.max_attempts:
                 raise StateError("Frozen retry budget exhausted")
+            if prior:
+                ready = datetime.fromisoformat(prior["finished_at"]) + timedelta(
+                    seconds=protocol.retry.delays_seconds[ordinal - 2]
+                )
+                if datetime.fromisoformat(now()) < ready:
+                    raise StateError("Frozen retry backoff has not elapsed")
             if request.digest != protocol.request_digests[sample["task_key"]]:
                 raise StateError("Request differs from the frozen experiment")
             attempt_id = uuid.uuid4().hex
@@ -195,6 +202,33 @@ class Ledger:
                 "attempt_started", attempt_id=attempt_id, sample_id=sample_id, request=request_id
             )
         return attempt_id
+
+    def dispatch_state(self, sample_id: str) -> dict:
+        sample = self.db.execute("SELECT * FROM samples WHERE id=?", (sample_id,)).fetchone()
+        if sample is None:
+            raise StateError("Unscheduled sample")
+        if self.db.execute("SELECT 1 FROM generations WHERE sample_id=?", (sample_id,)).fetchone():
+            return {"state": "returned"}
+        prior = self.db.execute(
+            "SELECT a.ordinal,d.kind,d.http_status,d.finished_at FROM attempts a "
+            "LEFT JOIN deliveries d ON a.id=d.attempt_id WHERE a.sample_id=? "
+            "ORDER BY a.ordinal DESC LIMIT 1",
+            (sample_id,),
+        ).fetchone()
+        if prior is None:
+            return {"state": "ready"}
+        if prior["kind"] is None or prior["kind"] == "ambiguous":
+            return {"state": "unresolved_delivery"}
+        policy = self.protocol(sample["run_id"]).retry
+        if prior["http_status"] not in policy.statuses or prior["ordinal"] >= policy.max_attempts:
+            return {"state": "exhausted"}
+        ready = datetime.fromisoformat(prior["finished_at"]) + timedelta(
+            seconds=policy.delays_seconds[prior["ordinal"] - 1]
+        )
+        return {
+            "state": "ready" if datetime.fromisoformat(now()) >= ready else "deferred",
+            "not_before": ready.isoformat(),
+        }
 
     def finish_attempt(
         self,

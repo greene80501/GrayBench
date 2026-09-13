@@ -1,6 +1,6 @@
 import pytest
 
-from graybench.contracts import ModelSpec, Protocol, PublicTask
+from graybench.contracts import ModelSpec, Protocol, PublicTask, RetryPolicy
 from graybench.ledger import Ledger
 from graybench.providers import Ollama
 
@@ -31,6 +31,7 @@ def protocol(model, task):
         task_keys=("hard/qiskitHumanEval/0",),
         request_digests={"hard/qiskitHumanEval/0": Ollama().prepare(model, task, None).digest},
         model=model,
+        retry=RetryPolicy(delays_seconds=(0.0, 0.0)),
         generation_code_digest="2" * 64,
         runtime_digest="3" * 64,
         judge_digest="4" * 64,
