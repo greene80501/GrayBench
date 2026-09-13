@@ -38,6 +38,9 @@ Replaying the stored final answers in the validated Docker environment, with no 
 
 [ScienceOne-AI's ScienceEval repository](https://github.com/ScienceOne-AI/ScienceEval) reports Qiskit HumanEval results of 52.98% for Gemini 2.5 Pro and 47.02% for OpenAI o3 High. Its documented QHE command uses temperature 0.6, top-p 0.95 and presence penalty 1.0. Those settings differ from this shared-prompt protocol; these are additional published comparisons, not matched replications. They do not provide a GPT-4o mini or Gemini 3.6 Flash score to compare directly. Its [QHE runner](https://github.com/ScienceOne-AI/ScienceEval/blob/main/benchmarks/Qiskit_HumanEval/run.py) additionally supplies a code-only instruction, strips import/function-definition lines and triple-quoted strings, and can retry empty completions up to ten times. We do not adopt these transformations merely to match its scores.
 
+
+Direct comparison of ScienceEval's committed dataset at `f90e004468a1b18fcb71f4d5200f5accf057e723` with our pinned normal dataset finds 23 different prompts, 19 different references and three different entry points. Although 138 test ASTs differ, most differences are assertion messages; 22 still differ after ignoring those messages. Task 104 changes from choosing the lowest-complexity backend to the highest; tasks 84 and 86 change from pulse exercises to different circuit/transpiler tasks. Identical dataset size and reused task IDs therefore do not establish identical questions. See the [exact dataset revision](https://github.com/ScienceOne-AI/ScienceEval/blob/f90e004468a1b18fcb71f4d5200f5accf057e723/benchmarks/Qiskit_HumanEval/Qhumaneval.jsonl). This comparison identifies the committed file, not proof of the precise dataset used for every published table row.
+
 ## Comparison plan
 
 1. Freeze a Docker image, reference preflight, task IDs and generation protocol before any paid evaluation.
