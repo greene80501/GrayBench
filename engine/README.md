@@ -46,6 +46,10 @@ can currently be exercised programmatically with explicit frozen requests.
   flow remain unsupported. Matrix-defined UnitaryGate instructions preserve their numeric data
   without repairing nonunitary values, and supported instruction labels survive transport.
   It is not a complete serialization of circuit metadata or original virtual-qubit identity.
+- StatePreparation preserves its original argument, current parameters, label/int mode and
+  inverse flag. Reconstruction does not normalize again. Normal and hard tasks 5 and 6 pass
+  targeted reference checks; modified/cached definitions and cross-object aliases still need
+  an explicit representation before complete SDK equivalence can be claimed.
 - Explicit `call_with_updates` records changed arguments. The simpler read-only call refuses
   to silently discard mutations. An upstream-compatible mutation/alias bridge is still required.
 - Numeric arrays and NumPy scalars retain dtype, byte order, shape and exact numeric bytes;

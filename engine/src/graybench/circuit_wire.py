@@ -45,7 +45,7 @@ def indices(value, count):
 
 
 def encode_circuit(circuit):
-    from qiskit.circuit.library import UnitaryGate, get_standard_gate_name_mapping
+    from qiskit.circuit.library import StatePreparation, UnitaryGate, get_standard_gate_name_mapping
 
     try:
         from .scientific_wire import array_record
@@ -60,6 +60,12 @@ def encode_circuit(circuit):
         op = item.operation
         if op.name == "barrier":
             params = []
+        elif op.base_class is StatePreparation:
+            try:
+                from .preparation_wire import encode_preparation
+            except ImportError:
+                from preparation_wire import encode_preparation
+            params = [encode_preparation(op)]
         elif op.name == "unitary" and op.base_class is UnitaryGate:
             params = [array_record(op.params[0])]
         elif op.name in standard and op.base_class is standard[op.name].base_class:
@@ -209,13 +215,29 @@ def decode_circuit(value):
         fields(op, {"name", "params", "qubits", "clbits", "unit", "label"})
         if op["label"] is not None and (type(op["label"]) is not str or len(op["label"]) > 4096):
             raise WireError("Invalid instruction label")
-        if type(op["name"]) is not str or op["name"] not in {*standard, "barrier", "unitary"}:
+        if type(op["name"]) is not str or op["name"] not in {
+            *standard,
+            "barrier",
+            "unitary",
+            "state_preparation",
+            "state_preparation_dg",
+        }:
             raise WireError("Instruction is not in the fixed constructor registry")
         if type(op["params"]) is not list or len(op["params"]) > 8:
             raise WireError("Invalid parameter list")
         indices(op["qubits"], nq)
         indices(op["clbits"], nc)
-        if op["name"] == "unitary":
+        if op["name"] in ("state_preparation", "state_preparation_dg"):
+            if len(op["params"]) != 1 or op["clbits"]:
+                raise WireError("Invalid preparation arity")
+            try:
+                from .preparation_wire import decode_preparation
+            except ImportError:
+                from preparation_wire import decode_preparation
+            decoded_params.append(
+                [decode_preparation(op["params"][0], len(op["qubits"]), op["name"])]
+            )
+        elif op["name"] == "unitary":
             if len(op["params"]) != 1 or op["clbits"] or not 1 <= len(op["qubits"]) <= 7:
                 raise WireError("Invalid matrix instruction arity")
             matrix = decode_array(op["params"][0])
@@ -233,7 +255,7 @@ def decode_circuit(value):
         if op["name"] == "barrier":
             if op["params"] or op["clbits"]:
                 raise WireError("Invalid barrier")
-        elif op["name"] != "unitary":
+        elif op["name"] not in ("unitary", "state_preparation", "state_preparation_dg"):
             template = standard[op["name"]]
             if (
                 len(op["qubits"]) != template.num_qubits
@@ -272,6 +294,9 @@ def decode_circuit(value):
             instruction = Barrier(len(op["qubits"]))
         elif op["name"] == "delay":
             instruction = standard["delay"].base_class(*params, unit=op["unit"])
+        elif op["name"] in ("state_preparation", "state_preparation_dg"):
+            instruction = params[0]
+            instruction.label = op["label"]
         elif op["name"] == "unitary":
             # Preserve submitted values, including nonunitary matrices constructed with checks
             # disabled. Shape/allocation are validated above; correctness belongs to the judge.

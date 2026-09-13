@@ -92,6 +92,9 @@ class Candidate:
         shutil.copyfile(
             Path(__file__).with_name("symbolic_wire.py"), directory / "symbolic_wire.py"
         )
+        shutil.copyfile(
+            Path(__file__).with_name("preparation_wire.py"), directory / "preparation_wire.py"
+        )
         args = [
             docker,
             "run",
