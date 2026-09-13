@@ -141,6 +141,11 @@ No existing result has become a certified score merely because these foundation 
 
 ## Adversarial Docker tests
 
+`reference-scan CACHE OUTPUT --image IMAGE --offline` calibrates both pinned offline reference
+suites into a new append-only JSONL file. Omit `--offline` only for an explicitly planned full
+service-dependent calibration. `reference-inspect OUTPUT` checks its event chain and identifies
+pending invocations. These commands produce compatibility evidence, never LLM accuracy scores.
+
 Set `GRAYBENCH_TEST_IMAGE` to the locally inspected `sha256:...` image ID and optionally
 `GRAYBENCH_DOCKER` to the Docker executable. Run `uv run pytest`. Docker tests are explicitly
 skipped without that image setting. The image must have Python 3.12; Qiskit support will use the

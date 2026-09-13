@@ -13,13 +13,30 @@ from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
 from graybench.provenance import environment
 from graybench.providers import adapter
+from graybench.reference_scan import inspect_reference_scan, run_reference_scan
 from graybench.transport import Transport
+from graybench.upstream import UpstreamJudge
 
 
 def main():
     parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor", help="Record relevant runtime and source provenance")
+    reference = commands.add_parser(
+        "reference-scan", help="Calibrate pinned references; never a model score"
+    )
+    reference.add_argument("cache", type=Path)
+    reference.add_argument("output", type=Path)
+    reference.add_argument("--image", required=True)
+    reference.add_argument("--docker", default="docker")
+    reference.add_argument("--suite", choices=("normal", "hard", "both"), default="both")
+    reference.add_argument(
+        "--offline", action="store_true", help="Explicitly omit known external-service tasks"
+    )
+    inspect_scan = commands.add_parser(
+        "reference-inspect", help="Verify reference evidence and identify incomplete invocations"
+    )
+    inspect_scan.add_argument("path", type=Path)
     validate = commands.add_parser(
         "validate-protocol", help="Validate a frozen experiment contract"
     )
@@ -72,6 +89,29 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "reference-inspect":
+        result = inspect_reference_scan(args.path)
+    elif args.command == "reference-scan":
+        all_tasks = tuple(
+            task
+            for suite in ("normal", "hard")
+            if args.suite in (suite, "both")
+            for task in load_suite(suite, args.cache)
+        )
+        excluded = {
+            f"{t.public.suite}/{t.public.task_id}": t.digest
+            for t in all_tasks
+            if args.offline and int(t.public.task_id.rsplit("/", 1)[1]) in EXTERNAL_IDS
+        }
+        tasks = tuple(
+            t for t in all_tasks if f"{t.public.suite}/{t.public.task_id}" not in excluded
+        )
+        result = run_reference_scan(
+            tasks,
+            UpstreamJudge(image=args.image, docker=args.docker),
+            args.output,
+            selection={"offline": args.offline, "excluded": excluded},
+        )
     elif args.command == "campaign-observe":
         if not args.ledger.is_file():
             parser.error("Ledger does not exist")
