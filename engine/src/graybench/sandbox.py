@@ -17,6 +17,7 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
+from graybench.container_control import ContainerControl
 from graybench.value_wire import encode
 
 
@@ -79,6 +80,7 @@ class Candidate:
         self.active_seconds = 0.0
         self.active_started = None
         self.paused = False
+        self.control = None
         directory = Path(self.directory.name)
         (directory / "candidate.py").write_text(code, encoding="utf-8")
         if public_prefix:
@@ -137,6 +139,7 @@ class Candidate:
             "/input/worker.py",
         ]
         try:
+            self.control = ContainerControl(docker)
             self.active_started = time.monotonic()
             self.deadline = self.active_started + timeout
             self.process = subprocess.Popen(
@@ -162,13 +165,14 @@ class Candidate:
     def _control(self, operation):
         """Host-authoritative container freeze; failures are infrastructure errors."""
         try:
-            result = subprocess.run(
-                [self.docker, operation, self.name], capture_output=True, timeout=15
-            )
-        except (OSError, subprocess.TimeoutExpired) as exc:
+            if operation == "pause":
+                self.control.pause(self.name)
+            elif operation == "unpause":
+                self.control.unpause(self.name)
+            else:
+                raise ValueError("Unsupported lifecycle operation")
+        except Exception as exc:
             raise RuntimeError("Candidate container lifecycle operation failed") from exc
-        if result.returncode:
-            raise RuntimeError("Candidate container lifecycle operation failed")
 
     def _pause(self):
         if self.paused:
@@ -359,6 +363,8 @@ class Candidate:
             for stream in (self.process.stdin, self.process.stdout, self.process.stderr):
                 stream.close()
         self.directory.cleanup()
+        if self.control is not None:
+            self.control.close()
 
     def __enter__(self):
         return self

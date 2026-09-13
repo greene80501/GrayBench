@@ -99,6 +99,9 @@ can currently be exercised programmatically with explicit frozen requests.
    wall-time allowance and background processes cannot run for free. Startup and lifecycle
    overhead are conservatively charged. Calibration of these overheads remains required before
    choosing published execution limits; this is an active wall-time policy, not CPU accounting.
+   A persistent local Docker API connection handles pause/unpause without launching a CLI
+   process for every call. This resolves the reproduced task-109 reference timeout caused by
+   the cost of 1,000 call boundaries. Remote Docker control endpoints are not supported here.
 2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
    positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
    rejects the reproduced empty-circuit false acceptance, but its complete specification review

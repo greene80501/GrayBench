@@ -7,7 +7,12 @@ name = "graybench-engine"
 version = "3.0.0a1"
 description = "Auditable LLM experiments with independent generation and judgment"
 requires-python = ">=3.12,<3.13"
-dependencies = ["httpx>=0.28,<0.29", "pydantic>=2.11,<3"]
+dependencies = [
+    "docker>=7.1,<8",
+    "httpx>=0.28,<0.29",
+    "pydantic>=2.11,<3",
+    "pywin32>=308 ; sys_platform == 'win32'",
+]
 
 [project.optional-dependencies]
 dataset = ["pyarrow>=19", "huggingface-hub>=0.30"]

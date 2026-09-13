@@ -62,7 +62,13 @@ class UpstreamJudge:
         }
         source = Path(__file__).parent
         files = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in FILES}
-        for name in ("upstream.py", "sandbox.py", "worker.py", "extraction.py"):
+        for name in (
+            "upstream.py",
+            "sandbox.py",
+            "worker.py",
+            "extraction.py",
+            "container_control.py",
+        ):
             files[name] = hashlib.sha256((source / name).read_bytes()).hexdigest()
         manifest = {
             "files": files,
@@ -70,7 +76,7 @@ class UpstreamJudge:
             "task_payload": identity(payload),
             "judge_timeout": self.timeout,
             "candidate_timeout": self.candidate_timeout,
-            "candidate_timing": "active-wall-v1-including-startup-and-freeze-overhead",
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
             "output_limit": self.limit,
             "protocol": "upstream-proxy-v1",
         }
