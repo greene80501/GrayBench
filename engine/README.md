@@ -106,7 +106,11 @@ can currently be exercised programmatically with explicit frozen requests.
    `UpstreamCampaign` now binds the supplied task records, per-task judge configurations and
    immutable image before dispatch, and schedules protected judgments from saved answers.
    Judgment intent is append-only; interrupted oracle execution stops rather than rerolling.
-   Task adequacy/admission reviews, the user-facing campaign CLI and model drift checks remain
+   `campaign-create SETUP CACHE LEDGER` saves a validated development setup without generation;
+   `campaign-step LEDGER RUN_ID CACHE [--docker PATH]` resumes at most one action using the
+   stored setup. The setup includes a frozen Protocol, image, execution and HTTP limits.
+   Python/OS/package/source provenance is stored append-only and checked before CLI resume.
+   A setup builder, task adequacy/admission reviews and model drift checks remain
    required. Identity validation does not certify an oracle or make a cohort release-eligible.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score

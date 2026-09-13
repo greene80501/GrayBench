@@ -40,8 +40,8 @@ class UpstreamJudge:
     ):
         # Use the same immutable-image/resource validation as the fixed-oracle judge.
         ProtectedJudge(image=image, docker=docker, timeout=timeout, output_limit=output_limit)
-        self.image, self.docker, self.timeout = image, docker, timeout
-        self.candidate_timeout, self.limit = candidate_timeout, output_limit
+        self.image, self.docker, self.timeout = image, docker, float(timeout)
+        self.candidate_timeout, self.limit = float(candidate_timeout), output_limit
 
     def configuration(self, task: JudgeTask) -> tuple[dict, dict]:
         """Describe exact private judge input and runtime without executing a candidate."""

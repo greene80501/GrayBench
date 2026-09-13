@@ -33,6 +33,9 @@ CREATE TABLE IF NOT EXISTS samples (
  task_key TEXT NOT NULL, replicate INTEGER NOT NULL CHECK(replicate>=0),
  UNIQUE(run_id, task_key, replicate)
 );
+CREATE TABLE IF NOT EXISTS run_contexts (
+ run_id TEXT PRIMARY KEY REFERENCES runs(id), content TEXT NOT NULL REFERENCES blobs(digest)
+);
 CREATE TABLE IF NOT EXISTS attempts (
  id TEXT PRIMARY KEY, sample_id TEXT NOT NULL REFERENCES samples(id),
  ordinal INTEGER NOT NULL CHECK(ordinal>=1), request TEXT NOT NULL REFERENCES blobs(digest),
@@ -81,6 +84,7 @@ class Ledger:
         for table in (
             "blobs",
             "runs",
+            "run_contexts",
             "samples",
             "attempts",
             "deliveries",
@@ -130,11 +134,15 @@ class Ledger:
         digest = identity({"seq": seq, "previous": previous, "payload": payload})
         self.db.execute("INSERT INTO events VALUES (?,?,?,?)", (seq, previous, digest, payload))
 
-    def create_run(self, protocol: Protocol) -> str:
+    def create_run(self, protocol: Protocol, context: dict | None = None) -> str:
         run_id = uuid.uuid4().hex
         with self.transaction():
             manifest = self._blob(protocol.model_dump(mode="json"))
             self.db.execute("INSERT INTO runs VALUES (?,?,?)", (run_id, manifest, now()))
+            if context is not None:
+                artifact = self._blob(context)
+                self.db.execute("INSERT INTO run_contexts VALUES (?,?)", (run_id, artifact))
+                self._event("run_context_recorded", run_id=run_id, context=artifact)
             for task in protocol.task_keys:
                 for replicate in range(protocol.repeats):
                     sample = identity([run_id, task, replicate])
@@ -143,6 +151,14 @@ class Ledger:
                     )
             self._event("run_created", run_id=run_id, manifest=manifest)
         return run_id
+
+    def context(self, run_id: str) -> dict:
+        row = self.db.execute(
+            "SELECT content FROM run_contexts WHERE run_id=?", (run_id,)
+        ).fetchone()
+        if row is None:
+            raise StateError("Run has no frozen execution context")
+        return self.blob(row[0])
 
     def protocol(self, run_id: str) -> Protocol:
         row = self.db.execute("SELECT manifest FROM runs WHERE id=?", (run_id,)).fetchone()

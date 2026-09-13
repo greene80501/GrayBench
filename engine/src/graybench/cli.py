@@ -4,8 +4,11 @@ import argparse
 import json
 from pathlib import Path
 
+from graybench.campaign_setup import CampaignSetup, execution_context, validate_host
 from graybench.contracts import ModelSpec, Protocol
 from graybench.datasets import inventory, load_suite
+from graybench.evaluation_campaign import UpstreamCampaign
+from graybench.identity import canonical
 from graybench.ledger import Ledger
 from graybench.provenance import environment
 from graybench.providers import adapter
@@ -32,9 +35,60 @@ def main():
     )
     catalog.add_argument("cache", type=Path)
     catalog.add_argument("--download", action="store_true")
+    create = commands.add_parser(
+        "campaign-create", help="Validate and save a development campaign; no generations"
+    )
+    create.add_argument("setup", type=Path)
+    create.add_argument("cache", type=Path)
+    create.add_argument("ledger", type=Path)
+    step = commands.add_parser(
+        "campaign-step", help="Perform at most one generation or protected judgment"
+    )
+    step.add_argument("ledger", type=Path)
+    step.add_argument("run_id")
+    step.add_argument("cache", type=Path)
+    step.add_argument("--docker", default="docker")
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "campaign-create":
+        setup = CampaignSetup.model_validate_json(args.setup.read_bytes())
+        setup.tasks(args.cache)
+        context = execution_context(setup)
+        ledger = Ledger(args.ledger)
+        try:
+            result = {
+                "run_id": ledger.create_run(setup.protocol, context),
+                "certification": "not_certified",
+            }
+        finally:
+            ledger.close()
+    elif args.command == "campaign-step":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            context = ledger.context(args.run_id)
+            setup = CampaignSetup.model_validate_json(canonical(context["setup"]))
+            if setup.protocol != ledger.protocol(args.run_id):
+                parser.error("Stored setup does not match the run protocol")
+            validate_host(context)
+            tasks = setup.tasks(args.cache)
+            transport = Transport(
+                setup.protocol.model,
+                timeout_seconds=setup.http_timeout,
+                max_response_bytes=setup.response_limit,
+            )
+            try:
+                result = UpstreamCampaign(
+                    ledger, args.run_id, tasks, setup.judge(args.docker), transport
+                ).step()
+                result["summary"] = ledger.summary(args.run_id)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
     elif args.command == "validate-protocol":
         protocol = Protocol.model_validate_json(args.path.read_bytes())
         result = {
