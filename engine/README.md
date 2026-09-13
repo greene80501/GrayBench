@@ -1,0 +1,80 @@
+# GrayBench 3 replacement engine
+
+This is a fresh Python 3.12 implementation of the accepted
+[reliability plan](../docs/RELIABILITY_PLAN.md). It is under construction. The root-level V2
+package remains available to reproduce historical pilots. Do not mix its scores with this engine.
+
+From this directory:
+
+```sh
+uv sync --locked --extra dataset
+uv run graybench doctor
+uv run graybench inventory ../data/datasets
+uv run pytest
+uv run ruff check src tests
+```
+
+The inspection CLI does not launch a billable benchmark campaign. The full-suite runner will
+be exposed after the required interfaces and oracle gates are implemented. Generation adapters
+can currently be exercised programmatically with explicit frozen requests.
+
+## Implemented foundation
+
+- Strict public-task and experiment contracts, with exact request hashes frozen before dispatch.
+- Independent identities for dataset, generation code, runtime, judge, and analysis.
+- Native Ollama, OpenAI Chat Completions, OpenAI Responses, and Gemini request/response adapters.
+  OpenAI-compatible endpoints can use their own model IDs and base URLs. Additional native
+  interfaces register through the `graybench.adapters` package entry-point group.
+- Explicit model settings with evidence. Unknown, ignored, or unsupported requested settings
+  fail before generation. No default temperature, helpful prompts, tools, or answer repair.
+  An accepted setting is not falsely represented as provider-confirmed effective behavior.
+- Single-attempt bounded HTTP transport, no redirects or automatic retries, API keys sourced
+  from named environment variables, credential echoes redacted from recorded responses.
+- An append-only SQLite ledger with frozen schedules, exclusive dispatch claims, bounded retry
+  eligibility, immutable returned answers and judgments, content hashes, and an event chain.
+  A database owner can still rewrite SQLite itself; the chain is not an external signature.
+- Incomplete or unsupported judgments produce no aggregate accuracy score. Historical rescoring
+  by a different judge cannot alter the frozen experiment's reported score.
+- A candidate-only Docker worker: no tests, reference answers, credentials, or Docker socket
+  are mounted. The host decodes bounded plain values and makes the correctness decision.
+  Candidate stdout has no verdict authority. Runtime images must use immutable local IDs.
+- Strict byte-pinned imports of all 151 normal and 151 hard Qiskit HumanEval records, public/private
+  record separation, and an explicit review inventory. External-service membership is provisional
+  and must be reviewed; no task becomes eligible merely because its reference happens to pass.
+- Relevant environment, package, complete engine source, and NVIDIA GPU provenance. Ollama
+  discovery preserves server version, model details, tags/digests, and loaded-model observations.
+
+## Required work before release
+
+1. Rich, bounded Qiskit value codecs; mutations to arguments; files; transformation-pass callbacks;
+   type fidelity; and independent judge resource limits. The current plain-value worker is a
+   tested foundation, not a complete Qiskit executor. Candidate-reported errors are untrusted.
+2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
+   positive implementations, and meaningful mutants. Task 20's empty-circuit false acceptance
+   remains a release blocker. The inventory explicitly marks every task unreviewed.
+3. A durable orchestrator enforcing predeclared backoff, model drift checks, complete provenance,
+   crash recovery, and eligibility before generation. Backoff is currently a contract; there is
+   no campaign scheduler yet. Pending/ambiguous attempts intentionally block retries.
+4. Provider capability evidence and live contract checks; model-native budget calibration;
+   independent reproducibility runs; repeated/paired statistical analysis; published-score
+   compatibility records; and a release manifest anchored outside candidate execution.
+5. Migration of the user-facing commands and documentation to the replacement once its gates pass.
+
+No existing result has become a certified score merely because these foundation tests pass.
+
+## Adversarial Docker tests
+
+Set `GRAYBENCH_TEST_IMAGE` to the locally inspected `sha256:...` image ID and optionally
+`GRAYBENCH_DOCKER` to the Docker executable. Run `uv run pytest`. Docker tests are explicitly
+skipped without that image setting. The image must have Python 3.12; Qiskit support will use the
+separately pinned evaluation environment. Never point these tests at a privileged custom wrapper.
+
+## Provider references
+
+- [Ollama chat](https://docs.ollama.com/api/chat),
+  [model tags](https://docs.ollama.com/api/tags), and
+  [documentation index](https://docs.ollama.com/llms.txt).
+- [OpenAI Responses reference](https://developers.openai.com/api/reference/typescript/resources/responses/methods/create).
+- [Gemini generateContent](https://ai.google.dev/api/generate-content).
+
+Endpoint support and settings still require evidence for the exact model and server version.

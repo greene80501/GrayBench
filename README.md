@@ -1,5 +1,10 @@
 # GrayBench 2
 
+**Replacement in progress:** the fresh Python 3.12 engine is in [engine/](engine/README.md).
+The V2 implementation below is retained for historical pilot reproduction. Its judge has a
+reproduced verdict-forgery vulnerability and its upstream oracles have known false acceptances;
+V2 scores are not certified. See the [reliability plan and evidence](docs/RELIABILITY_PLAN.md).
+
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
 See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.
