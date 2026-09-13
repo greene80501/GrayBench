@@ -371,8 +371,15 @@ def run_benchmark(
         system_prompt=system_prompt,
     )
 
-    # Complete run
-    storage.complete_run(run_id)
+    # Complete run; preserve and export operational failures without publishing a score.
+    try:
+        storage.complete_run(run_id)
+    except ValueError as error:
+        if output_dir:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            JSONLExporter(storage).export_run(run_id, output_dir)
+        console.print(f"[red]Run {run_id} was not completed: {error}[/red]")
+        raise typer.Exit(1) from error
 
     # Show summary
     scores = storage.get_scores(run_id)

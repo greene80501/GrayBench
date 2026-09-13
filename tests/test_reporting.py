@@ -95,3 +95,5 @@ def test_api_failures_do_not_become_a_zero_percent_model_score(tmp_path):
     with pytest.raises(ValueError, match="Operational API failures"):
         db.complete_run(run)
     assert db.get_scores(run) is None
+    assert db.get_run(run)["status"] == "invalid"
+    assert db.get_run(run)["completed_at"] is not None

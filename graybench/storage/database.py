@@ -345,6 +345,12 @@ class Database:
                 "SELECT COUNT(*) FROM attempts WHERE run_id = ? AND outcome = 'api_error'",
                 (run_id,),
             ).fetchone()[0]:
+                conn.execute(
+                    "UPDATE runs SET status = 'invalid', completed_at = ? WHERE run_id = ?",
+                    (completed_at, run_id),
+                )
+                # Preserve the terminal state when the context manager rolls back on error.
+                conn.commit()
                 raise ValueError(
                     "Operational API failures prevent a valid completed benchmark; retain the run for diagnosis"
                 )
