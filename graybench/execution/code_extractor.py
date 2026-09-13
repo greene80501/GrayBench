@@ -102,9 +102,11 @@ class CodeExtractor:
         """Parse fences in order, including ignored non-Python blocks.
 
         A closing bash fence must never be mistaken for an opening Python fence.
-        Include every Python/untagged block; never choose by execution outcome.
+        Prefer all explicitly Python blocks; use untagged blocks only if none are
+        labeled Python. Untagged example output must not pollute labeled code.
         """
         blocks = []
+        untagged_blocks = []
         fence = None
         language = None
         lines = []
@@ -118,13 +120,13 @@ class CodeExtractor:
                 r" {0,3}" + re.escape(fence[0]) + "{" + str(len(fence)) + r",}\s*", line
             ):
                 if language in ("", "python", "py"):
-                    blocks.append("\n".join(lines))
+                    (blocks if language else untagged_blocks).append("\n".join(lines))
                 fence = None
             else:
                 lines.append(line)
         if fence is not None and language in ("", "python", "py"):
-            blocks.append("\n".join(lines))
-        return "\n\n".join(blocks)
+            (blocks if language else untagged_blocks).append("\n".join(lines))
+        return "\n\n".join(blocks or untagged_blocks)
 
     def _validate_code(self, code: str) -> Tuple[bool, Optional[str]]:
         """

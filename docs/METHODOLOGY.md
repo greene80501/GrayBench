@@ -6,9 +6,9 @@ GrayBench measures execution-based success on **Qiskit HumanEval**, not generic 
 
 - Load the official normal and hard datasets at immutable Hugging Face revisions. Hash every task's full prompt, tests, reference, entry point, metadata and ordering.
 - Send only the official prompt to the model. No canonical answers, hidden tests, test feedback, retrieved examples, task-specific hints, tools, or repair turns are supplied.
-- Normal is a completion exercise. The public prefix supplies imports and a function signature. Appending a returned function body to this prefix is required execution assembly, not answer repair. Full function responses may also use imports already present in that public prefix.
+- Normal is a completion exercise. The public prefix supplies imports and a function signature. Appending a returned function body to this prefix is required execution assembly, not answer repair. Full function responses may also use imports already present in that public prefix. Those public imports are executed in the candidate namespace before compiling the returned module, so a legitimate leading `__future__` import stays at the beginning of its own module.
 - Hard is the official standalone-function exercise. Its prompt includes the function name and argument contract. Never invent hard prompts by stripping the normal prompt.
-- Remove Markdown fences mechanically; preserve emitted helpers, constants, indentation and order. Do not select a function or candidate based on which one passes. Do not insert missing imports in hard mode, rename functions, fix syntax, or salvage reasoning text as a final answer.
+- Extract every explicitly Python-labeled fenced block in order. If none exist, use untagged fenced blocks; if there are no recognized blocks, use raw output. This keeps unlabeled example output separate when code is explicitly labeled. Preserve helpers, constants and indentation within the selected format. Do not select a function or candidate based on which one passes. Do not insert missing imports in hard mode, rename functions, fix syntax, or salvage reasoning text as a final answer.
 
 ## Optional environment-declared experiment
 

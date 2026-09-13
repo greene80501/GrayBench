@@ -88,3 +88,15 @@ def test_all_python_blocks_are_preserved_after_other_languages():
     text = "```bash\necho ignored\n```\n```python\nVALUE = 1\n```\n```python\ndef answer(x):\n    return x + VALUE\n```"
     result = ExecutionHarness().execute(example(SuiteType.HARD), text)
     assert result.passed, result.extracted_code
+
+
+def test_labeled_python_is_not_combined_with_unlabeled_example_output():
+    text = "```python\ndef answer(x):\n    return x + 1\n```\nOutput:\n```\nThis is example output, not code.\n```"
+    assert ExecutionHarness().execute(example(SuiteType.HARD), text).passed
+
+
+def test_full_function_future_import_stays_at_the_start_of_its_module():
+    task = replace(example(), prompt="import math\n" + example().prompt)
+    text = "from __future__ import annotations\ndef answer(x):\n    return math.floor(x) + 1"
+    result = ExecutionHarness().execute(task, text)
+    assert result.passed, result.stderr

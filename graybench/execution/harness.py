@@ -145,14 +145,9 @@ class ExecutionHarness:
             )
             extraction.success = self.extractor._validate_code(extraction.code)[0]
         elif task.suite == SuiteType.NORMAL:
-            # A complete function may rely on the imports the prompt already supplied.
-            prefix = ast.parse(task.prompt)
-            imports = [
-                ast.get_source_segment(task.prompt, n)
-                for n in prefix.body
-                if isinstance(n, (ast.Import, ast.ImportFrom))
-            ]
-            extraction.code = "\n".join(imports) + "\n" + extraction.code
+            # Public imports are executed in the candidate namespace below. Prepending
+            # them here would invalidate a legitimate leading __future__ import.
+            pass
 
         if not extraction.entry_point_found:
             return ExecutionResult(
@@ -253,6 +248,7 @@ report_output = sys.stdout
 encode_report = json.dumps
 try:
     candidate_ns = {{"__name__": "candidate"}}
+    exec(compile(payload["prefix"], "prompt_imports.py", "exec"), candidate_ns)
     exec(compile(payload["candidate"], "candidate.py", "exec"), candidate_ns)
     candidate = candidate_ns[payload["entry"]]
     test_ns = {{"__name__": "tests", payload["entry"]: candidate}}
