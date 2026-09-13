@@ -1,5 +1,9 @@
 # Frozen-denominator development reports
 
+This records the summary milestone at 21933ec. The subsequent
+[event-to-record verifier](event-row-bindings.md) adds relational bindings and
+requires the original engine for legacy logs that lack them.
+
 Ledger summaries now derive their denominator from the frozen task keys and repeat
 count. Missing or unexpected sample rows block a score instead of changing the
 denominator. Reports include each task's replicate outcomes, counts for every

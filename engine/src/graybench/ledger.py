@@ -14,6 +14,7 @@ from typing import Any
 
 from graybench.contracts import Generation, PreparedRequest, Protocol
 from graybench.identity import canonical, identity
+from graybench.ledger_evidence import event_records, verify_records
 from graybench.provenance import source_manifest
 
 
@@ -136,7 +137,9 @@ class Ledger:
     def _event(self, kind: str, **data: Any) -> None:
         row = self.db.execute("SELECT seq,digest FROM events ORDER BY seq DESC LIMIT 1").fetchone()
         seq, previous = (row[0] + 1, row[1]) if row else (1, "0" * 64)
-        payload = self._blob({"kind": kind, "at": now(), **data})
+        event = {"kind": kind, "at": now(), **data}
+        event["records"] = event_records(self.db, event)
+        payload = self._blob(event)
         digest = identity({"seq": seq, "previous": previous, "payload": payload})
         self.db.execute("INSERT INTO events VALUES (?,?,?,?)", (seq, previous, digest, payload))
 
@@ -171,11 +174,16 @@ class Ledger:
             raise StateError("Discovery observation belongs to a different model specification")
         with self.transaction():
             artifact = self._blob(observation)
-            self.db.execute(
+            inserted = self.db.execute(
                 "INSERT INTO model_observations(run_id,content,recorded_at) VALUES (?,?,?)",
                 (run_id, artifact, now()),
             )
-            self._event("model_observed", run_id=run_id, observation=artifact)
+            self._event(
+                "model_observed",
+                run_id=run_id,
+                observation=artifact,
+                observation_id=inserted.lastrowid,
+            )
         return self.discovery_status(run_id)
 
     def discovery_status(self, run_id: str) -> dict:
@@ -365,22 +373,41 @@ class Ledger:
             self._event("judgment_started", sample_id=sample_id, judge_digest=judge_digest)
 
     def verify(self) -> dict:
+        if self.db.in_transaction:
+            return self._verify()
+        self.db.execute("BEGIN")
+        try:
+            result = self._verify()
+            self.db.execute("COMMIT")
+            return result
+        except BaseException:
+            self.db.execute("ROLLBACK")
+            raise
+
+    def _verify(self) -> dict:
         for row in self.db.execute("SELECT digest FROM blobs"):
             self.blob(row[0])
         previous, count = "0" * 64, 0
+        events = []
         for row in self.db.execute("SELECT * FROM events ORDER BY seq"):
             count += 1
             expected = identity({"seq": count, "previous": previous, "payload": row["payload"]})
             if row["seq"] != count or row["previous"] != previous or row["digest"] != expected:
                 raise StateError("Event chain is corrupt")
             previous = expected
+            events.append(self.blob(row["payload"]))
         if self.db.execute("PRAGMA foreign_key_check").fetchone():
             raise StateError("Broken ledger relationship")
+        try:
+            bindings = verify_records(self.db, events)
+        except (ValueError, KeyError, TypeError) as exc:
+            raise StateError(str(exc)) from exc
         return {
             "events": count,
             "chain_head": previous,
             "integrity": "verified",
             "external_anchor": "not_checked",
+            "row_bindings": bindings,
         }
 
     def summary(self, run_id: str) -> dict:

@@ -142,6 +142,9 @@ Development summaries use the frozen schedule denominator, expose per-task outco
 and score blockers, and require the frozen analysis source. See
 [report integrity](../docs/reliability-evidence/summary-integrity.md) for snapshot
 consistency, provenance checks and the remaining publication requirements.
+New ledgers also bind exact database records into their event history. The
+[row-binding verifier](../docs/reliability-evidence/event-row-bindings.md) rejects
+unrecorded or inconsistent answers/judgments. Legacy logs require their original engine.
 
 ## Adversarial Docker tests
 
