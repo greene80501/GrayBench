@@ -42,7 +42,7 @@ class ProviderConfig:
 class ExecutionConfig:
     """Configuration for code execution."""
 
-    timeout_seconds: int = 500
+    timeout_seconds: int = 120
     max_memory_mb: int = 4096
     max_output_bytes: int = 1024 * 1024  # 1MB
     isolate_processes: bool = True
