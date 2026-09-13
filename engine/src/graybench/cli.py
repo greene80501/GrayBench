@@ -4,9 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from graybench.campaign_setup import CampaignSetup, execution_context, validate_host
+from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
 from graybench.contracts import ModelSpec, Protocol
-from graybench.datasets import inventory, load_suite
+from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
 from graybench.identity import canonical
 from graybench.ledger import Ledger
@@ -35,6 +35,21 @@ def main():
     )
     catalog.add_argument("cache", type=Path)
     catalog.add_argument("--download", action="store_true")
+    plan = commands.add_parser(
+        "campaign-plan", help="Freeze selected tasks and requests offline; no generations"
+    )
+    plan.add_argument("model_spec", type=Path)
+    plan.add_argument("cache", type=Path)
+    plan.add_argument("output", type=Path)
+    plan.add_argument("--image", required=True)
+    plan.add_argument("--name", required=True)
+    plan.add_argument("--repeats", type=int, default=1)
+    plan.add_argument("--system-prompt", type=Path)
+    selection = plan.add_mutually_exclusive_group(required=True)
+    selection.add_argument(
+        "--task", action="append", help="Exact suite/task key; repeat for multiple tasks"
+    )
+    selection.add_argument("--suite", choices=("normal", "hard", "both"))
     create = commands.add_parser(
         "campaign-create", help="Validate and save a development campaign; no generations"
     )
@@ -51,6 +66,46 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "campaign-plan":
+        model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        all_tasks = tuple(
+            task for suite in ("normal", "hard") for task in load_suite(suite, args.cache)
+        )
+        if args.task:
+            if len(set(args.task)) != len(args.task):
+                parser.error("Duplicate task selection")
+            keyed = {f"{t.public.suite}/{t.public.task_id}": t for t in all_tasks}
+            if set(args.task) - keyed.keys():
+                parser.error("Unknown task selection")
+            tasks = tuple(keyed[key] for key in args.task)
+        else:
+            tasks = tuple(
+                t for t in all_tasks if args.suite == "both" or t.public.suite == args.suite
+            )
+        setup = build_setup(
+            args.name,
+            model,
+            tasks,
+            args.image,
+            repeats=args.repeats,
+            system_prompt=args.system_prompt.read_text(encoding="utf-8")
+            if args.system_prompt
+            else None,
+        )
+        # Exclusive creation preserves an existing experiment instead of silently rewriting it.
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(setup.model_dump_json(indent=2) + "\n")
+        result = {
+            "setup_digest": setup.digest,
+            "planned_samples": len(tasks) * args.repeats,
+            "certification": "not_certified",
+            "purpose": "development",
+            "external_task_keys": [
+                f"{t.public.suite}/{t.public.task_id}"
+                for t in tasks
+                if int(t.public.task_id.rsplit("/", 1)[1]) in EXTERNAL_IDS
+            ],
+        }
     elif args.command == "campaign-create":
         setup = CampaignSetup.model_validate_json(args.setup.read_bytes())
         setup.tasks(args.cache)

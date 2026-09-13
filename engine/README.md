@@ -110,7 +110,11 @@ can currently be exercised programmatically with explicit frozen requests.
    `campaign-step LEDGER RUN_ID CACHE [--docker PATH]` resumes at most one action using the
    stored setup. The setup includes a frozen Protocol, image, execution and HTTP limits.
    Python/OS/package/source provenance is stored append-only and checked before CLI resume.
-   A setup builder, task adequacy/admission reviews and model drift checks remain
+   `campaign-plan MODEL CACHE OUTPUT --image IMAGE --name NAME --suite both` builds that setup
+   offline from both full pinned suites; use `--task SUITE/TASK_ID` repeatedly for an explicit
+   selection. `--repeats N` and an optional UTF-8 `--system-prompt FILE` are frozen in the plan.
+   Existing output files are not overwritten. Known external-service tasks are reported, not
+   silently filtered. Task adequacy/admission reviews and model drift checks remain
    required. Identity validation does not certify an oracle or make a cohort release-eligible.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score

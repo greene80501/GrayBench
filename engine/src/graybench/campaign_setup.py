@@ -5,11 +5,12 @@ from typing import Literal
 
 from pydantic import Field
 
-from graybench.contracts import Contract, Protocol
-from graybench.datasets import load_suite
-from graybench.evaluation_campaign import validate_cohort
+from graybench.contracts import Contract, ModelSpec, Protocol
+from graybench.datasets import JudgeTask, load_suite
+from graybench.evaluation_campaign import cohort_identities, validate_cohort
 from graybench.ledger import StateError
-from graybench.provenance import environment
+from graybench.provenance import environment, source_manifest
+from graybench.providers import adapter
 from graybench.upstream import UpstreamJudge
 
 
@@ -66,3 +67,43 @@ def execution_context(setup: CampaignSetup):
 def validate_host(context):
     if host_contract(environment()) != context["host_contract"]:
         raise StateError("Host runtime or source changed since campaign creation")
+
+
+def build_setup(
+    name: str,
+    model: ModelSpec,
+    tasks: tuple[JudgeTask, ...],
+    image: str,
+    *,
+    repeats: int = 1,
+    system_prompt: str | None = None,
+) -> CampaignSetup:
+    """Freeze exactly the supplied tasks and public requests without provider access."""
+    judge = UpstreamJudge(image=image)
+    binding = cohort_identities(tasks, judge)
+    source = source_manifest()["digest"]
+    provider = adapter(model.adapter)
+    requests = {
+        f"{task.public.suite}/{task.public.task_id}": provider.prepare(
+            model, task.public, system_prompt
+        ).digest
+        for task in tasks
+    }
+    protocol = Protocol(
+        name=name,
+        track="upstream",
+        model=model,
+        repeats=repeats,
+        system_prompt=system_prompt,
+        task_keys=tuple(requests),
+        request_digests=requests,
+        dataset_digest=binding["dataset_digest"],
+        judge_digest=binding["judge_digest"],
+        runtime_digest=binding["runtime_digest"],
+        generation_code_digest=source,
+        # Conservatively bind all engine sources, including summary/metric implementation.
+        analysis_digest=source,
+    )
+    setup = CampaignSetup(protocol=protocol, image=image)
+    validate_cohort(protocol, tasks, setup.judge())
+    return setup
