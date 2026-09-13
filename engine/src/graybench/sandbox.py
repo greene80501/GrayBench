@@ -1,11 +1,10 @@
 """Candidate-only Docker process with an untrusted, bounded JSON result channel.
 
-The initial codec supports plain values. Unsupported interfaces block eligibility and
-publication until implemented and validated; there is no same-process judge fallback.
+The current codec supports plain values and numeric circuits. Unsupported interfaces block
+eligibility and publication until validated; there is no same-process judge fallback.
 """
 
 import json
-import math
 import queue
 import re
 import shutil
@@ -14,7 +13,10 @@ import tempfile
 import threading
 import time
 import uuid
+from dataclasses import dataclass
 from pathlib import Path
+
+from graybench.value_wire import encode
 
 
 class CandidateError(RuntimeError):
@@ -26,37 +28,19 @@ class UnsupportedInterface(RuntimeError):
 
 
 def decode(value, depth=0, budget=None):
-    """No imports, executable names, pickle, eval, or candidate-supplied constructors."""
-    if budget is None:
-        budget = [100_000]
-    budget[0] -= 1
-    if depth > 32 or budget[0] < 0:
-        raise CandidateError("Result exceeds structural limit")
-    if value is None or type(value) in (bool, int, str):
-        return value
-    if type(value) is float and math.isfinite(value):
-        return value
-    if type(value) is not dict or set(value) != {"kind", "items"}:
-        raise CandidateError("Invalid result wire type")
-    if type(value["items"]) is not list:
-        raise CandidateError("Invalid result items")
-    if value["kind"] in ("list", "tuple"):
-        items = [decode(x, depth + 1, budget) for x in value["items"]]
-        return items if value["kind"] == "list" else tuple(items)
-    if value["kind"] == "dict":
-        result = {}
-        for pair in value["items"]:
-            if type(pair) is not list or len(pair) != 2:
-                raise CandidateError("Invalid dictionary pair")
-            key = decode(pair[0], depth + 1, budget)
-            try:
-                if key in result:
-                    raise CandidateError("Duplicate dictionary key")
-                result[key] = decode(pair[1], depth + 1, budget)
-            except TypeError as exc:
-                raise CandidateError("Unhashable dictionary key") from exc
-        return result
-    raise CandidateError("Unknown result kind")
+    from graybench.value_wire import decode as decode_value
+
+    try:
+        return decode_value(value, depth, budget)
+    except (ValueError, TypeError) as exc:
+        raise CandidateError(str(exc)) from exc
+
+
+@dataclass(frozen=True)
+class CallResult:
+    value: object
+    args_after: tuple
+    kwargs_after: dict
 
 
 class Candidate:
@@ -90,6 +74,8 @@ class Candidate:
         if public_prefix:
             (directory / "public_prefix.py").write_text(public_prefix, encoding="utf-8")
         shutil.copyfile(Path(__file__).with_name("worker.py"), directory / "worker.py")
+        shutil.copyfile(Path(__file__).with_name("circuit_wire.py"), directory / "circuit_wire.py")
+        shutil.copyfile(Path(__file__).with_name("value_wire.py"), directory / "value_wire.py")
         args = [
             docker,
             "run",
@@ -146,7 +132,7 @@ class Candidate:
             for reader in self.readers:
                 reader.start()
             self.deadline = time.monotonic() + timeout
-            if self._receive() != {"protocol": 1, "ready": True}:
+            if self._receive() != {"protocol": 2, "ready": True}:
                 raise CandidateError("Candidate did not initialize the value protocol")
         except BaseException:
             self.close()
@@ -204,14 +190,24 @@ class Candidate:
             raise CandidateError("Candidate output is not a result message") from exc
 
     def call(self, entry_point: str, *args, **kwargs):
-        # Input codecs are currently restricted to plain JSON; no implicit str conversion.
+        result = self.call_with_updates(entry_point, *args, **kwargs)
+        if encode(args) != encode(result.args_after) or encode(kwargs) != encode(
+            result.kwargs_after
+        ):
+            raise UnsupportedInterface(
+                "Input mutation requires the explicit call_with_updates interface"
+            )
+        return result.value
+
+    def call_with_updates(self, entry_point: str, *args, **kwargs):
+        # Inputs use the same typed codec as outputs; no implicit str conversion.
         self.sequence += 1
         request = (
             json.dumps(
                 {
                     "entry_point": entry_point,
-                    "args": args,
-                    "kwargs": kwargs,
+                    "args": encode(args),
+                    "kwargs": encode(kwargs),
                     "sequence": self.sequence,
                 },
                 allow_nan=False,
@@ -238,16 +234,24 @@ class Candidate:
         if write_errors:
             raise CandidateError("Candidate closed its input") from write_errors[0]
         response = self._receive()
-        if type(response) is not dict or response.get("protocol") != 1:
+        if type(response) is not dict or response.get("protocol") != 2:
             raise CandidateError("Invalid candidate value envelope")
         if type(response.get("sequence")) is not int or response["sequence"] != self.sequence:
             raise CandidateError("Unmatched candidate response")
         if set(response) == {"protocol", "sequence", "error", "detail"}:
             # Worker errors are untrusted diagnostics, never proof of an infrastructure defect.
             raise CandidateError(str(response["error"]) + ": " + str(response["detail"]))
-        if set(response) != {"protocol", "sequence", "value"}:
+        if set(response) != {"protocol", "sequence", "value", "args_after", "kwargs_after"}:
             raise CandidateError("Unexpected candidate envelope fields")
-        return decode(response["value"])
+        args_after, kwargs_after = decode(response["args_after"]), decode(response["kwargs_after"])
+        if (
+            type(args_after) is not tuple
+            or len(args_after) != len(args)
+            or type(kwargs_after) is not dict
+            or set(kwargs_after) != set(kwargs)
+        ):
+            raise CandidateError("Invalid call argument snapshot")
+        return CallResult(decode(response["value"]), args_after, kwargs_after)
 
     def close(self):
         if self.closed:

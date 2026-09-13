@@ -7,7 +7,7 @@ package remains available to reproduce historical pilots. Do not mix its scores 
 From this directory:
 
 ```sh
-uv sync --locked --extra dataset
+uv sync --locked --extra dataset --extra qiskit
 uv run graybench doctor
 uv run graybench inventory ../data/datasets
 uv run pytest
@@ -38,6 +38,17 @@ can currently be exercised programmatically with explicit frozen requests.
 - A candidate-only Docker worker: no tests, reference answers, credentials, or Docker socket
   are mounted. The host decodes bounded plain values and makes the correctness decision.
   Candidate stdout has no verdict authority. Runtime images must use immutable local IDs.
+- A bounded numeric-circuit codec exchanges standard instructions, registers, global phase,
+  and initial/routing permutations using a fixed constructor registry. No QPY or pickle is
+  deserialized. Symbolic parameters, custom instructions, open controls and control flow are
+  explicitly unsupported until their representations are implemented. It is not a complete
+  serialization of circuit metadata, labels or original virtual-qubit identity.
+- Explicit `call_with_updates` records changed arguments. The simpler read-only call refuses
+  to silently discard mutations. An upstream-compatible mutation/alias bridge is still required.
+- A separate strengthened task-20 oracle checks mapped GHZ+ state fidelity, following final
+  logical-qubit positions and accepting global phase. Two positive constructions pass and four
+  shape-compatible mutants fail. It does not prove which pass-manager algorithm generated a
+  returned circuit; that specification requirement remains unverified.
 - Strict byte-pinned imports of all 151 normal and 151 hard Qiskit HumanEval records, public/private
   record separation, and an explicit review inventory. External-service membership is provisional
   and must be reviewed; no task becomes eligible merely because its reference happens to pass.
@@ -47,11 +58,12 @@ can currently be exercised programmatically with explicit frozen requests.
 ## Required work before release
 
 1. Rich, bounded Qiskit value codecs; mutations to arguments; files; transformation-pass callbacks;
-   type fidelity; and independent judge resource limits. The current plain-value worker is a
-   tested foundation, not a complete Qiskit executor. Candidate-reported errors are untrusted.
+   type fidelity; and independent judge resource limits. The current plain-value/numeric-circuit
+   worker is a tested foundation, not a complete Qiskit executor. Candidate errors are untrusted.
 2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
-   positive implementations, and meaningful mutants. Task 20's empty-circuit false acceptance
-   remains a release blocker. The inventory explicitly marks every task unreviewed.
+   positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
+   rejects the reproduced empty-circuit false acceptance, but its complete specification review
+   is unfinished. The inventory explicitly marks every task unreviewed.
 3. A durable orchestrator enforcing predeclared backoff, model drift checks, complete provenance,
    crash recovery, and eligibility before generation. Backoff is currently a contract; there is
    no campaign scheduler yet. Pending/ambiguous attempts intentionally block retries.

@@ -1,0 +1,181 @@
+"""Bounded data-only circuit exchange for numeric standard instructions.
+
+No QPY, pickle, Python expressions, dynamic imports, or candidate-selected constructors.
+This codec is deliberately explicit about unsupported symbolic/custom/control-flow operations.
+Those interfaces require their own validated representation before a task can be admitted.
+"""
+
+import math
+
+
+class WireError(ValueError):
+    pass
+
+
+def integer(value, maximum=512):
+    if type(value) is not int or not 0 <= value <= maximum:
+        raise WireError("Invalid bounded integer")
+    return value
+
+
+def number(value):
+    if type(value) not in (int, float):
+        raise WireError("Expected finite numeric parameter")
+    try:
+        if not math.isfinite(value):
+            raise WireError("Expected finite numeric parameter")
+    except OverflowError as exc:
+        raise WireError("Numeric parameter exceeds representable range") from exc
+    return value
+
+
+def fields(value, expected):
+    if type(value) is not dict or set(value) != set(expected):
+        raise WireError("Unexpected wire fields")
+
+
+def indices(value, count):
+    if type(value) is not list or len(value) > count:
+        raise WireError("Invalid wire indices")
+    if any(type(i) is not int or not 0 <= i < count for i in value):
+        raise WireError("Wire index out of range")
+    if len(set(value)) != len(value):
+        raise WireError("Duplicate wire indices")
+    return value
+
+
+def encode_circuit(circuit):
+    from qiskit.circuit.library import get_standard_gate_name_mapping
+
+    standard = get_standard_gate_name_mapping()
+    operations = []
+    for item in circuit.data:
+        op = item.operation
+        if op.name == "barrier":
+            params = []
+        elif op.name in standard and op.base_class is standard[op.name].base_class:
+            params = [number(p) for p in op.params]
+            if getattr(op, "ctrl_state", None) not in (
+                None,
+                2 ** getattr(op, "num_ctrl_qubits", 0) - 1,
+            ):
+                raise WireError("Open controls need an explicit codec")
+        else:
+            raise WireError("Unsupported instruction: " + op.name)
+        operations.append(
+            {
+                "name": op.name,
+                "params": params,
+                "qubits": [circuit.find_bit(q).index for q in item.qubits],
+                "clbits": [circuit.find_bit(c).index for c in item.clbits],
+                "unit": op.unit if op.name == "delay" else None,
+            }
+        )
+    layout = None
+    if circuit.layout is not None:
+        layout = {
+            "initial": circuit.layout.initial_index_layout(filter_ancillas=False),
+            "routing": circuit.layout.routing_permutation(),
+            "input_count": len(circuit.layout.final_index_layout()),
+        }
+    return {
+        "kind": "numeric_circuit_v1",
+        "qubits": circuit.num_qubits,
+        "clbits": circuit.num_clbits,
+        "phase": number(circuit.global_phase),
+        "qregs": [[r.name, [circuit.find_bit(b).index for b in r]] for r in circuit.qregs],
+        "cregs": [[r.name, [circuit.find_bit(b).index for b in r]] for r in circuit.cregs],
+        "operations": operations,
+        "layout": layout,
+    }
+
+
+def decode_circuit(value):
+    # Validate all sizes, tags, indices and numeric parameters before constructing anything.
+    fields(value, {"kind", "qubits", "clbits", "phase", "qregs", "cregs", "operations", "layout"})
+    if value["kind"] != "numeric_circuit_v1":
+        raise WireError("Unknown circuit codec")
+    nq, nc = integer(value["qubits"]), integer(value["clbits"])
+    number(value["phase"])
+    for key, count in (("qregs", nq), ("cregs", nc)):
+        regs = value[key]
+        if type(regs) is not list or len(regs) > 512:
+            raise WireError("Too many registers")
+        names = set()
+        for reg in regs:
+            if type(reg) is not list or len(reg) != 2:
+                raise WireError("Invalid register")
+            name, bits = reg
+            if type(name) is not str or not 1 <= len(name) <= 256 or name in names:
+                raise WireError("Invalid or duplicate register name")
+            names.add(name)
+            indices(bits, count)
+    ops = value["operations"]
+    if type(ops) is not list or len(ops) > 20_000:
+        raise WireError("Instruction count exceeds codec limit")
+    from qiskit.circuit.library import get_standard_gate_name_mapping
+
+    standard = get_standard_gate_name_mapping()
+    for op in ops:
+        fields(op, {"name", "params", "qubits", "clbits", "unit"})
+        if type(op["name"]) is not str or op["name"] not in {*standard, "barrier"}:
+            raise WireError("Instruction is not in the fixed constructor registry")
+        if type(op["params"]) is not list or len(op["params"]) > 8:
+            raise WireError("Invalid parameter list")
+        for p in op["params"]:
+            number(p)
+        indices(op["qubits"], nq)
+        indices(op["clbits"], nc)
+        if op["name"] == "barrier":
+            if op["params"] or op["clbits"]:
+                raise WireError("Invalid barrier")
+        else:
+            template = standard[op["name"]]
+            if (
+                len(op["qubits"]) != template.num_qubits
+                or len(op["clbits"]) != template.num_clbits
+                or len(op["params"]) != len(template.params)
+            ):
+                raise WireError("Instruction arity mismatch")
+        if op["name"] == "delay":
+            if op["unit"] not in {"dt", "s", "ms", "us", "ns", "ps"}:
+                raise WireError("Invalid delay unit")
+        elif op["unit"] is not None:
+            raise WireError("Unexpected instruction unit")
+    layout = value["layout"]
+    if layout is not None:
+        fields(layout, {"initial", "routing", "input_count"})
+        for key in ("initial", "routing"):
+            if len(indices(layout[key], nq)) != nq:
+                raise WireError("Layout must be a complete permutation")
+        integer(layout["input_count"], nq)
+
+    from qiskit import QuantumCircuit
+    from qiskit.circuit import Barrier, ClassicalRegister, Clbit, QuantumRegister, Qubit
+    from qiskit.transpiler import Layout, TranspileLayout
+
+    qubits, clbits = [Qubit() for _ in range(nq)], [Clbit() for _ in range(nc)]
+    circuit = QuantumCircuit(qubits, clbits)
+    for name, bits in value["qregs"]:
+        circuit.add_register(QuantumRegister(name=name, bits=[qubits[i] for i in bits]))
+    for name, bits in value["cregs"]:
+        circuit.add_register(ClassicalRegister(name=name, bits=[clbits[i] for i in bits]))
+    circuit.global_phase = value["phase"]
+    for op in ops:
+        if op["name"] == "barrier":
+            instruction = Barrier(len(op["qubits"]))
+        elif op["name"] == "delay":
+            instruction = standard["delay"].base_class(*op["params"], unit=op["unit"])
+        else:
+            instruction = standard[op["name"]].base_class(*op["params"])
+        circuit.append(instruction, op["qubits"], op["clbits"])
+    if layout is not None:
+        virtual = [Qubit() for _ in range(nq)]
+        circuit._layout = TranspileLayout(
+            Layout({virtual[i]: p for i, p in enumerate(layout["initial"])}),
+            {bit: i for i, bit in enumerate(virtual)},
+            Layout({qubits[i]: p for i, p in enumerate(layout["routing"])}),
+            _input_qubit_count=layout["input_count"],
+            _output_qubit_list=qubits,
+        )
+    return circuit

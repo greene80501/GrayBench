@@ -72,7 +72,7 @@ os._exit(0)
 def test_forged_value_envelope_cannot_smuggle_pass():
     code = """import os
 def answer(x):
-    os.write(1, b'{"protocol":1,"sequence":1,"passed":true}\\n')
+    os.write(1, b'{"protocol":2,"sequence":1,"passed":true}\\n')
     return 0
 """
     with Candidate(code, image=IMAGE, docker=DOCKER) as candidate:
@@ -90,7 +90,7 @@ def answer():
 """
     with Candidate(code, image=IMAGE, docker=DOCKER) as candidate:
         files, keys = candidate.call("answer")
-        assert files == ["candidate.py", "worker.py"]
+        assert files == ["candidate.py", "circuit_wire.py", "value_wire.py", "worker.py"]
         # The Python image has a public GPG_KEY fingerprint; it is not an API credential.
         assert not set(keys) & {"OPENAI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"}
 

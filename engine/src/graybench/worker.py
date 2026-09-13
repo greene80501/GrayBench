@@ -2,31 +2,16 @@
 
 This file is copied into the disposable container with candidate.py. It receives no tests,
 reference answers, ledger, provider credentials, or Docker socket. The host accepts only
-bounded JSON values and decides correctness independently. Rich Qiskit codecs are pending.
+bounded typed values and decides correctness independently. Numeric circuits are supported;
+the remaining Qiskit interfaces still require explicit codecs.
 """
 
 import contextlib
 import json
-import math
 import sys
 from pathlib import Path
 
-
-def value(item, depth=0):
-    if depth > 32:
-        raise ValueError("Result nesting exceeds wire limit")
-    if item is None or type(item) in (bool, str, int):
-        return item
-    if type(item) is float and math.isfinite(item):
-        return item
-    if type(item) in (list, tuple):
-        return {"kind": type(item).__name__, "items": [value(x, depth + 1) for x in item]}
-    if type(item) is dict:
-        return {
-            "kind": "dict",
-            "items": [[value(k, depth + 1), value(v, depth + 1)] for k, v in item.items()],
-        }
-    raise TypeError("Unsupported wire value: " + type(item).__name__)
+from value_wire import decode, encode
 
 
 def main():
@@ -38,16 +23,23 @@ def main():
             exec(compile(prefix.read_text(encoding="utf-8"), "public_prefix.py", "exec"), namespace)
         with open("/input/candidate.py", encoding="utf-8") as source:
             exec(compile(source.read(), "candidate.py", "exec"), namespace)
-    print(json.dumps({"protocol": 1, "ready": True}), file=channel, flush=True)
+    print(json.dumps({"protocol": 2, "ready": True}), file=channel, flush=True)
     for line in sys.stdin:
         request = json.loads(line)
         try:
             with contextlib.redirect_stdout(sys.stderr):
-                result = namespace[request["entry_point"]](*request["args"], **request["kwargs"])
-            response = {"protocol": 1, "sequence": request["sequence"], "value": value(result)}
+                args, kwargs = decode(request["args"]), decode(request["kwargs"])
+                result = namespace[request["entry_point"]](*args, **kwargs)
+            response = {
+                "protocol": 2,
+                "sequence": request["sequence"],
+                "value": encode(result),
+                "args_after": encode(args),
+                "kwargs_after": encode(kwargs),
+            }
         except BaseException as exc:
             response = {
-                "protocol": 1,
+                "protocol": 2,
                 "sequence": request["sequence"],
                 "error": type(exc).__name__,
                 "detail": str(exc)[:4096],
