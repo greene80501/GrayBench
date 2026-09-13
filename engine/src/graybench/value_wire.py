@@ -71,6 +71,9 @@ def decode(value, depth=0, budget=None):
         "statevector_v1",
         "densitymatrix_v1",
         "operator_v1",
+        "choi_v1",
+        "clifford_v1",
+        "stabilizer_v1",
     }:
         return decode_scientific(value)
     if type(value) is dict and value.get("kind") in {

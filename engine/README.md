@@ -56,6 +56,10 @@ can currently be exercised programmatically with explicit frozen requests.
   object/string/structured dtypes and oversized allocations are rejected. Statevectors,
   density matrices and rectangular operators retain their subsystem dimensions. Complex
   array values, signed zero and non-finite numeric array values are not silently repaired.
+- Clifford and unseeded StabilizerState values retain their boolean tableaux and phase bits;
+  Choi channels retain numeric data and input/output subsystem dimensions. Invalid symplectic
+  or nonphysical values are not repaired. Explicit RNG state and bound subsystem arguments
+  remain unsupported for these new representations.
 - `Candidate.call_wire` forwards typed data without host object reconstruction. `ProtectedJudge`
   runs fixed trusted semantic oracles in a separate container with disjoint mounts and bounded
   memory, CPU, wall time and output. Its provenance binds source files, image, resource policy

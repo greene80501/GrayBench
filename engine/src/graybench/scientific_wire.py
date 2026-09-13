@@ -68,7 +68,14 @@ def decode_array(value):
 
 def encode_scientific(item):
     import numpy as np
-    from qiskit.quantum_info import DensityMatrix, Operator, Statevector
+    from qiskit.quantum_info import (
+        Choi,
+        Clifford,
+        DensityMatrix,
+        Operator,
+        StabilizerState,
+        Statevector,
+    )
 
     if type(item) is np.ndarray:
         return array_record(item)
@@ -77,9 +84,22 @@ def encode_scientific(item):
     for tag, cls in (("statevector_v1", Statevector), ("densitymatrix_v1", DensityMatrix)):
         if type(item) is cls:
             return {"kind": tag, "data": array_record(item.data), "dims": list(item.dims())}
-    if type(item) is Operator:
+    if type(item) in (Clifford, StabilizerState):
+        if (
+            getattr(item, "qargs", None) is not None
+            or getattr(item, "_rng_generator", None) is not None
+        ):
+            raise WireError("Bound subsystem or RNG state requires an explicit codec")
+        tableau = item.tableau if type(item) is Clifford else item.clifford.tableau
         return {
-            "kind": "operator_v1",
+            "kind": "clifford_v1" if type(item) is Clifford else "stabilizer_v1",
+            "tableau": array_record(tableau),
+        }
+    if type(item) in (Operator, Choi):
+        if type(item) is Choi and item.qargs is not None:
+            raise WireError("Bound channel subsystems require an explicit codec")
+        return {
+            "kind": "operator_v1" if type(item) is Operator else "choi_v1",
             "data": array_record(item.data),
             "input_dims": list(item.input_dims()),
             "output_dims": list(item.output_dims()),
@@ -102,16 +122,41 @@ def dimensions(value):
 def decode_scientific(value):
     if value.get("kind") in {"ndarray_v1", "numpy_scalar_v1"}:
         return decode_array(value)
-    from qiskit.quantum_info import DensityMatrix, Operator, Statevector
+    from qiskit.quantum_info import (
+        Choi,
+        Clifford,
+        DensityMatrix,
+        Operator,
+        StabilizerState,
+        Statevector,
+    )
 
     kind = value.get("kind")
-    if kind == "operator_v1":
+    if kind in ("clifford_v1", "stabilizer_v1"):
+        fields(value, {"kind", "tableau"})
+        tableau = decode_array(value["tableau"])
+        if (
+            tableau.dtype.kind != "b"
+            or tableau.ndim != 2
+            or tableau.shape[0] % 2
+            or not 2 <= tableau.shape[0] <= 512
+            or tableau.shape[1] != tableau.shape[0] + 1
+        ):
+            raise WireError("Invalid Clifford tableau shape or dtype")
+        # Preserve even invalid symplectic values produced with SDK validation disabled.
+        clifford = Clifford(tableau, validate=False)
+        return clifford if kind == "clifford_v1" else StabilizerState(clifford, validate=False)
+    if kind in ("operator_v1", "choi_v1"):
         fields(value, {"kind", "data", "input_dims", "output_dims"})
         incoming, outgoing = dimensions(value["input_dims"]), dimensions(value["output_dims"])
         array = decode_array(value["data"])
-        if array.shape != (math.prod(outgoing), math.prod(incoming)):
+        expected = (math.prod(outgoing), math.prod(incoming))
+        if kind == "choi_v1":
+            expected = (math.prod(outgoing) * math.prod(incoming),) * 2
+        if array.shape != expected:
             raise WireError("Operator shape does not match subsystem dimensions")
-        return Operator(array, input_dims=incoming, output_dims=outgoing)
+        cls = Operator if kind == "operator_v1" else Choi
+        return cls(array, input_dims=incoming, output_dims=outgoing)
     fields(value, {"kind", "data", "dims"})
     dims = dimensions(value["dims"])
     array = decode_array(value["data"])
