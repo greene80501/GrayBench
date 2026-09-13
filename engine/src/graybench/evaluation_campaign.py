@@ -110,6 +110,11 @@ class UpstreamCampaign:
 
     def step(self):
         # Validate before either stage, including before the first billable request.
+        if (
+            self.generations.ledger.model_identity(self.generations.run_id)["status"]
+            == "unresolved"
+        ):
+            return {"state": "stopped", "reason": "model_identity_unresolved"}
         result = self.judgments.step()
         if result["state"] != "awaiting_generations":
             return result

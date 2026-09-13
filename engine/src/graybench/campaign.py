@@ -34,6 +34,8 @@ class GenerationRunner:
         ):
             raise StateError("Prepared requests differ from frozen experiment")
         self.ledger.verify()
+        if self.ledger.model_identity(self.run_id)["status"] == "unresolved":
+            return {"state": "stopped", "reason": "model_identity_unresolved"}
         samples = self.ledger.samples(self.run_id)
         states = [(sample, self.ledger.dispatch_state(sample["id"])) for sample in samples]
         if any(state["state"] == "unresolved_delivery" for _, state in states):

@@ -116,6 +116,10 @@ can currently be exercised programmatically with explicit frozen requests.
    Existing output files are not overwritten. Known external-service tasks are reported, not
    silently filtered. Task adequacy/admission reviews and model drift checks remain
    required. Identity validation does not certify an oracle or make a cohort release-eligible.
+   Protocol 3.1 requires returned model names to match the requested name or an explicit
+   `accepted_returned_models` list backed by `model_identity_evidence`. Missing/unexpected
+   names retain answers but stop dispatch and suppress aggregate accuracy. This is a provider
+   name check, not weight verification. Protocol 3.0 runs need their original engine for replay.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score
    compatibility records; and a release manifest anchored outside candidate execution.

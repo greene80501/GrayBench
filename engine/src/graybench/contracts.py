@@ -40,6 +40,8 @@ class ModelSpec(Contract):
     base_url: str
     credential_env: str | None = Field(default=None, pattern=r"^[A-Z][A-Z0-9_]*$")
     settings: tuple[Setting, ...] = ()
+    accepted_returned_models: tuple[str, ...] = ()
+    model_identity_evidence: str | None = None
 
     @field_validator("base_url")
     @classmethod
@@ -63,6 +65,12 @@ class ModelSpec(Contract):
         if len({s.name for s in self.settings}) != len(self.settings):
             raise ValueError("Duplicate model settings")
         reject_credentials({s.name: s.value for s in self.settings})
+        if len(set(self.accepted_returned_models)) != len(self.accepted_returned_models) or any(
+            not name.strip() for name in self.accepted_returned_models
+        ):
+            raise ValueError("Returned model identities must be nonempty and unique")
+        if self.accepted_returned_models and not (self.model_identity_evidence or "").strip():
+            raise ValueError("Declared returned-model identities require supporting evidence")
         return self
 
 
@@ -84,7 +92,7 @@ class RetryPolicy(Contract):
 
 
 class Protocol(Contract):
-    schema_version: Literal["3.0"] = "3.0"
+    schema_version: Literal["3.1"] = "3.1"
     name: str = Field(min_length=1)
     track: Literal["upstream", "strengthened", "robustness"]
     dataset_digest: str = Field(pattern="^[0-9a-f]{64}$")

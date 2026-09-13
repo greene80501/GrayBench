@@ -181,6 +181,8 @@ class Ledger:
             if not sample:
                 raise StateError("Unscheduled sample")
             protocol = self.protocol(sample["run_id"])
+            if self.model_identity(sample["run_id"])["status"] == "unresolved":
+                raise StateError("Returned model identity requires adjudication")
             if request.model != protocol.model.model or request.adapter != protocol.model.adapter:
                 raise StateError("Request does not match frozen model identity")
             if self.db.execute(
@@ -346,6 +348,8 @@ class Ledger:
         complete = bool(rows) and all(
             o in {"pass", "fail", "candidate_error", "timeout"} for o in outcomes
         )
+        model_identity = self.model_identity(run_id)
+        complete = complete and model_identity["status"] != "unresolved"
         return {
             "run_id": run_id,
             "protocol_digest": protocol.digest,
@@ -357,4 +361,29 @@ class Ledger:
             "passes": outcomes.count("pass"),
             "pass_at_1": outcomes.count("pass") / len(rows) if complete else None,
             "certification": "not_certified",
+            "model_identity": model_identity,
+        }
+
+    def model_identity(self, run_id: str) -> dict:
+        spec = self.protocol(run_id).model
+        accepted = set(spec.accepted_returned_models or (spec.model,))
+        returned = [
+            self.blob(row[0])["returned_model"]
+            for row in self.db.execute(
+                "SELECT g.content FROM generations g JOIN samples s ON s.id=g.sample_id "
+                "WHERE s.run_id=?",
+                (run_id,),
+            )
+        ]
+        missing = sum(name is None or name == "" for name in returned)
+        mismatched = sum(name not in accepted and name not in (None, "") for name in returned)
+        return {
+            "status": "unresolved"
+            if missing or mismatched
+            else ("matched_declared_names" if returned else "not_observed"),
+            "accepted_names": sorted(accepted),
+            "observed_names": sorted(set(n for n in returned if n)),
+            "missing": missing,
+            "mismatched": mismatched,
+            "weights_identity": "not_verified",
         }
