@@ -1,0 +1,11 @@
+{
+  "kind": "official_task_negative_control",
+  "task_id": "qiskitHumanEval/20",
+  "dataset_hash": "4633426b4436af8f13c9d7b2302e79dbbe035e1481185297dad6149cd5c0758f",
+  "candidate": "def transpile_ghz_customlayout():\n    circuit = QuantumCircuit(3)\n    pm = generate_preset_pass_manager(optimization_level=1, backend=FakePerth(), initial_layout=[2,4,6])\n    return pm.run(circuit)",
+  "violation": "Builds an empty three-qubit circuit, not the required GHZ circuit. Correct layout alone must not suffice.",
+  "expected_passed": false,
+  "observed_passed": true,
+  "outcome": "pass",
+  "scope": "One manually constructed mutant, not an estimate of dataset-wide false acceptance."
+}
