@@ -69,6 +69,7 @@ class UpstreamJudge:
             "task_payload": identity(payload),
             "judge_timeout": self.timeout,
             "candidate_timeout": self.candidate_timeout,
+            "candidate_timing": "active-wall-v1-including-startup-and-freeze-overhead",
             "output_limit": self.limit,
             "protocol": "upstream-proxy-v1",
         }
@@ -128,6 +129,7 @@ class UpstreamJudge:
                     "manifest": manifest,
                     "transcript": transcript,
                     "judge_wait_seconds": judge_wait,
+                    "candidate_active_seconds": candidate.active_seconds if candidate else None,
                     "wall_seconds": time.monotonic() - start,
                     "completion_sha256": hashlib.sha256(completion.encode()).hexdigest(),
                     "extracted_code_sha256": hashlib.sha256(extracted.code.encode()).hexdigest(),

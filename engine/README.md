@@ -86,8 +86,10 @@ can currently be exercised programmatically with explicit frozen requests.
    type fidelity; and complete upstream-proxy semantics through the independent judge. The current
    scientific-value/numeric-circuit worker is not a complete Qiskit executor. Candidate-reported
    errors are untrusted.
-   Candidate timing currently includes idle time between calls; separating active execution
-   without allowing unmetered background computation remains a release gate.
+   Candidate containers now freeze between calls, so judge delays do not consume their active
+   wall-time allowance and background processes cannot run for free. Startup and lifecycle
+   overhead are conservatively charged. Calibration of these overheads remains required before
+   choosing published execution limits; this is an active wall-time policy, not CPU accounting.
 2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
    positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
    rejects the reproduced empty-circuit false acceptance, but its complete specification review

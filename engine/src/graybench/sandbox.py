@@ -5,6 +5,7 @@ eligibility and publication until validated; there is no same-process judge fall
 """
 
 import json
+import math
 import queue
 import re
 import shutil
@@ -60,6 +61,8 @@ class Candidate:
     ):
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", image):
             raise ValueError("Candidate runtime must use an immutable local image digest")
+        if not math.isfinite(timeout) or timeout <= 0:
+            raise ValueError("Candidate timeout must be finite and positive")
         self.name = "graybench-v3-" + uuid.uuid4().hex
         self.docker = docker
         self.timeout = timeout
@@ -73,6 +76,9 @@ class Candidate:
         self.messages = queue.Queue(maxsize=2)
         self.stopping = threading.Event()
         self.exceeded = threading.Event()
+        self.active_seconds = 0.0
+        self.active_started = None
+        self.paused = False
         directory = Path(self.directory.name)
         (directory / "candidate.py").write_text(code, encoding="utf-8")
         if public_prefix:
@@ -128,6 +134,8 @@ class Candidate:
             "/input/worker.py",
         ]
         try:
+            self.active_started = time.monotonic()
+            self.deadline = self.active_started + timeout
             self.process = subprocess.Popen(
                 args,
                 stdin=subprocess.PIPE,
@@ -141,12 +149,45 @@ class Candidate:
             ]
             for reader in self.readers:
                 reader.start()
-            self.deadline = time.monotonic() + timeout
             if self._receive() != {"protocol": 3, "ready": True}:
                 raise CandidateError("Candidate did not initialize the value protocol")
+            self._pause()
         except BaseException:
             self.close()
             raise
+
+    def _control(self, operation):
+        """Host-authoritative container freeze; failures are infrastructure errors."""
+        try:
+            result = subprocess.run(
+                [self.docker, operation, self.name], capture_output=True, timeout=15
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise RuntimeError("Candidate container lifecycle operation failed") from exc
+        if result.returncode:
+            raise RuntimeError("Candidate container lifecycle operation failed")
+
+    def _pause(self):
+        if self.paused:
+            return
+        self._control("pause")
+        self.paused = True
+        self.active_seconds += time.monotonic() - self.active_started
+        self.active_started = None
+        if self.active_seconds >= self.timeout:
+            raise TimeoutError("Candidate sample active-time limit exceeded")
+
+    def _resume(self):
+        if self.closed or not self.paused:
+            raise RuntimeError("Candidate is not available for a new call")
+        remaining = self.timeout - self.active_seconds
+        if remaining <= 0:
+            raise TimeoutError("Candidate sample active-time limit exceeded")
+        # Include lifecycle overhead conservatively; no running interval is unmetered.
+        self.active_started = time.monotonic()
+        self.deadline = self.active_started + remaining
+        self._control("unpause")
+        self.paused = False
 
     def _queue(self, item):
         while not self.stopping.is_set():
@@ -242,6 +283,17 @@ class Candidate:
         )
         if len(request) > self.limit:
             raise UnsupportedInterface("Call input exceeds transport limit")
+        try:
+            self._resume()
+            response = self._exchange(request)
+            # Freeze all processes while the trusted judge evaluates the returned value.
+            self._pause()
+            return response
+        except BaseException:
+            self.close()
+            raise
+
+    def _exchange(self, request):
         write_errors = []
 
         def send():
@@ -296,6 +348,9 @@ class Candidate:
             if self.process.poll() is None:
                 self.process.kill()
             self.process.wait(timeout=10)
+            if self.active_started is not None:
+                self.active_seconds += time.monotonic() - self.active_started
+                self.active_started = None
             for reader in self.readers:
                 reader.join(timeout=2)
             for stream in (self.process.stdin, self.process.stdout, self.process.stderr):

@@ -1,4 +1,7 @@
+import json
 import os
+import subprocess
+import time
 
 import pytest
 
@@ -38,6 +41,41 @@ DOCKER = os.environ.get("GRAYBENCH_DOCKER", "docker")
 docker_test = pytest.mark.skipif(
     not IMAGE, reason="Set GRAYBENCH_TEST_IMAGE to immutable Docker ID"
 )
+
+
+@docker_test
+def test_idle_judge_time_is_excluded_and_background_processes_are_frozen():
+    code = """import threading, time
+ticks = 0
+def background():
+    global ticks
+    while True:
+        ticks += 1
+        time.sleep(0.01)
+threading.Thread(target=background, daemon=True).start()
+def answer(): return ticks
+"""
+    with Candidate(code, image=IMAGE, docker=DOCKER, timeout=4) as candidate:
+        first = candidate.call("answer")
+        state = json.loads(subprocess.check_output([DOCKER, "inspect", candidate.name]))
+        assert state[0]["State"]["Paused"] is True
+        used = candidate.active_seconds
+        time.sleep(4.2)
+        assert candidate.active_seconds == used
+        second = candidate.call("answer")
+        # A running background thread would add about 420 ticks during the judge delay.
+        assert second - first < 100
+        assert candidate.active_seconds < candidate.timeout
+
+
+@docker_test
+def test_execution_budget_accumulates_across_calls():
+    code = "import time\ndef answer():\n    time.sleep(0.8)\n    return 1"
+    with Candidate(code, image=IMAGE, docker=DOCKER, timeout=4) as candidate:
+        with pytest.raises(TimeoutError):
+            for _ in range(8):
+                candidate.call("answer")
+        assert candidate.closed
 
 
 @docker_test

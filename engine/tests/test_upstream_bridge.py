@@ -42,6 +42,8 @@ def answer(x):
     result = UpstreamJudge(image=IMAGE, docker=DOCKER).evaluate(task(test), code)
     assert result.outcome == "pass", result
     assert result.evidence["calls"] == 2
+    assert result.evidence["candidate_active_seconds"] > 0
+    assert "active-wall" in result.evidence["manifest"]["candidate_timing"]
 
 
 def test_upstream_wrong_answer_fails():
