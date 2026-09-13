@@ -32,7 +32,7 @@ The repository's `kimiK25/e86b3315_*` export reports 58/151 passes (38.41%) on t
 
 These are observations from the stored run and source code. They do not establish what its score would be with another cap or runtime, or justify retroactively treating reasoning text as a final answer. New Moonshot calls are excluded from the user's current scope.
 
-Replaying the stored final answers in the validated Docker environment, with no new model calls, yields **54/143 (37.76%)**, equal to the old numerator on those same 143 tasks. Task 9 changes from pass to assertion failure; task 71 changes from assertion failure to pass. The replay changes extraction, runtime and test assembly together and cannot isolate a single cause for either change. It does not regenerate answers or reconstruct the discarded empty-response retries.
+The historical export has ten prompts that differ from the current dataset. Restricting the direct comparison to the 133 unchanged, offline-eligible prompts gives **54/133 (40.60%)** both under the stored old outcomes and under final saved-answer rescoring. Task 9 changes from pass to assertion failure; task 71 changes from assertion failure to pass. Reused task IDs must not conceal changed questions. The broader 143-answer replay is retained only as a diagnostic; its 54 passes are not a matched-prompt benchmark score. Rescoring changes extraction, runtime and tests together and does not isolate a single cause. No new Moonshot calls were made.
 
 ## Additional published API-model references
 
