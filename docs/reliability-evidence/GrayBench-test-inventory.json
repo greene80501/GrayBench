@@ -1,0 +1,1833 @@
+{
+  "scope": "Static AST inventory, not dynamic coverage or proof of weak tests",
+  "suites": [
+    {
+      "suite": "normal",
+      "tasks": 151,
+      "tasks_with_single_syntactic_candidate_call": 127,
+      "tasks_with_at_most_one_assertion": 34,
+      "rows": [
+        {
+          "task_id": "qiskitHumanEval/0",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/1",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/2",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/3",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/4",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/5",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/6",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/7",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/8",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/9",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/10",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/11",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/12",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/13",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/14",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/15",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/16",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/17",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/18",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/19",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/20",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/21",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/22",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/23",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/24",
+          "syntactic_candidate_calls": 4,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/25",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/26",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/27",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/28",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/29",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/30",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/31",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/32",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/33",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/34",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/35",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/36",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/37",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/38",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/39",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/40",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/41",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/42",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/43",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/44",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/45",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/46",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/47",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/48",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/49",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/50",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/51",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 6,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/52",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 7,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/53",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/54",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/55",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/56",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/57",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/58",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/59",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/60",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/61",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/62",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/63",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/64",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/65",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/66",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 7,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/67",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/68",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 9,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/69",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/70",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/71",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/72",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/73",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/74",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/75",
+          "syntactic_candidate_calls": 6,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/76",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/77",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/78",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/79",
+          "syntactic_candidate_calls": 6,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/80",
+          "syntactic_candidate_calls": 6,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/81",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/82",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/83",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/84",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/85",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/86",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/87",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/88",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/89",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/90",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/91",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/92",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/93",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/94",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/95",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/96",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/97",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/98",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/99",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/100",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/101",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/102",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/103",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/104",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/105",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/106",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/107",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/108",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/109",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/110",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/111",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/112",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/113",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/114",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/115",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 8,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/116",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/117",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/118",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/119",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/120",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/121",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/122",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/123",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/124",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/125",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/126",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/127",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/128",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/129",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/130",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/131",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/132",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/133",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/134",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/135",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/136",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/137",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/138",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 7,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/139",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/140",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/141",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/142",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/143",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/144",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/145",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/146",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 7,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/147",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/148",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/149",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/150",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 11,
+          "has_loop": false
+        }
+      ]
+    },
+    {
+      "suite": "hard",
+      "tasks": 151,
+      "tasks_with_single_syntactic_candidate_call": 127,
+      "tasks_with_at_most_one_assertion": 34,
+      "rows": [
+        {
+          "task_id": "qiskitHumanEval/0",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/1",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/2",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/3",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/4",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/5",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/6",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/7",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/8",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/9",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/10",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/11",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/12",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/13",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/14",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/15",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/16",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/17",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/18",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/19",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/20",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/21",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/22",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/23",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/24",
+          "syntactic_candidate_calls": 4,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/25",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/26",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/27",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/28",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/29",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/30",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/31",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/32",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/33",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/34",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/35",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/36",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/37",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/38",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/39",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/40",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/41",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/42",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/43",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/44",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/45",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/46",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/47",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/48",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/49",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/50",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/51",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 6,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/52",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 7,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/53",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/54",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/55",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/56",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/57",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/58",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/59",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/60",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/61",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/62",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/63",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/64",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/65",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/66",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 7,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/67",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/68",
+          "syntactic_candidate_calls": 3,
+          "syntactic_assertions": 9,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/69",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/70",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/71",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/72",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/73",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/74",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/75",
+          "syntactic_candidate_calls": 6,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/76",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/77",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/78",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/79",
+          "syntactic_candidate_calls": 6,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/80",
+          "syntactic_candidate_calls": 6,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/81",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/82",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/83",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/84",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/85",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/86",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/87",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/88",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/89",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/90",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/91",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/92",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/93",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/94",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/95",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/96",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/97",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/98",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/99",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/100",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/101",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/102",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/103",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/104",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/105",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/106",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/107",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/108",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/109",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/110",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/111",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/112",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/113",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/114",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/115",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 8,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/116",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/117",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/118",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/119",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/120",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/121",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/122",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/123",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/124",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/125",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/126",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/127",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/128",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/129",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/130",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/131",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/132",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/133",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/134",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/135",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 5,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/136",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/137",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/138",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 7,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/139",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/140",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/141",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/142",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/143",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/144",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 3,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/145",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 4,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/146",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 7,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/147",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 1,
+          "has_loop": false
+        },
+        {
+          "task_id": "qiskitHumanEval/148",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 2,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/149",
+          "syntactic_candidate_calls": 2,
+          "syntactic_assertions": 1,
+          "has_loop": true
+        },
+        {
+          "task_id": "qiskitHumanEval/150",
+          "syntactic_candidate_calls": 1,
+          "syntactic_assertions": 11,
+          "has_loop": false
+        }
+      ]
+    }
+  ]
+}

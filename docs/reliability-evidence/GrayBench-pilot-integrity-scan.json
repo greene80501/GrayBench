@@ -1,0 +1,12 @@
+{
+  "attempts_scanned": 1002,
+  "patterns": [
+    "GRAYBENCH_RESULT",
+    "os._exit",
+    "sys.settrace",
+    "inspect.currentframe",
+    "test_harness.py"
+  ],
+  "findings": [],
+  "limitation": "A literal-pattern scan is not a proof that outputs are untampered or semantically correct."
+}
