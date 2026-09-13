@@ -25,6 +25,7 @@ FILES = (
     "scientific_wire.py",
     "symbolic_wire.py",
     "preparation_wire.py",
+    "instruction_wire.py",
 )
 
 

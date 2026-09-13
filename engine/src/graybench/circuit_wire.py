@@ -89,7 +89,15 @@ def indices(value, count):
     return value
 
 
-def encode_circuit(circuit):
+def encode_circuit(circuit, *, depth=0, operation_budget=None):
+    if depth > 8:
+        raise WireError("Instruction definition nesting exceeds limit")
+    if operation_budget is None:
+        operation_budget = [1_000_000]
+    operation_budget[0] -= len(circuit.data)
+    if operation_budget[0] < 0:
+        raise WireError("Instruction graph exceeds codec limit")
+    from qiskit.circuit import Gate, Instruction
     from qiskit.circuit.library import StatePreparation, UnitaryGate, get_standard_gate_name_mapping
 
     try:
@@ -103,7 +111,15 @@ def encode_circuit(circuit):
     operations = []
     for item in circuit.data:
         op = item.operation
-        if op.name == "barrier":
+        wire_name = op.name
+        if type(op) in (Gate, Instruction):
+            try:
+                from .instruction_wire import encode_instruction
+            except ImportError:
+                from instruction_wire import encode_instruction
+            wire_name = "__generic_definition_v1__"
+            params = [encode_instruction(op, depth=depth + 1, operation_budget=operation_budget)]
+        elif op.name == "barrier":
             params = []
         elif op.base_class is StatePreparation:
             try:
@@ -124,11 +140,11 @@ def encode_circuit(circuit):
             raise WireError("Unsupported instruction: " + op.name)
         operations.append(
             {
-                "name": op.name,
+                "name": wire_name,
                 "params": params,
                 "qubits": [circuit.find_bit(q).index for q in item.qubits],
                 "clbits": [circuit.find_bit(c).index for c in item.clbits],
-                "unit": op.unit if op.name == "delay" else None,
+                "unit": op.unit if wire_name == "delay" else None,
                 "label": op.label,
             }
         )
@@ -145,7 +161,9 @@ def encode_circuit(circuit):
             ),
         }
     return {
-        "kind": "circuit_v4",
+        "kind": "circuit_v5",
+        "name": circuit.name,
+        "metadata": json_metadata(circuit.metadata),
         "qubits": circuit.num_qubits,
         "clbits": circuit.num_clbits,
         "qubit_origins": bit_origins(circuit.qubits),
@@ -201,7 +219,11 @@ def build_bits(origins, bit_type, register_type):
     return bits
 
 
-def decode_circuit(value):
+def decode_circuit(value, *, depth=0, operation_budget=None):
+    if depth > 8:
+        raise WireError("Instruction definition nesting exceeds limit")
+    if operation_budget is None:
+        operation_budget = [1_000_000]
     try:
         from .symbolic_wire import decode_parameter
     except ImportError:
@@ -211,6 +233,8 @@ def decode_circuit(value):
         value,
         {
             "kind",
+            "name",
+            "metadata",
             "qubits",
             "clbits",
             "phase",
@@ -222,8 +246,11 @@ def decode_circuit(value):
             "clbit_origins",
         },
     )
-    if value["kind"] != "circuit_v4":
+    if value["kind"] != "circuit_v5":
         raise WireError("Unknown circuit codec")
+    if type(value["name"]) is not str or len(value["name"]) > 4096:
+        raise WireError("Invalid circuit name")
+    metadata = json_metadata(value["metadata"])
     nq, nc = integer(value["qubits"]), integer(value["clbits"])
     context = {"parameters": {}, "vectors": {}}
     budget = [100000]
@@ -246,6 +273,9 @@ def decode_circuit(value):
     ops = value["operations"]
     if type(ops) is not list or len(ops) > 1_000_000:
         raise WireError("Instruction count exceeds codec limit")
+    operation_budget[0] -= len(ops)
+    if operation_budget[0] < 0:
+        raise WireError("Instruction graph exceeds codec limit")
     from qiskit.circuit.library import UnitaryGate, get_standard_gate_name_mapping
 
     try:
@@ -266,13 +296,29 @@ def decode_circuit(value):
             "unitary",
             "state_preparation",
             "state_preparation_dg",
+            "__generic_definition_v1__",
         }:
             raise WireError("Instruction is not in the fixed constructor registry")
         if type(op["params"]) is not list or len(op["params"]) > 8:
             raise WireError("Invalid parameter list")
         indices(op["qubits"], nq)
         indices(op["clbits"], nc)
-        if op["name"] in ("state_preparation", "state_preparation_dg"):
+        if op["name"] == "__generic_definition_v1__":
+            if len(op["params"]) != 1:
+                raise WireError("Invalid generic instruction envelope")
+            try:
+                from .instruction_wire import decode_instruction
+            except ImportError:
+                from instruction_wire import decode_instruction
+            instruction = decode_instruction(
+                op["params"][0], depth=depth + 1, operation_budget=operation_budget
+            )
+            if instruction.num_qubits != len(op["qubits"]) or instruction.num_clbits != len(
+                op["clbits"]
+            ):
+                raise WireError("Generic instruction arity mismatch")
+            decoded_params.append([instruction])
+        elif op["name"] in ("state_preparation", "state_preparation_dg"):
             if len(op["params"]) != 1 or op["clbits"]:
                 raise WireError("Invalid preparation arity")
             try:
@@ -300,7 +346,12 @@ def decode_circuit(value):
         if op["name"] == "barrier":
             if op["params"] or op["clbits"]:
                 raise WireError("Invalid barrier")
-        elif op["name"] not in ("unitary", "state_preparation", "state_preparation_dg"):
+        elif op["name"] not in (
+            "unitary",
+            "state_preparation",
+            "state_preparation_dg",
+            "__generic_definition_v1__",
+        ):
             template = standard[op["name"]]
             if (
                 len(op["qubits"]) != template.num_qubits
@@ -333,9 +384,13 @@ def decode_circuit(value):
         circuit.add_register(QuantumRegister(name=name, bits=[qubits[i] for i in bits]))
     for name, bits in value["cregs"]:
         circuit.add_register(ClassicalRegister(name=name, bits=[clbits[i] for i in bits]))
+    circuit.name = value["name"]
+    circuit.metadata = metadata
     circuit.global_phase = phase
     for op, params in zip(ops, decoded_params, strict=True):
-        if op["name"] == "barrier":
+        if op["name"] == "__generic_definition_v1__":
+            instruction = params[0]
+        elif op["name"] == "barrier":
             instruction = Barrier(len(op["qubits"]))
         elif op["name"] == "delay":
             instruction = standard["delay"].base_class(*params, unit=op["unit"])
@@ -362,3 +417,34 @@ def decode_circuit(value):
             _output_qubit_list=qubits,
         )
     return circuit
+
+
+def json_metadata(value):
+    """Preserve JSON metadata types exactly, refusing coercion of keys/tuples/objects."""
+    budget = [10000]
+
+    def visit(item, depth=0):
+        budget[0] -= 1
+        if budget[0] < 0 or depth > 16:
+            raise WireError("Circuit metadata exceeds structural limit")
+        if item is None or type(item) in (bool, str, int):
+            return
+        if type(item) is float and math.isfinite(item):
+            return
+        if type(item) is list:
+            for child in item:
+                visit(child, depth + 1)
+            return
+        if type(item) is dict and all(type(key) is str for key in item):
+            for child in item.values():
+                visit(child, depth + 1)
+            return
+        raise WireError("Unsupported circuit metadata type")
+
+    if value is not None and type(value) is not dict:
+        raise WireError("Expected a metadata dictionary")
+    visit(value)
+    raw = json.dumps(value, allow_nan=False).encode()
+    if len(raw) > 65536:
+        raise WireError("Circuit metadata exceeds byte limit")
+    return json.loads(raw)

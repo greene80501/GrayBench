@@ -25,5 +25,5 @@ def decode_qpy(data, *, image, docker, timeout=30, output_limit=1024 * 1024):
         return result["value"], {
             "active_seconds": decoder.active_seconds,
             "wire_response": result,
-            "projection": "supported-circuit-structure; custom metadata not represented",
+            "projection": "supported circuit structure and bounded JSON metadata",
         }

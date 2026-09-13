@@ -131,6 +131,7 @@ def answer():
         assert files == [
             "candidate.py",
             "circuit_wire.py",
+            "instruction_wire.py",
             "preparation_wire.py",
             "scientific_wire.py",
             "symbolic_wire.py",

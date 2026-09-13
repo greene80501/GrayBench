@@ -153,6 +153,11 @@ for commands, statistical assumptions and the remaining calibration requirements
 
 ## Adversarial Docker tests
 
+Circuit wire v5 supports bounded nested definitions for plain Qiskit Gate/Instruction
+objects and selected standalone standard instructions, with names and JSON metadata.
+See [instruction transport](../docs/reliability-evidence/instruction-definitions.md)
+for validated cases, limits and remaining subclass/cache restrictions.
+
 The reusable oracle-review runner records authored counterexamples separately from
 model scores. [Task0/1 review](../docs/reliability-evidence/task0-1-review.md) reproduces
 upstream false accepts and documents the explicit task0 size revision. Task1 still

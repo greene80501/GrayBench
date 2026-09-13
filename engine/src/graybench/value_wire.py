@@ -49,6 +49,14 @@ def encode(item, depth=0):
 
     if isinstance(item, QuantumCircuit):
         return pack_circuit(encode_circuit(item))
+    from qiskit.circuit import Instruction
+
+    if isinstance(item, Instruction):
+        try:
+            from .instruction_wire import encode_instruction
+        except ImportError:
+            from instruction_wire import encode_instruction
+        return encode_instruction(item)
     scientific = encode_scientific(item)
     if scientific is not None:
         return scientific
@@ -92,7 +100,16 @@ def decode(value, depth=0, budget=None):
         except ImportError:
             from symbolic_wire import decode_parameter
         return decode_parameter(value)
-    if type(value) is dict and value.get("kind") == "circuit_v4":
+    if type(value) is dict and value.get("kind") in (
+        "generic_instruction_v1",
+        "standard_instruction_v1",
+    ):
+        try:
+            from .instruction_wire import decode_instruction
+        except ImportError:
+            from instruction_wire import decode_instruction
+        return decode_instruction(value)
+    if type(value) is dict and value.get("kind") == "circuit_v5":
         return decode_circuit(value)
     if type(value) is dict and value.get("kind") == "compressed_circuit_v1":
         return unpack_circuit(value)
