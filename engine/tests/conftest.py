@@ -2,6 +2,7 @@ import pytest
 
 from graybench.contracts import ModelSpec, Protocol, PublicTask, RetryPolicy
 from graybench.ledger import Ledger
+from graybench.provenance import source_manifest
 from graybench.providers import Ollama
 
 
@@ -35,7 +36,7 @@ def protocol(model, task):
         generation_code_digest="2" * 64,
         runtime_digest="3" * 64,
         judge_digest="4" * 64,
-        analysis_digest="5" * 64,
+        analysis_digest=source_manifest()["digest"],
     )
 
 

@@ -14,6 +14,7 @@ from typing import Any
 
 from graybench.contracts import Generation, PreparedRequest, Protocol
 from graybench.identity import canonical, identity
+from graybench.provenance import source_manifest
 
 
 class StateError(ValueError):
@@ -383,33 +384,113 @@ class Ledger:
         }
 
     def summary(self, run_id: str) -> dict:
+        # Multiple report queries must observe one SQLite snapshot during live dispatch.
+        if self.db.in_transaction:
+            return self._summary(run_id)
+        self.db.execute("BEGIN")
+        try:
+            result = self._summary(run_id)
+            self.db.execute("COMMIT")
+            return result
+        except BaseException:
+            self.db.execute("ROLLBACK")
+            raise
+
+    def _summary(self, run_id: str) -> dict:
+        integrity = self.verify()
         protocol = self.protocol(run_id)
         rows = self.db.execute(
             "SELECT s.task_key,s.replicate,g.content,j.outcome FROM samples s "
             "LEFT JOIN generations g ON s.id=g.sample_id "
-            "LEFT JOIN judgments j ON j.sample_id=s.id AND j.judge_digest=? WHERE s.run_id=?",
+            "LEFT JOIN judgments j ON j.sample_id=s.id AND j.judge_digest=? WHERE s.run_id=? "
+            "ORDER BY s.task_key,s.replicate",
             (protocol.judge_digest, run_id),
         ).fetchall()
+        expected = {
+            (key, repeat) for key in protocol.task_keys for repeat in range(protocol.repeats)
+        }
+        observed = {(row["task_key"], row["replicate"]) for row in rows}
+        scored = {"pass", "fail", "candidate_error", "timeout"}
         outcomes = [r["outcome"] for r in rows]
-        # Unknown capability or infrastructure is never silently counted as a model failure.
-        complete = bool(rows) and all(
-            o in {"pass", "fail", "candidate_error", "timeout"} for o in outcomes
-        )
+        counts = {
+            name: outcomes.count(name)
+            for name in (
+                "pass",
+                "fail",
+                "candidate_error",
+                "timeout",
+                "unsupported",
+                "infrastructure_error",
+            )
+        }
+        counts["unjudged"] = outcomes.count(None)
         model_identity = self.model_identity(run_id)
-        complete = complete and model_identity["status"] != "unresolved"
         discovery = self.discovery_status(run_id)
-        complete = complete and discovery["status"] != "unresolved"
+        analysis_source = source_manifest()["digest"]
+        blockers = []
+        if analysis_source != protocol.analysis_digest:
+            blockers.append("analysis_source_mismatch")
+        if observed != expected or len(rows) != len(expected):
+            blockers.append("frozen_cohort_mismatch")
+        if any(r["content"] is None for r in rows):
+            blockers.append("missing_generations")
+        if counts["unjudged"]:
+            blockers.append("unjudged_samples")
+        for outcome in ("unsupported", "infrastructure_error"):
+            if counts[outcome]:
+                blockers.append(outcome)
+        if model_identity["status"] == "unresolved":
+            blockers.append("unresolved_returned_model_identity")
+        if discovery["status"] == "unresolved":
+            blockers.append("unresolved_model_discovery")
+        complete = not blockers and all(o in scored for o in outcomes)
+        per_task = []
+        for key in protocol.task_keys:
+            task_rows = [r for r in rows if r["task_key"] == key]
+            task_outcomes = [r["outcome"] for r in task_rows]
+            per_task.append(
+                {
+                    "task_key": key,
+                    "planned_samples": protocol.repeats,
+                    "observed_samples": len(task_rows),
+                    "passes": task_outcomes.count("pass"),
+                    "outcomes": [
+                        {"replicate": r["replicate"], "outcome": r["outcome"]} for r in task_rows
+                    ],
+                }
+            )
         return {
             "run_id": run_id,
             "protocol_digest": protocol.digest,
             "track": protocol.track,
-            "planned_samples": len(rows),
+            "planned_samples": len(expected),
+            "observed_samples": len(rows),
             "returned_samples": sum(r["content"] is not None for r in rows),
             "judged_samples": sum(o is not None for o in outcomes),
             "complete": complete,
             "passes": outcomes.count("pass"),
-            "pass_at_1": outcomes.count("pass") / len(rows) if complete else None,
+            "pass_at_1": outcomes.count("pass") / len(expected) if complete else None,
+            "score_status": "development_only" if complete else "unscored",
+            "score_blockers": blockers,
+            "outcome_counts": counts,
+            "cohort": {
+                "missing": [list(slot) for slot in sorted(expected - observed)],
+                "unexpected": [list(slot) for slot in sorted(observed - expected)],
+            },
+            "per_task": per_task,
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
             "certification": "not_certified",
+            "publication_eligible": False,
+            "publication_blockers": [
+                "reviewed_task_and_protocol_admission_required",
+                "independent_reproducibility_required",
+            ],
+            "ledger_integrity": integrity,
+            "analysis_identity": {
+                "frozen": protocol.analysis_digest,
+                "observed": analysis_source,
+                "matched": analysis_source == protocol.analysis_digest,
+            },
             "model_identity": model_identity,
             "model_discovery": discovery,
         }

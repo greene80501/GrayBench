@@ -138,6 +138,10 @@ can currently be exercised programmatically with explicit frozen requests.
 5. Migration of the user-facing commands and documentation to the replacement once its gates pass.
 
 No existing result has become a certified score merely because these foundation tests pass.
+Development summaries use the frozen schedule denominator, expose per-task outcomes
+and score blockers, and require the frozen analysis source. See
+[report integrity](../docs/reliability-evidence/summary-integrity.md) for snapshot
+consistency, provenance checks and the remaining publication requirements.
 
 ## Adversarial Docker tests
 
