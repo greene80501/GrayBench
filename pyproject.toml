@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "graybench"
-version = "1.0.0"
+version = "2.0.0"
 description = "Gray Area Labs Benchmark Suite for Qiskit HumanEval"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.10,<3.12"
+requires-python = ">=3.12,<3.13"
 authors = [
     {name = "Gray Area Labs"}
 ]
@@ -18,15 +18,14 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Scientific/Engineering :: Physics",
 ]
 
 dependencies = [
     # CLI
-    "typer[all]>=0.9.0",
+    "typer>=0.9.0",
     "rich>=13.0.0",
     
     # Data handling
@@ -45,15 +44,21 @@ dependencies = [
     # Provider SDKs
     "openai>=1.0.0",
     "anthropic>=0.18.0",
-    "google-generativeai>=0.3.0",
+    "google-genai>=1.0.0",
     
     # Qiskit ecosystem
-    "qiskit>=1.0.0",
-    "qiskit-aer>=0.13.0",
-    "qiskit-ibm-runtime>=0.20.0",
+    "qiskit==2.4.2",
+    "qiskit-aer==0.17.0",
+    "qiskit-ibm-runtime==0.45.0",
+    "qiskit-qasm3-import==0.5.0",
+    "matplotlib==3.10.1",
+    "networkx==3.3",
+    "seaborn==0.13.2",
+    "pylatexenc==2.10",
+    "pydot>=3.0.0",
     
     # Utilities
-    "numpy>=1.24.0",
+    "numpy==2.2.4",
     "tenacity>=8.2.0",
     "tqdm>=4.66.0",
 ]
@@ -72,9 +77,9 @@ dev = [
 graybench = "graybench.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/grayarealabs/graybench"
-Documentation = "https://github.com/grayarealabs/graybench#readme"
-Repository = "https://github.com/grayarealabs/graybench"
+Homepage = "https://github.com/greene80501/GrayBench"
+Documentation = "https://github.com/greene80501/GrayBench#readme"
+Repository = "https://github.com/greene80501/GrayBench"
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -82,15 +87,15 @@ include = ["graybench*"]
 
 [tool.black]
 line-length = 100
-target-version = ["py310"]
+target-version = ["py312"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
-select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+target-version = "py312"
+lint.select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true

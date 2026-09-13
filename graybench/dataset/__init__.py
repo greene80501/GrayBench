@@ -13,7 +13,7 @@ from graybench.dataset.models import (
 
 class Dataset:
     """Wrapper class for a loaded dataset."""
-    
+
     def __init__(
         self,
         tasks: list,
@@ -25,25 +25,24 @@ class Dataset:
         self.suite = suite
         self.version = version
         self.source = source
-        self._hash = None
-    
+
     def __len__(self):
         return len(self.tasks)
-    
+
     def __iter__(self):
         return iter(self.tasks)
-    
+
     @property
     def name(self) -> str:
         return f"Qiskit HumanEval ({self.suite})"
-    
+
     @property
     def dataset_hash(self) -> str:
-        if self._hash is None:
-            import hashlib
-            content = "".join(f"{t.task_id}:{t.prompt[:50]}" for t in self.tasks)
-            self._hash = hashlib.sha256(content.encode()).hexdigest()[:12]
-        return self._hash
+        import hashlib
+        import json
+
+        content = json.dumps([t.to_dict() for t in self.tasks], sort_keys=True, ensure_ascii=False)
+        return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
 # Add convenience methods to DatasetLoader
@@ -52,14 +51,14 @@ _original_load_tasks = DatasetLoader.load_tasks
 
 def _load_wrapper(self, suite):
     """Load tasks and return a Dataset object."""
-    suite_type = suite if isinstance(suite, SuiteType) else (
-        SuiteType.HARD if str(suite).lower() == "hard" else SuiteType.NORMAL
-    )
+    from graybench.dataset.loader import DATASET_REVISIONS
+
+    suite_type = SuiteType(suite)
     tasks = _original_load_tasks(self, suite_type)
     return Dataset(
         tasks=tasks,
         suite=suite_type.value,
-        version=self.dataset_version,
+        version=DATASET_REVISIONS[suite_type],
         source="huggingface",
     )
 
@@ -82,7 +81,7 @@ def analyze_imports(self, dataset) -> dict:
     """Analyze imports used in a dataset."""
     import_counts = {}
     for task in dataset.tasks:
-        for line in (task.prompt + "\n" + task.canonical_solution).split('\n'):
+        for line in (task.prompt + "\n" + task.canonical_solution).split("\n"):
             stripped = line.strip()
             if stripped.startswith("import "):
                 module = stripped[7:].split()[0].split(".")[0]

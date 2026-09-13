@@ -18,7 +18,6 @@ from graybench.execution.harness import (
     ExecutionResult,
 )
 
-
 __all__ = [
     # Outcomes
     "Outcome",

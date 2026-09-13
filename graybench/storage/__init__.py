@@ -15,7 +15,6 @@ from graybench.storage.exporter import (
     WebsiteExporter,
 )
 
-
 __all__ = [
     "Database",
     "ResultStorage",

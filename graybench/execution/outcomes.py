@@ -11,26 +11,26 @@ from enum import Enum
 class Outcome(Enum):
     """
     Detailed outcome categories for code execution.
-    
+
     These categories allow for fine-grained analysis of why
     a model's solution passed or failed.
     """
-    
+
     # Success
     PASS = "pass"
-    
+
     # Test failures (code ran but didn't pass tests)
     FAIL_TEST = "fail_test"
     FAIL_ASSERTION = "fail_assertion"
-    
+
     # Syntax/parsing errors (code couldn't be parsed)
     FAIL_SYNTAX = "fail_syntax"
     FAIL_INDENTATION = "fail_indentation"
-    
+
     # Import/dependency errors
     FAIL_IMPORT = "fail_import"
     FAIL_MODULE_NOT_FOUND = "fail_module_not_found"
-    
+
     # Runtime errors
     FAIL_RUNTIME = "fail_runtime"
     FAIL_TYPE_ERROR = "fail_type_error"
@@ -39,31 +39,34 @@ class Outcome(Enum):
     FAIL_VALUE_ERROR = "fail_value_error"
     FAIL_INDEX_ERROR = "fail_index_error"
     FAIL_KEY_ERROR = "fail_key_error"
-    
+
     # Resource errors
     TIMEOUT = "timeout"
     MEMORY_ERROR = "memory_error"
-    
+    OUTPUT_LIMIT = "output_limit"
+
     # Extraction errors (couldn't extract code from model output)
     EXTRACTION_FAILED = "extraction_failed"
     NO_FUNCTION_FOUND = "no_function_found"
-    
+
     # Other errors
     ERROR_OTHER = "error_other"
-    
+    API_ERROR = "api_error"
+    EMPTY_COMPLETION = "empty_completion"
+
     @classmethod
     def from_exception(cls, exception: Exception) -> "Outcome":
         """
         Determine the outcome category from an exception.
-        
+
         Args:
             exception: The exception that was raised
-        
+
         Returns:
             The appropriate Outcome category
         """
         exception_name = type(exception).__name__
-        
+
         # Map exception types to outcomes
         mapping = {
             "SyntaxError": cls.FAIL_SYNTAX,
@@ -81,22 +84,22 @@ class Outcome(Enum):
             "TimeoutError": cls.TIMEOUT,
             "MemoryError": cls.MEMORY_ERROR,
         }
-        
+
         return mapping.get(exception_name, cls.ERROR_OTHER)
-    
+
     @classmethod
     def from_stderr(cls, stderr: str) -> "Outcome":
         """
         Determine the outcome category from stderr output.
-        
+
         Args:
             stderr: The captured stderr output
-        
+
         Returns:
             The appropriate Outcome category
         """
         stderr_lower = stderr.lower()
-        
+
         # Check for specific error types in order of specificity
         if "syntaxerror" in stderr_lower:
             return cls.FAIL_SYNTAX
@@ -124,33 +127,33 @@ class Outcome(Enum):
             return cls.MEMORY_ERROR
         if "timeout" in stderr_lower:
             return cls.TIMEOUT
-        
+
         # Generic failure
         if stderr.strip():
             return cls.FAIL_RUNTIME
-        
+
         return cls.ERROR_OTHER
-    
+
     @property
     def is_pass(self) -> bool:
         """Check if this outcome represents a passing result."""
         return self == Outcome.PASS
-    
+
     @property
     def is_test_failure(self) -> bool:
         """Check if this outcome is a test failure (code ran but failed tests)."""
         return self in (Outcome.FAIL_TEST, Outcome.FAIL_ASSERTION)
-    
+
     @property
     def is_syntax_error(self) -> bool:
         """Check if this outcome is a syntax-related error."""
         return self in (Outcome.FAIL_SYNTAX, Outcome.FAIL_INDENTATION)
-    
+
     @property
     def is_import_error(self) -> bool:
         """Check if this outcome is an import-related error."""
         return self in (Outcome.FAIL_IMPORT, Outcome.FAIL_MODULE_NOT_FOUND)
-    
+
     @property
     def is_runtime_error(self) -> bool:
         """Check if this outcome is a runtime error."""
@@ -163,7 +166,7 @@ class Outcome(Enum):
             Outcome.FAIL_INDEX_ERROR,
             Outcome.FAIL_KEY_ERROR,
         )
-    
+
     @property
     def category(self) -> str:
         """Get the high-level category for this outcome."""
@@ -179,7 +182,7 @@ class Outcome(Enum):
             return "runtime_error"
         if self == Outcome.TIMEOUT:
             return "timeout"
-        if self == Outcome.MEMORY_ERROR:
+        if self in (Outcome.MEMORY_ERROR, Outcome.OUTPUT_LIMIT):
             return "resource_error"
         if self in (Outcome.EXTRACTION_FAILED, Outcome.NO_FUNCTION_FOUND):
             return "extraction_error"

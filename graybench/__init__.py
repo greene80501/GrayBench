@@ -6,7 +6,7 @@ Supports multiple providers (OpenAI, Anthropic, Google, DeepSeek, Moonshot, Gray
 fair, reproducible evaluation methodology.
 """
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "Gray Area Labs"
 
 from graybench.config import Config, get_config, PRICING
