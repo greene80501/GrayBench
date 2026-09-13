@@ -9,6 +9,7 @@ import contextlib
 import json
 import math
 import sys
+from pathlib import Path
 
 
 def value(item, depth=0):
@@ -32,6 +33,9 @@ def main():
     channel = sys.stdout
     namespace = {"__name__": "candidate"}
     with contextlib.redirect_stdout(sys.stderr):
+        prefix = Path("/input/public_prefix.py")
+        if prefix.exists():
+            exec(compile(prefix.read_text(encoding="utf-8"), "public_prefix.py", "exec"), namespace)
         with open("/input/candidate.py", encoding="utf-8") as source:
             exec(compile(source.read(), "candidate.py", "exec"), namespace)
     print(json.dumps({"protocol": 1, "ready": True}), file=channel, flush=True)

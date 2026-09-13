@@ -12,6 +12,7 @@ class Extracted:
     code: str
     method: str
     error: str | None = None
+    public_prefix: str = ""
 
 
 def extract(text: str, task: PublicTask) -> Extracted:
@@ -42,4 +43,16 @@ def extract(text: str, task: PublicTask) -> Extracted:
         if not full:
             code = task.prompt + code
             method += "+prompt"
+        else:
+            prompt_tree = ast.parse(task.prompt)
+            definition = next(
+                n
+                for n in prompt_tree.body
+                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                and n.name == task.entry_point
+            )
+            # Execute the given public prefix separately so a generated future import remains
+            # legal. No test/reference imports or inferred helper definitions enter this namespace.
+            prefix = "".join(task.prompt.splitlines(keepends=True)[: definition.lineno - 1])
+            return Extracted(code, method, public_prefix=prefix)
     return Extracted(code, method)

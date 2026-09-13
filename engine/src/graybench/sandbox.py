@@ -68,6 +68,7 @@ class Candidate:
         timeout: float = 120,
         output_limit: int = 1024 * 1024,
         docker: str = "docker",
+        public_prefix: str = "",
     ):
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", image):
             raise ValueError("Candidate runtime must use an immutable local image digest")
@@ -86,6 +87,8 @@ class Candidate:
         self.exceeded = threading.Event()
         directory = Path(self.directory.name)
         (directory / "candidate.py").write_text(code, encoding="utf-8")
+        if public_prefix:
+            (directory / "public_prefix.py").write_text(public_prefix, encoding="utf-8")
         shutil.copyfile(Path(__file__).with_name("worker.py"), directory / "worker.py")
         args = [
             docker,
