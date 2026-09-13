@@ -1,0 +1,116 @@
+"""Frozen upstream cohort binding and durable judgment scheduling.
+
+This validates identities, not test adequacy. Reviewed eligibility and publication admission
+remain separate requirements; a bound development cohort does not become certified.
+"""
+
+from graybench.contracts import Generation, Protocol
+from graybench.datasets import JudgeTask
+from graybench.identity import canonical, identity
+from graybench.ledger import Ledger, StateError
+from graybench.providers import adapter
+from graybench.upstream import UpstreamJudge
+
+
+def cohort_identities(tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dict:
+    keyed = {f"{task.public.suite}/{task.public.task_id}": task for task in tasks}
+    if not tasks or len(keyed) != len(tasks):
+        raise StateError("Cohort must contain nonempty unique task keys")
+    datasets = {key: task.digest for key, task in keyed.items()}
+    judges = {key: identity(judge.configuration(task)[1]) for key, task in keyed.items()}
+    return {
+        "dataset_digest": identity(datasets),
+        "judge_digest": identity(judges),
+        "runtime_digest": judge.image.removeprefix("sha256:"),
+        "tasks": datasets,
+        "judges": judges,
+    }
+
+
+def validate_cohort(protocol: Protocol, tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dict:
+    binding = cohort_identities(tasks, judge)
+    if protocol.track != "upstream":
+        raise StateError("Upstream judge cannot execute a different evaluation track")
+    if set(protocol.task_keys) != set(binding["tasks"]):
+        raise StateError("Scheduled tasks differ from supplied cohort")
+    for key in ("dataset_digest", "judge_digest", "runtime_digest"):
+        if getattr(protocol, key) != binding[key]:
+            raise StateError("Frozen cohort mismatch: " + key)
+    provider = adapter(protocol.model.adapter)
+    for task in tasks:
+        key = f"{task.public.suite}/{task.public.task_id}"
+        request = provider.prepare(protocol.model, task.public, protocol.system_prompt)
+        if request.digest != protocol.request_digests[key]:
+            raise StateError("Frozen request does not match the cohort's public task")
+    return binding
+
+
+class JudgmentRunner:
+    def __init__(
+        self, ledger: Ledger, run_id: str, tasks: tuple[JudgeTask, ...], judge: UpstreamJudge
+    ):
+        self.ledger, self.run_id, self.tasks, self.judge = ledger, run_id, tasks, judge
+
+    def step(self) -> dict:
+        protocol = self.ledger.protocol(self.run_id)
+        binding = validate_cohort(protocol, self.tasks, self.judge)
+        self.ledger.verify()
+        tasks = {f"{task.public.suite}/{task.public.task_id}": task for task in self.tasks}
+        rows = self.ledger.db.execute(
+            "SELECT s.id,s.task_key,g.content,j.outcome,c.started_at FROM samples s "
+            "LEFT JOIN generations g ON g.sample_id=s.id "
+            "LEFT JOIN judgments j ON j.sample_id=s.id AND j.judge_digest=? "
+            "LEFT JOIN judgment_claims c ON c.sample_id=s.id AND c.judge_digest=? "
+            "WHERE s.run_id=? ORDER BY s.task_key,s.replicate",
+            (protocol.judge_digest, protocol.judge_digest, self.run_id),
+        ).fetchall()
+        if any(row["started_at"] and row["outcome"] is None for row in rows):
+            return {"state": "stopped", "reason": "unresolved_judgment"}
+        for row in rows:
+            if row["content"] is None or row["outcome"] is not None:
+                continue
+            generation = Generation.model_validate_json(canonical(self.ledger.blob(row["content"])))
+            self.ledger.claim_judgment(row["id"], protocol.judge_digest)
+            try:
+                result = self.judge.evaluate(tasks[row["task_key"]], generation.text)
+                if result.judge_digest != binding["judges"][row["task_key"]]:
+                    raise StateError("Judge changed after cohort validation")
+                outcome = result.outcome
+                evidence = {"task_judge_digest": result.judge_digest, "judgment": result.evidence}
+            except Exception as exc:
+                outcome = "infrastructure_error"
+                evidence = {"error_type": type(exc).__name__}
+            evidence["cohort"] = binding
+            evidence["generation_digest"] = row["content"]
+            self.ledger.judge(row["id"], protocol.judge_digest, outcome, evidence)
+            return {"state": "judged", "sample_id": row["id"], "outcome": outcome}
+        return {
+            "state": "judgments_complete"
+            if all(r["outcome"] is not None for r in rows)
+            else "awaiting_generations"
+        }
+
+
+class UpstreamCampaign:
+    """Development upstream campaign; identity validation does not imply oracle certification."""
+
+    def __init__(self, ledger, run_id, tasks, judge, transport):
+        from graybench.campaign import GenerationRunner
+
+        protocol = ledger.protocol(run_id)
+        validate_cohort(protocol, tasks, judge)
+        requests = {
+            f"{task.public.suite}/{task.public.task_id}": adapter(protocol.model.adapter).prepare(
+                protocol.model, task.public, protocol.system_prompt
+            )
+            for task in tasks
+        }
+        self.judgments = JudgmentRunner(ledger, run_id, tasks, judge)
+        self.generations = GenerationRunner(ledger, run_id, requests, transport)
+
+    def step(self):
+        # Validate before either stage, including before the first billable request.
+        result = self.judgments.step()
+        if result["state"] != "awaiting_generations":
+            return result
+        return self.generations.step()

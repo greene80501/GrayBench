@@ -103,8 +103,11 @@ can currently be exercised programmatically with explicit frozen requests.
    before generation. `GenerationRunner.step()` now dispatches at most one frozen request,
    checks source/request/endpoint identities, and resumes from the ledger. Retry backoff is
    enforced transactionally across restarts; pending/ambiguous delivery stops dispatch.
-   Admission, judge scheduling and the user-facing campaign CLI remain required. This internal
-   generation component is not a release eligibility check or a complete scoring runner.
+   `UpstreamCampaign` now binds the supplied task records, per-task judge configurations and
+   immutable image before dispatch, and schedules protected judgments from saved answers.
+   Judgment intent is append-only; interrupted oracle execution stops rather than rerolling.
+   Task adequacy/admission reviews, the user-facing campaign CLI and model drift checks remain
+   required. Identity validation does not certify an oracle or make a cohort release-eligible.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score
    compatibility records; and a release manifest anchored outside candidate execution.

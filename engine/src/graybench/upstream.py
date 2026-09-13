@@ -43,8 +43,8 @@ class UpstreamJudge:
         self.image, self.docker, self.timeout = image, docker, timeout
         self.candidate_timeout, self.limit = candidate_timeout, output_limit
 
-    def evaluate(self, task: JudgeTask, completion: str) -> Judgment:
-        extracted = extract(completion, task.public)
+    def configuration(self, task: JudgeTask) -> tuple[dict, dict]:
+        """Describe exact private judge input and runtime without executing a candidate."""
         prefix = ""
         if task.public.suite == "normal":
             tree = ast.parse(task.public.prompt)
@@ -74,6 +74,12 @@ class UpstreamJudge:
             "output_limit": self.limit,
             "protocol": "upstream-proxy-v1",
         }
+        return payload, manifest
+
+    def evaluate(self, task: JudgeTask, completion: str) -> Judgment:
+        extracted = extract(completion, task.public)
+        payload, manifest = self.configuration(task)
+        source = Path(__file__).parent
         digest = identity(manifest)
         if extracted.error:
             return Judgment("candidate_error", digest, {"detail": extracted.error})

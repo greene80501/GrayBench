@@ -55,6 +55,10 @@ CREATE TABLE IF NOT EXISTS judgments (
  evidence TEXT NOT NULL REFERENCES blobs(digest),
  PRIMARY KEY(sample_id, judge_digest)
 );
+CREATE TABLE IF NOT EXISTS judgment_claims (
+ sample_id TEXT NOT NULL REFERENCES generations(sample_id), judge_digest TEXT NOT NULL,
+ started_at TEXT NOT NULL, PRIMARY KEY(sample_id, judge_digest)
+);
 CREATE TABLE IF NOT EXISTS events (
  seq INTEGER PRIMARY KEY, previous TEXT NOT NULL, digest TEXT NOT NULL UNIQUE,
  payload TEXT NOT NULL REFERENCES blobs(digest)
@@ -82,6 +86,7 @@ class Ledger:
             "deliveries",
             "generations",
             "judgments",
+            "judgment_claims",
             "events",
         ):
             for operation in ("UPDATE", "DELETE"):
@@ -277,6 +282,21 @@ class Ledger:
                 outcome=outcome,
                 evidence=artifact,
             )
+
+    def claim_judgment(self, sample_id: str, judge_digest: str) -> None:
+        """Persist evaluation intent; an interrupted oracle is never silently rerolled."""
+        if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
+            raise StateError("Judge must have a content identity")
+        with self.transaction():
+            if self.db.execute(
+                "SELECT 1 FROM judgments WHERE sample_id=? AND judge_digest=?",
+                (sample_id, judge_digest),
+            ).fetchone():
+                raise StateError("Judgment already recorded")
+            self.db.execute(
+                "INSERT INTO judgment_claims VALUES (?,?,?)", (sample_id, judge_digest, now())
+            )
+            self._event("judgment_started", sample_id=sample_id, judge_digest=judge_digest)
 
     def verify(self) -> dict:
         for row in self.db.execute("SELECT digest FROM blobs"):
