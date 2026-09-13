@@ -141,6 +141,11 @@ No existing result has become a certified score merely because these foundation 
 
 ## Adversarial Docker tests
 
+Large circuit exchange uses bounded lossless compression without removing gates.
+Wire capacity failures remain unscored; diagnostic floods remain resource failures.
+See [transport calibration](../docs/reliability-evidence/large-circuit-transport.md)
+for limits, adversarial checks and separate normal/hard task-100 reference evidence.
+
 `reference-scan CACHE OUTPUT --image IMAGE --offline` calibrates both pinned offline reference
 suites into a new append-only JSONL file. Omit `--offline` only for an explicitly planned full
 service-dependent calibration. `reference-inspect OUTPUT` checks its event chain and identifies

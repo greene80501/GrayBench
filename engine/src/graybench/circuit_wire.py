@@ -5,7 +5,52 @@ This codec is deliberately explicit about unsupported custom/control-flow operat
 Those interfaces require their own validated representation before a task can be admitted.
 """
 
+import base64
+import json
 import math
+import zlib
+
+MAX_CIRCUIT_BYTES = 64 * 1024 * 1024
+MAX_COMPRESSED_BYTES = 512 * 1024
+
+
+def pack_circuit(value):
+    """Compress data only; preserve every instruction, label and parameter exactly."""
+    raw = json.dumps(value, separators=(",", ":"), allow_nan=False).encode()
+    if len(raw) < 32768:
+        return value
+    if len(raw) > MAX_CIRCUIT_BYTES:
+        raise WireError("Circuit representation exceeds decoded byte limit")
+    compressed = zlib.compress(raw)
+    if len(compressed) > MAX_COMPRESSED_BYTES:
+        raise WireError("Circuit representation exceeds compressed byte limit")
+    return {
+        "kind": "compressed_circuit_v1",
+        "bytes": base64.b64encode(compressed).decode(),
+        "size": len(raw),
+    }
+
+
+def unpack_circuit(value):
+    fields(value, {"kind", "bytes", "size"})
+    if value["kind"] != "compressed_circuit_v1":
+        raise WireError("Unknown compressed circuit format")
+    size = integer(value["size"], MAX_CIRCUIT_BYTES)
+    encoded = value["bytes"]
+    if type(encoded) is not str or len(encoded) > 4 * ((MAX_COMPRESSED_BYTES + 2) // 3):
+        raise WireError("Compressed circuit exceeds byte limit")
+    try:
+        compressed = base64.b64decode(encoded, validate=True)
+        if len(compressed) > MAX_COMPRESSED_BYTES:
+            raise WireError("Compressed circuit exceeds byte limit")
+        decoder = zlib.decompressobj()
+        raw = decoder.decompress(compressed, size + 1)
+        if len(raw) != size or not decoder.eof or decoder.unused_data or decoder.unconsumed_tail:
+            raise WireError("Invalid or oversized compressed circuit stream")
+        result = json.loads(raw)
+    except (ValueError, zlib.error, RecursionError) as exc:
+        raise WireError("Invalid compressed circuit") from exc
+    return decode_circuit(result)
 
 
 class WireError(ValueError):
@@ -199,7 +244,7 @@ def decode_circuit(value):
             names.add(name)
             indices(bits, count)
     ops = value["operations"]
-    if type(ops) is not list or len(ops) > 20_000:
+    if type(ops) is not list or len(ops) > 1_000_000:
         raise WireError("Instruction count exceeds codec limit")
     from qiskit.circuit.library import UnitaryGate, get_standard_gate_name_mapping
 

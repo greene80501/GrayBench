@@ -3,9 +3,15 @@
 import math
 
 try:  # Worker files are copied without installing the host orchestration package.
-    from .circuit_wire import WireError, decode_circuit, encode_circuit
+    from .circuit_wire import (
+        WireError,
+        decode_circuit,
+        encode_circuit,
+        pack_circuit,
+        unpack_circuit,
+    )
 except ImportError:
-    from circuit_wire import WireError, decode_circuit, encode_circuit
+    from circuit_wire import WireError, decode_circuit, encode_circuit, pack_circuit, unpack_circuit
 
 try:
     from .scientific_wire import decode_scientific, encode_scientific
@@ -42,7 +48,7 @@ def encode(item, depth=0):
         return encode_parameter(item)
 
     if isinstance(item, QuantumCircuit):
-        return encode_circuit(item)
+        return pack_circuit(encode_circuit(item))
     scientific = encode_scientific(item)
     if scientific is not None:
         return scientific
@@ -88,6 +94,8 @@ def decode(value, depth=0, budget=None):
         return decode_parameter(value)
     if type(value) is dict and value.get("kind") == "circuit_v4":
         return decode_circuit(value)
+    if type(value) is dict and value.get("kind") == "compressed_circuit_v1":
+        return unpack_circuit(value)
     if type(value) is not dict or set(value) != {"kind", "items"}:
         raise WireError("Invalid result wire type")
     if type(value["items"]) is not list:

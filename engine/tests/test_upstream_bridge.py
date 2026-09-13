@@ -54,6 +54,20 @@ def test_upstream_wrong_answer_fails():
 
 
 @pytest.mark.parametrize(
+    "code,outcome",
+    [
+        ("def answer(x): return 'x'*10000", "unsupported"),
+        ("def answer(x):\n    while True: print('x'*1000)", "candidate_error"),
+    ],
+)
+def test_wire_overflow_is_separate_from_diagnostic_overflow(code, outcome):
+    result = UpstreamJudge(image=IMAGE, docker=DOCKER, output_limit=4096).evaluate(
+        task("def check(candidate):\n    assert candidate(3)==4"), code
+    )
+    assert result.outcome == outcome, result
+
+
+@pytest.mark.parametrize(
     "code,expected",
     [
         ("def answer(x): return object()", "unsupported"),

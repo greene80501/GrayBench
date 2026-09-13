@@ -77,6 +77,7 @@ class Candidate:
         self.messages = queue.Queue(maxsize=2)
         self.stopping = threading.Event()
         self.exceeded = threading.Event()
+        self.wire_exceeded = threading.Event()
         self.active_seconds = 0.0
         self.active_started = None
         self.paused = False
@@ -210,8 +211,10 @@ class Candidate:
             line = self.process.stdout.readline(self.limit + 1)
             total += len(line)
             if total > self.limit:
-                self.exceeded.set()
-                self._queue(CandidateError("Candidate output limit exceeded"))
+                self.wire_exceeded.set()
+                self._queue(
+                    CandidateInterfaceError("Candidate wire output exceeds transport limit")
+                )
                 return
             if not line:
                 self._queue(CandidateError("Candidate exited before returning a value"))
@@ -238,6 +241,8 @@ class Candidate:
             message = self.messages.get(timeout=remaining)
         except queue.Empty as exc:
             raise TimeoutError("Candidate sample time limit exceeded") from exc
+        if self.wire_exceeded.is_set():
+            raise CandidateInterfaceError("Candidate wire output exceeds transport limit")
         if self.exceeded.is_set():
             raise CandidateError("Candidate output limit exceeded")
         if isinstance(message, Exception):
