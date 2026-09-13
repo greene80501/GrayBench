@@ -170,6 +170,9 @@ def run_benchmark(
     reasoning_effort: Optional[str] = typer.Option(
         None, "--reasoning-effort", help="OpenAI reasoning effort: low, medium or high"
     ),
+    prompt_profile: str = typer.Option(
+        "official", "--prompt-profile", help="official or environment; different comparison tracks"
+    ),
 ):
     """
     Run benchmark on a specific provider/model combination.
@@ -178,6 +181,15 @@ def run_benchmark(
         graybench run -p openai -m gpt-4o -s normal -w 8
     """
     config = get_config()
+    if prompt_profile not in ("official", "environment"):
+        raise typer.BadParameter("prompt-profile must be official or environment")
+    system_prompt = None
+    if prompt_profile == "environment":
+        system_prompt = (
+            "The execution environment is Python 3.12, Qiskit 2.4.2, "
+            "qiskit-aer 0.17.0, and qiskit-ibm-runtime 0.45.0. "
+            "Implement the requested task for these versions. Return Python code only."
+        )
 
     # Validate provider
     provider_config = config.get_provider(provider)
@@ -321,7 +333,10 @@ def run_benchmark(
             "full_suite": len(tasks) == len(dataset),
             "dataset_size": len(dataset),
             "track": "agent_system" if provider == "graygate" else "single_generation",
-            "prompt_policy": "official_verbatim",
+            "prompt_policy": (
+                "official_verbatim" if prompt_profile == "official" else "environment_declared"
+            ),
+            "system_prompt": system_prompt,
             "extraction": "fences_or_raw_no_repair",
             "extra_params": provider_config.default_params,
             "workers": workers,
@@ -353,6 +368,7 @@ def run_benchmark(
         temperature=temperature,
         max_tokens=max_tokens,
         extra_params=provider_config.default_params,
+        system_prompt=system_prompt,
     )
 
     # Complete run
@@ -381,6 +397,7 @@ def _run_benchmark(
     temperature: float,
     max_tokens: int,
     extra_params: Optional[dict[str, Any]] = None,
+    system_prompt: Optional[str] = None,
 ):
     """Run the benchmark with progress tracking."""
 
@@ -414,6 +431,7 @@ def _run_benchmark(
                 temperature=temperature,
                 max_tokens=max_tokens,
                 extra_params=dict(extra_params),
+                system_prompt=system_prompt,
             )
 
             # One returned generation per task, including empty completions.
@@ -649,6 +667,7 @@ def run_sweep(
                     preflight=Path(entry["preflight"]) if entry.get("preflight") else None,
                     budget=entry.get("budget"),
                     reasoning_effort=entry.get("reasoning_effort"),
+                    prompt_profile=entry.get("prompt_profile", "official"),
                 )
                 results.append(
                     {

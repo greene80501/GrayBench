@@ -10,6 +10,12 @@ GrayBench measures execution-based success on **Qiskit HumanEval**, not generic 
 - Hard is the official standalone-function exercise. Its prompt includes the function name and argument contract. Never invent hard prompts by stripping the normal prompt.
 - Remove Markdown fences mechanically; preserve emitted helpers, constants, indentation and order. Do not select a function or candidate based on which one passes. Do not insert missing imports in hard mode, rename functions, fix syntax, or salvage reasoning text as a final answer.
 
+## Optional environment-declared experiment
+
+`--prompt-profile environment` adds the same system message for every task: Python 3.12, Qiskit 2.4.2, qiskit-aer 0.17.0 and qiskit-ibm-runtime 0.45.0, followed by a request to target those versions and return Python code only. It supplies no examples, answers, replacement imports, retrieved documentation or test feedback. This profile is recorded and grouped separately from `official`, which remains the default with no system message.
+
+This secondary experiment was introduced after observing outdated imports in baseline outputs; it is exploratory, not an independently preregistered replication. Run all selected tasks under a profile and report both profiles; do not retain only whichever profile scores better. Version disclosure and formatting instructions change together here, so their individual causal effects are not isolated.
+
 ## Attempts and generation settings
 
 Each task receives one returned generation, including refusals and empty or truncated answers. Only explicit rate-limit errors may be retried. Record provider response and actual request parameters. Default output cap is 16,384 tokens; this is a declared protocol choice, not a promise that every reasoning model has enough capacity. Report finish reasons and study alternative caps as separate, preregistered experiments. Never retry only the failures and report the best score.

@@ -45,6 +45,8 @@ uv run graybench run -p google -m gemini-3.6-flash -s hard --preflight data/pref
 
 `--budget` is a per-run estimated USD ceiling, checked conservatively before requests. It is not a provider billing limit. Verify rates and account billing before large runs. Unknown pricing blocks automatic live runs. For a smoke test, add `--limit 3`; never compare that score with a full run.
 
+`--prompt-profile environment` is a separate exploratory track that uniformly discloses the installed SDK versions and requests code only. The default `official` profile adds no system message. Never mix their scores.
+
 One returned answer per task; no repair, test feedback, tools or extra attempt for an empty response. Only explicit rate-limit errors may be retried. The default cap is 16,384 output tokens. Reasoning models can consume their limit without delivering an answer; retain finish reasons and compare caps as separate experiments. Actual provider settings are saved with responses. Temperature zero is not a guarantee of deterministic output.
 
 The evaluator has no network, credentials, user-profile mount or host repository mount, runs as an unprivileged user, and has CPU/memory/process limits. Only disposable task files are mounted, read-only. This reduces execution risk; it does not prove that hostile code cannot exploit a runtime flaw or inspect in-process tests.
