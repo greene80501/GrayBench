@@ -141,6 +141,11 @@ No existing result has become a certified score merely because these foundation 
 
 ## Adversarial Docker tests
 
+Candidate output files can be captured as opaque bytes while all candidate processes
+remain frozen. The isolated workspace uses a bounded ephemeral tmpfs volume. See
+[file capture](../docs/reliability-evidence/file-capture.md) for the boundary and the
+remaining parser/oracle work; this does not yet enable scoring file-dependent tasks.
+
 Large circuit exchange uses bounded lossless compression without removing gates.
 Wire capacity failures remain unscored; diagnostic floods remain resource failures.
 See [transport calibration](../docs/reliability-evidence/large-circuit-transport.md)

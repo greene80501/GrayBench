@@ -17,6 +17,7 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
+from graybench.artifacts import MAX_ARTIFACT_BYTES
 from graybench.container_control import ContainerControl
 from graybench.value_wire import encode
 
@@ -82,6 +83,8 @@ class Candidate:
         self.active_started = None
         self.paused = False
         self.control = None
+        self.workspace = self.name + "-workspace"
+        self.workspace_created = False
         directory = Path(self.directory.name)
         (directory / "candidate.py").write_text(code, encoding="utf-8")
         if public_prefix:
@@ -120,8 +123,8 @@ class Candidate:
             "1",
             "--user",
             "65534:65534",
-            "--tmpfs",
-            "/tmp:rw,nosuid,size=256m",
+            "--mount",
+            f"type=volume,source={self.workspace},target=/tmp,volume-nocopy",
             "--mount",
             f"type=bind,source={directory},target=/input,readonly",
             "--workdir",
@@ -141,6 +144,8 @@ class Candidate:
         ]
         try:
             self.control = ContainerControl(docker)
+            self.control.create_workspace(self.workspace)
+            self.workspace_created = True
             self.active_started = time.monotonic()
             self.deadline = self.active_started + timeout
             self.process = subprocess.Popen(
@@ -207,31 +212,34 @@ class Candidate:
 
     def _read_stdout(self):
         total = 0
-        while not self.stopping.is_set():
+        while True:
             line = self.process.stdout.readline(self.limit + 1)
+            if not line:
+                self._queue(CandidateError("Candidate exited before returning a value"))
+                return
+            if self.stopping.is_set() or self.wire_exceeded.is_set():
+                continue  # Drain without retention so Docker can close the attached process.
             total += len(line)
             if total > self.limit:
                 self.wire_exceeded.set()
                 self._queue(
                     CandidateInterfaceError("Candidate wire output exceeds transport limit")
                 )
-                return
-            if not line:
-                self._queue(CandidateError("Candidate exited before returning a value"))
-                return
+                continue
             self._queue(line)
 
     def _read_stderr(self):
-        while not self.stopping.is_set():
+        while True:
             chunk = self.process.stderr.read(8192)
             if not chunk:
                 return
+            if self.stopping.is_set() or self.exceeded.is_set():
+                continue
             remaining = self.limit - len(self.stderr)
             self.stderr.extend(chunk[:remaining])
             if len(chunk) > remaining:
                 self.exceeded.set()
                 self._queue(CandidateError("Candidate diagnostic output limit exceeded"))
-                return
 
     def _receive(self):
         remaining = self.deadline - time.monotonic()
@@ -261,6 +269,12 @@ class Candidate:
                 "Input mutation requires the explicit call_with_updates interface"
             )
         return result.value
+
+    def capture_artifact(self, name: str, *, limit=MAX_ARTIFACT_BYTES):
+        """Capture actual file bytes while every candidate process remains frozen."""
+        if self.closed or not self.paused or self.control is None:
+            raise RuntimeError("Artifact capture requires a live paused candidate")
+        return self.control.capture_artifact(self.name, name, limit=limit)
 
     def call_with_updates(self, entry_point: str, *args, **kwargs):
         response = self.call_wire(entry_point, *args, **kwargs)
@@ -369,7 +383,11 @@ class Candidate:
                 stream.close()
         self.directory.cleanup()
         if self.control is not None:
-            self.control.close()
+            try:
+                if self.workspace_created:
+                    self.control.remove_workspace(self.workspace)
+            finally:
+                self.control.close()
 
     def __enter__(self):
         return self

@@ -68,6 +68,7 @@ class UpstreamJudge:
             "worker.py",
             "extraction.py",
             "container_control.py",
+            "artifacts.py",
         ):
             files[name] = hashlib.sha256((source / name).read_bytes()).hexdigest()
         manifest = {
@@ -77,6 +78,7 @@ class UpstreamJudge:
             "judge_timeout": self.timeout,
             "candidate_timeout": self.candidate_timeout,
             "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
             "output_limit": self.limit,
             "protocol": "upstream-proxy-v1",
         }
