@@ -57,11 +57,13 @@ Preparation allocates only private staging nodes and does not mutate existing ob
 
 A fixed `NodeCodec` registry entry defines `kind`, `matches(object)`,
 `state(object, ref)`, `validate(state, shape_index)`, `allocate(state, shape_index)`,
-`populate(object, state, resolve)` and `apply(object, state, resolve)`.
+`populate(object, state, resolve)`, `tokens(state)` and `apply(object, prepared)`.
 `ref(object)` returns a scalar or exact `{ref: id}` record; `resolve(id)` returns
 only an already validated/allocated graph object. `shape_index` contains validated
 node kinds and structural dimensions, not arbitrary object access. These interfaces
-are implemented in Task 1 and consumed unchanged in Tasks 2 and 3.
+are implemented in Task 1 and extended explicitly in Tasks 2 and 3. Population
+constructs a private prepared value; apply consumes already resolved values and
+does not parse wire data. Complete validation precedes any apply call.
 
 Run all commands below from `work/GrayBench/engine`; use `uv run --extra qiskit
 --extra dataset pytest ...`. Format before source-bound protected replays.
@@ -72,7 +74,7 @@ Files: create `graph_wire.py`, `graph_types.py`, `tests/test_graph_wire.py`.
 Produces the arena/codec interfaces above, with list/tuple/dict/PropertySet support.
 Do not route production candidate calls through the new arena yet.
 
-- [ ] Write the shared-reference regression and observe failure on the old codec:
+- [x] Write the shared-reference regression and observe failure on the old codec:
 
 ```python
 def test_shared_positional_keyword_object():
@@ -84,20 +86,23 @@ def test_shared_positional_keyword_object():
     assert actual["args"][0] is actual["kwargs"]["b"]
 ```
 
-- [ ] Implement traversal with strong-reference ID maps, exact schemas and fixed
+- [x] Implement traversal with strong-reference ID maps, exact schemas and fixed
   ownership prefixes. Allocate mutable shells first, build tuple dependencies,
   then populate mutable containers. Charge nodes/edges/bytes across the entire arena.
-- [ ] Test a self-referential list, mutual list/dict cycle, tuple containing a list
+- [x] Test a self-referential list, mutual list/dict cycle, tuple containing a list
   pointing back to that tuple, ordered mappings and PropertySet missing-key behavior.
-- [ ] Test equal-valued distinct objects remain distinct, replacements get new IDs,
+- [x] Test equal-valued distinct objects remain distinct, replacements get new IDs,
   and an existing immutable tuple ID cannot acquire a different state.
-- [ ] Add a failed-preparation test: existing list `[1]`, malformed later reference;
+- [x] Add a failed-preparation test: existing list `[1]`, malformed later reference;
   `prepare` raises WireError and the list remains `[1]`. Repeat with duplicate IDs,
   dangling references, unknown kinds, foreign sessions, stale sequence, boolean IDs,
   invalid ownership and structural/byte-limit exhaustion.
-- [ ] Add a second snapshot retaining an old detached child; mutations of that child
+- [x] Add a second snapshot retaining an old detached child; mutations of that child
   must update its original receiver object even when it is no longer in current roots.
-- [ ] Run focused tests and lint, request bounded review, resolve findings, commit.
+- [x] Run focused tests and lint, inspect validation and ownership, commit. Per-task
+  review is superseded by the executing-plans workflow: one whole-plan review
+  after Task 5. Docker-enabled suite: 469 passed on 2026-09-19; 33 new graph cases.
+  This standalone module is not yet integrated into production candidate calls.
 
 ### Task 2: Numeric storage and scientific/primitive object ownership
 
@@ -238,8 +243,8 @@ Consumes v4 integration. Produces auditable admission evidence with remaining bl
 
 ## Self-review and execution state
 
-The ten spec invariants map to Tasks1–5: identity/topology/validation (1), storage
-and nested ownership (2–3), persistent calls/exceptions/privacy (4), and adversarial
+The ten spec invariants map to Tasks1â€“5: identity/topology/validation (1), storage
+and nested ownership (2â€“3), persistent calls/exceptions/privacy (4), and adversarial
 plus real-cohort evidence (5). All five review-focus cases have explicit tests.
 This plan does not claim implementation completion or user review of this artifact.
 Continue inline under the existing goal authorization; no parallel implementation
