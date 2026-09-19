@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from circuit_wire import WireError
+from circuit_wire import WireError, WireLimitError
 from oracles import bell_file_circuits, ghz_custom_layout
 from value_wire import decode
 
@@ -18,6 +18,8 @@ def main():
     oracle = request["oracle"]
     try:
         value = decode(request["value"])
+    except WireLimitError as exc:
+        outcome, evidence = "unsupported", {"reason": "codec capacity", "detail": str(exc)}
     except (WireError, ValueError, TypeError) as exc:
         outcome, evidence = "candidate_error", {"reason": "invalid typed value", "detail": str(exc)}
     else:

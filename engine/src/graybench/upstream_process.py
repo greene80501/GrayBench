@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-from circuit_wire import WireError
+from circuit_wire import WireError, WireLimitError
 from value_wire import decode, encode
 
 
@@ -50,6 +50,8 @@ def main():
             )
         try:
             return decode(wire["value"])
+        except WireLimitError as exc:
+            raise BridgeFailure("unsupported", str(exc)) from exc
         except (WireError, ValueError, TypeError) as exc:
             raise BridgeFailure("candidate_error", str(exc)) from exc
 

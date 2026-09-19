@@ -5,13 +5,21 @@ import math
 try:  # Worker files are copied without installing the host orchestration package.
     from .circuit_wire import (
         WireError,
+        WireLimitError,
         decode_circuit,
         encode_circuit,
         pack_circuit,
         unpack_circuit,
     )
 except ImportError:
-    from circuit_wire import WireError, decode_circuit, encode_circuit, pack_circuit, unpack_circuit
+    from circuit_wire import (
+        WireError,
+        WireLimitError,
+        decode_circuit,
+        encode_circuit,
+        pack_circuit,
+        unpack_circuit,
+    )
 
 try:
     from .scientific_wire import decode_scientific, encode_scientific
@@ -21,7 +29,7 @@ except ImportError:
 
 def encode(item, depth=0):
     if depth > 32:
-        raise WireError("Result nesting exceeds wire limit")
+        raise WireLimitError("Result nesting exceeds wire limit")
     if item is None or type(item) in (bool, str, int):
         return item
     if type(item) is float and math.isfinite(item):
@@ -68,7 +76,7 @@ def decode(value, depth=0, budget=None):
         budget = [100_000]
     budget[0] -= 1
     if depth > 32 or budget[0] < 0:
-        raise WireError("Result exceeds structural limit")
+        raise WireLimitError("Result exceeds structural limit")
     if value is None or type(value) in (bool, int, str):
         return value
     if type(value) is float and math.isfinite(value):

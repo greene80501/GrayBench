@@ -133,3 +133,19 @@ def test_normal_public_imports_are_preserved():
         "    return sqrt(x)\n",
     )
     assert result.outcome == "pass", result
+
+
+@pytest.mark.parametrize("kind", ["circuit", "instruction"])
+def test_valid_long_label_is_unscored_codec_capacity(kind):
+    code = """from qiskit import QuantumCircuit
+from qiskit.circuit import Gate
+def answer():
+    gate = Gate('custom', 1, [], label='x' * 5000)
+    circuit = QuantumCircuit(1)
+    circuit.append(gate, [0])
+    return RETURN_VALUE
+""".replace("RETURN_VALUE", "circuit" if kind == "circuit" else "gate")
+    result = UpstreamJudge(image=IMAGE, docker=DOCKER).evaluate(
+        task("def check(candidate):\n    assert candidate().num_qubits == 1"), code
+    )
+    assert result.outcome == "unsupported", result

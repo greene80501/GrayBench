@@ -1,10 +1,24 @@
 """Data-only instructions using fixed constructors and bounded nested circuit definitions."""
 
 try:
-    from .circuit_wire import WireError, decode_circuit, encode_circuit, fields, integer
+    from .circuit_wire import (
+        WireError,
+        WireLimitError,
+        decode_circuit,
+        encode_circuit,
+        fields,
+        integer,
+    )
     from .symbolic_wire import decode_parameter, encode_parameter
 except ImportError:
-    from circuit_wire import WireError, decode_circuit, encode_circuit, fields, integer
+    from circuit_wire import (
+        WireError,
+        WireLimitError,
+        decode_circuit,
+        encode_circuit,
+        fields,
+        integer,
+    )
     from symbolic_wire import decode_parameter, encode_parameter
 
 
@@ -13,7 +27,7 @@ def encode_instruction(op, *, depth=0, operation_budget=None):
     from qiskit.circuit import Gate, Instruction
 
     if depth > 8:
-        raise WireError("Instruction definition nesting exceeds limit")
+        raise WireLimitError("Instruction definition nesting exceeds limit")
     if type(op) in (Gate, Instruction):
         return {
             "kind": "generic_instruction_v1",
@@ -49,7 +63,7 @@ def decode_instruction(value, *, depth=0, operation_budget=None):
     from qiskit.circuit import Gate, Instruction
 
     if depth > 8:
-        raise WireError("Instruction definition nesting exceeds limit")
+        raise WireLimitError("Instruction definition nesting exceeds limit")
     if type(value) is not dict:
         raise WireError("Expected an instruction record")
     if value.get("kind") == "standard_instruction_v1":
@@ -72,15 +86,20 @@ def decode_instruction(value, *, depth=0, operation_budget=None):
     fields(value, {"kind", "class", "name", "qubits", "clbits", "label", "params", "definition"})
     if value["kind"] != "generic_instruction_v1" or value["class"] not in ("Gate", "Instruction"):
         raise WireError("Unknown instruction constructor")
-    if type(value["name"]) is not str or len(value["name"]) > 4096:
+    if type(value["name"]) is not str:
         raise WireError("Invalid instruction name")
-    if value["label"] is not None and (
-        type(value["label"]) is not str or len(value["label"]) > 4096
-    ):
-        raise WireError("Invalid instruction label")
+    if len(value["name"]) > 4096:
+        raise WireLimitError("Instruction name exceeds codec limit")
+    if value["label"] is not None:
+        if type(value["label"]) is not str:
+            raise WireError("Invalid instruction label")
+        if len(value["label"]) > 4096:
+            raise WireLimitError("Instruction label exceeds codec limit")
     nq, nc = integer(value["qubits"]), integer(value["clbits"])
-    if type(value["params"]) is not list or len(value["params"]) > 512:
+    if type(value["params"]) is not list:
         raise WireError("Invalid generic parameter list")
+    if len(value["params"]) > 512:
+        raise WireLimitError("Generic parameter count exceeds codec limit")
     context = {"parameters": {}, "vectors": {}}
     budget = [100000]
     params = [decode_parameter(p, context, budget=budget) for p in value["params"]]

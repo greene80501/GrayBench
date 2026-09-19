@@ -20,10 +20,10 @@ def pack_circuit(value):
     if len(raw) < 32768:
         return value
     if len(raw) > MAX_CIRCUIT_BYTES:
-        raise WireError("Circuit representation exceeds decoded byte limit")
+        raise WireLimitError("Circuit representation exceeds decoded byte limit")
     compressed = zlib.compress(raw)
     if len(compressed) > MAX_COMPRESSED_BYTES:
-        raise WireError("Circuit representation exceeds compressed byte limit")
+        raise WireLimitError("Circuit representation exceeds compressed byte limit")
     return {
         "kind": "compressed_circuit_v1",
         "bytes": base64.b64encode(compressed).decode(),
@@ -37,17 +37,21 @@ def unpack_circuit(value):
         raise WireError("Unknown compressed circuit format")
     size = integer(value["size"], MAX_CIRCUIT_BYTES)
     encoded = value["bytes"]
-    if type(encoded) is not str or len(encoded) > 4 * ((MAX_COMPRESSED_BYTES + 2) // 3):
-        raise WireError("Compressed circuit exceeds byte limit")
+    if type(encoded) is not str:
+        raise WireError("Invalid compressed circuit encoding")
+    if len(encoded) > 4 * ((MAX_COMPRESSED_BYTES + 2) // 3):
+        raise WireLimitError("Compressed circuit exceeds byte limit")
     try:
         compressed = base64.b64decode(encoded, validate=True)
         if len(compressed) > MAX_COMPRESSED_BYTES:
-            raise WireError("Compressed circuit exceeds byte limit")
+            raise WireLimitError("Compressed circuit exceeds byte limit")
         decoder = zlib.decompressobj()
         raw = decoder.decompress(compressed, size + 1)
         if len(raw) != size or not decoder.eof or decoder.unused_data or decoder.unconsumed_tail:
             raise WireError("Invalid or oversized compressed circuit stream")
         result = json.loads(raw)
+    except WireLimitError:
+        raise
     except (ValueError, zlib.error, RecursionError) as exc:
         raise WireError("Invalid compressed circuit") from exc
     return decode_circuit(result)
@@ -57,9 +61,15 @@ class WireError(ValueError):
     pass
 
 
+class WireLimitError(WireError):
+    """A representation exceeds this codec; no correctness conclusion follows."""
+
+
 def integer(value, maximum=512):
-    if type(value) is not int or not 0 <= value <= maximum:
+    if type(value) is not int or value < 0:
         raise WireError("Invalid bounded integer")
+    if value > maximum:
+        raise WireLimitError("Integer exceeds codec allocation limit")
     return value
 
 
@@ -91,12 +101,12 @@ def indices(value, count):
 
 def encode_circuit(circuit, *, depth=0, operation_budget=None):
     if depth > 8:
-        raise WireError("Instruction definition nesting exceeds limit")
+        raise WireLimitError("Instruction definition nesting exceeds limit")
     if operation_budget is None:
         operation_budget = [1_000_000]
     operation_budget[0] -= len(circuit.data)
     if operation_budget[0] < 0:
-        raise WireError("Instruction graph exceeds codec limit")
+        raise WireLimitError("Instruction graph exceeds codec limit")
     from qiskit.circuit import Gate, Instruction
     from qiskit.circuit.library import StatePreparation, UnitaryGate, get_standard_gate_name_mapping
 
@@ -202,7 +212,7 @@ def validate_origins(origins, count):
         seen.add(tuple(item))
         registers.add((name, size))
     if sum(size for _, size in registers) > 8192:
-        raise WireError("Backing-register allocation exceeds limit")
+        raise WireLimitError("Backing-register allocation exceeds limit")
 
 
 def build_bits(origins, bit_type, register_type):
@@ -221,7 +231,7 @@ def build_bits(origins, bit_type, register_type):
 
 def decode_circuit(value, *, depth=0, operation_budget=None):
     if depth > 8:
-        raise WireError("Instruction definition nesting exceeds limit")
+        raise WireLimitError("Instruction definition nesting exceeds limit")
     if operation_budget is None:
         operation_budget = [1_000_000]
     try:
@@ -248,8 +258,10 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
     )
     if value["kind"] != "circuit_v5":
         raise WireError("Unknown circuit codec")
-    if type(value["name"]) is not str or len(value["name"]) > 4096:
+    if type(value["name"]) is not str:
         raise WireError("Invalid circuit name")
+    if len(value["name"]) > 4096:
+        raise WireLimitError("Circuit name exceeds codec limit")
     metadata = json_metadata(value["metadata"])
     nq, nc = integer(value["qubits"]), integer(value["clbits"])
     context = {"parameters": {}, "vectors": {}}
@@ -271,11 +283,13 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
             names.add(name)
             indices(bits, count)
     ops = value["operations"]
-    if type(ops) is not list or len(ops) > 1_000_000:
-        raise WireError("Instruction count exceeds codec limit")
+    if type(ops) is not list:
+        raise WireError("Expected instruction list")
+    if len(ops) > 1_000_000:
+        raise WireLimitError("Instruction count exceeds codec limit")
     operation_budget[0] -= len(ops)
     if operation_budget[0] < 0:
-        raise WireError("Instruction graph exceeds codec limit")
+        raise WireLimitError("Instruction graph exceeds codec limit")
     from qiskit.circuit.library import UnitaryGate, get_standard_gate_name_mapping
 
     try:
@@ -288,8 +302,11 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
     matrix_bytes = 0
     for op in ops:
         fields(op, {"name", "params", "qubits", "clbits", "unit", "label"})
-        if op["label"] is not None and (type(op["label"]) is not str or len(op["label"]) > 4096):
-            raise WireError("Invalid instruction label")
+        if op["label"] is not None:
+            if type(op["label"]) is not str:
+                raise WireError("Invalid instruction label")
+            if len(op["label"]) > 4096:
+                raise WireLimitError("Instruction label exceeds codec limit")
         if type(op["name"]) is not str or op["name"] not in {
             *standard,
             "barrier",
@@ -337,7 +354,7 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
                 raise WireError("Invalid matrix instruction shape or dtype")
             matrix_bytes += matrix.nbytes
             if matrix_bytes > 512 * 1024:
-                raise WireError("Total matrix storage exceeds limit")
+                raise WireLimitError("Total matrix storage exceeds limit")
             decoded_params.append([matrix])
         else:
             decoded_params.append(
@@ -371,7 +388,8 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
         for key in ("initial", "routing"):
             if len(indices(layout[key], nq)) != nq:
                 raise WireError("Layout must be a complete permutation")
-        integer(layout["input_count"], nq)
+        if type(layout["input_count"]) is not int or not 0 <= layout["input_count"] <= nq:
+            raise WireError("Layout input count exceeds circuit dimensions")
 
     from qiskit import QuantumCircuit
     from qiskit.circuit import Barrier, ClassicalRegister, Clbit, QuantumRegister, Qubit
@@ -426,7 +444,7 @@ def json_metadata(value):
     def visit(item, depth=0):
         budget[0] -= 1
         if budget[0] < 0 or depth > 16:
-            raise WireError("Circuit metadata exceeds structural limit")
+            raise WireLimitError("Circuit metadata exceeds structural limit")
         if item is None or type(item) in (bool, str, int):
             return
         if type(item) is float and math.isfinite(item):
@@ -446,5 +464,5 @@ def json_metadata(value):
     visit(value)
     raw = json.dumps(value, allow_nan=False).encode()
     if len(raw) > 65536:
-        raise WireError("Circuit metadata exceeds byte limit")
+        raise WireLimitError("Circuit metadata exceeds byte limit")
     return json.loads(raw)

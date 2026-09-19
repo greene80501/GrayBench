@@ -69,3 +69,26 @@ def test_judge_timeout_is_unscored_infrastructure_failure():
         {}, oracle="task20-ghz-state-v1"
     )
     assert result.outcome == "infrastructure_error"
+
+
+def test_judge_input_capacity_is_unscored():
+    result = ProtectedJudge(image="sha256:" + "0" * 64, output_limit=1024).evaluate(
+        "x" * 2048, oracle="task20-ghz-state-v1"
+    )
+    assert result.outcome == "unsupported"
+
+
+@docker_test
+@pytest.mark.parametrize("label,outcome", [("x" * 5000, "unsupported"), (42, "candidate_error")])
+def test_codec_capacity_is_distinct_from_malformed_label(label, outcome):
+    from qiskit import QuantumCircuit
+
+    from graybench.value_wire import encode
+
+    circuit = QuantumCircuit(3)
+    circuit.h(0)
+    circuit.cx(0, [1, 2])
+    wire = encode(circuit)
+    wire["operations"][0]["label"] = label
+    result = ProtectedJudge(image=IMAGE, docker=DOCKER).evaluate(wire, oracle="task20-ghz-state-v1")
+    assert result.outcome == outcome, result

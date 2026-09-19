@@ -153,3 +153,40 @@ def test_read_only_interface_does_not_silently_drop_mutations():
     with Candidate("def answer(q):\n    q.x(0)", image=IMAGE, docker=DOCKER) as worker:
         with pytest.raises(UnsupportedInterface, match="mutation"):
             worker.call("answer", QuantumCircuit(1))
+
+
+def test_decoder_capacity_type_survives_compressed_envelope():
+    from qiskit import QuantumCircuit
+
+    from graybench.circuit_wire import WireLimitError, encode_circuit, pack_circuit, unpack_circuit
+
+    circuit = QuantumCircuit(1, name="x" * 40000)
+    wire = pack_circuit(encode_circuit(circuit))
+    assert wire["kind"] == "compressed_circuit_v1"
+    with pytest.raises(WireLimitError, match="Circuit name"):
+        unpack_circuit(wire)
+
+
+def test_host_decoder_capacity_is_unsupported():
+    from qiskit import QuantumCircuit
+
+    from graybench.circuit_wire import encode_circuit
+    from graybench.sandbox import UnsupportedInterface, decode
+
+    with pytest.raises(UnsupportedInterface, match="Circuit name"):
+        decode(encode_circuit(QuantumCircuit(1, name="x" * 5000)))
+
+
+def test_inconsistent_layout_is_invalid_not_codec_capacity():
+    from graybench.circuit_wire import WireLimitError
+
+    wire = encode_circuit(QuantumCircuit(1))
+    wire["layout"] = {
+        "initial": [0],
+        "routing": [0],
+        "input_count": 2,
+        "virtual_bits": wire["qubit_origins"],
+    }
+    with pytest.raises(WireError, match="Layout input count") as caught:
+        decode_circuit(wire)
+    assert not isinstance(caught.value, WireLimitError)

@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from graybench.sandbox import Candidate, CandidateError, decode
+from graybench.sandbox import Candidate, CandidateError, UnsupportedInterface, decode
 
 
 @pytest.mark.parametrize(
@@ -32,7 +32,7 @@ def test_structural_limits():
     payload = 1
     for _ in range(40):
         payload = {"kind": "list", "items": [payload]}
-    with pytest.raises(CandidateError, match="structural"):
+    with pytest.raises(UnsupportedInterface, match="structural"):
         decode(payload)
 
 

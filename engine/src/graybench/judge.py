@@ -83,7 +83,7 @@ class ProtectedJudge:
                 {"reason": "non-JSON wire value", "exception": type(exc).__name__},
             )
         if len(payload) > self.limit:
-            return Judgment("candidate_error", digest, {"reason": "wire input exceeds limit"})
+            return Judgment("unsupported", digest, {"reason": "wire input exceeds limit"})
         name = "graybench-judge-" + uuid.uuid4().hex
         buffers = [bytearray(), bytearray()]
         exceeded = threading.Event()
@@ -194,7 +194,7 @@ class ProtectedJudge:
                     set(result) != {"protocol", "oracle", "outcome", "evidence"}
                     or result["protocol"] != 1
                     or result["oracle"] != oracle
-                    or result["outcome"] not in {"pass", "fail", "candidate_error"}
+                    or result["outcome"] not in {"pass", "fail", "candidate_error", "unsupported"}
                     or type(result["evidence"]) is not dict
                 ):
                     raise ValueError("Invalid trusted judge envelope")

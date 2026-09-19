@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from graybench.artifacts import MAX_ARTIFACT_BYTES
+from graybench.circuit_wire import WireLimitError
 from graybench.container_control import ContainerControl
 from graybench.value_wire import encode
 
@@ -39,6 +40,8 @@ def decode(value, depth=0, budget=None):
 
     try:
         return decode_value(value, depth, budget)
+    except WireLimitError as exc:
+        raise UnsupportedInterface(str(exc)) from exc
     except (ValueError, TypeError) as exc:
         raise CandidateError(str(exc)) from exc
 
