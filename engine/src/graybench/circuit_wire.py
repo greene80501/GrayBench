@@ -99,6 +99,15 @@ def indices(value, count):
     return value
 
 
+def charge_matrix_bytes(operation_budget, size):
+    """Share dense gate matrix capacity across the whole nested instruction graph."""
+    if len(operation_budget) == 1:
+        operation_budget.append(512 * 1024)
+    operation_budget[1] -= size
+    if operation_budget[1] < 0:
+        raise WireLimitError("Total matrix storage exceeds limit")
+
+
 def encode_circuit(circuit, *, depth=0, operation_budget=None):
     if depth > 8:
         raise WireLimitError("Instruction definition nesting exceeds limit")
@@ -109,6 +118,8 @@ def encode_circuit(circuit, *, depth=0, operation_budget=None):
         raise WireLimitError("Instruction graph exceeds codec limit")
     from qiskit.circuit import Gate, Instruction
     from qiskit.circuit.library import (
+        DiagonalGate,
+        HamiltonianGate,
         LinearFunction,
         StatePreparation,
         UnitaryGate,
@@ -127,7 +138,7 @@ def encode_circuit(circuit, *, depth=0, operation_budget=None):
     for item in circuit.data:
         op = item.operation
         wire_name = op.name
-        if type(op) in (Gate, Instruction, LinearFunction):
+        if type(op) in (Gate, Instruction, LinearFunction, HamiltonianGate, DiagonalGate):
             try:
                 from .instruction_wire import encode_instruction
             except ImportError:
@@ -304,7 +315,6 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
 
     standard = get_standard_gate_name_mapping()
     decoded_params = []
-    matrix_bytes = 0
     for op in ops:
         fields(op, {"name", "params", "qubits", "clbits", "unit", "label"})
         if op["label"] is not None:
@@ -357,9 +367,7 @@ def decode_circuit(value, *, depth=0, operation_budget=None):
             size = 2 ** len(op["qubits"])
             if matrix.shape != (size, size) or matrix.dtype.kind != "c":
                 raise WireError("Invalid matrix instruction shape or dtype")
-            matrix_bytes += matrix.nbytes
-            if matrix_bytes > 512 * 1024:
-                raise WireLimitError("Total matrix storage exceeds limit")
+            charge_matrix_bytes(operation_budget, matrix.nbytes)
             decoded_params.append([matrix])
         else:
             decoded_params.append(

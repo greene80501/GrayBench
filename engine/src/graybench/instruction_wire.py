@@ -25,12 +25,48 @@ except ImportError:
 def encode_instruction(op, *, depth=0, operation_budget=None):
     from qiskit import QuantumCircuit
     from qiskit.circuit import Gate, Instruction
-    from qiskit.circuit.library import LinearFunction
+    from qiskit.circuit.library import DiagonalGate, HamiltonianGate, LinearFunction
 
     if depth > 8:
         raise WireLimitError("Instruction definition nesting exceeds limit")
     if operation_budget is None:
         operation_budget = [1_000_000]
+    if type(op) in (HamiltonianGate, DiagonalGate):
+        if (
+            set(vars(op))
+            != {"_definition", "_name", "_num_qubits", "_num_clbits", "_params", "_label"}
+            or op.num_clbits != 0
+        ):
+            raise WireError("Unsupported numeric gate state")
+        try:
+            from .scientific_wire import array_record
+        except ImportError:
+            from scientific_wire import array_record
+        nq = integer(op.num_qubits, 7 if type(op) is HamiltonianGate else 9)
+        if not nq or type(op.params) is not list:
+            raise WireError("Invalid numeric gate dimensions or parameters")
+        if type(op) is HamiltonianGate:
+            if len(op.params) != 2:
+                raise WireError("Invalid Hamiltonian parameters")
+            params = [array_record(op.params[0]), encode_parameter(op.params[1])]
+        else:
+            if len(op.params) != 2**nq:
+                raise WireError("Invalid diagonal parameter count")
+            params = [encode_gate_scalar(p) for p in op.params]
+        record = {
+            "kind": "numeric_gate_v1",
+            "class": type(op).__name__,
+            "name": op.name,
+            "label": op.label,
+            "qubits": nq,
+            "params": params,
+            "definition": None
+            if op._definition is None
+            else encode_circuit(op._definition, depth=depth + 1, operation_budget=operation_budget),
+        }
+        # Validate structural invariants symmetrically, without evaluating the gate.
+        decode_numeric_gate(record, depth=depth, operation_budget=[1_000_000])
+        return record
     if type(op) is LinearFunction:
         import numpy as np
 
@@ -102,6 +138,8 @@ def decode_instruction(value, *, depth=0, operation_budget=None):
         raise WireError("Expected an instruction record")
     if operation_budget is None:
         operation_budget = [1_000_000]
+    if value.get("kind") == "numeric_gate_v1":
+        return decode_numeric_gate(value, depth=depth, operation_budget=operation_budget)
     if value.get("kind") == "linear_function_v1":
         import numpy as np
         from qiskit.circuit.library import LinearFunction
@@ -186,5 +224,73 @@ def decode_instruction(value, *, depth=0, operation_budget=None):
         )
         if definition.num_qubits != nq or definition.num_clbits != nc:
             raise WireError("Definition dimensions differ from instruction")
+        op.definition = definition
+    return op
+
+
+def encode_gate_scalar(value):
+    if type(value) is complex:
+        try:
+            from .circuit_wire import number
+        except ImportError:
+            from circuit_wire import number
+        return {"kind": "gate_complex_v1", "real": number(value.real), "imag": number(value.imag)}
+    return encode_parameter(value)
+
+
+def decode_numeric_gate(value, *, depth, operation_budget):
+    from qiskit.circuit import Gate
+    from qiskit.circuit.library import DiagonalGate, HamiltonianGate
+
+    try:
+        from .circuit_wire import charge_matrix_bytes, number
+        from .scientific_wire import decode_array
+    except ImportError:
+        from circuit_wire import charge_matrix_bytes, number
+        from scientific_wire import decode_array
+    fields(value, {"kind", "class", "name", "label", "qubits", "params", "definition"})
+    constructors = {"HamiltonianGate": HamiltonianGate, "DiagonalGate": DiagonalGate}
+    if type(value["class"]) is not str or value["class"] not in constructors:
+        raise WireError("Unknown numeric gate class")
+    for key in ("name", "label"):
+        if key == "label" and value[key] is None:
+            continue
+        if type(value[key]) is not str:
+            raise WireError("Invalid numeric gate name or label")
+        if len(value[key]) > 4096:
+            raise WireLimitError("Numeric gate name or label exceeds limit")
+    hamiltonian = value["class"] == "HamiltonianGate"
+    nq = integer(value["qubits"], 7 if hamiltonian else 9)
+    if not nq or type(value["params"]) is not list:
+        raise WireError("Invalid numeric gate dimensions or parameters")
+    if len(value["params"]) != (2 if hamiltonian else 2**nq):
+        raise WireError("Invalid numeric gate parameter count")
+    if hamiltonian:
+        matrix = decode_array(value["params"][0])
+        if matrix.shape != (2**nq, 2**nq) or matrix.dtype.kind != "c":
+            raise WireError("Invalid Hamiltonian matrix shape or dtype")
+        charge_matrix_bytes(operation_budget, matrix.nbytes)
+        params = [matrix, decode_parameter(value["params"][1])]
+    else:
+        params = []
+        context = {"parameters": {}, "vectors": {}}
+        budget = [100000]
+        for param in value["params"]:
+            if type(param) is dict and param.get("kind") == "gate_complex_v1":
+                fields(param, {"kind", "real", "imag"})
+                params.append(complex(number(param["real"]), number(param["imag"])))
+            else:
+                params.append(decode_parameter(param, context, budget=budget))
+    # Fixed classes with explicit fields: preserve even numerically invalid submitted
+    # parameters. Public constructors would reject or coerce those before judging.
+    op = object.__new__(constructors[value["class"]])
+    Gate.__init__(op, value["name"], nq, [], label=value["label"])
+    op._params = params
+    if value["definition"] is not None:
+        definition = decode_circuit(
+            value["definition"], depth=depth + 1, operation_budget=operation_budget
+        )
+        if definition.num_qubits != nq or definition.num_clbits:
+            raise WireError("Numeric gate definition dimensions differ")
         op.definition = definition
     return op
