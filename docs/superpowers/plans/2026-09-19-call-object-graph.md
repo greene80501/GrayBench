@@ -392,3 +392,23 @@ plus real-cohort evidence (5). All five review-focus cases have explicit tests.
 This plan does not claim implementation completion or user review of this artifact.
 Continue inline under the existing goal authorization; no parallel implementation
 is required. Each task's source-bound evidence uses a new exclusive output path.
+
+
+### Task3 refinement: controlled objects and native representation
+
+The eight-check Windows/Linux audit in
+[controlled ownership evidence](../../reliability-evidence/controlled-ownership-audit.md)
+shows that current control state does not identify the stored native representation.
+An existing open CRX can remain a native Python operation after being closed;
+an existing closed CRX can remain native standard after being opened. Public params
+delegate to the actual base gate while raw _params remains independent.
+
+- [ ] Add fixed controlled component schemas and regressions for shared base gates,
+  public/raw parameter lists, raw definitions and current control fields.
+- [ ] Record native standard/Python representation explicitly and verify it in
+  canonical reconstruction. Do not infer it from the current Python control state.
+- [ ] Preserve both open-to-closed and closed-to-open cache transitions, restoring
+  every temporary base/controlled dictionary on success or exception.
+- [ ] Resolve exact singleton base ownership before admitting controlled X families.
+
+This refines Task3; Task4/5 and the full benchmark requirements remain unchanged.
