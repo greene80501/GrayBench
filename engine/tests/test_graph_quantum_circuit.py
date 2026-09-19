@@ -154,8 +154,9 @@ def test_retained_python_gate_is_not_flattened_into_packed_value():
     gate = RXGate(0.2)
     circuit.append(gate, [0], copy=False)
     assert circuit.data[0].operation is gate
-    with pytest.raises(WireError, match="Retained Python"):
-        a.snapshot({"value": circuit}, sequence=1)
+    b = arenas()[1]
+    remote, held = transfer(a, b, (circuit, gate))
+    assert remote.data[0].operation is held
 
 
 def test_adding_quantum_register_preserves_classical_registers_and_phase():

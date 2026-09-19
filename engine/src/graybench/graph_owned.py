@@ -19,7 +19,7 @@ def has_owned(records):
 
 
 def execute_owned(plan, existing_objects, materialize):
-    from graybench.graph_types import REGISTRY, token_value
+    from graybench.graph_types import REGISTRY, SCALAR_MISSING, scalar_record, token_value
 
     objects = dict(existing_objects)
     owners = []
@@ -69,9 +69,14 @@ def execute_owned(plan, existing_objects, materialize):
     from graybench.graph_wire import wire_bytes
 
     identities = {id(value): handle for handle, value in objects.items()}
+
+    def reference(value):
+        scalar = scalar_record(value)
+        return {"ref": identities[id(value)]} if scalar is SCALAR_MISSING else scalar
+
     for handle, codec, state in owners:
         try:
-            actual = codec.state(objects[handle], lambda value: {"ref": identities[id(value)]})
+            actual = codec.state(objects[handle], reference)
         except KeyError as exc:
             raise WireError("Owner exposed an unbound cache object") from exc
         if wire_bytes(actual) != wire_bytes(state):

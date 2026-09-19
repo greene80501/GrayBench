@@ -237,7 +237,11 @@ QuantumCircuit roots and packed standard operation streams. Python component
 codecs live in graph_quantum_circuit.py; fixed packed operations live in
 graph_packed.py. Owner cache claims use owned_tokens separately from ordinary
 parameter references; finalize_owner installs operations after graph resolution.
-Retained Python instructions, symbolic phase, variables, layouts,
+Basic mutable retained Python instructions now have graph_instruction.py component
+codecs and graph_python_ops.py native-cache records. Shared definitions and
+parameter lists are preserved without lazy synthesis. Exact cached native qubit/clbit arities are read through
+DAGOpNode.from_instruction and preserved separately from the current operation. Controlled and
+singleton instructions, symbolic phase, variables, layouts,
 anonymous identities and late attachment remain incomplete. The regressions below
 remain requirements for the full circuit layer, even where its native owner
 already has corresponding passing tests.

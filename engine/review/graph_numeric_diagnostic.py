@@ -224,6 +224,36 @@ def main():
     assert [item.operation.name for item in circuit.data] == ["h", "cx", "rx"]
     checks.append("quantum_circuit_root_packed_operations_and_held_components")
 
+    operation = Gate("original", 1, [0.2])
+    first, second = QuantumCircuit(1), QuantumCircuit(1)
+    first.append(operation, [0], copy=False)
+    operation.params = [0.4]
+    second.append(operation, [0], copy=False)
+    operation.params = [0.8]
+    operation.name = "changed"
+    x, y, retained = transfer(judge, candidate, (first, second, operation), 22)
+    assert x.data[0].operation is y.data[0].operation is retained
+    assert x.data[0].params == [0.2] and y.data[0].params == [0.4]
+    assert x.data[0].name == "original" and retained.name == "changed"
+    retained.params.append(0.9)
+    assert transfer(candidate, judge, retained, 22) is operation
+    assert operation.params == [0.8, 0.9] and first.data[0].params == [0.2]
+    checks.append("shared_python_operation_and_distinct_native_caches")
+
+    from qiskit.circuit import Instruction
+    from qiskit.dagcircuit import DAGOpNode
+
+    operation = Instruction("arity", 2, 1, [])
+    circuit = QuantumCircuit(3, 2)
+    circuit.append(operation, [0, 1], [0], copy=False)
+    operation._num_qubits, operation._num_clbits = 3, 2
+    remote, retained = transfer(judge, candidate, (circuit, operation), 23)
+    native = DAGOpNode.from_instruction(remote.data[0])
+    assert (native.num_qubits, native.num_clbits) == (2, 1)
+    assert (retained.num_qubits, retained.num_clbits) == (3, 2)
+    assert transfer(candidate, judge, remote, 23) is circuit
+    checks.append("cached_native_arities_differ_from_retained_operation")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -239,6 +269,8 @@ def main():
         "graph_owned.py",
         "graph_quantum_circuit.py",
         "graph_packed.py",
+        "graph_instruction.py",
+        "graph_python_ops.py",
         "graph_object_arrays.py",
         "graph_expressions.py",
         "symbolic_wire.py",

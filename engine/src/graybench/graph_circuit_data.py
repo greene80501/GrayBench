@@ -82,7 +82,7 @@ class CircuitDataCodec:
                 REGISTER.validate(item, index)
                 if item["family"] not in families:
                     raise WireError("Invalid intrinsic register family")
-        validate_operations(state["operations"], len(state["qubits"]), index)
+        validate_operations(state["operations"], len(state["qubits"]), len(state["clbits"]), index)
         phase = state["phase"]
         if type(phase) is not float or not math.isfinite(phase) or not 0 <= phase < math.tau:
             raise WireError("CircuitData requires a canonical finite numeric phase")
