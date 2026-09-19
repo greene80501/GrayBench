@@ -9,7 +9,12 @@ from graybench.identity import identity
 from graybench.judge import Judgment, ProtectedJudge
 from graybench.provenance import source_manifest
 from graybench.qpy_decoder import decode_qpy
-from graybench.sandbox import Candidate, CandidateError, CandidateInterfaceError
+from graybench.sandbox import (
+    Candidate,
+    CandidateError,
+    CandidateInterfaceError,
+    SandboxInfrastructureError,
+)
 from graybench.value_wire import encode
 
 
@@ -70,6 +75,7 @@ class QpyFileJudge:
                 phase = "capture"
                 artifact = candidate.capture_artifact("bell.qpy")
                 evidence["candidate_active_seconds"] = candidate.active_seconds
+                evidence["candidate_bootstrap_seconds"] = candidate.bootstrap_seconds
                 evidence["artifact"] = artifact.manifest
                 evidence["artifact_bytes_base64"] = base64.b64encode(artifact.data).decode()
             phase = "parser"
@@ -83,6 +89,8 @@ class QpyFileJudge:
             phase = "oracle"
             judgment = self.oracle.evaluate(wire, oracle="task82-bell-file-state-v1")
             return finish(judgment.outcome, oracle_evidence=judgment.evidence)
+        except SandboxInfrastructureError as exc:
+            return finish("infrastructure_error", runtime_failure=exc.evidence)
         except FileNotFoundError as exc:
             # Missing required output is a scored failure only during artifact capture.
             return finish("fail" if phase == "capture" else "infrastructure_error", detail=str(exc))

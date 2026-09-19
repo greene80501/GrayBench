@@ -16,7 +16,12 @@ from graybench.datasets import JudgeTask
 from graybench.extraction import extract
 from graybench.identity import canonical, identity
 from graybench.judge import Judgment, ProtectedJudge
-from graybench.sandbox import Candidate, CandidateError, CandidateInterfaceError
+from graybench.sandbox import (
+    Candidate,
+    CandidateError,
+    CandidateInterfaceError,
+    SandboxInfrastructureError,
+)
 
 FILES = (
     "upstream_process.py",
@@ -79,7 +84,8 @@ class UpstreamJudge:
             "task_payload": identity(payload),
             "judge_timeout": self.timeout,
             "candidate_timeout": self.candidate_timeout,
-            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_timing": "active-wall-v3-after-runtime-bootstrap",
+            "candidate_startup": "runtime-ready-host-start-candidate-ready-v1",
             "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
             "output_limit": self.limit,
             "protocol": "upstream-proxy-v1",
@@ -147,6 +153,9 @@ class UpstreamJudge:
                     "transcript": transcript,
                     "judge_wait_seconds": judge_wait,
                     "candidate_active_seconds": candidate.active_seconds if candidate else None,
+                    "candidate_bootstrap_seconds": candidate.bootstrap_seconds
+                    if candidate
+                    else None,
                     "wall_seconds": time.monotonic() - start,
                     "completion_sha256": hashlib.sha256(completion.encode()).hexdigest(),
                     "extracted_code_sha256": hashlib.sha256(extracted.code.encode()).hexdigest(),
@@ -307,6 +316,8 @@ class UpstreamJudge:
                         return finish(
                             "infrastructure_error", {"detail": "judge response pipe failed"}
                         )
+            except SandboxInfrastructureError as exc:
+                return finish("infrastructure_error", {"runtime_failure": exc.evidence})
             except (OSError, ValueError, TypeError) as exc:
                 return finish(
                     "infrastructure_error", {"exception": type(exc).__name__, "detail": str(exc)}

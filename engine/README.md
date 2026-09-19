@@ -131,7 +131,8 @@ can currently be exercised programmatically with explicit frozen requests.
    generation steps refresh it before dispatch; missing/changed discovery identity stops the
    run and suppresses aggregate accuracy. Ollama comparison uses the exact catalog model digest,
    server version and show configuration; volatile load state remains recorded separately.
-   Discovery is currently optional for development runs and hosted extraction is incomplete.
+   Discovery is currently optional for development runs. Hosted metadata extraction is
+   implemented; effective-setting and model-native capability validation remain incomplete.
 4. Provider capability evidence and live contract checks; model-native budget calibration;
    independent reproducibility runs; repeated/paired statistical analysis; published-score
    compatibility records; and a release manifest anchored outside candidate execution.
@@ -157,6 +158,10 @@ describes raw HTTP records, conservative drift blocking and the distinction betw
 provider-reported metadata and verified effective settings.
 
 ## Adversarial Docker tests
+
+Runtime preparation and candidate execution use an explicit startup handshake.
+Bootstrap failures remain unscored and bootstrap time is excluded from the candidate
+budget; see [runtime attribution](../docs/reliability-evidence/runtime-bootstrap.md).
 
 Circuit wire v5 supports bounded nested definitions for plain Qiskit Gate/Instruction
 objects and selected standalone standard instructions, with names and JSON metadata.

@@ -27,6 +27,14 @@ class CandidateError(RuntimeError):
     pass
 
 
+class SandboxInfrastructureError(RuntimeError):
+    """Runtime bootstrap failed before candidate execution was authorized."""
+
+    def __init__(self, message, evidence):
+        super().__init__(message)
+        self.evidence = evidence
+
+
 class CandidateInterfaceError(CandidateError):
     """Untrusted codec diagnostic requiring adjudication, never a scored verdict."""
 
@@ -88,6 +96,7 @@ class Candidate:
         self.exceeded = threading.Event()
         self.wire_exceeded = threading.Event()
         self.active_seconds = 0.0
+        self.bootstrap_seconds = None
         self.active_started = None
         self.paused = False
         self.control = None
@@ -177,6 +186,38 @@ class Candidate:
             ]
             for reader in self.readers:
                 reader.start()
+            try:
+                if self._receive() != {"protocol": 3, "runtime_ready": True}:
+                    raise CandidateError("Runtime did not initialize the startup protocol")
+            except (CandidateError, TimeoutError) as exc:
+                raise SandboxInfrastructureError(
+                    "Candidate runtime bootstrap failed",
+                    {
+                        "phase": "bootstrap",
+                        "candidate_authorized": False,
+                        "error_type": type(exc).__name__,
+                        "elapsed_seconds": time.monotonic() - self.active_started,
+                        "observed_stderr": self.stderr.decode(errors="replace"),
+                    },
+                ) from exc
+            now = time.monotonic()
+            self.bootstrap_seconds = now - self.active_started
+            self.active_started = now
+            self.deadline = now + timeout
+            try:
+                self.process.stdin.write(b'{"protocol":3,"start":true}\n')
+                self.process.stdin.flush()
+            except OSError as exc:
+                raise SandboxInfrastructureError(
+                    "Candidate start channel failed",
+                    {
+                        "phase": "start_channel",
+                        "candidate_authorized": None,
+                        "error_type": type(exc).__name__,
+                        "bootstrap_seconds": self.bootstrap_seconds,
+                        "observed_stderr": self.stderr.decode(errors="replace"),
+                    },
+                ) from exc
             if self._receive() != {"protocol": 3, "ready": True}:
                 raise CandidateError("Candidate did not initialize the value protocol")
             self._pause()
