@@ -6,7 +6,7 @@ oracles belong to a separately versioned track with the same public requirements
 
 | Task | Evidence | Required resolution |
 | --- | --- | --- |
-| 113 | Both suites accept a constant plain dictionary ignoring the input, while the PropertySet reference is unsupported by the bridge. | Preserve the required return type and test varied inputs including cases where removing barriers changes depth; see [protected evidence](reliability-evidence/task113-contract-review.md). Do not confuse transport support with oracle correctness. |
+| 113 | Both suites accept a constant plain dictionary ignoring the input, while the PropertySet reference was initially unsupported by the bridge. The transport follow-up now passes the reference but leaves the false accept intact. | Preserve the required return type and test varied inputs including cases where removing barriers changes depth; see [protected evidence](reliability-evidence/task113-contract-review.md). Do not confuse transport support with oracle correctness. |
 | 37 | Both suites accept fabricated PrimitiveResult data with a non-bit string and no algorithm execution. The canonical answer returns 00000 for input 1111. | Specify output/register semantics and validate recovered strings and result consistency; see [protected evidence](reliability-evidence/primitive-containers.md). Returned data alone cannot prove backend execution. |
 | 46 | Both suites accept a fixed three-qubit identity LinearFunction that ignores the requested width and seed. | Check parameter/seed behavior and the declared generation method; see [protected replay](reliability-evidence/linear-functions.md). |
 | 86 | Both suites accept identity blocks with the expected block counts but no requested CX-chain behavior. | Check circuit semantics and declared block constraints together; do not impose the reference's undisclosed extra H gate. |
@@ -32,6 +32,6 @@ not replace historical upstream scores.
 
 The [task 3/26 review](reliability-evidence/task3-26-review.md) includes exact pinned-test
 results for 14 trusted authored fixtures in a separate diagnostic container. The latest
-[complete offline reference scan](reliability-evidence/reference-scan-8399f3d.md) records
-103 passes, 39 unsupported interfaces and one file-boundary error per suite. Reference
+[complete offline reference scan](reliability-evidence/reference-scan-f131336.md) records
+109 passes, 33 unsupported interfaces and one file-boundary error per suite. Reference
 compatibility is not task admission or proof of oracle adequacy.

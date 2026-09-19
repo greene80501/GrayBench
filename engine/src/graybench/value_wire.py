@@ -47,6 +47,15 @@ def encode(item, depth=0):
         }
     from qiskit import QuantumCircuit
     from qiskit.circuit import ParameterExpression
+    from qiskit.transpiler import PropertySet
+
+    if type(item) is PropertySet:
+        if vars(item):
+            raise WireError("PropertySet has unsupported instance attributes")
+        return {
+            "kind": "property_set_v1",
+            "items": [[encode(k, depth + 1), encode(v, depth + 1)] for k, v in item.items()],
+        }
 
     if isinstance(item, ParameterExpression):
         try:
@@ -150,7 +159,7 @@ def decode(value, depth=0, budget=None):
     if value["kind"] in ("list", "tuple"):
         items = [decode(x, depth + 1, budget) for x in value["items"]]
         return items if value["kind"] == "list" else tuple(items)
-    if value["kind"] == "dict":
+    if value["kind"] in ("dict", "property_set_v1"):
         result = {}
         for pair in value["items"]:
             if type(pair) is not list or len(pair) != 2:
@@ -162,5 +171,9 @@ def decode(value, depth=0, budget=None):
                 result[key] = decode(pair[1], depth + 1, budget)
             except TypeError as exc:
                 raise WireError("Unhashable dictionary key") from exc
+        if value["kind"] == "property_set_v1":
+            from qiskit.transpiler import PropertySet
+
+            return PropertySet(result)
         return result
     raise WireError("Unknown result kind")
