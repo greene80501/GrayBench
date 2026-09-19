@@ -1,0 +1,119 @@
+{
+  "purpose": "Trusted authored exact-test diagnostic, not protected model scoring",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "cases": [
+    {
+      "suite": "normal",
+      "name": "reference",
+      "task": {
+        "public": {
+          "suite": "normal",
+          "task_id": "qiskitHumanEval/114",
+          "family_id": "qhe/114",
+          "prompt": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map() -> CouplingMap:\n    \"\"\" Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\n    The initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\n    Add an edge (5, 6), and add a physical qubit \"7\".\n    \"\"\"",
+          "entry_point": "create_and_modify_coupling_map",
+          "prompt_format": "function_completion"
+        },
+        "canonical_solution": "\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n",
+        "upstream_test": "def check(candidate):\n    cmap = candidate()\n    edges = set(cmap.get_edges())\n    assert edges == { (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5,6) }, \"Unexpected result value\"\n    assert len(cmap.physical_qubits) == 8, f\"Expected length 8, got {len(cmap.physical_qubits)}\"\n",
+        "upstream_difficulty": "intermediate"
+      },
+      "code": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map() -> CouplingMap:\n    \"\"\" Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\n    The initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\n    Add an edge (5, 6), and add a physical qubit \"7\".\n    \"\"\"\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n"
+    },
+    {
+      "suite": "normal",
+      "name": "wrong-isolated-qubit",
+      "task": {
+        "public": {
+          "suite": "normal",
+          "task_id": "qiskitHumanEval/114",
+          "family_id": "qhe/114",
+          "prompt": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map() -> CouplingMap:\n    \"\"\" Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\n    The initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\n    Add an edge (5, 6), and add a physical qubit \"7\".\n    \"\"\"",
+          "entry_point": "create_and_modify_coupling_map",
+          "prompt_format": "function_completion"
+        },
+        "canonical_solution": "\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n",
+        "upstream_test": "def check(candidate):\n    cmap = candidate()\n    edges = set(cmap.get_edges())\n    assert edges == { (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5,6) }, \"Unexpected result value\"\n    assert len(cmap.physical_qubits) == 8, f\"Expected length 8, got {len(cmap.physical_qubits)}\"\n",
+        "upstream_difficulty": "intermediate"
+      },
+      "code": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map():\n    result=CouplingMap([[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]])\n    result.graph.add_node(None)\n    result.graph.add_node(None)\n    result.graph.remove_node(7)\n    return result\n"
+    },
+    {
+      "suite": "normal",
+      "name": "wrong-edge-direction",
+      "task": {
+        "public": {
+          "suite": "normal",
+          "task_id": "qiskitHumanEval/114",
+          "family_id": "qhe/114",
+          "prompt": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map() -> CouplingMap:\n    \"\"\" Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\n    The initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\n    Add an edge (5, 6), and add a physical qubit \"7\".\n    \"\"\"",
+          "entry_point": "create_and_modify_coupling_map",
+          "prompt_format": "function_completion"
+        },
+        "canonical_solution": "\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n",
+        "upstream_test": "def check(candidate):\n    cmap = candidate()\n    edges = set(cmap.get_edges())\n    assert edges == { (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5,6) }, \"Unexpected result value\"\n    assert len(cmap.physical_qubits) == 8, f\"Expected length 8, got {len(cmap.physical_qubits)}\"\n",
+        "upstream_difficulty": "intermediate"
+      },
+      "code": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map():\n    result=CouplingMap([[1,0],[1,2],[2,3],[3,4],[4,5],[5,6]])\n    result.add_physical_qubit(7)\n    return result\n"
+    },
+    {
+      "suite": "hard",
+      "name": "reference",
+      "task": {
+        "public": {
+          "suite": "hard",
+          "task_id": "qiskitHumanEval/114",
+          "family_id": "qhe/114",
+          "prompt": "Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\nThe initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\nAdd an edge (5, 6), and add a physical qubit \"7\".\nYou must implement this using a function named `create_and_modify_coupling_map` with no arguments.",
+          "entry_point": "create_and_modify_coupling_map",
+          "prompt_format": "standalone_function"
+        },
+        "canonical_solution": "from qiskit.transpiler import CouplingMap\n\ndef create_and_modify_coupling_map():\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n",
+        "upstream_test": "from qiskit.transpiler import CouplingMap\ndef check(candidate):\n    cmap = candidate()\n    edges = set(cmap.get_edges())\n    assert edges == { (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5,6) }, \"Unexpected result value\"\n    assert len(cmap.physical_qubits) == 8, f\"Expected length 8, got {len(cmap.physical_qubits)}\"\n\ncheck(create_and_modify_coupling_map)",
+        "upstream_difficulty": "intermediate"
+      },
+      "code": "from qiskit.transpiler import CouplingMap\n\ndef create_and_modify_coupling_map():\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n"
+    },
+    {
+      "suite": "hard",
+      "name": "wrong-isolated-qubit",
+      "task": {
+        "public": {
+          "suite": "hard",
+          "task_id": "qiskitHumanEval/114",
+          "family_id": "qhe/114",
+          "prompt": "Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\nThe initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\nAdd an edge (5, 6), and add a physical qubit \"7\".\nYou must implement this using a function named `create_and_modify_coupling_map` with no arguments.",
+          "entry_point": "create_and_modify_coupling_map",
+          "prompt_format": "standalone_function"
+        },
+        "canonical_solution": "from qiskit.transpiler import CouplingMap\n\ndef create_and_modify_coupling_map():\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n",
+        "upstream_test": "from qiskit.transpiler import CouplingMap\ndef check(candidate):\n    cmap = candidate()\n    edges = set(cmap.get_edges())\n    assert edges == { (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5,6) }, \"Unexpected result value\"\n    assert len(cmap.physical_qubits) == 8, f\"Expected length 8, got {len(cmap.physical_qubits)}\"\n\ncheck(create_and_modify_coupling_map)",
+        "upstream_difficulty": "intermediate"
+      },
+      "code": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map():\n    result=CouplingMap([[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]])\n    result.graph.add_node(None)\n    result.graph.add_node(None)\n    result.graph.remove_node(7)\n    return result\n"
+    },
+    {
+      "suite": "hard",
+      "name": "wrong-edge-direction",
+      "task": {
+        "public": {
+          "suite": "hard",
+          "task_id": "qiskitHumanEval/114",
+          "family_id": "qhe/114",
+          "prompt": "Create a CouplingMap with a specific coupling list, then modify it by adding an edge and a physical qubit.\nThe initial coupling list is [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]].\nAdd an edge (5, 6), and add a physical qubit \"7\".\nYou must implement this using a function named `create_and_modify_coupling_map` with no arguments.",
+          "entry_point": "create_and_modify_coupling_map",
+          "prompt_format": "standalone_function"
+        },
+        "canonical_solution": "from qiskit.transpiler import CouplingMap\n\ndef create_and_modify_coupling_map():\n    coupling_list = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]\n    cmap = CouplingMap(couplinglist=coupling_list)\n    cmap.add_edge(5, 6)\n    cmap.add_physical_qubit(7)\n    return cmap\n",
+        "upstream_test": "from qiskit.transpiler import CouplingMap\ndef check(candidate):\n    cmap = candidate()\n    edges = set(cmap.get_edges())\n    assert edges == { (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5,6) }, \"Unexpected result value\"\n    assert len(cmap.physical_qubits) == 8, f\"Expected length 8, got {len(cmap.physical_qubits)}\"\n\ncheck(create_and_modify_coupling_map)",
+        "upstream_difficulty": "intermediate"
+      },
+      "code": "from qiskit.transpiler import CouplingMap\ndef create_and_modify_coupling_map():\n    result=CouplingMap([[1,0],[1,2],[2,3],[3,4],[4,5],[5,6]])\n    result.add_physical_qubit(7)\n    return result\n"
+    }
+  ],
+  "worker": "import json, sys\nimport qiskit, rustworkx as rx\npayload=json.load(sys.stdin)\nrows=[]\nfor case in payload:\n    namespace={}\n    exec(case['code'],namespace)\n    obj=namespace['create_and_modify_coupling_map']()\n    detail={'physical_qubits':list(obj.physical_qubits),'edges':list(obj.get_edges())}\n    try:\n        exec(case['task']['upstream_test'],namespace)\n        if case['suite']=='normal':\n            namespace['check'](namespace['create_and_modify_coupling_map'])\n        outcome='pass'\n    except AssertionError as exc:\n        outcome='fail'; detail['assertion']=str(exc)\n    rows.append({'suite':case['suite'],'name':case['name'],'outcome':outcome,**detail})\ngraph=rx.PyDiGraph()\ngraph.add_nodes_from([None]*5)\nfor index in (3,1):graph.remove_node(index)\nstate=graph.__getstate__()\nrestored=rx.PyDiGraph();restored.__setstate__(state)\ngraph_probe={'serialized_state':state,'original_next_node':graph.add_node(None),\n             'restored_next_node':restored.add_node(None)}\nprint(json.dumps({'qiskit':qiskit.__version__,'rustworkx':rx.__version__,\n                  'cases':rows,'graph_probe':graph_probe}))\n",
+  "worker_sha256": "31d24de0ec52b73b693cd9350961d5b61388757d8e6bc1f2bc33313708dbe4a5",
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"qiskit\": \"2.4.2\", \"rustworkx\": \"0.18.1\", \"cases\": [{\"suite\": \"normal\", \"name\": \"reference\", \"outcome\": \"pass\", \"physical_qubits\": [0, 1, 2, 3, 4, 5, 6, 7], \"edges\": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]]}, {\"suite\": \"normal\", \"name\": \"wrong-isolated-qubit\", \"outcome\": \"pass\", \"physical_qubits\": [0, 1, 2, 3, 4, 5, 6, 8], \"edges\": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]]}, {\"suite\": \"normal\", \"name\": \"wrong-edge-direction\", \"outcome\": \"fail\", \"physical_qubits\": [0, 1, 2, 3, 4, 5, 6, 7], \"edges\": [[1, 0], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]], \"assertion\": \"Unexpected result value\"}, {\"suite\": \"hard\", \"name\": \"reference\", \"outcome\": \"pass\", \"physical_qubits\": [0, 1, 2, 3, 4, 5, 6, 7], \"edges\": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]]}, {\"suite\": \"hard\", \"name\": \"wrong-isolated-qubit\", \"outcome\": \"pass\", \"physical_qubits\": [0, 1, 2, 3, 4, 5, 6, 8], \"edges\": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]]}, {\"suite\": \"hard\", \"name\": \"wrong-edge-direction\", \"outcome\": \"fail\", \"physical_qubits\": [0, 1, 2, 3, 4, 5, 6, 7], \"edges\": [[1, 0], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]], \"assertion\": \"Unexpected result value\"}], \"graph_probe\": {\"serialized_state\": {\"nodes\": [[0, null], [2, null], [4, null]], \"edges\": [], \"nodes_removed\": true}, \"original_next_node\": 1, \"restored_next_node\": 3}}\n"
+}
