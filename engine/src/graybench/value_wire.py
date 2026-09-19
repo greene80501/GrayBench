@@ -149,6 +149,7 @@ def decode(value, depth=0, budget=None):
         "standard_instruction_v1",
         "linear_function_v1",
         "numeric_gate_v1",
+        "controlled_gate_v1",
     ):
         try:
             from .instruction_wire import decode_instruction

@@ -24,13 +24,15 @@ except ImportError:
 
 def encode_instruction(op, *, depth=0, operation_budget=None):
     from qiskit import QuantumCircuit
-    from qiskit.circuit import Gate, Instruction
-    from qiskit.circuit.library import DiagonalGate, HamiltonianGate, LinearFunction
+    from qiskit.circuit import ControlledGate, Gate, Instruction
+    from qiskit.circuit.library import DiagonalGate, HamiltonianGate, LinearFunction, MCXGate
 
     if depth > 8:
         raise WireLimitError("Instruction definition nesting exceeds limit")
     if operation_budget is None:
         operation_budget = [1_000_000]
+    if type(op) in (ControlledGate, MCXGate):
+        return encode_controlled(op, depth=depth, operation_budget=operation_budget)
     if type(op) in (HamiltonianGate, DiagonalGate):
         if (
             set(vars(op))
@@ -138,6 +140,8 @@ def decode_instruction(value, *, depth=0, operation_budget=None):
         raise WireError("Expected an instruction record")
     if operation_budget is None:
         operation_budget = [1_000_000]
+    if value.get("kind") == "controlled_gate_v1":
+        return decode_controlled(value, depth=depth, operation_budget=operation_budget)
     if value.get("kind") == "numeric_gate_v1":
         return decode_numeric_gate(value, depth=depth, operation_budget=operation_budget)
     if value.get("kind") == "linear_function_v1":
@@ -293,4 +297,110 @@ def decode_numeric_gate(value, *, depth, operation_budget):
         if definition.num_qubits != nq or definition.num_clbits:
             raise WireError("Numeric gate definition dimensions differ")
         op.definition = definition
+    return op
+
+
+def encode_controlled(op, *, depth, operation_budget):
+    from qiskit.circuit import Gate
+    from qiskit.circuit.library import MCXGate
+
+    if (
+        set(vars(op))
+        != {
+            "base_gate",
+            "_definition",
+            "_name",
+            "_num_qubits",
+            "_num_clbits",
+            "_params",
+            "_label",
+            "_num_ctrl_qubits",
+            "_ctrl_state",
+            "_open_ctrl",
+        }
+        or op.num_clbits != 0
+        or type(op._params) is not list
+        or len(op._params)
+    ):
+        raise WireError("Unsupported controlled gate state")
+    nq, controls = integer(op.num_qubits), integer(op.num_ctrl_qubits)
+    if not 1 <= controls < nq or not isinstance(op.base_gate, Gate):
+        raise WireError("Invalid controlled gate dimensions or base")
+    if op.base_gate.num_qubits != nq - controls or op.base_gate.num_clbits:
+        raise WireError("Controlled base dimensions differ")
+    if type(op) is MCXGate and (controls < 3 or nq != controls + 1):
+        raise WireError("Invalid MCX dimensions")
+    state = integer(op.ctrl_state, 2**controls - 1)
+    if type(op._open_ctrl) is not bool or op._open_ctrl != (state != 2**controls - 1):
+        raise WireError("Inconsistent controlled gate open-state flag")
+    if op._definition is not None and (
+        op._definition.num_qubits != nq or op._definition.num_clbits
+    ):
+        raise WireError("Controlled definition dimensions differ")
+    return {
+        "kind": "controlled_gate_v1",
+        "class": type(op).__name__,
+        "name": op._name,
+        "label": op.label,
+        "qubits": nq,
+        "controls": controls,
+        "state": state,
+        "base": encode_instruction(
+            op.base_gate, depth=depth + 1, operation_budget=operation_budget
+        ),
+        "definition": None
+        if op._definition is None
+        else encode_circuit(op._definition, depth=depth + 1, operation_budget=operation_budget),
+    }
+
+
+def decode_controlled(value, *, depth, operation_budget):
+    from qiskit.circuit import ControlledGate, Gate
+    from qiskit.circuit.library import MCXGate
+
+    fields(
+        value,
+        {"kind", "class", "name", "label", "qubits", "controls", "state", "base", "definition"},
+    )
+    if value["class"] not in ("ControlledGate", "MCXGate"):
+        raise WireError("Unknown controlled gate class")
+    nq, controls = integer(value["qubits"]), integer(value["controls"])
+    if not 1 <= controls < nq:
+        raise WireError("Invalid controlled gate dimensions")
+    if value["class"] == "MCXGate" and (controls < 3 or nq != controls + 1):
+        raise WireError("Invalid MCX dimensions")
+    state = integer(value["state"], 2**controls - 1)
+    for key in ("name", "label"):
+        if key == "label" and value[key] is None:
+            continue
+        if type(value[key]) is not str:
+            raise WireError("Invalid controlled name or label")
+        if len(value[key]) > 4096:
+            raise WireLimitError("Controlled name or label exceeds limit")
+    base = decode_instruction(value["base"], depth=depth + 1, operation_budget=operation_budget)
+    if not isinstance(base, Gate) or base.num_qubits != nq - controls or base.num_clbits:
+        raise WireError("Controlled base dimensions differ")
+    definition = (
+        None
+        if value["definition"] is None
+        else decode_circuit(value["definition"], depth=depth + 1, operation_budget=operation_budget)
+    )
+    if definition is not None and (definition.num_qubits != nq or definition.num_clbits):
+        raise WireError("Controlled definition dimensions differ")
+    if value["class"] == "MCXGate":
+        op = MCXGate(controls, label=value["label"], ctrl_state=state)
+        op._name = value["name"]
+    else:
+        # A fixed empty base avoids validating/coercing the submitted base parameters.
+        op = ControlledGate(
+            value["name"],
+            nq,
+            [],
+            label=value["label"],
+            num_ctrl_qubits=controls,
+            ctrl_state=state,
+            base_gate=Gate("__wire_init__", nq - controls, []),
+        )
+    op.base_gate = base
+    op._definition = definition
     return op
