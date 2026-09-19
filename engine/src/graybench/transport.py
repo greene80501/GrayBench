@@ -5,6 +5,7 @@ import json
 import os
 import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 import httpx
 
@@ -132,13 +133,20 @@ class Transport:
         result = []
         for method, path, body in adapter.discovery_requests(self.spec):
             status, evidence = self._exchange(method, path, body)
+            evidence["http_status"] = status
+            evidence["observed_at"] = datetime.now(UTC).isoformat()
             try:
                 if status != 200 or "error" in evidence:
                     raise ValueError(f"Discovery unavailable (HTTP {status})")
                 value = json.loads(evidence["response_body"])
-                result.append(Observation(name=path, status="observed", value=value))
-            except (ValueError, TypeError) as exc:
-                result.append(Observation(name=path, status="error", detail=str(exc)))
+                canonical(value)  # Reject non-finite values before they enter durable evidence.
+                result.append(
+                    Observation(name=path, status="observed", value=value, evidence=evidence)
+                )
+            except (ValueError, TypeError, RecursionError) as exc:
+                result.append(
+                    Observation(name=path, status="error", detail=str(exc), evidence=evidence)
+                )
         if not result:
             result.append(
                 Observation(

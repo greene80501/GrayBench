@@ -151,6 +151,11 @@ task-family resampling. They require matched, complete protocols and retain norm
 variants together. See [paired comparisons](../docs/reliability-evidence/paired-comparisons.md)
 for commands, statistical assumptions and the remaining calibration requirements.
 
+`campaign-observe` now supports model-specific metadata from OpenAI Chat/Responses
+and Gemini as well as Ollama. [Discovery evidence](../docs/reliability-evidence/model-discovery.md)
+describes raw HTTP records, conservative drift blocking and the distinction between
+provider-reported metadata and verified effective settings.
+
 ## Adversarial Docker tests
 
 Circuit wire v5 supports bounded nested definitions for plain Qiskit Gate/Instruction

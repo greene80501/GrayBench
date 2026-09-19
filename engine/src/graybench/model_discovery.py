@@ -3,7 +3,7 @@
 import re
 
 from graybench.identity import identity
-from graybench.providers import adapter
+from graybench.providers import adapter, model_metadata_path
 
 
 def observe_run(ledger, run_id, transport):
@@ -22,6 +22,10 @@ def observe_run(ledger, run_id, transport):
 
 
 def discovery_identity(spec, observations):
+    if len({o.name for o in observations}) != len(observations):
+        return {"status": "unavailable", "reason": "duplicate discovery observations"}
+    if spec.adapter in {"openai-chat", "openai-responses", "gemini"}:
+        return hosted_identity(spec, observations)
     if spec.adapter != "ollama":
         return {
             "status": "unavailable",
@@ -60,4 +64,48 @@ def discovery_identity(spec, observations):
         "digest": identity(stable),
         "identity": stable,
         "verification": "server-reported; not independent weight attestation",
+    }
+
+
+def hosted_identity(spec, observations):
+    """A fingerprint of provider claims, never an assertion about actual model weights."""
+    path = model_metadata_path(spec)
+    matches = [o for o in observations if o.name == path and o.status == "observed"]
+    if len(matches) != 1 or type(matches[0].value) is not dict:
+        return {"status": "unavailable", "reason": "required model metadata unavailable"}
+    record = matches[0].value
+    if spec.adapter == "gemini":
+        expected = "models/" + spec.model.removeprefix("models/")
+        valid = (
+            record.get("name") == expected
+            and isinstance(record.get("version"), str)
+            and bool(record["version"].strip())
+            and all(
+                type(record.get(k)) is int and record[k] > 0
+                for k in ("inputTokenLimit", "outputTokenLimit")
+            )
+            and type(record.get("supportedGenerationMethods")) is list
+            and all(type(m) is str for m in record["supportedGenerationMethods"])
+            and "generateContent" in record["supportedGenerationMethods"]
+        )
+    else:
+        valid = (
+            record.get("id") == spec.model
+            and record.get("object") == "model"
+            and type(record.get("created")) is int
+            and record["created"] >= 0
+            and isinstance(record.get("owned_by"), str)
+            and bool(record["owned_by"].strip())
+        )
+    if not valid:
+        return {"status": "unavailable", "reason": "incomplete or mismatched model metadata"}
+    stable = {"adapter": spec.adapter, "base_url": spec.base_url, "metadata": record}
+    return {
+        "status": "observed",
+        "digest": identity(stable),
+        "identity": stable,
+        "verification": (
+            "provider-reported metadata; not independent weight attestation "
+            "or effective-setting verification"
+        ),
     }

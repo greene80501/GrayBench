@@ -149,6 +149,7 @@ class Observation(Contract):
     status: Literal["observed", "unavailable", "error"]
     value: JsonValue = None
     detail: str | None = None
+    evidence: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 def load_contract(kind: type[Contract], content: str) -> Any:

@@ -6,6 +6,7 @@ Adapter support is extensible; it is not a claim that every endpoint/model has b
 from abc import ABC, abstractmethod
 from importlib.metadata import entry_points
 from typing import Any
+from urllib.parse import quote
 
 from graybench.contracts import Generation, ModelSpec, PreparedRequest, PublicTask
 
@@ -59,6 +60,11 @@ class Adapter(ABC):
         return ()
 
 
+def model_metadata_path(spec: ModelSpec) -> str:
+    model = spec.model.removeprefix("models/") if spec.adapter == "gemini" else spec.model
+    return "/models/" + quote(model, safe="")
+
+
 def messages(task: PublicTask, system: str | None) -> list[dict]:
     result = []
     if system is not None:
@@ -80,6 +86,9 @@ class OpenAIChat(Adapter):
             "reasoning_effort",
         }
     )
+
+    def discovery_requests(self, spec):
+        return (("GET", model_metadata_path(spec), None),)
 
     def prepare(self, spec, task, system):
         settings = self.settings(spec)
@@ -126,6 +135,9 @@ class OpenAIChat(Adapter):
 class OpenAIResponses(Adapter):
     name = "openai-responses"
     supported_settings = frozenset({"temperature", "top_p", "max_output_tokens", "reasoning"})
+
+    def discovery_requests(self, spec):
+        return (("GET", model_metadata_path(spec), None),)
 
     def prepare(self, spec, task, system):
         body = {
@@ -255,9 +267,10 @@ class Gemini(Adapter):
     def auth_headers(self, secret):
         return {"x-goog-api-key": secret} if secret else {}
 
-    def prepare(self, spec, task, system):
-        from urllib.parse import quote
+    def discovery_requests(self, spec):
+        return (("GET", model_metadata_path(spec), None),)
 
+    def prepare(self, spec, task, system):
         body = {"contents": [{"role": "user", "parts": [{"text": task.prompt}]}]}
         settings = self.settings(spec)
         if settings:
