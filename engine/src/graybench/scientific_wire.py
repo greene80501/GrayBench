@@ -73,10 +73,18 @@ def encode_scientific(item):
         Clifford,
         DensityMatrix,
         Operator,
+        ScalarOp,
+        SparsePauliOp,
         StabilizerState,
         Statevector,
     )
 
+    if type(item) in (ScalarOp, SparsePauliOp):
+        try:
+            from .operator_wire import encode_operator
+        except ImportError:
+            from operator_wire import encode_operator
+        return encode_operator(item)
     if type(item) is np.ndarray:
         return array_record(item)
     if isinstance(item, np.generic):
@@ -120,6 +128,12 @@ def dimensions(value):
 
 
 def decode_scientific(value):
+    if value.get("kind") in ("scalar_op_v1", "sparse_pauli_op_v1"):
+        try:
+            from .operator_wire import decode_operator
+        except ImportError:
+            from operator_wire import decode_operator
+        return decode_operator(value)
     if value.get("kind") in {"ndarray_v1", "numpy_scalar_v1"}:
         return decode_array(value)
     from qiskit.quantum_info import (

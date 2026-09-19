@@ -162,6 +162,8 @@ Circuit wire v5 supports bounded nested definitions for plain Qiskit Gate/Instru
 objects and selected standalone standard instructions, with names and JSON metadata.
 See [instruction transport](../docs/reliability-evidence/instruction-definitions.md)
 for validated cases, limits and remaining subclass/cache restrictions.
+ScalarOp and SparsePauliOp now have bounded data-only exchange preserving terms,
+phases, symbolic coefficients and subsystem bindings; see [operator evidence](../docs/reliability-evidence/sparse-operators.md).
 
 The reusable oracle-review runner records authored counterexamples separately from
 model scores. [Task0/1 review](../docs/reliability-evidence/task0-1-review.md) reproduces

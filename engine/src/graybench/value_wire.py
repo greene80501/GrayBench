@@ -93,6 +93,8 @@ def decode(value, depth=0, budget=None):
         "statevector_v1",
         "densitymatrix_v1",
         "operator_v1",
+        "scalar_op_v1",
+        "sparse_pauli_op_v1",
         "choi_v1",
         "clifford_v1",
         "stabilizer_v1",

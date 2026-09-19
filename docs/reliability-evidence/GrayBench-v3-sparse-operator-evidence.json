@@ -1,0 +1,3525 @@
+{
+  "GrayBench-v3-sparse-operator-reference.jsonl": {
+    "sha256": "efb2a706d3d310cf0a6b329c60649feca96125b98bd2c3922c4a316153786d0b",
+    "header": {
+      "created_at": "2026-09-19T17:05:01.917074+00:00",
+      "kind": "header",
+      "purpose": "reference interface calibration; not model scoring",
+      "selection": {
+        "families": [
+          "qhe/107",
+          "qhe/141"
+        ],
+        "reason": "ScalarOp and SparsePauliOp interface replay; not task admission"
+      },
+      "source": {
+        "digest": "7bde3bb08fb291a1dbf6aa40424d641bd28d0cc2c4d7c5fc1603ee46c066bfe0",
+        "files": {
+          "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+          "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+          "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+          "campaign_setup.py": "ef893aec71ab935054d726840a8c57c9d04761859bb0504f9908e7ed738c28df",
+          "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+          "cli.py": "f94c43e891e3bf38bd6d6f0ba6514cd75185d167d9063f14f9dc50e8fdb86f89",
+          "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+          "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+          "contracts.py": "03da30c84e58f3e6c390eb67bec75635771e28b789017fe58d9f4b76ec1ae74e",
+          "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+          "evaluation_campaign.py": "c56f9f137fec4abeb052aa27ec29e4aa4d91e6d7fe07541dcebaff75ff4a2c82",
+          "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+          "file_judge.py": "339c7772457405571f201197c7224f2a18159d76980393d40ce6865cfd4bab87",
+          "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+          "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+          "judge.py": "e68377bd5138c17cf993ae2d8a7ee5aaf4679bdc667ceeaf5b1c06c67134d36a",
+          "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+          "ledger.py": "96ee5c92599178c44950f31f01de78b18dab5d87ce8a1f39323b06a7523e1904",
+          "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+          "model_discovery.py": "dd01981f881d262dfb4991826131d34d4558a8668f82e40ea78dde0c4e965c86",
+          "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+          "oracle_review.py": "ff30c71459f1fc6901a8474dc92f525f56a2dfe5d95933e29e7d0c5b47c8e0ed",
+          "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+          "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+          "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+          "providers.py": "9d55bc0da1276e32f546c65400332e8dd4f27341becaa81b22a7dc5d7617e218",
+          "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+          "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+          "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+          "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+          "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+          "transport.py": "759fb63fe8577d85c933d0e75c42a4263cca2f2858fdc04188a3e99277df7381",
+          "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+          "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+          "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+          "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+        }
+      },
+      "tasks": {
+        "hard/qiskitHumanEval/107": "fee66152b668583f8adc33ca0309852a305146d3610f024640fa38a6f3fd6f11",
+        "hard/qiskitHumanEval/141": "396b1336702f5221617e8b99f1d23633e971be6c34bb3ffc2e94f884f8f01a74",
+        "normal/qiskitHumanEval/107": "6521f977576bc5c9c198f5e77953c05689d5ccfccb8c6e2b35cf102e5b26585b",
+        "normal/qiskitHumanEval/141": "f76fb45666bf0e6b01a7554c1efcef4fa816256c449af79d3a24a0f142f1d57b"
+      }
+    },
+    "results": [
+      {
+        "at": "2026-09-19T17:05:03.881605+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.6719999999986612,
+          "completion_sha256": "8cab41b1a45932913f561c909b4bf7e526fbcfb273fd812b0a6c4e4c920bef13",
+          "extracted_code_sha256": "0b110ecf17b0e3821dd6f1bfcc01980fd19d0c26dc0c9904d2d7ac0eec674154",
+          "judge_wait_seconds": 0.6720000000059372,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "668cad10c7d9a2e1bd1f5263dac16fcba3ca7e146cb0ddaa2ac7a0e82a89b0ea"
+          },
+          "public_task_digest": "2694c2a07b1041f4b370638e0fe42efb8d793c414d87073e9faa2b48747524af",
+          "transcript": [
+            {
+              "call": "31a5295715cfeaab90926cd9f98d2384b6f53e3203bdc17240f1bfee3e4bc255",
+              "call_data": {
+                "args": {
+                  "items": [],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "041149704f3ee00467d1c95d0db2027bb087532167eeb57464bbab959220e66e",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "coefficient": 4,
+                    "input_dims": [
+                      2
+                    ],
+                    "kind": "scalar_op_v1",
+                    "output_dims": [
+                      2
+                    ],
+                    "qargs": null
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.5310000000026776
+        },
+        "judge_digest": "a96812c50cc77a116cd6e32d48c8f3360a896ef0a011de07534201509743e1d3",
+        "kind": "result",
+        "outcome": "pass",
+        "task_key": "normal/qiskitHumanEval/107"
+      },
+      {
+        "at": "2026-09-19T17:05:05.860689+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.7180000000007567,
+          "completion_sha256": "7594a668dacdb082e6fe2c22ad66d10196372d6d9a5b9d7ba52d753ebdec2b4f",
+          "extracted_code_sha256": "82220b818711d8524fb1dcc565647ebb4a8a7610807da46b8f3d6681f6297757",
+          "judge_wait_seconds": 0.6259999999965657,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "39d59030eca393412b1ce43c23606f9251e678b6c14ba46a643db6572a3ed05f"
+          },
+          "public_task_digest": "d8c8c6ec33860477c9a162f7e20f4ea162627c8ba84c9f8c18120e3fe8969f14",
+          "transcript": [
+            {
+              "call": "dce59935d7adae61fd4777ecc836a6aab755e0abd50569a2955bd4019dc1462b",
+              "call_data": {
+                "args": {
+                  "items": [
+                    {
+                      "coefficients": {
+                        "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                        "dtype": "<c16",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "input_dims": [
+                        2,
+                        2
+                      ],
+                      "kind": "sparse_pauli_op_v1",
+                      "output_dims": [
+                        2,
+                        2
+                      ],
+                      "phase": {
+                        "bytes": "AAAAAAAAAAA=",
+                        "dtype": "<i8",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "qargs": null,
+                      "x": {
+                        "bytes": "AAE=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      },
+                      "z": {
+                        "bytes": "AAA=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      }
+                    }
+                  ],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "77aee71d385252e21b7084d9a1db85d3c6a64de0973232076c9660dd2aaa96b1",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "list"
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.5309999999954016
+        },
+        "judge_digest": "536695bade3208f63c2e964ee957bf2fc9e023e54ddffb3467d486753c8c0b53",
+        "kind": "result",
+        "outcome": "pass",
+        "task_key": "normal/qiskitHumanEval/141"
+      },
+      {
+        "at": "2026-09-19T17:05:07.722418+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.6409999999959837,
+          "completion_sha256": "8f475e2d0ad37257675867b08b3641d2a883b10f25f3a19b84b7137fa67ee1e8",
+          "extracted_code_sha256": "8f475e2d0ad37257675867b08b3641d2a883b10f25f3a19b84b7137fa67ee1e8",
+          "judge_wait_seconds": 0.6090000000040163,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "c804afcd6dd505fcc55b3558d527a09fbc15c1260ac14706d71b1a1cf5cde750"
+          },
+          "public_task_digest": "11e7c95cc8a78169c4c8e4bf5ff6aa9e4513ada3c0b36bf0e5ba8a023bb8bd3d",
+          "transcript": [
+            {
+              "call": "31a5295715cfeaab90926cd9f98d2384b6f53e3203bdc17240f1bfee3e4bc255",
+              "call_data": {
+                "args": {
+                  "items": [],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "041149704f3ee00467d1c95d0db2027bb087532167eeb57464bbab959220e66e",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "coefficient": 4,
+                    "input_dims": [
+                      2
+                    ],
+                    "kind": "scalar_op_v1",
+                    "output_dims": [
+                      2
+                    ],
+                    "qargs": null
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.4380000000019209
+        },
+        "judge_digest": "f34692bb8d5cff1e7e899d01ef7023d0c4184f7b8d863e8e73cc65a061297886",
+        "kind": "result",
+        "outcome": "pass",
+        "task_key": "hard/qiskitHumanEval/107"
+      },
+      {
+        "at": "2026-09-19T17:05:09.587361+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.6559999999954016,
+          "completion_sha256": "153c6f31b6e3e3445deda7c3ba06adc262218e5893ccb9ad197870d22f5a95ad",
+          "extracted_code_sha256": "153c6f31b6e3e3445deda7c3ba06adc262218e5893ccb9ad197870d22f5a95ad",
+          "judge_wait_seconds": 0.5940000000045984,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "38344c8dcd7289ab111ec0b549ed3383e24127d5e3b101fbf55dcf7b5c81d400"
+          },
+          "public_task_digest": "234bcacc35577c1ce2d6e1774b4dae53fbce3149f8d53adb4394daa4d34c49e1",
+          "transcript": [
+            {
+              "call": "dce59935d7adae61fd4777ecc836a6aab755e0abd50569a2955bd4019dc1462b",
+              "call_data": {
+                "args": {
+                  "items": [
+                    {
+                      "coefficients": {
+                        "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                        "dtype": "<c16",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "input_dims": [
+                        2,
+                        2
+                      ],
+                      "kind": "sparse_pauli_op_v1",
+                      "output_dims": [
+                        2,
+                        2
+                      ],
+                      "phase": {
+                        "bytes": "AAAAAAAAAAA=",
+                        "dtype": "<i8",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "qargs": null,
+                      "x": {
+                        "bytes": "AAE=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      },
+                      "z": {
+                        "bytes": "AAA=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      }
+                    }
+                  ],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "c764615dec021571fac63b70f574ad6149369f15739fa35812df3c27088ad5e8",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AQA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AQE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "list"
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.437999999994645
+        },
+        "judge_digest": "6d735b27522d79e7b5d36f73dd1fa141efb0175dc1b857eac7eff08fcf389a54",
+        "kind": "result",
+        "outcome": "pass",
+        "task_key": "hard/qiskitHumanEval/141"
+      }
+    ],
+    "complete": true
+  },
+  "GrayBench-v3-task141-zero-operator-probe.jsonl": {
+    "sha256": "e22cc9981481f90d2455afc794cd1558f9edb2374729541c66b04633cde63461",
+    "header": {
+      "created_at": "2026-09-19T17:07:30.256383+00:00",
+      "kind": "header",
+      "purpose": "Protected oracle counterexample; not model scoring",
+      "selection": {
+        "completion": "from qiskit.quantum_info import ScalarOp\ndef anticommutators(pauli):\n    return [ScalarOp(pauli.input_dims(), coeff=0) for _ in range(10)]\n",
+        "expected": "fail",
+        "rationale": "The zero operator is not a Pauli operator; checking only its anticommutator accepts it",
+        "task_digests": {
+          "hard": "396b1336702f5221617e8b99f1d23633e971be6c34bb3ffc2e94f884f8f01a74",
+          "normal": "f76fb45666bf0e6b01a7554c1efcef4fa816256c449af79d3a24a0f142f1d57b"
+        }
+      },
+      "source": {
+        "digest": "7bde3bb08fb291a1dbf6aa40424d641bd28d0cc2c4d7c5fc1603ee46c066bfe0",
+        "files": {
+          "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+          "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+          "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+          "campaign_setup.py": "ef893aec71ab935054d726840a8c57c9d04761859bb0504f9908e7ed738c28df",
+          "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+          "cli.py": "f94c43e891e3bf38bd6d6f0ba6514cd75185d167d9063f14f9dc50e8fdb86f89",
+          "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+          "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+          "contracts.py": "03da30c84e58f3e6c390eb67bec75635771e28b789017fe58d9f4b76ec1ae74e",
+          "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+          "evaluation_campaign.py": "c56f9f137fec4abeb052aa27ec29e4aa4d91e6d7fe07541dcebaff75ff4a2c82",
+          "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+          "file_judge.py": "339c7772457405571f201197c7224f2a18159d76980393d40ce6865cfd4bab87",
+          "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+          "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+          "judge.py": "e68377bd5138c17cf993ae2d8a7ee5aaf4679bdc667ceeaf5b1c06c67134d36a",
+          "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+          "ledger.py": "96ee5c92599178c44950f31f01de78b18dab5d87ce8a1f39323b06a7523e1904",
+          "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+          "model_discovery.py": "dd01981f881d262dfb4991826131d34d4558a8668f82e40ea78dde0c4e965c86",
+          "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+          "oracle_review.py": "ff30c71459f1fc6901a8474dc92f525f56a2dfe5d95933e29e7d0c5b47c8e0ed",
+          "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+          "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+          "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+          "providers.py": "9d55bc0da1276e32f546c65400332e8dd4f27341becaa81b22a7dc5d7617e218",
+          "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+          "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+          "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+          "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+          "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+          "transport.py": "759fb63fe8577d85c933d0e75c42a4263cca2f2858fdc04188a3e99277df7381",
+          "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+          "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+          "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+          "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+        }
+      },
+      "tasks": {
+        "hard/qiskitHumanEval/141/zero-operator": "775adff3c1429ea0a6ef600c575e3f09aa1cb11cc240f344da9b7945e13625aa",
+        "normal/qiskitHumanEval/141/zero-operator": "30bf75774d3dc65d7243d837e4c84006b011015a2057255e974c0af8f85d19a8"
+      }
+    },
+    "results": [
+      {
+        "at": "2026-09-19T17:07:32.021184+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.6090000000040163,
+          "completion_sha256": "f0f81d90b5484a9cc05287c54ff6c83a7e7966b828006c68788437a02016101c",
+          "detail": "'Pauli can only be multiplied by 1, -1j, -1, 1j.'",
+          "exception": "QiskitError",
+          "extracted_code_sha256": "f0f81d90b5484a9cc05287c54ff6c83a7e7966b828006c68788437a02016101c",
+          "judge_wait_seconds": 0.5789999999979045,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "39d59030eca393412b1ce43c23606f9251e678b6c14ba46a643db6572a3ed05f"
+          },
+          "public_task_digest": "d8c8c6ec33860477c9a162f7e20f4ea162627c8ba84c9f8c18120e3fe8969f14",
+          "transcript": [
+            {
+              "call": "dce59935d7adae61fd4777ecc836a6aab755e0abd50569a2955bd4019dc1462b",
+              "call_data": {
+                "args": {
+                  "items": [
+                    {
+                      "coefficients": {
+                        "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                        "dtype": "<c16",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "input_dims": [
+                        2,
+                        2
+                      ],
+                      "kind": "sparse_pauli_op_v1",
+                      "output_dims": [
+                        2,
+                        2
+                      ],
+                      "phase": {
+                        "bytes": "AAAAAAAAAAA=",
+                        "dtype": "<i8",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "qargs": null,
+                      "x": {
+                        "bytes": "AAE=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      },
+                      "z": {
+                        "bytes": "AAA=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      }
+                    }
+                  ],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "84c576b67942278c47564687db0a1fce89587e21e348d685aaf1891a7d84a84f",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "items": [
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      }
+                    ],
+                    "kind": "list"
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.3589999999967404
+        },
+        "judge_digest": "536695bade3208f63c2e964ee957bf2fc9e023e54ddffb3467d486753c8c0b53",
+        "kind": "result",
+        "outcome": "infrastructure_error",
+        "task_key": "normal/qiskitHumanEval/141/zero-operator"
+      },
+      {
+        "at": "2026-09-19T17:07:33.826945+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.6409999999959837,
+          "completion_sha256": "f0f81d90b5484a9cc05287c54ff6c83a7e7966b828006c68788437a02016101c",
+          "detail": "'Pauli can only be multiplied by 1, -1j, -1, 1j.'",
+          "exception": "QiskitError",
+          "extracted_code_sha256": "f0f81d90b5484a9cc05287c54ff6c83a7e7966b828006c68788437a02016101c",
+          "judge_wait_seconds": 0.5780000000013388,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "38344c8dcd7289ab111ec0b549ed3383e24127d5e3b101fbf55dcf7b5c81d400"
+          },
+          "public_task_digest": "234bcacc35577c1ce2d6e1774b4dae53fbce3149f8d53adb4394daa4d34c49e1",
+          "transcript": [
+            {
+              "call": "dce59935d7adae61fd4777ecc836a6aab755e0abd50569a2955bd4019dc1462b",
+              "call_data": {
+                "args": {
+                  "items": [
+                    {
+                      "coefficients": {
+                        "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                        "dtype": "<c16",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "input_dims": [
+                        2,
+                        2
+                      ],
+                      "kind": "sparse_pauli_op_v1",
+                      "output_dims": [
+                        2,
+                        2
+                      ],
+                      "phase": {
+                        "bytes": "AAAAAAAAAAA=",
+                        "dtype": "<i8",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "qargs": null,
+                      "x": {
+                        "bytes": "AAE=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      },
+                      "z": {
+                        "bytes": "AAA=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      }
+                    }
+                  ],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "84c576b67942278c47564687db0a1fce89587e21e348d685aaf1891a7d84a84f",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "items": [
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      },
+                      {
+                        "coefficient": 0,
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "scalar_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "qargs": null
+                      }
+                    ],
+                    "kind": "list"
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.3909999999959837
+        },
+        "judge_digest": "6d735b27522d79e7b5d36f73dd1fa141efb0175dc1b857eac7eff08fcf389a54",
+        "kind": "result",
+        "outcome": "infrastructure_error",
+        "task_key": "hard/qiskitHumanEval/141/zero-operator"
+      }
+    ],
+    "complete": true
+  },
+  "GrayBench-v3-task141-zero-sparse-probe.jsonl": {
+    "sha256": "4da3592fa5582b0d3b1adb8e3af3913e1aa7df67131577fb437823f9541e9e16",
+    "header": {
+      "created_at": "2026-09-19T17:08:15.366374+00:00",
+      "kind": "header",
+      "purpose": "Protected oracle counterexample; not model scoring",
+      "selection": {
+        "completion": "from qiskit.quantum_info import SparsePauliOp\ndef anticommutators(pauli):\n    return [SparsePauliOp(\"I\" * pauli.num_qubits, coeffs=[0]) for _ in range(10)]\n",
+        "expected": "fail",
+        "rationale": "Zero is not a Pauli operator; it has a zero anticommutator with every input",
+        "task_digests": {
+          "hard": "396b1336702f5221617e8b99f1d23633e971be6c34bb3ffc2e94f884f8f01a74",
+          "normal": "f76fb45666bf0e6b01a7554c1efcef4fa816256c449af79d3a24a0f142f1d57b"
+        }
+      },
+      "source": {
+        "digest": "7bde3bb08fb291a1dbf6aa40424d641bd28d0cc2c4d7c5fc1603ee46c066bfe0",
+        "files": {
+          "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+          "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+          "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+          "campaign_setup.py": "ef893aec71ab935054d726840a8c57c9d04761859bb0504f9908e7ed738c28df",
+          "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+          "cli.py": "f94c43e891e3bf38bd6d6f0ba6514cd75185d167d9063f14f9dc50e8fdb86f89",
+          "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+          "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+          "contracts.py": "03da30c84e58f3e6c390eb67bec75635771e28b789017fe58d9f4b76ec1ae74e",
+          "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+          "evaluation_campaign.py": "c56f9f137fec4abeb052aa27ec29e4aa4d91e6d7fe07541dcebaff75ff4a2c82",
+          "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+          "file_judge.py": "339c7772457405571f201197c7224f2a18159d76980393d40ce6865cfd4bab87",
+          "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+          "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+          "judge.py": "e68377bd5138c17cf993ae2d8a7ee5aaf4679bdc667ceeaf5b1c06c67134d36a",
+          "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+          "ledger.py": "96ee5c92599178c44950f31f01de78b18dab5d87ce8a1f39323b06a7523e1904",
+          "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+          "model_discovery.py": "dd01981f881d262dfb4991826131d34d4558a8668f82e40ea78dde0c4e965c86",
+          "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+          "oracle_review.py": "ff30c71459f1fc6901a8474dc92f525f56a2dfe5d95933e29e7d0c5b47c8e0ed",
+          "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+          "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+          "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+          "providers.py": "9d55bc0da1276e32f546c65400332e8dd4f27341becaa81b22a7dc5d7617e218",
+          "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+          "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+          "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+          "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+          "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+          "transport.py": "759fb63fe8577d85c933d0e75c42a4263cca2f2858fdc04188a3e99277df7381",
+          "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+          "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+          "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+          "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+        }
+      },
+      "tasks": {
+        "hard/qiskitHumanEval/141/zero-sparse-operator": "cf7a03d045b4a9a389c5ba6e9053fa5b3612e3e8377e65222fe594fdadf0cdeb",
+        "normal/qiskitHumanEval/141/zero-sparse-operator": "8078346b236bc22203c4e2e66e7c4d5daf202aa14ba14aaf0854409885d429e7"
+      }
+    },
+    "results": [
+      {
+        "at": "2026-09-19T17:08:17.136333+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.6090000000040163,
+          "completion_sha256": "094c25dacf6842864a04763b411c4204315581f9857809b928d7411b7ffa77b1",
+          "extracted_code_sha256": "094c25dacf6842864a04763b411c4204315581f9857809b928d7411b7ffa77b1",
+          "judge_wait_seconds": 0.5939999999973224,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "39d59030eca393412b1ce43c23606f9251e678b6c14ba46a643db6572a3ed05f"
+          },
+          "public_task_digest": "d8c8c6ec33860477c9a162f7e20f4ea162627c8ba84c9f8c18120e3fe8969f14",
+          "transcript": [
+            {
+              "call": "dce59935d7adae61fd4777ecc836a6aab755e0abd50569a2955bd4019dc1462b",
+              "call_data": {
+                "args": {
+                  "items": [
+                    {
+                      "coefficients": {
+                        "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                        "dtype": "<c16",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "input_dims": [
+                        2,
+                        2
+                      ],
+                      "kind": "sparse_pauli_op_v1",
+                      "output_dims": [
+                        2,
+                        2
+                      ],
+                      "phase": {
+                        "bytes": "AAAAAAAAAAA=",
+                        "dtype": "<i8",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "qargs": null,
+                      "x": {
+                        "bytes": "AAE=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      },
+                      "z": {
+                        "bytes": "AAA=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      }
+                    }
+                  ],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "da4b8287759bf815bc7c42932b47a025f024740f1617becacaf66c4be52824c6",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "list"
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.375
+        },
+        "judge_digest": "536695bade3208f63c2e964ee957bf2fc9e023e54ddffb3467d486753c8c0b53",
+        "kind": "result",
+        "outcome": "pass",
+        "task_key": "normal/qiskitHumanEval/141/zero-sparse-operator"
+      },
+      {
+        "at": "2026-09-19T17:08:18.894371+00:00",
+        "evidence": {
+          "calls": 1,
+          "candidate_active_seconds": 0.625,
+          "completion_sha256": "094c25dacf6842864a04763b411c4204315581f9857809b928d7411b7ffa77b1",
+          "extracted_code_sha256": "094c25dacf6842864a04763b411c4204315581f9857809b928d7411b7ffa77b1",
+          "judge_wait_seconds": 0.5630000000091968,
+          "manifest": {
+            "candidate_timeout": 120.0,
+            "candidate_timing": "active-wall-v2-persistent-local-docker-control",
+            "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
+            "files": {
+              "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+              "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+              "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+              "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+              "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+              "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+              "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+              "sandbox.py": "c2d1a8bf5d9775a1a415e0231d0f448129465c6cdbf982dec3933ed417744a30",
+              "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+              "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+              "upstream.py": "a29b5b12a30f101ca3f2f032a41769167939248a334a211e59d91f041ca2f05f",
+              "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+              "value_wire.py": "e59856821f7e97174eef7a1944c850e096e414fc1aeb264e46c112c58cceec45",
+              "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+            },
+            "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_timeout": 120.0,
+            "output_limit": 1048576,
+            "protocol": "upstream-proxy-v1",
+            "task_payload": "38344c8dcd7289ab111ec0b549ed3383e24127d5e3b101fbf55dcf7b5c81d400"
+          },
+          "public_task_digest": "234bcacc35577c1ce2d6e1774b4dae53fbce3149f8d53adb4394daa4d34c49e1",
+          "transcript": [
+            {
+              "call": "dce59935d7adae61fd4777ecc836a6aab755e0abd50569a2955bd4019dc1462b",
+              "call_data": {
+                "args": {
+                  "items": [
+                    {
+                      "coefficients": {
+                        "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                        "dtype": "<c16",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "input_dims": [
+                        2,
+                        2
+                      ],
+                      "kind": "sparse_pauli_op_v1",
+                      "output_dims": [
+                        2,
+                        2
+                      ],
+                      "phase": {
+                        "bytes": "AAAAAAAAAAA=",
+                        "dtype": "<i8",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1
+                        ]
+                      },
+                      "qargs": null,
+                      "x": {
+                        "bytes": "AAE=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      },
+                      "z": {
+                        "bytes": "AAA=",
+                        "dtype": "|b1",
+                        "kind": "ndarray_v1",
+                        "shape": [
+                          1,
+                          2
+                        ]
+                      }
+                    }
+                  ],
+                  "kind": "tuple"
+                },
+                "kind": "call",
+                "kwargs": {
+                  "items": [],
+                  "kind": "dict"
+                },
+                "sequence": 1
+              },
+              "response": "da4b8287759bf815bc7c42932b47a025f024740f1617becacaf66c4be52824c6",
+              "response_data": {
+                "outcome": "returned",
+                "response": {
+                  "args_after": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAA8D8AAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAE=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "tuple"
+                  },
+                  "kwargs_after": {
+                    "items": [],
+                    "kind": "dict"
+                  },
+                  "protocol": 3,
+                  "sequence": 1,
+                  "value": {
+                    "items": [
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "coefficients": {
+                          "bytes": "AAAAAAAAAAAAAAAAAAAAAA==",
+                          "dtype": "<c16",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "input_dims": [
+                          2,
+                          2
+                        ],
+                        "kind": "sparse_pauli_op_v1",
+                        "output_dims": [
+                          2,
+                          2
+                        ],
+                        "phase": {
+                          "bytes": "AAAAAAAAAAA=",
+                          "dtype": "<i8",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1
+                          ]
+                        },
+                        "qargs": null,
+                        "x": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        },
+                        "z": {
+                          "bytes": "AAA=",
+                          "dtype": "|b1",
+                          "kind": "ndarray_v1",
+                          "shape": [
+                            1,
+                            2
+                          ]
+                        }
+                      }
+                    ],
+                    "kind": "list"
+                  }
+                },
+                "sequence": 1
+              }
+            }
+          ],
+          "wall_seconds": 1.375
+        },
+        "judge_digest": "6d735b27522d79e7b5d36f73dd1fa141efb0175dc1b857eac7eff08fcf389a54",
+        "kind": "result",
+        "outcome": "pass",
+        "task_key": "hard/qiskitHumanEval/141/zero-sparse-operator"
+      }
+    ],
+    "complete": true
+  }
+}
