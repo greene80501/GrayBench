@@ -233,6 +233,19 @@ class GraphArena:
                 raise WireLimitError("Graph array storage exceeds byte limit")
             if handle in self._records:
                 codec.validate_update(self._records[handle]["state"], record["state"])
+        matrix_owners = set()
+        for record in records.values():
+            for token in REGISTRY[record["kind"]].matrix_refs(record["state"]):
+                array = records[token["ref"]]
+                if array["kind"] == "ndarray_view":
+                    array = records[array["state"]["base"]["ref"]]
+                matrix_owners.add(array["id"])
+        matrix_bytes = sum(
+            REGISTRY[records[handle]["kind"]].array_bytes(records[handle]["state"])
+            for handle in matrix_owners
+        )
+        if matrix_bytes > self.limits.matrix_bytes:
+            raise WireLimitError("Graph matrix storage exceeds byte limit")
 
     def _check_depth(self, records, roots):
         # Canonical root order and explicit stack make sender/receiver checks identical.

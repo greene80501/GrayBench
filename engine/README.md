@@ -22,6 +22,8 @@ can currently be exercised programmatically with explicit frozen requests.
 
 A standalone persistent arena and numeric-storage registry now preserve shared
 container references, cycles, returned-input identity and NumPy buffer/view aliases.
+Scientific and primitive wrappers additionally preserve actual component and
+instance-dictionary references; see [current scope](../docs/reliability-evidence/graph-scientific-primitive-development.md).
 They are not yet integrated into production worker calls. The six documented
 identity verdict defects remain unresolved in that path. See
 [implementation evidence and remaining limits](../docs/reliability-evidence/graph-core-development.md).

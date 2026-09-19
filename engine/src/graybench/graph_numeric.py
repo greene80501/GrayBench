@@ -110,6 +110,9 @@ class ArrayCodec:
     kind: str
     immutable: bool = False
 
+    def matrix_refs(self, state):
+        return ()
+
     def matches(self, value):
         import numpy as np
 
@@ -243,6 +246,9 @@ ARRAY_CODECS = {kind: ArrayCodec(kind) for kind in ("ndarray_owner", "ndarray_vi
 class NumpyScalarCodec:
     kind: str = "numpy_scalar"
     immutable: bool = True
+
+    def matrix_refs(self, state):
+        return ()
 
     def matches(self, value):
         import numpy as np

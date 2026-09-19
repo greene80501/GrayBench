@@ -107,11 +107,16 @@ def test_shared_positional_keyword_object():
 ### Task 2: Numeric storage and scientific/primitive object ownership
 
 In progress: ndarray owner/view and typed NumPy scalar nodes implemented and
-locally tested. Scientific/primitive component graphs and geometry updates remain
-unimplemented. The task is not complete; no production graph admission is claimed.
+locally tested. Scientific and primitive wrappers now have component graphs;
+SparsePauliOp/CNOTDihedral, symbolic nodes and geometry updates remain unfinished.
+The task is not complete; no production graph admission is claimed.
 
 
-Files: create `graph_numeric.py`, `tests/test_graph_numeric.py`; modify `graph_types.py`.
+Files: create `graph_numeric.py`, `graph_scientific.py`, `graph_primitive.py` and
+corresponding tests; modify `graph_types.py` and arena resource accounting. The
+separate modules keep numeric storage, scientific state and primitive field rules
+independently readable. Instance dictionaries are explicit graph nodes with fixed
+field validation, not opaque copies or arbitrary attribute updates.
 Consumes Task 1's fixed NodeCodec contract and arena references. Produces graph-aware
 numeric/scientific/primitive handlers with explicit rejection of unsupported forms.
 

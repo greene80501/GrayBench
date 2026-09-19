@@ -5,6 +5,8 @@ from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError
 from graybench.graph_numeric import ARRAY_CODECS
+from graybench.graph_primitive import PRIMITIVE_CODECS
+from graybench.graph_scientific import SCIENTIFIC_CODECS
 
 SCALAR_MISSING = object()
 
@@ -48,6 +50,9 @@ class ContainerCodec:
 
     def array_bytes(self, state):
         return 0
+
+    def matrix_refs(self, state):
+        return ()
 
     def validate_update(self, previous, state):
         pass  # Tuple immutability is checked on canonical wire bytes in the arena.
@@ -127,6 +132,8 @@ class ContainerCodec:
 
 REGISTRY = {name: ContainerCodec(name) for name in ("list", "tuple", "dict", "property_set")}
 REGISTRY.update(ARRAY_CODECS)
+REGISTRY.update(SCIENTIFIC_CODECS)
+REGISTRY.update(PRIMITIVE_CODECS)
 
 
 def codec_for(value):

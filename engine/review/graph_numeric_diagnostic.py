@@ -7,6 +7,9 @@ from pathlib import Path
 
 import numpy as np
 import qiskit
+from qiskit import QuantumCircuit
+from qiskit.primitives import DataBin, PrimitiveResult, PubResult
+from qiskit.quantum_info import Clifford, DensityMatrix, ScalarOp, Statevector
 
 import graybench.graph_wire as graph_module
 from graybench.circuit_wire import WireError
@@ -66,6 +69,47 @@ def main():
     assert backing.tolist() == list(range(24))
     checks.append("malformed_storage_rejected")
 
+    state = Statevector([1, 0])
+    remote, attributes, data = transfer(judge, candidate, (state, vars(state), state.data), 8)
+    assert vars(remote) is attributes and remote.data is data
+    data[1] = 4
+    assert transfer(candidate, judge, remote, 8) is state and state.data[1] == 4
+    checks.append("scientific_instance_dictionary_and_data")
+
+    density = transfer(judge, candidate, DensityMatrix([[1, 0], [0, -1]]), 9)
+    assert not density.is_valid() and density.data[1, 1] == -1
+    checks.append("invalid_physical_value_not_repaired")
+
+    pub = PubResult(DataBin(a=np.array([1, 2])))
+    result = PrimitiveResult([pub, pub])
+    result.metadata["self"] = result
+    remote, pubs, metadata = transfer(
+        judge, candidate, (result, result._pub_results, result.metadata), 10
+    )
+    assert remote._pub_results is pubs and remote[0] is remote[1]
+    assert remote.metadata is metadata and metadata["self"] is remote
+    pubs.pop()
+    assert transfer(candidate, judge, remote, 10) is result and len(result) == 1
+    checks.append("primitive_result_lists_metadata_and_cycles")
+
+    clifford = Clifford(QuantumCircuit(20))
+    remote, table = transfer(judge, candidate, (clifford, clifford.tableau), 11)
+    assert remote.tableau is table and remote.num_qubits == 20
+    table[0, -1] = True
+    assert transfer(candidate, judge, remote, 11) is clifford and clifford.tableau[0, -1]
+    checks.append("clifford_tableau_identity")
+
+    scalar = ScalarOp(2, coeff=10**5000)
+    try:
+        judge.snapshot({"value": scalar}, sequence=12)
+    except WireError:
+        pass
+    else:
+        raise AssertionError("Oversized integer escaped graph limits")
+    scalar._coeff = 2
+    assert transfer(judge, candidate, scalar, 12).coeff == 2
+    checks.append("oversized_integer_recovery")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -73,6 +117,9 @@ def main():
         "graph_numeric.py",
         "circuit_wire.py",
         "scientific_wire.py",
+        "graph_scientific.py",
+        "graph_primitive.py",
+        "primitive_wire.py",
     )
     print(
         json.dumps(

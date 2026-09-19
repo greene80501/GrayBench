@@ -53,11 +53,12 @@ These produce unsupported-interface errors instead of copied values. Geometry
 updates and additional storage owners remain pending work, not a claim that all
 NumPy behavior has been admitted.
 
-Task 2 also still needs graph-aware scientific and primitive wrappers, including
-their nested component aliases and symbolic coefficients. Circuit components,
+The subsequent [scientific/primitive increment](graph-scientific-primitive-development.md)
+adds wrapper component aliases and matrix accounting. SparsePauliOp, CNOTDihedral
+and shared symbolic coefficients remain pending in Task 2. Circuit components,
 persistent worker integration, exception-state transport, protected adversarial
-replays and the full reference comparison are subsequent unfinished steps. Matrix
-budgets for scientific/gate nodes are not yet exercised by this array-only registry.
+replays and the full reference comparison are subsequent unfinished steps. This earlier array-only increment did not exercise matrix budgets; the subsequent
+scientific increment adds them for its admitted matrix/tableau wrappers.
 
 ## Verification of the numeric increment
 
