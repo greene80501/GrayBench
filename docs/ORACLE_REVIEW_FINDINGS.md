@@ -21,6 +21,11 @@ The protected reference-interface scan is summarized separately in
 [interface evidence](reliability-evidence/GrayBench-v3-reference-interface-summary.json).
 Every task's full specification, positive-alternative and mutation review remains pending.
 
+Task 141 now has a separately versioned [public-contract revision](reliability-evidence/task141-pauli-revision.md).
+Protected replays accept both references and valid phase/matrix alternatives while
+rejecting the zero-operator counterexample. It remains release-ineligible and does
+not replace historical upstream scores.
+
 The [task 3/26 review](reliability-evidence/task3-26-review.md) includes exact pinned-test
 results for 14 trusted authored fixtures in a separate diagnostic container. The latest
 [complete offline reference scan](reliability-evidence/reference-scan-8399f3d.md) records
