@@ -308,7 +308,21 @@ class ScientificCodec:
             shape = node(state["shape"], shape_index, {"op_shape"})["state"]
             if qubit_width(shape, shape_index) != width:
                 raise WireError("SparsePauliOp width differs from PauliList")
-            if array_state(state["coeffs"], shape_index)[0] != (rows,):
+            coeff_record = node(
+                state["coeffs"],
+                shape_index,
+                {"ndarray_owner", "ndarray_view", "object_array_owner", "object_array_view"},
+            )
+            if coeff_record["kind"].startswith("object_array_"):
+                from graybench.graph_object_arrays import OBJECT_ARRAY_CODECS
+
+                OBJECT_ARRAY_CODECS[coeff_record["kind"]].validate(
+                    coeff_record["state"], shape_index
+                )
+                coeff_shape = tuple(coeff_record["state"]["shape"])
+            else:
+                coeff_shape = array_state(state["coeffs"], shape_index)[0]
+            if coeff_shape != (rows,):
                 raise WireError("Sparse coefficient count differs from Pauli rows")
             return
         if self.kind == "scalar_op":

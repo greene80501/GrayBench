@@ -4,7 +4,9 @@ import math
 from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError
+from graybench.graph_expressions import ExpressionCodec
 from graybench.graph_numeric import ARRAY_CODECS
+from graybench.graph_object_arrays import OBJECT_ARRAY_CODECS
 from graybench.graph_primitive import PRIMITIVE_CODECS
 from graybench.graph_scientific import SCIENTIFIC_CODECS
 from graybench.graph_symbolic import SYMBOL_CODECS
@@ -133,9 +135,11 @@ class ContainerCodec:
 
 REGISTRY = {name: ContainerCodec(name) for name in ("list", "tuple", "dict", "property_set")}
 REGISTRY.update(ARRAY_CODECS)
+REGISTRY.update(OBJECT_ARRAY_CODECS)
 REGISTRY.update(SCIENTIFIC_CODECS)
 REGISTRY.update(PRIMITIVE_CODECS)
 REGISTRY.update(SYMBOL_CODECS)
+REGISTRY["parameter_expression"] = ExpressionCodec()
 
 
 def codec_for(value):

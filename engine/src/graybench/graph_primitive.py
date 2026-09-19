@@ -66,6 +66,11 @@ def leading_shape(token, index):
     kind, state = record["kind"], record["state"]
     if kind in {"ndarray_owner", "ndarray_view"}:
         return array_state(token, index)[0]
+    if kind in {"object_array_owner", "object_array_view"}:
+        from graybench.graph_object_arrays import OBJECT_ARRAY_CODECS
+
+        OBJECT_ARRAY_CODECS[kind].validate(state, index)
+        return tuple(state["shape"])
     if kind == "numpy_scalar":
         return ()
     if kind in {"bit_array", "data_bin"}:

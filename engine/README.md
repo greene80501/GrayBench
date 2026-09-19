@@ -242,3 +242,7 @@ Experimental graph symbol identities now preserve Parameter/ParameterVector obje
 shared vector slots and detached elements across resize. See
 [development evidence](../docs/reliability-evidence/graph-symbol-identities-development.md).
 Expression replay and symbolic object arrays remain pending; production calls still use v3.
+
+[Symbolic graph storage](../docs/reliability-evidence/graph-symbolic-storage-development.md)
+now includes bounded expression replay and object-reference arrays. Earlier increment
+notes describe their historical scope. Circuit/RPC integration and admission remain pending.

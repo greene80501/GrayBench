@@ -110,7 +110,8 @@ In progress: ndarray owner/view and typed NumPy scalar nodes implemented and
 locally tested. Scientific and primitive wrappers now have component graphs;
 Numeric SparsePauliOp/CNOTDihedral component graphs are also implemented;
 Parameter/vector/element and UUID identities are implemented in graph_symbolic.py;
-expression nodes, symbolic coefficient arrays and geometry updates remain unfinished.
+bounded expression replay and reference-slot symbolic arrays are also implemented.
+Exported array geometry updates and further admission remain unfinished.
 The task is not complete; no production graph admission is claimed.
 
 
@@ -137,7 +138,8 @@ def test_numpy_views_keep_shared_storage(graph_roundtrip):
   snapshot/prepare/commit sequence from Task 1.
 - [x] Represent owning numeric buffers and array views with validated dtype, offset,
   shape, strides and writeability. Validate min/max byte addresses for positive,
-  negative and zero strides before allocation. Never use object/structured dtypes.
+  negative and zero strides before allocation. Numeric byte buffers never use object/structured dtypes. The separate
+  graph_object_arrays codec uses graph reference slots, never object-pointer bytes.
 - [x] Test disjoint equal arrays stay disjoint, overlapping slices, transposes,
   negative strides, read-only views, endian preservation and nonfinite numeric bytes.
 - [ ] Map Statevector/DensityMatrix/Operator/Choi, ScalarOp/SparsePauliOp,
@@ -145,7 +147,7 @@ def test_numpy_views_keep_shared_storage(graph_roundtrip):
   PubResult/SamplerPubResult to explicit component references. Reuse existing numeric
   field validation, not opaque deep copies. Every existing tree-supported type gets
   either a graph handler or an explicit unsupported capability entry.
-- [ ] Test two wrapper objects sharing one numeric array, repeated DataBin fields,
+- [x] Test two wrapper objects sharing one numeric array, repeated DataBin fields,
   metadata shared with a separate argument, and a symbolic coefficient shared by
   multiple operators. Test inconsistent dimensions/state and reserved DataBin fields.
 - [ ] Run focused tests, review memory/ownership validation, commit.

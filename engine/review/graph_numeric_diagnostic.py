@@ -149,6 +149,19 @@ def main():
     assert vector[2].vector is vector and len(vector.params) == 3
     checks.append("parameter_vector_resize_and_detached_identity")
 
+    from qiskit.circuit import Parameter
+
+    parameter = Parameter("theta")
+    symbolic = SparsePauliOp(["X", "Z"], coeffs=np.array([parameter, parameter], dtype=object))
+    remote, array, expr = transfer(
+        judge, candidate, (symbolic, symbolic.coeffs, symbolic.coeffs[0]), 17
+    )
+    assert remote.coeffs is array and array[0] is expr and array[0] is not array[1]
+    array[0] = array[1]
+    assert transfer(candidate, judge, remote, 17) is symbolic
+    assert symbolic.coeffs[0] is symbolic.coeffs[1]
+    checks.append("symbolic_sparse_coefficients_preserve_object_references")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -159,6 +172,9 @@ def main():
         "graph_scientific.py",
         "graph_primitive.py",
         "graph_symbolic.py",
+        "graph_object_arrays.py",
+        "graph_expressions.py",
+        "symbolic_wire.py",
         "primitive_wire.py",
     )
     print(

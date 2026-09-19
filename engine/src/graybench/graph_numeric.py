@@ -116,7 +116,11 @@ class ArrayCodec:
     def matches(self, value):
         import numpy as np
 
-        return type(value) is np.ndarray and (value.base is None) == (self.kind == "ndarray_owner")
+        return (
+            type(value) is np.ndarray
+            and value.dtype.kind != "O"
+            and (value.base is None) == (self.kind == "ndarray_owner")
+        )
 
     def state(self, value, ref):
         import numpy as np
