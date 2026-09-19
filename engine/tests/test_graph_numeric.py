@@ -114,15 +114,15 @@ def test_forged_alignment_is_rejected_before_other_changes():
     assert a[0] == 0
 
 
-def test_geometry_changes_are_explicitly_unsupported_without_corrupting_aliases():
+def test_owner_reshape_is_synchronized_without_reshaping_held_view():
     judge, worker = arenas()
     a = np.arange(6)
     held = a[:]
     owner, view = transfer(judge, worker, (a, held))
     owner.shape = (2, 3)
-    with pytest.raises(WireError, match="geometry"):
-        worker.snapshot({"value": view}, sequence=1)
-    assert a.shape == held.shape == (6,)
+    assert transfer(worker, judge, view) is held
+    assert a.shape == (2, 3) and held.shape == (6,)
+    assert held.base is a
 
 
 @pytest.mark.parametrize(

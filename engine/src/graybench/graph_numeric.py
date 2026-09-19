@@ -1,8 +1,8 @@
 """Numeric graph nodes with shared ndarray ownership and bounded view geometry.
 
-Only exact ndarrays backed by an exact owning ndarray are admitted. External
-buffer owners and changes to an exported array's geometry require further codecs;
-neither falls back to independent value copies.
+Only exact ndarrays backed by an exact owning ndarray are admitted. Geometry
+updates preserve the existing storage byte count, base and data offset. External
+buffers and storage resizing remain unsupported, without value-copy fallback.
 """
 
 import base64
@@ -103,6 +103,47 @@ class ArrayUpdate:
     data: bytes | None
     writeable: bool
     aligned: bool
+    geometry: tuple | None = None
+
+
+def apply_array_geometry(target, proposed):
+    """Change metadata without replacing or reallocating the owning storage."""
+    dtype, shape, strides = proposed
+    if (
+        target.dtype.str == dtype.str
+        and target.dtype.char == dtype.char
+        and target.shape == shape
+        and target.strides == strides
+    ):
+        return
+    old_size = target.size
+    if target.base is None:
+        # Owning arrays are validated contiguous. Never shrink their address span:
+        # NumPy uses that span when checking later strides assignments.
+        step = target.itemsize
+        contiguous = []
+        for n in reversed(target.shape):
+            contiguous.append(step)
+            step *= max(1, n)
+        target.strides = tuple(reversed(contiguous))
+        target.shape = (old_size,)
+        if dtype.kind != "O":
+            target.dtype = dtype
+    else:
+        target.strides = (0,) * target.ndim
+        if dtype.kind != "O" and target.dtype.itemsize != dtype.itemsize:
+            # A tiny contiguous final axis permits dtype reinterpretation even
+            # when the outer layout has negative/zero strides. The native old and
+            # validated new elements both fit at the unchanged data offset.
+            width = math.lcm(target.itemsize, dtype.itemsize) // target.itemsize
+            target.shape = (old_size // width, width) if old_size else (0,)
+            target.strides = (0, target.itemsize) if old_size else (target.itemsize,)
+            target.dtype = dtype
+        elif dtype.kind != "O":
+            target.dtype = dtype
+        target.strides = (0,) * target.ndim
+    target.shape = shape
+    target.strides = strides
 
 
 @dataclass(frozen=True)
@@ -178,11 +219,10 @@ class ArrayCodec:
             bounds(state, capacity, state["offset"])
 
     def validate_update(self, previous, state):
-        stable = {"dtype", "dtype_char", "shape", "strides"}
-        if self.kind == "ndarray_view":
-            stable |= {"base", "offset"}
-        if any(previous[key] != state[key] for key in stable):
-            raise WireError("Exported array geometry changes require a graph codec")
+        if geometry(previous)[1] != geometry(state)[1]:
+            raise WireError("Exported array storage resizing requires another graph codec")
+        if self.kind == "ndarray_view" and any(previous[k] != state[k] for k in ("base", "offset")):
+            raise WireError("Exported array base/offset changes require another graph codec")
 
     def array_bytes(self, state):
         return geometry(state)[1] if self.kind == "ndarray_owner" else 0
@@ -219,11 +259,14 @@ class ArrayCodec:
             payload(state) if self.kind == "ndarray_owner" else None,
             state["writeable"],
             state["aligned"],
+            (numeric_dtype(state), tuple(state["shape"]), tuple(state["strides"])),
         )
 
     def apply(self, target, prepared):
         import numpy as np
 
+        if prepared.geometry is not None:
+            apply_array_geometry(target, prepared.geometry)
         if prepared.data is not None:
             target.flags.writeable = True
             raw = np.ndarray((len(prepared.data),), dtype=np.uint8, buffer=target)

@@ -3,7 +3,14 @@
 from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError, fields
-from graybench.graph_numeric import ArrayCodec, ArrayUpdate, bounds, geometry, owner_order
+from graybench.graph_numeric import (
+    ArrayCodec,
+    ArrayUpdate,
+    apply_array_geometry,
+    bounds,
+    geometry,
+    owner_order,
+)
 
 COMMON = {"shape", "strides", "writeable", "aligned", "itemsize"}
 
@@ -121,11 +128,12 @@ class ObjectArrayCodec:
         return ()
 
     def validate_update(self, previous, state):
-        stable = {"shape", "strides", "itemsize"}
-        if self.kind == "object_array_view":
-            stable |= {"base", "offset"}
-        if any(previous[key] != state[key] for key in stable):
-            raise WireError("Exported object-array geometry changes require another codec")
+        if slot_geometry(previous)[1] != slot_geometry(state)[1]:
+            raise WireError("Exported object-array storage resizing requires another codec")
+        if self.kind == "object_array_view" and any(
+            previous[k] != state[k] for k in ("base", "offset")
+        ):
+            raise WireError("Exported object-array base/offset changes require another codec")
 
     def allocate(self, state, index):
         import numpy as np
@@ -154,10 +162,17 @@ class ObjectArrayCodec:
         items = None
         if self.kind == "object_array_owner":
             items = tuple(token_value(token, resolve) for token in state["items"])
-        return items, ArrayUpdate(None, state["writeable"], state["aligned"])
+        return (
+            items,
+            ArrayUpdate(None, state["writeable"], state["aligned"]),
+            (tuple(state["shape"]), tuple(state["strides"])),
+        )
 
     def apply(self, target, prepared):
-        items, flags = prepared
+        import numpy as np
+
+        items, flags, (shape, strides) = prepared
+        apply_array_geometry(target, (np.dtype(object), shape, strides))
         if items is not None:
             target.flags.writeable = True
             flat = target.ravel(order="K")

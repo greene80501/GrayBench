@@ -246,3 +246,7 @@ Expression replay and symbolic object arrays remain pending; production calls st
 [Symbolic graph storage](../docs/reliability-evidence/graph-symbolic-storage-development.md)
 now includes bounded expression replay and object-reference arrays. Earlier increment
 notes describe their historical scope. Circuit/RPC integration and admission remain pending.
+
+[Array metadata updates](../docs/reliability-evidence/graph-array-geometry-development.md)
+now preserve existing objects and storage through supported shape, stride and numeric
+dtype changes. Storage resizing and base/offset changes remain unsupported.

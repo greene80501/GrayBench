@@ -162,6 +162,17 @@ def main():
     assert symbolic.coeffs[0] is symbolic.coeffs[1]
     checks.append("symbolic_sparse_coefficients_preserve_object_references")
 
+    storage = np.arange(8, dtype=np.uint64)
+    retained = storage[1:3]
+    remote, held = transfer(judge, candidate, (storage, retained), 18)
+    remote.dtype = np.dtype(np.uint8)
+    remote.shape = (8, 8)
+    assert transfer(candidate, judge, remote, 18) is storage
+    assert storage.shape == (8, 8) and storage.dtype == np.dtype(np.uint8)
+    assert retained.base is storage and retained.dtype == np.dtype(np.uint64)
+    assert retained.tolist() == [1, 2] and held.base is remote
+    checks.append("array_geometry_updates_keep_original_storage_and_views")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",

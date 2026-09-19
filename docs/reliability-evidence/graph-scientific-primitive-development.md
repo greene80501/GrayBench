@@ -63,10 +63,11 @@ Remaining graph capability entries are explicit:
 | Parameter, ParameterVector, parameter-vector elements, UUID | Added by the subsequent [symbol identity increment](graph-symbol-identities-development.md). |
 | ParameterExpression, symbolic coefficients | Added by the subsequent [symbolic storage increment](graph-symbolic-storage-development.md), with explicit replay/geometry limits. |
 | QuantumCircuit, standalone Instruction/Gate and supported standard/custom gate families | Unsupported; Task 3 must preserve component ownership and caches. |
-| Array geometry changes, external buffers, dtype metadata and non-admitted numeric forms | Unsupported as recorded in the numeric increment. |
+| Array shape/stride/numeric dtype changes with fixed byte count, base and offset | Added by the subsequent [geometry increment](graph-array-geometry-development.md). |
+| Storage resizing, external buffers, dtype metadata and non-admitted numeric forms | Explicitly unsupported. |
 | Seeded scientific RNG objects and extra scientific instance attributes | Unsupported; never silently discarded or replaced with judge-global state. |
 
-No graph payload falls back to the old tree codec. Task 2 remains in progress;
+No graph payload falls back to the old tree codec. The subsequent geometry increment completes the bounded Task 2 component work;
 scientific/primitive coverage here does not imply circuit support, completed
 protected judging or a score comparable to an official benchmark.
 

@@ -106,13 +106,14 @@ def test_shared_positional_keyword_object():
 
 ### Task 2: Numeric storage and scientific/primitive object ownership
 
-In progress: ndarray owner/view and typed NumPy scalar nodes implemented and
+Standalone component implementation complete: ndarray owner/view and typed NumPy scalar nodes implemented and
 locally tested. Scientific and primitive wrappers now have component graphs;
 Numeric SparsePauliOp/CNOTDihedral component graphs are also implemented;
 Parameter/vector/element and UUID identities are implemented in graph_symbolic.py;
 bounded expression replay and reference-slot symbolic arrays are also implemented.
-Exported array geometry updates and further admission remain unfinished.
-The task is not complete; no production graph admission is claimed.
+Array metadata updates now preserve byte count, base and offset. Storage resizing,
+external buffers and other documented unsupported forms remain explicit failures.
+Task 2 is complete within that bounded contract; production admission is still pending.
 
 
 Files: create `graph_numeric.py`, `graph_scientific.py`, `graph_primitive.py` and
@@ -142,7 +143,7 @@ def test_numpy_views_keep_shared_storage(graph_roundtrip):
   graph_object_arrays codec uses graph reference slots, never object-pointer bytes.
 - [x] Test disjoint equal arrays stay disjoint, overlapping slices, transposes,
   negative strides, read-only views, endian preservation and nonfinite numeric bytes.
-- [ ] Map Statevector/DensityMatrix/Operator/Choi, ScalarOp/SparsePauliOp,
+- [x] Map Statevector/DensityMatrix/Operator/Choi, ScalarOp/SparsePauliOp,
   Clifford/StabilizerState/CNOTDihedral and BitArray/DataBin/PrimitiveResult/
   PubResult/SamplerPubResult to explicit component references. Reuse existing numeric
   field validation, not opaque deep copies. Every existing tree-supported type gets
@@ -150,7 +151,9 @@ def test_numpy_views_keep_shared_storage(graph_roundtrip):
 - [x] Test two wrapper objects sharing one numeric array, repeated DataBin fields,
   metadata shared with a separate argument, and a symbolic coefficient shared by
   multiple operators. Test inconsistent dimensions/state and reserved DataBin fields.
-- [ ] Run focused tests, review memory/ownership validation, commit.
+- [x] Run focused tests, review memory/ownership validation, commit.
+  Final Docker suite: 654 passed; standalone pinned Linux probe: 18 checks passed.
+  Fresh whole-plan review remains after Task 5 as previously ruled.
 
 ### Task 3: Qiskit circuit and instruction component graphs
 
