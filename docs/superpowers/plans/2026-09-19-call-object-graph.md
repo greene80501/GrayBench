@@ -200,6 +200,118 @@ def test_circuit_update_keeps_existing_root_and_metadata(graph_exchange):
   claim support by copying an opaque `circuit_v5` leaf.
 - [ ] Run existing circuit/controlled/numeric tests plus new graph tests, review and commit.
 
+### Task 3 implementation refinement: owner-created cache objects
+
+This refines Task 3 after the native ownership audit; it does not replace Tasks
+3-5 or relax the spec's identity and validate-before-mutate requirements.
+The current independently allocated child shells cannot represent newly generated
+Rust-owned caches. Complete these steps before claiming circuit mutation support.
+
+Files: create engine/src/graybench/graph_owned.py and
+engine/tests/test_graph_owned.py; modify graph_wire.py, graph_circuit.py and
+the circuit regression tests. Keep runtime code separate from the audit fixture.
+The existing whole-plan review remains after Task 5.
+
+**Fixed interfaces and execution order**
+
+Define internal frozen OwnerTransition records in graph_owned.py. Their fields
+are owner_handle, previous_state, desired_state and child_handles. States are
+private copies of schema-validated records, never user-supplied executable actions.
+child_handles maps only fixed local slot enums (qubits, clbits, qubit_indices,
+clbit_indices) to validated graph IDs. No payload selects a callable or attribute.
+
+The fixed CircuitData codec produces transitions with
+plan_owner(previous_state, desired_state, record_index) -> OwnerTransition.
+It validates intrinsic membership independently of cached Python lists/maps.
+Intrinsic membership is read from a fresh copy_empty_like(), whose getters
+rebuild from Rust state; the original caches are captured separately by reference.
+
+The graph_owned module exposes:
+- rehearse(records, previous_records, limits) -> OwnedCommitPlan
+- execute_owned(plan, existing_objects) -> (objects, resolved_roots)
+
+rehearse first reconstructs the previously exported graph privately. It then
+executes the exact proposed transition schedule on that private graph, including
+SDK calls, newly created cache binding, regular object updates and immutable
+construction. Late schema, allocation, binding and SDK failures must all occur
+here before any live mutation. All objects are constructed only from exported
+records; no private judge objects or global RNG state are enumerated.
+
+The live commit executes the already validated schedule in this order:
+1. Allocate ordinary mutable shells and new native owner shells.
+2. Apply intrinsic owner membership transitions using fixed SDK methods.
+3. Read owner-created caches through fixed getters and bind their graph handles.
+   An existing handle must still designate its original Python object. Reject a
+   newly discovered owner claiming an already-exported unattached list/map during
+   rehearsal: the SDK cannot adopt that object through the verified API.
+4. Resolve new immutable nodes (including tuples and BitLocations) using the
+   bound children; then prepare/apply regular container and Python-object updates.
+   This can preserve cached contents that differ from intrinsic membership.
+5. Apply operation/global-phase state after Python operation objects are ready.
+   Verify that this did not unexpectedly invalidate the bound membership caches.
+6. Resolve return roots from the final handle map and install the graph history.
+
+New immutable nodes and new containers must not retain pre-binding placeholders.
+No existing immutable node or child ID may be rebound. Retain detached prior
+caches in the arena exactly like detached ordinary lists. A live execution failure
+closes the arena and is never interpreted as a wrong model answer.
+
+PreparedGraph binds this internal plan to arena identity, generation and sequence,
+as it already does for ordinary updates. Keep the current path for codecs without
+native-owned children until both paths have equivalent adversarial coverage.
+No v3 fallback is permitted.
+
+**Required regression sequence**
+
+- [ ] Write and run the initial shared-cache regression (expected unsupported
+  before implementation):
+
+    def test_circuit_and_held_cache_have_one_receiver_object():
+        circuit = QuantumCircuit(2)
+        remote, cache = graph_roundtrip((circuit, circuit.qubits))
+        assert remote.qubits is cache
+
+  graph_roundtrip uses two GraphArena instances and snapshot/prepare/commit,
+  exactly as the existing member test helper does.
+
+- [ ] Implement fresh-owner cache binding and assert aliases inside a returned
+  tuple and nested dictionary resolve to the actual owner-created list.
+- [ ] Add the existing-owner mutation regression:
+
+    def test_add_bit_retains_detached_old_cache():
+        circuit = QuantumCircuit(2)
+        old = circuit.qubits
+        remote, held = graph_roundtrip((circuit, old))
+        remote.add_register(QuantumRegister(1, "extra"))
+        graph_return(remote)
+        assert circuit.qubits is not old
+        assert len(old) == len(held) == 2
+        assert circuit.num_qubits == 3
+
+  graph_return reverses the same two persistent arenas at response sequence 1;
+  it must return the original circuit object.
+- [ ] Add same-valued replace_bits: it must create new cache IDs even when all
+  member values compare equal. Old cached dictionaries and their BitLocations
+  register lists must remain reachable and unchanged through old aliases.
+- [ ] Add cache-content divergence: pop from the public qubits list, retain
+  num_qubits and actual operation membership, round-trip, and verify both states.
+- [ ] Add a late dangling reference after an otherwise valid add-bit transition.
+  prepare must fail while the existing live circuit, cache identities, cached
+  contents, operations and private global state remain unchanged.
+- [ ] Add a new tuple referencing a new cache and a detached tuple referencing the
+  old cache. Neither may contain a placeholder list after commit.
+- [ ] Add two owners claiming one distinct cache handle and reject before mutation.
+  Add an already-exported list followed by its previously unexported CircuitData
+  owner: reject explicitly while late-attachment support remains unavailable.
+- [ ] Run all graph tests, the full Docker-enabled suite, and a new exclusive
+  source-bound Linux fixture exercising the same transitions. Only then connect
+  this machinery to the remaining circuit/instruction work above.
+
+Known limits are capabilities, not final-goal exclusions. Anonymous bit equality,
+late cache attachment and any unsupported native ownership form still require
+resolution or task-specific admission evidence before release. No benchmark score
+becomes certified merely because this implementation refinement passes.
+
 ### Task 4: Persistent v4 call lifecycle and exception state
 
 Files: modify `worker.py`, `sandbox.py`, `upstream.py`, `upstream_process.py`,
