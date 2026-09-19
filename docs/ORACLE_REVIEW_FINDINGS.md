@@ -6,6 +6,7 @@ oracles belong to a separately versioned track with the same public requirements
 
 | Task | Evidence | Required resolution |
 | --- | --- | --- |
+| 113 | Both suites accept a constant plain dictionary ignoring the input, while the PropertySet reference is unsupported by the bridge. | Preserve the required return type and test varied inputs including cases where removing barriers changes depth; see [protected evidence](reliability-evidence/task113-contract-review.md). Do not confuse transport support with oracle correctness. |
 | 37 | Both suites accept fabricated PrimitiveResult data with a non-bit string and no algorithm execution. The canonical answer returns 00000 for input 1111. | Specify output/register semantics and validate recovered strings and result consistency; see [protected evidence](reliability-evidence/primitive-containers.md). Returned data alone cannot prove backend execution. |
 | 46 | Both suites accept a fixed three-qubit identity LinearFunction that ignores the requested width and seed. | Check parameter/seed behavior and the declared generation method; see [protected replay](reliability-evidence/linear-functions.md). |
 | 86 | Both suites accept identity blocks with the expected block counts but no requested CX-chain behavior. | Check circuit semantics and declared block constraints together; do not impose the reference's undisclosed extra H gate. |

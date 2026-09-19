@@ -50,3 +50,22 @@ Direct comparison of ScienceEval's committed dataset at `f90e004468a1b18fcb71f4d
 5. Attribute disagreements to a verified setting or report them as unresolved. Never change tests merely to make percentages agree.
 
 Sources accessed 2026-09-13. A broad HumanEval score advertised on a model card is a different benchmark from Qiskit HumanEval and is not a valid QHE reference.
+
+## Reproducibility recheck, 2026-09-19
+
+The [IBM table](https://quantum.cloud.ibm.com/docs/en/guides/qiskit-code-assistant)
+still reports the four normal/hard pairs above and model-specific system prompts.
+Its installation examples are not complete benchmark run manifests. In particular,
+the Mistral model listing describes Qiskit 2.1 training while the table names 2.2;
+neither establishes the precise evaluator dependency lock.
+
+Pinned primary model cards inspected:
+
+- [Mistral, revision 0c541958](https://huggingface.co/Qiskit/mistral-small-3.2-24b-qiskit/blob/0c541958022de04bd7c200b14a4b7a58977ae751/README.md).
+- [Qwen, revision 9dbc517d](https://huggingface.co/Qiskit/Qwen2.5-Coder-14B-Qiskit/blob/9dbc517d40b6baa7c20bfa0d7ca1a988c99fba2a/README.md).
+
+Their inference examples use a 512-token generation cap. This is not evidence that
+the published evaluation used that cap. Exact dataset revisions, evaluation
+dependency locks, decoding settings and per-task outputs remain unverified for
+these table rows. Native-template replication and shared-prompt comparison remain
+separate experiments; no local score has been certified against either reference.
