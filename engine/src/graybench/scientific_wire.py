@@ -66,11 +66,115 @@ def decode_array(value):
     return array[()] if value["kind"] == "numpy_scalar_v1" else array
 
 
+def dihedral_shapes(n):
+    if type(n) is not int or not 1 <= n <= 64:
+        raise WireError("Unsupported CNOTDihedral qubit count")
+    return {
+        "linear": (n, n),
+        "shift": (n,),
+        "weight_1": (n,),
+        "weight_2": (math.comb(n, 2),),
+        "weight_3": (math.comb(n, 3),),
+    }
+
+
+def encode_dihedral(item):
+    import numpy as np
+    from qiskit.quantum_info.operators.dihedral.polynomial import SpecialPolynomial
+
+    n = item.num_qubits
+    shapes = dihedral_shapes(n)
+    if (
+        set(vars(item)) != {"_num_qubits", "poly", "linear", "shift", "_qargs", "_op_shape"}
+        or type(item._num_qubits) is not int
+        or item._num_qubits != n
+        or item.qargs is not None
+        or item.input_dims() != (2,) * n
+        or item.output_dims() != (2,) * n
+    ):
+        raise WireError("Unsupported CNOTDihedral object state")
+    poly = item.poly
+    if (
+        type(poly) is not SpecialPolynomial
+        or set(vars(poly))
+        != {"n_vars", "nc2", "nc3", "weight_0", "weight_1", "weight_2", "weight_3"}
+        or any(type(x) is not int for x in (poly.n_vars, poly.nc2, poly.nc3))
+        or (poly.n_vars, poly.nc2, poly.nc3) != (n, math.comb(n, 2), math.comb(n, 3))
+    ):
+        raise WireError("Unsupported CNOTDihedral polynomial state")
+    result = {"kind": "cnot_dihedral_v1", "qubits": n}
+    if type(poly.weight_0) is int:
+        result["weight_0"] = poly.weight_0
+    elif isinstance(poly.weight_0, np.integer):
+        result["weight_0"] = array_record(np.asarray(poly.weight_0), scalar=True)
+    else:
+        raise WireError("Unsupported CNOTDihedral constant coefficient")
+    for name, shape in shapes.items():
+        array = getattr(item if name in ("linear", "shift") else poly, name)
+        if name == "shift" and type(array) is list and len(array) == n:
+            entries = []
+            for scalar in array:
+                if type(scalar) is int:
+                    entries.append(scalar)
+                elif isinstance(scalar, np.integer):
+                    entries.append(array_record(np.asarray(scalar), scalar=True))
+                else:
+                    raise WireError("Unsupported CNOTDihedral list shift value")
+            result[name] = {"kind": "integer_list_v1", "items": entries}
+            continue
+        if type(array) is not np.ndarray or array.shape != shape:
+            raise WireError("Unsupported CNOTDihedral array shape")
+        result[name] = array_record(array)
+    return result
+
+
+def decode_dihedral(value):
+    import numpy as np
+    from qiskit.quantum_info import CNOTDihedral
+
+    fields(
+        value, {"kind", "qubits", "linear", "shift", "weight_0", "weight_1", "weight_2", "weight_3"}
+    )
+    shapes = dihedral_shapes(value["qubits"])
+    arrays = {}
+    for name, shape in shapes.items():
+        record = value[name]
+        if name == "shift" and type(record) is dict and record.get("kind") == "integer_list_v1":
+            fields(record, {"kind", "items"})
+            if type(record["items"]) is not list or len(record["items"]) != value["qubits"]:
+                raise WireError("Invalid CNOTDihedral list shift shape")
+            entries = []
+            for scalar in record["items"]:
+                if type(scalar) is not int:
+                    scalar = decode_array(scalar)
+                    if not isinstance(scalar, np.integer):
+                        raise WireError("Invalid CNOTDihedral list shift value")
+                entries.append(scalar)
+            arrays[name] = entries
+            continue
+        array = decode_array(value[name])
+        if type(array) is not np.ndarray or array.shape != shape:
+            raise WireError("Invalid CNOTDihedral array shape")
+        arrays[name] = array
+    constant = value["weight_0"]
+    if type(constant) is not int:
+        constant = decode_array(constant)
+        if not isinstance(constant, np.integer):
+            raise WireError("Invalid CNOTDihedral constant coefficient")
+    result = CNOTDihedral(num_qubits=value["qubits"], validate=False)
+    # Preserve invalid numeric values for the oracle; do not reduce coefficients or repair matrices.
+    result.poly.weight_0 = constant
+    for name, array in arrays.items():
+        setattr(result if name in ("linear", "shift") else result.poly, name, array)
+    return result
+
+
 def encode_scientific(item):
     import numpy as np
     from qiskit.quantum_info import (
         Choi,
         Clifford,
+        CNOTDihedral,
         DensityMatrix,
         Operator,
         ScalarOp,
@@ -79,6 +183,8 @@ def encode_scientific(item):
         Statevector,
     )
 
+    if type(item) is CNOTDihedral:
+        return encode_dihedral(item)
     if type(item) in (ScalarOp, SparsePauliOp):
         try:
             from .operator_wire import encode_operator

@@ -97,6 +97,12 @@ def decode(value, depth=0, budget=None):
         return value
     if type(value) is float and math.isfinite(value):
         return value
+    if type(value) is dict and value.get("kind") == "cnot_dihedral_v1":
+        try:
+            from .scientific_wire import decode_dihedral
+        except ImportError:
+            from scientific_wire import decode_dihedral
+        return decode_dihedral(value)
     if type(value) is dict and value.get("kind") == "complex_v1":
         if set(value) != {"kind", "real", "imag"} or any(
             type(value[k]) is not float or not math.isfinite(value[k]) for k in ("real", "imag")

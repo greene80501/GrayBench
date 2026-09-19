@@ -175,6 +175,8 @@ See [instruction transport](../docs/reliability-evidence/instruction-definitions
 for validated cases, limits and remaining subclass/cache restrictions.
 ScalarOp and SparsePauliOp now have bounded data-only exchange preserving terms,
 phases, symbolic coefficients and subsystem bindings; see [operator evidence](../docs/reliability-evidence/sparse-operators.md).
+CNOTDihedral exchange preserves affine and polynomial state, including the SDK's
+distinct list/array shift forms; see [transport evidence](../docs/reliability-evidence/dihedral-transport.md).
 
 The reusable oracle-review runner records authored counterexamples separately from
 model scores. [Task0/1 review](../docs/reliability-evidence/task0-1-review.md) reproduces
