@@ -122,3 +122,49 @@ class PublicAnchorRegistry:
     def snapshot(self):
         """Private bootstrap material only; never add this whole graph to call payloads."""
         return json.loads(self._graph)
+
+    def private_copy(self):
+        """Rebuild frozen bootstrap state without binding any live public object.
+
+        This accepts no peer input and does not enroll singleton nodes in the
+        transport registry. Only actual exported anchors may later be bound to
+        this private baseline during incoming graph rehearsal.
+        """
+        from graybench.graph_owned import OwnedCommitPlan, execute_owned
+        from graybench.graph_types import REGISTRY
+        from graybench.graph_wire import GraphArena, GraphLimits
+
+        graph = self.snapshot()
+        records = {key: {"id": key, **record} for key, record in graph["records"].items()}
+        singleton_types = {
+            record["state"]["factory"]: self._types[key]
+            for key, record in records.items()
+            if record["kind"] == "public_singleton"
+        }
+        codecs = {**REGISTRY, "public_singleton": _PrivateSingletonCodec(singleton_types)}
+        arena = GraphArena(side="judge", session="private-bootstrap", limits=GraphLimits())
+
+        def materialize(records, existing):
+            return arena._materialize(records, existing, codecs=codecs)
+
+        objects, _ = execute_owned(OwnedCommitPlan(records, {}, {}), {}, materialize, codecs=codecs)
+        if any(objects[key] is self._objects[key] for key in objects):
+            raise WireError("Private bootstrap retained a public anchor object")
+        return objects
+
+
+@dataclass(frozen=True)
+class _PrivateSingletonCodec:
+    """Trusted bootstrap shells only; never calls a live singleton factory."""
+
+    classes: object
+    immutable: bool = False
+
+    def allocate(self, state, index):
+        return object.__new__(self.classes[state["factory"]])
+
+    def prepare(self, state, resolve, index):
+        return resolve(state["attributes"]["ref"])
+
+    def apply(self, target, prepared):
+        object.__setattr__(target, "__dict__", prepared)

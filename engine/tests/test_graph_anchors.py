@@ -108,3 +108,70 @@ def test_live_value_change_does_not_rewrite_bootstrap_record():
     finally:
         metadata.clear()
         metadata.update(old)
+
+
+def test_private_bootstrap_copy_preserves_aliases_without_public_objects():
+    registry = PublicAnchorRegistry.capture()
+    private = registry.private_copy()
+    snapshot = registry.snapshot()
+    assert set(private) == set(snapshot["records"])
+    for key, record in snapshot["records"].items():
+        public = registry.resolve(key, kind=record["kind"])
+        assert type(private[key]) is type(public)
+        assert private[key] is not public
+    from graybench.graph_types import SCALAR_MISSING, codec_for, scalar_record
+
+    identities = {id(value): key for key, value in private.items()}
+
+    def ref(value):
+        scalar = scalar_record(value)
+        return {"ref": identities[id(value)]} if scalar is SCALAR_MISSING else scalar
+
+    for key, record in snapshot["records"].items():
+        value = private[key]
+        state = (
+            {"factory": record["state"]["factory"], "attributes": ref(vars(value))}
+            if record["kind"] == "public_singleton"
+            else codec_for(value).state(value, ref)
+        )
+        assert state == record["state"]
+    gate = private[registry.key_for(XGate())]
+    assert vars(gate) is private[registry.key_for(vars(XGate()))]
+    assert gate.params is private[registry.key_for(XGate().params)]
+    assert gate._definition is private[registry.key_for(XGate()._definition)]
+    assert (
+        gate._definition._data.qubits is private[registry.key_for(XGate()._definition._data.qubits)]
+    )
+
+
+def test_private_bootstrap_mutations_do_not_reach_live_factories():
+    registry = PublicAnchorRegistry.capture()
+    public = XGate()
+    private = registry.private_copy()
+    gate = private[registry.key_for(public)]
+    original = dict(vars(public))
+    metadata = dict(public._definition.metadata)
+    params = list(public.params)
+    vars(gate)["_label"] = "private rehearsal"
+    list.append(gate.params, 123)
+    gate._definition.metadata["private"] = True
+    assert vars(public) == original
+    assert list(public.params) == params
+    assert public._definition.metadata == metadata
+
+
+def test_private_bootstrap_copy_uses_frozen_history_and_is_repeatable():
+    registry = PublicAnchorRegistry.capture()
+    metadata = XGate()._definition.metadata
+    original = dict(metadata)
+    try:
+        metadata["later-live-change"] = True
+        first, second = registry.private_copy(), registry.private_copy()
+        key = registry.key_for(metadata)
+        assert first[key] == second[key] == original
+        assert first[key] is not second[key]
+        first[key]["private-only"] = True
+        assert "private-only" not in second[key] and "private-only" not in metadata
+    finally:
+        metadata.clear()
+        metadata.update(original)

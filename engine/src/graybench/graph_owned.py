@@ -18,14 +18,15 @@ def has_owned(records):
     return any(hasattr(REGISTRY[r["kind"]], "owner_children") for r in records.values())
 
 
-def execute_owned(plan, existing_objects, materialize):
+def execute_owned(plan, existing_objects, materialize, *, codecs=None):
     from graybench.graph_types import REGISTRY, SCALAR_MISSING, scalar_record, token_value
 
+    registry = REGISTRY if codecs is None else codecs
     objects = dict(existing_objects)
     owners = []
     claims = {}
     for handle, record in plan.records.items():
-        codec = REGISTRY[record["kind"]]
+        codec = registry[record["kind"]]
         if not hasattr(codec, "owner_children"):
             continue
         state = record["state"]

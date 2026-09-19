@@ -460,3 +460,11 @@ records, identity-only lookup, strict key/kind/manifest checks and bounded captu
 Nineteen focused cases and source-bound Windows/Linux comparison with the independent
 capture pass. This completes the registry helper, not its before-user-code startup
 integration or graph commit binding. Those unchecked requirements remain pending.
+
+PublicAnchorRegistry.private_copy now builds a disjoint, canonically equivalent
+676-object private baseline, including singleton shells and native owner caches.
+Three new regressions and fresh source-bound Windows/Linux diagnostics verify
+aliases, private mutation isolation, frozen history and repeatable independent copies.
+The codec is private to trusted bootstrap materialization, not transport admission.
+Live binding and peer annotation validation remain unchecked above.
+Evidence: docs/reliability-evidence/private-anchor-copy-development.md.

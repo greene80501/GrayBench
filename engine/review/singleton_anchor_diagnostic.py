@@ -61,6 +61,28 @@ def main():
     for key, value in objects.items():
         assert registry.key_for(value) == key
         assert registry.resolve(key, kind=graph["records"][key]["kind"]) is value
+    private = registry.private_copy()
+    private_ids = {id(value): key for key, value in private.items()}
+
+    def private_ref(value):
+        scalar = scalar_record(value)
+        return {"ref": private_ids[id(value)]} if scalar is SCALAR_MISSING else scalar
+
+    for key, record in graph["records"].items():
+        value = private[key]
+        assert value is not objects[key] and type(value) is type(objects[key])
+        state = (
+            {"factory": record["state"]["factory"], "attributes": private_ref(vars(value))}
+            if record["kind"] == "public_singleton"
+            else codec_for(value).state(value, private_ref)
+        )
+        assert wire_bytes(state) == wire_bytes(record["state"])
+    private_x = private[registry.key_for(factories["x"])]
+    vars(private_x)["_label"] = "private copy"
+    list.append(private_x.params, 123)
+    private_x._definition.metadata["private-copy"] = True
+    assert factories["x"].label is None and not factories["x"].params
+    assert "private-copy" not in factories["x"]._definition.metadata
     first = wire_bytes(graph)
     again_factories, again_objects, again_graph = capture()
     assert wire_bytes(again_graph) == first
@@ -115,6 +137,8 @@ def main():
                 "graph_sha256": hashlib.sha256(first).hexdigest(),
                 "same_process_repeat_identity": True,
                 "runtime_registry_matches_independent_capture": True,
+                "private_copy_exact_state_and_disjoint_identities": True,
+                "private_mutation_isolated": True,
                 "equal_replacement_is_not_a_baseline_anchor": True,
                 "source_sha256": {
                     name: hashlib.sha256((source_root / name).read_bytes()).hexdigest()

@@ -281,11 +281,12 @@ class GraphArena:
                 ]
                 pending.extend((child, depth + 1) for child in reversed(children))
 
-    def _materialize(self, records, existing):
+    def _materialize(self, records, existing, *, codecs=None):
+        registry = REGISTRY if codecs is None else codecs
         objects = dict(existing)
         for handle, record in records.items():
             if handle not in objects:
-                allocated = REGISTRY[record["kind"]].allocate(record["state"], records)
+                allocated = registry[record["kind"]].allocate(record["state"], records)
                 if allocated is not None:
                     objects[handle] = allocated
         building = set()
@@ -299,7 +300,7 @@ class GraphArena:
                 raise WireLimitError("Immutable graph nesting exceeds limit")
             building.add(handle)
             record = records[handle]
-            objects[handle] = REGISTRY[record["kind"]].populate(
+            objects[handle] = registry[record["kind"]].populate(
                 None, record["state"], lambda key: resolve(key, depth + 1)
             )
             building.remove(handle)
@@ -309,7 +310,7 @@ class GraphArena:
             resolve(handle)
         updates = []
         for handle, record in records.items():
-            codec = REGISTRY[record["kind"]]
+            codec = registry[record["kind"]]
             if codec.immutable:
                 continue
             prepared = codec.prepare(record["state"], objects.__getitem__, records)
