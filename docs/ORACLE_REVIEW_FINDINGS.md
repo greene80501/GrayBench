@@ -41,3 +41,13 @@ compatibility is not task admission or proof of oracle adequacy.
 Tasks 116 and 120 now have separately selected [behavioral revisions](reliability-evidence/gate-semantics-revisions.md).
 They retain historical upstream results and make the changed scoring contract
 public before generation. Finite semantic checks do not certify internal methods.
+
+
+## Object-identity fidelity blocker
+
+Six [native-versus-protected identity probes](reliability-evidence/alias-boundary.md)
+reproduce one false acceptance and five false rejections caused by value-only
+transport. This affects identity-sensitive behavior even without a visible value
+mutation. The graph-protocol replacement is designed but not implemented. Existing
+release-ineligible status remains necessary; passing unit tests do not prove this
+interface correct.

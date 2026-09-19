@@ -221,3 +221,9 @@ Tasks 116 and 120 also have explicit `qhe116-evolution-semantics-v1` and
 [gate semantics contract and limits](../docs/reliability-evidence/gate-semantics-revisions.md)
 before interpreting these results. They score observable behavior, not internal
 construction procedures, and remain distinct from upstream scores.
+
+Known interface defect: the current value-only bridge does not preserve shared
+object references, returned-input identity or cross-call identity. Six protected
+[identity diagnostics](../docs/reliability-evidence/alias-boundary.md) reproduce
+incorrect verdicts. The [graph-protocol plan](../docs/superpowers/plans/2026-09-19-call-object-graph.md)
+is unfinished; these identity-sensitive interfaces are not certified.
