@@ -1,0 +1,228 @@
+{
+  "purpose": "Exact upstream tests against trusted authored fixtures; NOT a secure model-scoring harness",
+  "limitations": "Fixtures and oracles intentionally share a process for local contract review. Never accept untrusted model code here. No independent certification.",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "engine_source": {
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+      "campaign_setup.py": "ef893aec71ab935054d726840a8c57c9d04761859bb0504f9908e7ed738c28df",
+      "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+      "cli.py": "f94c43e891e3bf38bd6d6f0ba6514cd75185d167d9063f14f9dc50e8fdb86f89",
+      "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "34bfda5d0067e315da15e32fe1a8583beef224a7a817d0a3cc4d8c1bfba157c3",
+      "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+      "evaluation_campaign.py": "c56f9f137fec4abeb052aa27ec29e4aa4d91e6d7fe07541dcebaff75ff4a2c82",
+      "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+      "file_judge.py": "339c7772457405571f201197c7224f2a18159d76980393d40ce6865cfd4bab87",
+      "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+      "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+      "judge.py": "486aeabb82004d419e4e1623bd4ef8a3e879c5e6d3e713810dfe7e8da8118831",
+      "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+      "ledger.py": "96ee5c92599178c44950f31f01de78b18dab5d87ce8a1f39323b06a7523e1904",
+      "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+      "model_discovery.py": "0497c4437a787a45d3dbae9b6ab851462912de32e1c11bba0998897e3c300e5e",
+      "oracle_review.py": "ff30c71459f1fc6901a8474dc92f525f56a2dfe5d95933e29e7d0c5b47c8e0ed",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "30ee4955ebaa8b9003999bb06fbbf6dbed8694a2d440160ce0aa98917a4d1a59",
+      "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+      "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+      "sandbox.py": "34c5a01d22c352e877d8176edf734b514d0493926e481c8cf946e7ecbc873506",
+      "scientific_wire.py": "ba37f8c22051db2a9db28342fc60dd53939342fa371058b9832e7ef893657d37",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "transport.py": "da2f217dcc10a6b54a8bf5c733943f55dab0cdd06a7db0e637dba23811cd5ce3",
+      "upstream.py": "3601a40f852b0ad3bcacc7e669aec7ff5248ca17e4e237f6ef156af63138b051",
+      "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+      "value_wire.py": "95a6529973c9f52c83d7f5787fd9cde0bd962939965cf2027c50fda34c9f5530",
+      "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+    },
+    "digest": "202b37b5533d3ef7145aa0cabe7ec62cc5cb617f91f3a7fdd4d2a211565c871e"
+  },
+  "cases": [
+    {
+      "key": "normal/qiskitHumanEval/3/reference",
+      "task_digest": "450c1924eef3abab63a7b8b75b5e11ecfaeb51e78567f95272f9e15cd8064be4",
+      "fixture": "reference",
+      "contract_expectation": "pass",
+      "source": "from qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    \"\"\" Generate a QuantumCircuit for a 3 qubit GHZ State and measure it. If `drawing` is True, return both the circuit object and the Matplotlib drawing of the circuit, otherwise return just the circuit object.\n    \"\"\"\n\n    ghz = QuantumCircuit(3)\n    ghz.h(0)\n    ghz.cx(0, 1)\n    ghz.cx(0, 2)\n    ghz.measure_all()\n    if drawing:\n        return ghz, ghz.draw(output=\"mpl\")\n    return ghz\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)\n",
+      "source_sha256": "f4c9eec733217094e77a06ea9b8eb80b95e6d8bda5f777222e8668a8d9de6647"
+    },
+    {
+      "key": "normal/qiskitHumanEval/3/blank-drawing",
+      "task_digest": "450c1924eef3abab63a7b8b75b5e11ecfaeb51e78567f95272f9e15cd8064be4",
+      "fixture": "blank-drawing",
+      "contract_expectation": "fail",
+      "source": "from qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    \"\"\" Generate a QuantumCircuit for a 3 qubit GHZ State and measure it. If `drawing` is True, return both the circuit object and the Matplotlib drawing of the circuit, otherwise return just the circuit object.\n    \"\"\"\nfrom matplotlib.figure import Figure\nfrom qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    q=QuantumCircuit(3); q.h(0); q.cx(0,[1,2]); q.measure_all()\n    return (q,Figure()) if drawing else q\n\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)\n",
+      "source_sha256": "96fa2ce672e3e13cf8cf3f3469e86bbcc6b7ac4d009b37852ac7db9fac9c94ec"
+    },
+    {
+      "key": "normal/qiskitHumanEval/3/one-measurement",
+      "task_digest": "450c1924eef3abab63a7b8b75b5e11ecfaeb51e78567f95272f9e15cd8064be4",
+      "fixture": "one-measurement",
+      "contract_expectation": "contract_ambiguous",
+      "source": "from qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    \"\"\" Generate a QuantumCircuit for a 3 qubit GHZ State and measure it. If `drawing` is True, return both the circuit object and the Matplotlib drawing of the circuit, otherwise return just the circuit object.\n    \"\"\"\nfrom qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    q=QuantumCircuit(3,1); q.h(0); q.cx(0,[1,2]); q.measure(0,0)\n    return (q,q.draw(output='mpl')) if drawing else q\n\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)\n",
+      "source_sha256": "681f9f8decda58d8724e6ce3ea671e24bc8fb17a21c97fa1ac0f355273bb7527"
+    },
+    {
+      "key": "normal/qiskitHumanEval/3/wrong-state-control",
+      "task_digest": "450c1924eef3abab63a7b8b75b5e11ecfaeb51e78567f95272f9e15cd8064be4",
+      "fixture": "wrong-state-control",
+      "contract_expectation": "fail",
+      "source": "from qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    \"\"\" Generate a QuantumCircuit for a 3 qubit GHZ State and measure it. If `drawing` is True, return both the circuit object and the Matplotlib drawing of the circuit, otherwise return just the circuit object.\n    \"\"\"\nfrom qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    q=QuantumCircuit(3); q.measure_all()\n    return (q,q.draw(output='mpl')) if drawing else q\n\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)\n",
+      "source_sha256": "7406e3e615da7123bda73eefb54f487e0a0222ffd7a8eb458dbacec8aa1dfabf"
+    },
+    {
+      "key": "normal/qiskitHumanEval/26/reference",
+      "task_digest": "741f042d9840cf5200ea6266de54152255af8f180e19253598346e802d5da11a",
+      "fixture": "reference",
+      "contract_expectation": "pass",
+      "source": "from qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag() -> DAGCircuit:\n    \"\"\" Construct a DAG circuit for a 3-qubit Quantum Circuit with the bell state applied on qubit 0 and 1. Finally return the DAG Circuit object.\n    \"\"\"\n\n    q = QuantumRegister(3, 'q')\n    c = ClassicalRegister(3, 'c')\n    circ = QuantumCircuit(q, c)\n    circ.h(q[0])\n    circ.cx(q[0], q[1])\n    circ.measure(q[0], c[0])\n    dag = circuit_to_dag(circ)\n    return dag\n\ndef check(candidate):\n    result = candidate()\n    assert type(result) == DAGCircuit, f\"Expected DAGCircuit, got {type(result).__name__}\"\n    assert result.num_qubits() == 3, \"Unexpected result value\"\n    assert result.depth() == 3, f\"Expected depth 3, got {result.depth()}\"\n    assert dict(result.count_ops()) == {'h': 1, 'cx': 1, 'measure':1}, \"Unexpected result value\"\n\ncheck(bell_dag)\n",
+      "source_sha256": "ddf97f6ca45cea5c5085fa441fbac11bdf44cb37dddc0478996b5a672005b8c3"
+    },
+    {
+      "key": "normal/qiskitHumanEval/26/requested-pair-no-measure",
+      "task_digest": "741f042d9840cf5200ea6266de54152255af8f180e19253598346e802d5da11a",
+      "fixture": "requested-pair-no-measure",
+      "contract_expectation": "pass",
+      "source": "from qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag() -> DAGCircuit:\n    \"\"\" Construct a DAG circuit for a 3-qubit Quantum Circuit with the bell state applied on qubit 0 and 1. Finally return the DAG Circuit object.\n    \"\"\"\nfrom qiskit import QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag():\n    q=QuantumCircuit(3); q.h(0); q.cx(0,1)\n    return circuit_to_dag(q)\n\ndef check(candidate):\n    result = candidate()\n    assert type(result) == DAGCircuit, f\"Expected DAGCircuit, got {type(result).__name__}\"\n    assert result.num_qubits() == 3, \"Unexpected result value\"\n    assert result.depth() == 3, f\"Expected depth 3, got {result.depth()}\"\n    assert dict(result.count_ops()) == {'h': 1, 'cx': 1, 'measure':1}, \"Unexpected result value\"\n\ncheck(bell_dag)\n",
+      "source_sha256": "75cb75233f783d14522c0140518b8e4ffe3b8f9a27e2cbe0978bd1a9c80ff3c1"
+    },
+    {
+      "key": "normal/qiskitHumanEval/26/wrong-pair-with-measure",
+      "task_digest": "741f042d9840cf5200ea6266de54152255af8f180e19253598346e802d5da11a",
+      "fixture": "wrong-pair-with-measure",
+      "contract_expectation": "fail",
+      "source": "from qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag() -> DAGCircuit:\n    \"\"\" Construct a DAG circuit for a 3-qubit Quantum Circuit with the bell state applied on qubit 0 and 1. Finally return the DAG Circuit object.\n    \"\"\"\nfrom qiskit import QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag():\n    q=QuantumCircuit(3,3); q.h(1); q.cx(1,2); q.measure(1,1)\n    return circuit_to_dag(q)\n\ndef check(candidate):\n    result = candidate()\n    assert type(result) == DAGCircuit, f\"Expected DAGCircuit, got {type(result).__name__}\"\n    assert result.num_qubits() == 3, \"Unexpected result value\"\n    assert result.depth() == 3, f\"Expected depth 3, got {result.depth()}\"\n    assert dict(result.count_ops()) == {'h': 1, 'cx': 1, 'measure':1}, \"Unexpected result value\"\n\ncheck(bell_dag)\n",
+      "source_sha256": "a8d74df886eaa346358ad95724a40994ed0da8ffe38e8cc4a1bdcdd7ba478814"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/reference",
+      "task_digest": "563477ccc9bb288a000652c6f909350f07d7614e1351e9e67f089b4e5024928b",
+      "fixture": "reference",
+      "contract_expectation": "pass",
+      "source": "\nfrom qiskit import QuantumCircuit\n\ndef create_ghz(drawing=False):\n    ghz = QuantumCircuit(3)\n    ghz.h(0)\n    ghz.cx(0, 1)\n    ghz.cx(0, 2)\n    ghz.measure_all()\n    if drawing:\n        return ghz, ghz.draw(output=\"mpl\")\n    return ghz\nfrom qiskit import QuantumCircuit\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)",
+      "source_sha256": "141b85493c5aa394c02c769813158a131cea9953e23ef950b19a8fe198194cfd"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/blank-drawing",
+      "task_digest": "563477ccc9bb288a000652c6f909350f07d7614e1351e9e67f089b4e5024928b",
+      "fixture": "blank-drawing",
+      "contract_expectation": "fail",
+      "source": "\nfrom matplotlib.figure import Figure\nfrom qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    q=QuantumCircuit(3); q.h(0); q.cx(0,[1,2]); q.measure_all()\n    return (q,Figure()) if drawing else q\n\nfrom qiskit import QuantumCircuit\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)",
+      "source_sha256": "2858a83eee13664f39335cf15a5c9d6345343ba5a0a07ab60959bcf470a31de3"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/one-measurement",
+      "task_digest": "563477ccc9bb288a000652c6f909350f07d7614e1351e9e67f089b4e5024928b",
+      "fixture": "one-measurement",
+      "contract_expectation": "contract_ambiguous",
+      "source": "\nfrom qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    q=QuantumCircuit(3,1); q.h(0); q.cx(0,[1,2]); q.measure(0,0)\n    return (q,q.draw(output='mpl')) if drawing else q\n\nfrom qiskit import QuantumCircuit\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)",
+      "source_sha256": "e42fa005aab17b50379cc3098fa939cc60702bf7ccf05dc0cb5743d4e2a10c40"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/wrong-state-control",
+      "task_digest": "563477ccc9bb288a000652c6f909350f07d7614e1351e9e67f089b4e5024928b",
+      "fixture": "wrong-state-control",
+      "contract_expectation": "fail",
+      "source": "\nfrom qiskit import QuantumCircuit\ndef create_ghz(drawing=False):\n    q=QuantumCircuit(3); q.measure_all()\n    return (q,q.draw(output='mpl')) if drawing else q\n\nfrom qiskit import QuantumCircuit\ndef check(candidate):\n    from qiskit.quantum_info import Statevector\n    import math\n    import matplotlib\n\n    def check_circuit(circuit):\n        assert circuit.data[-1].operation.name == \"measure\", 'Expected operation name \"measure\"'\n        circuit.remove_final_measurements()\n        ghz_statevector = (\n            Statevector.from_label(\"000\") + Statevector.from_label(\"111\")\n        ) / math.sqrt(2)\n        assert Statevector.from_instruction(circuit).equiv(ghz_statevector), \"Quantum states or operators are not equivalent\"\n\n    circuit = candidate()\n    check_circuit(circuit)\n\n    circuit, drawing = candidate(drawing=True)\n    check_circuit(circuit)\n    assert isinstance(drawing, matplotlib.figure.Figure), \"Unexpected result value\"\n\ncheck(create_ghz)",
+      "source_sha256": "fc707ea55e3c3479530636eb65689b27d6324071b8cf8c264e7929c873cda266"
+    },
+    {
+      "key": "hard/qiskitHumanEval/26/reference",
+      "task_digest": "990560cd6799e04f60a18b800fbd301f0da725455efcd6cc7fbf46f10e0e1785",
+      "fixture": "reference",
+      "contract_expectation": "pass",
+      "source": "\nfrom qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\n\ndef bell_dag():\n    q = QuantumRegister(3, 'q')\n    c = ClassicalRegister(3, 'c')\n    circ = QuantumCircuit(q, c)\n    circ.h(q[0])\n    circ.cx(q[0], q[1])\n    circ.measure(q[0], c[0])\n    dag = circuit_to_dag(circ)\n    return dag\n\nfrom qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef check(candidate):\n    result = candidate()\n    assert type(result) == DAGCircuit, f\"Expected DAGCircuit, got {type(result).__name__}\"\n    assert result.num_qubits() == 3, \"Unexpected result value\"\n    assert result.depth() == 3, f\"Expected depth 3, got {result.depth()}\"\n    assert dict(result.count_ops()) == {'h': 1, 'cx': 1, 'measure':1}, \"Unexpected result value\"\n\ncheck(bell_dag)",
+      "source_sha256": "06770676e1d3c03638dcbf5556ed911fae326fb173ac198df5fa90a744864f58"
+    },
+    {
+      "key": "hard/qiskitHumanEval/26/requested-pair-no-measure",
+      "task_digest": "990560cd6799e04f60a18b800fbd301f0da725455efcd6cc7fbf46f10e0e1785",
+      "fixture": "requested-pair-no-measure",
+      "contract_expectation": "pass",
+      "source": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag():\n    q=QuantumCircuit(3); q.h(0); q.cx(0,1)\n    return circuit_to_dag(q)\n\nfrom qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef check(candidate):\n    result = candidate()\n    assert type(result) == DAGCircuit, f\"Expected DAGCircuit, got {type(result).__name__}\"\n    assert result.num_qubits() == 3, \"Unexpected result value\"\n    assert result.depth() == 3, f\"Expected depth 3, got {result.depth()}\"\n    assert dict(result.count_ops()) == {'h': 1, 'cx': 1, 'measure':1}, \"Unexpected result value\"\n\ncheck(bell_dag)",
+      "source_sha256": "d2a9ef6d3387640a84e443f86d88c2afacc66f2c0a5409ac7589190e3013fd8c"
+    },
+    {
+      "key": "hard/qiskitHumanEval/26/wrong-pair-with-measure",
+      "task_digest": "990560cd6799e04f60a18b800fbd301f0da725455efcd6cc7fbf46f10e0e1785",
+      "fixture": "wrong-pair-with-measure",
+      "contract_expectation": "fail",
+      "source": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef bell_dag():\n    q=QuantumCircuit(3,3); q.h(1); q.cx(1,2); q.measure(1,1)\n    return circuit_to_dag(q)\n\nfrom qiskit.dagcircuit import DAGCircuit\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\nfrom qiskit.converters import circuit_to_dag\ndef check(candidate):\n    result = candidate()\n    assert type(result) == DAGCircuit, f\"Expected DAGCircuit, got {type(result).__name__}\"\n    assert result.num_qubits() == 3, \"Unexpected result value\"\n    assert result.depth() == 3, f\"Expected depth 3, got {result.depth()}\"\n    assert dict(result.count_ops()) == {'h': 1, 'cx': 1, 'measure':1}, \"Unexpected result value\"\n\ncheck(bell_dag)",
+      "source_sha256": "af538f376f703c66072def9ae1e267bed8ed98325679519737ba9659c5868c12"
+    }
+  ],
+  "runner_sha256": "c411788404414919356cb5ff2bd583c71497fd255493d464b2e0ac37af40ddf7",
+  "returncode": 0,
+  "stderr": "",
+  "results": [
+    {
+      "key": "normal/qiskitHumanEval/3/reference",
+      "outcome": "pass"
+    },
+    {
+      "key": "normal/qiskitHumanEval/3/blank-drawing",
+      "outcome": "pass"
+    },
+    {
+      "key": "normal/qiskitHumanEval/3/one-measurement",
+      "outcome": "pass"
+    },
+    {
+      "key": "normal/qiskitHumanEval/3/wrong-state-control",
+      "outcome": "fail",
+      "exception": "AssertionError",
+      "detail": "Quantum states or operators are not equivalent"
+    },
+    {
+      "key": "normal/qiskitHumanEval/26/reference",
+      "outcome": "pass"
+    },
+    {
+      "key": "normal/qiskitHumanEval/26/requested-pair-no-measure",
+      "outcome": "fail",
+      "exception": "AssertionError",
+      "detail": "Expected depth 3, got 2"
+    },
+    {
+      "key": "normal/qiskitHumanEval/26/wrong-pair-with-measure",
+      "outcome": "pass"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/reference",
+      "outcome": "pass"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/blank-drawing",
+      "outcome": "pass"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/one-measurement",
+      "outcome": "pass"
+    },
+    {
+      "key": "hard/qiskitHumanEval/3/wrong-state-control",
+      "outcome": "fail",
+      "exception": "AssertionError",
+      "detail": "Quantum states or operators are not equivalent"
+    },
+    {
+      "key": "hard/qiskitHumanEval/26/reference",
+      "outcome": "pass"
+    },
+    {
+      "key": "hard/qiskitHumanEval/26/requested-pair-no-measure",
+      "outcome": "fail",
+      "exception": "AssertionError",
+      "detail": "Expected depth 3, got 2"
+    },
+    {
+      "key": "hard/qiskitHumanEval/26/wrong-pair-with-measure",
+      "outcome": "pass"
+    }
+  ]
+}
