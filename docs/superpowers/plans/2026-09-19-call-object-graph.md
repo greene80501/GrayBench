@@ -108,7 +108,8 @@ def test_shared_positional_keyword_object():
 
 In progress: ndarray owner/view and typed NumPy scalar nodes implemented and
 locally tested. Scientific and primitive wrappers now have component graphs;
-SparsePauliOp/CNOTDihedral, symbolic nodes and geometry updates remain unfinished.
+Numeric SparsePauliOp/CNOTDihedral component graphs are also implemented;
+symbolic coefficient arrays/nodes and geometry updates remain unfinished.
 The task is not complete; no production graph admission is claimed.
 
 

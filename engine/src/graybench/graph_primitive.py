@@ -8,6 +8,7 @@ from graybench.circuit_wire import WireError, fields, integer
 from graybench.graph_scientific import (
     array_state,
     node,
+    pauli_shape,
     shape_dims,
     tuple_items,
     validate_attributes,
@@ -75,6 +76,8 @@ def leading_shape(token, index):
         if not left and not right:
             return (1, 1)
         return (math.prod(left), math.prod(right)) if right else (math.prod(left),)
+    if kind == "pauli_list":
+        return pauli_shape(state, index)
     return None  # Other admitted classes have no shape attribute in the pinned SDK.
 
 

@@ -54,8 +54,10 @@ updates and additional storage owners remain pending work, not a claim that all
 NumPy behavior has been admitted.
 
 The subsequent [scientific/primitive increment](graph-scientific-primitive-development.md)
-adds wrapper component aliases and matrix accounting. SparsePauliOp, CNOTDihedral
-and shared symbolic coefficients remain pending in Task 2. Circuit components,
+adds wrapper component aliases and matrix accounting. The
+[sparse/polynomial increment](graph-sparse-polynomial-development.md) adds numeric
+SparsePauliOp and CNOTDihedral graphs. Shared symbolic coefficients remain pending
+in Task 2. Circuit components,
 persistent worker integration, exception-state transport, protected adversarial
 replays and the full reference comparison are subsequent unfinished steps. This earlier array-only increment did not exercise matrix budgets; the subsequent
 scientific increment adds them for its admitted matrix/tableau wrappers.

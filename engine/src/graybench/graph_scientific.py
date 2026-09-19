@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from functools import cache
 
 from graybench.circuit_wire import WireError, fields
-from graybench.graph_numeric import geometry
-from graybench.scientific_wire import MAX_BYTES
+from graybench.graph_numeric import geometry, numeric_dtype
+from graybench.scientific_wire import MAX_BYTES, dihedral_shapes
 
 
 @cache
@@ -15,12 +15,16 @@ def classes():
     from qiskit.quantum_info import (
         Choi,
         Clifford,
+        CNOTDihedral,
         DensityMatrix,
         Operator,
+        PauliList,
         ScalarOp,
+        SparsePauliOp,
         StabilizerState,
         Statevector,
     )
+    from qiskit.quantum_info.operators.dihedral.polynomial import SpecialPolynomial
     from qiskit.quantum_info.operators.op_shape import OpShape
 
     return dict(
@@ -32,6 +36,10 @@ def classes():
         scalar_op=ScalarOp,
         clifford=Clifford,
         stabilizer=StabilizerState,
+        cnot_dihedral=CNOTDihedral,
+        special_polynomial=SpecialPolynomial,
+        pauli_list=PauliList,
+        sparse_pauli_op=SparsePauliOp,
     )
 
 
@@ -52,6 +60,32 @@ ATTRIBUTES = {
     "choi": OP_FIELDS,
     "clifford": (("data", "tableau"), ("shape", "_op_shape"), ("qargs", "_qargs")),
     "scalar_op": (("coefficient", "_coeff"), ("shape", "_op_shape"), ("qargs", "_qargs")),
+    "cnot_dihedral": (
+        ("qubits", "_num_qubits"),
+        ("poly", "poly"),
+        ("linear", "linear"),
+        ("shift", "shift"),
+        ("shape", "_op_shape"),
+        ("qargs", "_qargs"),
+    ),
+    "special_polynomial": tuple(
+        (name, name)
+        for name in ("n_vars", "nc2", "nc3", "weight_0", "weight_1", "weight_2", "weight_3")
+    ),
+    "pauli_list": (
+        ("z", "_z"),
+        ("x", "_x"),
+        ("phase", "_phase"),
+        ("count", "_num_paulis"),
+        ("shape", "_op_shape"),
+        ("qargs", "_qargs"),
+    ),
+    "sparse_pauli_op": (
+        ("coeffs", "_coeffs"),
+        ("paulis", "_pauli_list"),
+        ("shape", "_op_shape"),
+        ("qargs", "_qargs"),
+    ),
 }
 
 
@@ -148,6 +182,62 @@ def validate_attributes(state, index, names):
         raise WireError("Scientific instance dictionary and component fields diverge")
 
 
+def integer_token(token, index):
+    if type(token) is int:
+        return
+    scalar = node(token, index, {"numpy_scalar"})["state"]
+    fields(scalar, {"kind", "dtype", "dtype_char", "shape", "bytes"})
+    if numeric_dtype(scalar).kind not in "iu":
+        raise WireError("Expected integer polynomial component")
+
+
+def qubit_width(shape, index):
+    left, right = shape_dims(shape, index)
+    n = len(left)
+    if (
+        left != right
+        or left != (2,) * n
+        or shape["dims_l"] is not None
+        or shape["dims_r"] is not None
+    ):
+        raise WireError("Expected matching implicit qubit dimensions")
+    return n
+
+
+def polynomial_width(state, index):
+    fields(state, {key for key, _ in ATTRIBUTES["special_polynomial"]} | {"attributes"})
+    n = state["n_vars"]
+    shapes = dihedral_shapes(n)
+    if (
+        type(state["nc2"]) is not int
+        or type(state["nc3"]) is not int
+        or (state["nc2"], state["nc3"]) != (math.comb(n, 2), math.comb(n, 3))
+    ):
+        raise WireError("Polynomial combination counts differ from variable count")
+    integer_token(state["weight_0"], index)
+    for key in ("weight_1", "weight_2", "weight_3"):
+        if array_state(state[key], index)[0] != shapes[key]:
+            raise WireError("Polynomial coefficient array shape mismatch")
+    return n
+
+
+def pauli_shape(state, index):
+    fields(state, {key for key, _ in ATTRIBUTES["pauli_list"]} | {"attributes"})
+    shape = node(state["shape"], index, {"op_shape"})["state"]
+    n = qubit_width(shape, index)
+    count = state["count"]
+    if type(count) is not int or not 0 <= count <= MAX_BYTES:
+        raise WireError("Invalid Pauli row count")
+    for key in ("z", "x"):
+        actual, dtype = array_state(state[key], index)
+        if actual != (count, n) or dtype.kind != "b":
+            raise WireError("Pauli symplectic array shape or dtype mismatch")
+    actual, dtype = array_state(state["phase"], index)
+    if actual != (count,) or dtype.kind not in "iu":
+        raise WireError("Pauli phase array shape or dtype mismatch")
+    return count, n
+
+
 @dataclass(frozen=True)
 class ScientificCodec:
     kind: str
@@ -176,6 +266,9 @@ class ScientificCodec:
         if self.kind == "op_shape":
             shape_dims(state, shape_index)
             return
+        if self.kind == "special_polynomial":
+            polynomial_width(state, shape_index)
+            return
         left, right = shape_dims(
             node(state["shape"], shape_index, {"op_shape"})["state"], shape_index
         )
@@ -188,6 +281,36 @@ class ScientificCodec:
             ):
                 raise WireError("Invalid scientific bound subsystem indices")
         dl, dr = math.prod(left), math.prod(right)
+        if self.kind == "cnot_dihedral":
+            n = state["qubits"]
+            shapes = dihedral_shapes(n)
+            shape = node(state["shape"], shape_index, {"op_shape"})["state"]
+            poly = node(state["poly"], shape_index, {"special_polynomial"})["state"]
+            if qubit_width(shape, shape_index) != n or polynomial_width(poly, shape_index) != n:
+                raise WireError("CNOTDihedral width differs from its components")
+            if array_state(state["linear"], shape_index)[0] != shapes["linear"]:
+                raise WireError("CNOTDihedral linear shape mismatch")
+            shift = node(state["shift"], shape_index, {"list", "ndarray_owner", "ndarray_view"})
+            if shift["kind"] == "list":
+                if type(shift["state"]) is not list or len(shift["state"]) != n:
+                    raise WireError("CNOTDihedral shift list length mismatch")
+                for token in shift["state"]:
+                    integer_token(token, shape_index)
+            elif array_state(state["shift"], shape_index)[0] != shapes["shift"]:
+                raise WireError("CNOTDihedral shift array shape mismatch")
+            return
+        if self.kind == "pauli_list":
+            pauli_shape(state, shape_index)
+            return
+        if self.kind == "sparse_pauli_op":
+            paulis = node(state["paulis"], shape_index, {"pauli_list"})["state"]
+            rows, width = pauli_shape(paulis, shape_index)
+            shape = node(state["shape"], shape_index, {"op_shape"})["state"]
+            if qubit_width(shape, shape_index) != width:
+                raise WireError("SparsePauliOp width differs from PauliList")
+            if array_state(state["coeffs"], shape_index)[0] != (rows,):
+                raise WireError("Sparse coefficient count differs from Pauli rows")
+            return
         if self.kind == "scalar_op":
             if dl != dr:
                 raise WireError("ScalarOp dimensions are not square")
@@ -245,6 +368,10 @@ class ScientificCodec:
         return 0  # Referenced storage is charged by its own numeric node.
 
     def matrix_refs(self, state):
+        if self.kind == "cnot_dihedral":
+            return (state["linear"],)
+        if self.kind == "pauli_list":
+            return (state["z"], state["x"])
         return (
             (state["data"],)
             if self.kind in {"operator", "choi", "density_matrix", "clifford"}

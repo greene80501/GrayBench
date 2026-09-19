@@ -9,7 +9,14 @@ import numpy as np
 import qiskit
 from qiskit import QuantumCircuit
 from qiskit.primitives import DataBin, PrimitiveResult, PubResult
-from qiskit.quantum_info import Clifford, DensityMatrix, ScalarOp, Statevector
+from qiskit.quantum_info import (
+    Clifford,
+    CNOTDihedral,
+    DensityMatrix,
+    ScalarOp,
+    SparsePauliOp,
+    Statevector,
+)
 
 import graybench.graph_wire as graph_module
 from graybench.circuit_wire import WireError
@@ -109,6 +116,23 @@ def main():
     scalar._coeff = 2
     assert transfer(judge, candidate, scalar, 12).coeff == 2
     checks.append("oversized_integer_recovery")
+
+    dihedral = CNOTDihedral(QuantumCircuit(3))
+    remote, poly, weights = transfer(
+        judge, candidate, (dihedral, dihedral.poly, dihedral.poly.weight_1), 13
+    )
+    assert remote.poly is poly and poly.weight_1 is weights
+    weights[0] = -7
+    assert transfer(candidate, judge, remote, 13) is dihedral and dihedral.poly.weight_1[0] == -7
+    checks.append("dihedral_polynomial_component_identity")
+
+    sparse = SparsePauliOp(["X", "X", "-Y"], [1, 2, 3])
+    remote, paulis, coeffs = transfer(judge, candidate, (sparse, sparse.paulis, sparse.coeffs), 14)
+    assert remote.paulis is paulis and remote.coeffs is coeffs
+    assert remote.to_list() == [("X", 1 + 0j), ("X", 2 + 0j), ("Y", -3 + 0j)]
+    coeffs[1] = 5
+    assert transfer(candidate, judge, remote, 14) is sparse and sparse.coeffs[1] == 5
+    checks.append("sparse_pauli_storage_without_simplification")
 
     root = Path(graph_module.__file__).parent
     names = (
