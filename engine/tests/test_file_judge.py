@@ -85,3 +85,18 @@ def create_binary_serialization():
 """
     result = QpyFileJudge(image=IMAGE, docker=DOCKER).evaluate(task(), code)
     assert result.outcome == "pass", result
+
+
+def test_frozen_output_limit_applies_to_qpy_parser():
+    code = """from qiskit import QuantumCircuit, qpy
+def create_binary_serialization():
+    circuit = QuantumCircuit(2)
+    circuit.h(0)
+    circuit.cx(0, 1)
+    circuit.metadata = {"padding": "x" * 5000}
+    with open('bell.qpy', 'wb') as stream: qpy.dump(circuit, stream)
+"""
+    result = QpyFileJudge(image=IMAGE, docker=DOCKER, output_limit=2048).evaluate(task(), code)
+    assert result.outcome == "unsupported", result
+    assert result.evidence.get("phase") == "parser", result
+    assert "parser" not in result.evidence

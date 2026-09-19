@@ -20,7 +20,9 @@ evaluation reject an unrevised task. This API guard does not authenticate the
 history of an arbitrary externally supplied answer; campaign provenance must
 bind the revised public request to the actual generation. Normal-suite revisions
 end with a newline so the contract comment cannot swallow the generated body.
-The track is not automatically selected by the CLI.
+The track is not automatically selected by the CLI. It is now available through
+the explicit [evaluation recipe](evaluation-recipes.md), which freezes the revised
+public request before generation and reconstructs it on resume.
 
 Protected replay evidence is retained in
 `GrayBench-v3-pauli-revision-evidence.jsonl` (SHA-256

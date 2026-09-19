@@ -20,11 +20,24 @@ from graybench.value_wire import encode
 
 class QpyFileJudge:
     def __init__(
-        self, *, image, docker="docker", candidate_timeout=120, parser_timeout=30, timeout=30
+        self,
+        *,
+        image,
+        docker="docker",
+        candidate_timeout=120,
+        parser_timeout=30,
+        timeout=30,
+        output_limit=1048576,
     ):
         self.image, self.docker = image, docker
-        self.candidate_timeout, self.parser_timeout = candidate_timeout, parser_timeout
-        self.oracle = ProtectedJudge(image=image, docker=docker, timeout=timeout)
+        self.candidate_timeout, self.parser_timeout = (
+            float(candidate_timeout),
+            float(parser_timeout),
+        )
+        self.output_limit = output_limit
+        self.oracle = ProtectedJudge(
+            image=image, docker=docker, timeout=timeout, output_limit=output_limit
+        )
 
     def configuration(self, task):
         if (
@@ -39,6 +52,7 @@ class QpyFileJudge:
             "image": self.image,
             "candidate_timeout": self.candidate_timeout,
             "parser_timeout": self.parser_timeout,
+            "output_limit": self.output_limit,
             "oracle": self.oracle.manifest("task82-bell-file-state-v1"),
             "artifact": {"name": "bell.qpy", "max_bytes": 4 * 1024 * 1024},
             "return_value": "ignored as in upstream check",
@@ -68,6 +82,7 @@ class QpyFileJudge:
                 image=self.image,
                 docker=self.docker,
                 timeout=self.candidate_timeout,
+                output_limit=self.output_limit,
             ) as candidate:
                 candidate.call_encoded(
                     task.public.entry_point, encode(()), encode({}), discard_result=True
@@ -84,6 +99,7 @@ class QpyFileJudge:
                 image=self.image,
                 docker=self.docker,
                 timeout=self.parser_timeout,
+                output_limit=self.output_limit,
             )
             evidence["parser"] = parser_evidence
             phase = "oracle"

@@ -8,29 +8,33 @@ from pydantic import Field
 from graybench.contracts import Contract, ModelSpec, Protocol
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
+from graybench.evaluation_recipes import EvaluationRecipe, recipe_judge, revised_tasks
 from graybench.ledger import StateError
 from graybench.provenance import environment, source_manifest
 from graybench.providers import adapter
-from graybench.upstream import UpstreamJudge
 
 
 class CampaignSetup(Contract):
     protocol: Protocol
     purpose: Literal["development"] = "development"
+    evaluation_recipe: EvaluationRecipe = "upstream"
     image: str = Field(pattern="^sha256:[0-9a-f]{64}$")
     judge_timeout: float = Field(default=120.0, gt=0, le=3600, allow_inf_nan=False)
     candidate_timeout: float = Field(default=120.0, gt=0, le=3600, allow_inf_nan=False)
+    parser_timeout: float = Field(default=30.0, gt=0, le=3600, allow_inf_nan=False)
     output_limit: int = Field(default=1048576, ge=1024, le=16777216)
     http_timeout: float = Field(default=600.0, gt=0, le=3600, allow_inf_nan=False)
     response_limit: int = Field(default=16777216, ge=1024, le=67108864)
 
     def judge(self, docker="docker"):
-        return UpstreamJudge(
+        return recipe_judge(
+            self.evaluation_recipe,
             image=self.image,
             docker=docker,
             timeout=self.judge_timeout,
             candidate_timeout=self.candidate_timeout,
             output_limit=self.output_limit,
+            parser_timeout=self.parser_timeout,
         )
 
     def tasks(self, cache: Path):
@@ -40,7 +44,9 @@ class CampaignSetup(Contract):
             for task in load_suite(suite, cache)
             if f"{suite}/{task.public.task_id}" in self.protocol.task_keys
         )
-        validate_cohort(self.protocol, tasks, self.judge())
+        judge = self.judge()
+        tasks = revised_tasks(tasks, judge)
+        validate_cohort(self.protocol, tasks, judge)
         return tasks
 
 
@@ -77,9 +83,11 @@ def build_setup(
     *,
     repeats: int = 1,
     system_prompt: str | None = None,
+    evaluation_recipe: EvaluationRecipe = "upstream",
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
-    judge = UpstreamJudge(image=image)
+    judge = recipe_judge(evaluation_recipe, image=image)
+    tasks = revised_tasks(tasks, judge)
     binding = cohort_identities(tasks, judge)
     source = source_manifest()["digest"]
     provider = adapter(model.adapter)
@@ -91,7 +99,7 @@ def build_setup(
     }
     protocol = Protocol(
         name=name,
-        track="upstream",
+        track=getattr(judge, "track", "upstream"),
         model=model,
         repeats=repeats,
         system_prompt=system_prompt,
@@ -104,6 +112,6 @@ def build_setup(
         # Conservatively bind all engine sources, including summary/metric implementation.
         analysis_digest=source,
     )
-    setup = CampaignSetup(protocol=protocol, image=image)
+    setup = CampaignSetup(protocol=protocol, image=image, evaluation_recipe=evaluation_recipe)
     validate_cohort(protocol, tasks, setup.judge())
     return setup

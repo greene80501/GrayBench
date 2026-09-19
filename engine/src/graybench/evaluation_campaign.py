@@ -29,8 +29,8 @@ def cohort_identities(tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dic
 
 def validate_cohort(protocol: Protocol, tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dict:
     binding = cohort_identities(tasks, judge)
-    if protocol.track != "upstream":
-        raise StateError("Upstream judge cannot execute a different evaluation track")
+    if protocol.track != getattr(judge, "track", "upstream"):
+        raise StateError("Judge cannot execute a different evaluation track")
     if set(protocol.task_keys) != set(binding["tasks"]):
         raise StateError("Scheduled tasks differ from supplied cohort")
     for key in ("dataset_digest", "judge_digest", "runtime_digest"):
@@ -92,7 +92,11 @@ class JudgmentRunner:
 
 
 class UpstreamCampaign:
-    """Development upstream campaign; identity validation does not imply oracle certification."""
+    """Development campaign with frozen judge selection; not oracle certification.
+
+    The historical class name is retained for callers. Explicit revision judges are
+    accepted only when their track and all cohort/request identities match.
+    """
 
     def __init__(self, ledger, run_id, tasks, judge, transport):
         from graybench.campaign import GenerationRunner

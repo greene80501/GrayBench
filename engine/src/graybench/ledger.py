@@ -486,9 +486,15 @@ class Ledger:
                     ],
                 }
             )
+        context_row = self.db.execute(
+            "SELECT content FROM run_contexts WHERE run_id=?", (run_id,)
+        ).fetchone()
+        declared_setup = self.blob(context_row[0]).get("setup") if context_row else None
+        recipe = declared_setup.get("evaluation_recipe") if type(declared_setup) is dict else None
         return {
             "run_id": run_id,
             "protocol_digest": protocol.digest,
+            "evaluation_recipe": recipe,
             "track": protocol.track,
             "planned_samples": len(expected),
             "observed_samples": len(rows),

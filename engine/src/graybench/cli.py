@@ -9,6 +9,7 @@ from graybench.comparison import ComparisonPlan, compare_runs, make_plan
 from graybench.contracts import ModelSpec, Protocol
 from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
+from graybench.evaluation_recipes import RECIPES
 from graybench.identity import canonical
 from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
@@ -88,6 +89,7 @@ def main():
     plan.add_argument("output", type=Path)
     plan.add_argument("--image", required=True)
     plan.add_argument("--name", required=True)
+    plan.add_argument("--evaluation-recipe", choices=RECIPES, default="upstream")
     plan.add_argument("--repeats", type=int, default=1)
     plan.add_argument("--system-prompt", type=Path)
     selection = plan.add_mutually_exclusive_group(required=True)
@@ -144,6 +146,16 @@ def main():
             parser.error("Comparison ledgers must already exist")
         left, right = Ledger(args.left_ledger), Ledger(args.right_ledger)
         try:
+            if plan.left.track != "upstream":
+                setups = [
+                    CampaignSetup.model_validate_json(canonical(book.context(run)["setup"]))
+                    for book, run in ((left, args.left_run), (right, args.right_run))
+                ]
+                for setup, expected in zip(setups, (plan.left, plan.right), strict=True):
+                    if setup.protocol != expected:
+                        parser.error("Stored setup differs from comparison protocol")
+                    setup.tasks(args.cache)
+                tasks = setups[0].tasks(args.cache)
             report = compare_runs(plan, left, args.left_run, right, args.right_run, tasks=tasks)
         finally:
             left.close()
@@ -213,6 +225,7 @@ def main():
             tasks,
             args.image,
             repeats=args.repeats,
+            evaluation_recipe=args.evaluation_recipe,
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt
             else None,
@@ -222,6 +235,7 @@ def main():
             output.write(setup.model_dump_json(indent=2) + "\n")
         result = {
             "setup_digest": setup.digest,
+            "evaluation_recipe": setup.evaluation_recipe,
             "planned_samples": len(tasks) * args.repeats,
             "certification": "not_certified",
             "purpose": "development",
@@ -239,6 +253,7 @@ def main():
         try:
             result = {
                 "run_id": ledger.create_run(setup.protocol, context),
+                "evaluation_recipe": setup.evaluation_recipe,
                 "certification": "not_certified",
             }
         finally:

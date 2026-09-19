@@ -1,0 +1,1411 @@
+{
+  "purpose": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+  "source": {
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+      "campaign_setup.py": "cc0ddf518b6e439f3ebf97618b5a8d6d639cde6ac5abeb40602208d358ad3fa2",
+      "circuit_wire.py": "f489af3ea8713ad50845d9b8923455d2ca74eb1ca30c019b796fbeeb90287418",
+      "cli.py": "06ccf582bf3eec94247242c119b81f246d1ae2505134348855cef40084357e88",
+      "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "03da30c84e58f3e6c390eb67bec75635771e28b789017fe58d9f4b76ec1ae74e",
+      "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+      "evaluation_campaign.py": "7626fcafec0577cf0ad0385325e379718d99a6a8c4b0b566de4517671233dda9",
+      "evaluation_recipes.py": "f83aea926b0d43e9bb67e21d5c53cedb2016d209210bd8f40eb19cc9de8d5bef",
+      "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+      "file_judge.py": "3a544ede1310cdf458221fb8800c6380820a115840f1bbf3a1780175891384ee",
+      "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+      "instruction_wire.py": "3697bca71fc09125f67f25a1c2477a8349f7c59b41af4b1dd496d45886017a65",
+      "judge.py": "b4deccba04c545ce91de96177a4038924afcb8b8832b6d47a61710ccdc7f61da",
+      "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+      "ledger.py": "9d21b3b700cecbc618a26abdf9a2286be3ca0c58cf083dafbe190d629cd351bc",
+      "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+      "model_discovery.py": "dd01981f881d262dfb4991826131d34d4558a8668f82e40ea78dde0c4e965c86",
+      "operator_wire.py": "54f2093e8ffcf0d04e86b0d300f6bb6ffc245075580a7671ca9793b29c59a7d5",
+      "oracle_review.py": "4e065467016b1f5c45d8b19ff76e6c460f4865de31ef790b84d36e8e4f0c78d6",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "primitive_wire.py": "291bf8d84fb95cdd74577de83ec8adcb93a05fa14750fec1e914e2c343e91d52",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "9d55bc0da1276e32f546c65400332e8dd4f27341becaa81b22a7dc5d7617e218",
+      "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+      "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+      "sandbox.py": "c7b24cd6850a7847b7f5215bc7aba33e11bf5d11c67463c398340bd39b437136",
+      "scientific_wire.py": "587be49cef0c6e4803aff698c04f7e59906495a7586b72fb87b778d17894a613",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "transport.py": "759fb63fe8577d85c933d0e75c42a4263cca2f2858fdc04188a3e99277df7381",
+      "upstream.py": "b5dbc5bdee78f78e6ae5cbd1d36aba06eaddfc44ebc38b9204df0e4fd973b00d",
+      "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+      "value_wire.py": "73fa6e3ec14a206c4abfba0a5bd58230767d19faca923e97694abffcdfbc2454",
+      "worker.py": "da22781001f0d7ad7f23c193a4ff04365caa861784f7e95d3453c99edc50016b"
+    },
+    "digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+  },
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "ledger": "GrayBench-v3-evaluation-recipe-demo.sqlite",
+  "verification": {
+    "events": 60,
+    "chain_head": "dfc4966022090b58c6f5a48a069ecb80004afe10de1c97a2141e8b5458cc1128",
+    "integrity": "verified",
+    "external_anchor": "not_checked",
+    "row_bindings": {
+      "status": "verified",
+      "tables": [
+        "runs",
+        "run_contexts",
+        "model_observations",
+        "attempts",
+        "deliveries",
+        "generations",
+        "judgments",
+        "judgment_claims"
+      ],
+      "version": 1
+    }
+  },
+  "comparisons": [
+    {
+      "recipe": "qhe0-size-domain-v1",
+      "plan": {
+        "method": "paired-family-percentile-v1",
+        "left": {
+          "schema_version": "3.1",
+          "name": "qhe0-size-domain-v1-valid",
+          "track": "strengthened",
+          "dataset_digest": "cb1a2d6dbe128acf42f29091735349bdb9fc5a440cabae5569926518f1d01927",
+          "task_keys": [
+            "normal/qiskitHumanEval/0",
+            "hard/qiskitHumanEval/0"
+          ],
+          "request_digests": {
+            "normal/qiskitHumanEval/0": "89c0c14ee3a76fae2f49eb04548f28d73305b5bfb43bde66c445d7c5eac6764a",
+            "hard/qiskitHumanEval/0": "fdeef506612e066ae4db2407693d0b022c443d3bf965600f6ccb09d3dd9566f4"
+          },
+          "repeats": 1,
+          "system_prompt": null,
+          "extraction": "raw_or_single_python_fence_v1",
+          "retry": {
+            "max_attempts": 3,
+            "statuses": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ],
+            "delays_seconds": [
+              2.0,
+              10.0
+            ],
+            "ambiguous_delivery": "stop"
+          },
+          "model": {
+            "adapter": "ollama",
+            "model": "synthetic-valid-fixture",
+            "base_url": "http://localhost:11434",
+            "credential_env": null,
+            "settings": [],
+            "accepted_returned_models": [],
+            "model_identity_evidence": null
+          },
+          "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+          "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+          "judge_digest": "a0c73496f9dea3fd7c8ebc660fcbe70e1077986f31f34d7eeb4b424cdea6cc32",
+          "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "right": {
+          "schema_version": "3.1",
+          "name": "qhe0-size-domain-v1-invalid",
+          "track": "strengthened",
+          "dataset_digest": "cb1a2d6dbe128acf42f29091735349bdb9fc5a440cabae5569926518f1d01927",
+          "task_keys": [
+            "normal/qiskitHumanEval/0",
+            "hard/qiskitHumanEval/0"
+          ],
+          "request_digests": {
+            "normal/qiskitHumanEval/0": "1cdfa0ca40fc0b1a9d03d616b32c96d7f2f3b6025298d29ec4ce7027ddc0aa66",
+            "hard/qiskitHumanEval/0": "674e30dea115c2c19c66c60bea794c24000b1389d37c94ec5be91a4cae5ac4fb"
+          },
+          "repeats": 1,
+          "system_prompt": null,
+          "extraction": "raw_or_single_python_fence_v1",
+          "retry": {
+            "max_attempts": 3,
+            "statuses": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ],
+            "delays_seconds": [
+              2.0,
+              10.0
+            ],
+            "ambiguous_delivery": "stop"
+          },
+          "model": {
+            "adapter": "ollama",
+            "model": "synthetic-invalid-fixture",
+            "base_url": "http://localhost:11434",
+            "credential_env": null,
+            "settings": [],
+            "accepted_returned_models": [],
+            "model_identity_evidence": null
+          },
+          "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+          "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+          "judge_digest": "a0c73496f9dea3fd7c8ebc660fcbe70e1077986f31f34d7eeb4b424cdea6cc32",
+          "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "families": {
+          "normal/qiskitHumanEval/0": "qhe/0",
+          "hard/qiskitHumanEval/0": "qhe/0"
+        },
+        "seed": 20260919,
+        "resamples": 1000,
+        "confidence": 0.95,
+        "configuration_comparison": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+        "analysis_source": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+      },
+      "report": {
+        "plan_digest": "226f93a41bad2d4839eba4d61d182674186fdfeea2a3cab86a628ec1fd8f9b14",
+        "plan": {
+          "method": "paired-family-percentile-v1",
+          "left": {
+            "schema_version": "3.1",
+            "name": "qhe0-size-domain-v1-valid",
+            "track": "strengthened",
+            "dataset_digest": "cb1a2d6dbe128acf42f29091735349bdb9fc5a440cabae5569926518f1d01927",
+            "task_keys": [
+              "normal/qiskitHumanEval/0",
+              "hard/qiskitHumanEval/0"
+            ],
+            "request_digests": {
+              "normal/qiskitHumanEval/0": "89c0c14ee3a76fae2f49eb04548f28d73305b5bfb43bde66c445d7c5eac6764a",
+              "hard/qiskitHumanEval/0": "fdeef506612e066ae4db2407693d0b022c443d3bf965600f6ccb09d3dd9566f4"
+            },
+            "repeats": 1,
+            "system_prompt": null,
+            "extraction": "raw_or_single_python_fence_v1",
+            "retry": {
+              "max_attempts": 3,
+              "statuses": [
+                429,
+                500,
+                502,
+                503,
+                504
+              ],
+              "delays_seconds": [
+                2.0,
+                10.0
+              ],
+              "ambiguous_delivery": "stop"
+            },
+            "model": {
+              "adapter": "ollama",
+              "model": "synthetic-valid-fixture",
+              "base_url": "http://localhost:11434",
+              "credential_env": null,
+              "settings": [],
+              "accepted_returned_models": [],
+              "model_identity_evidence": null
+            },
+            "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+            "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_digest": "a0c73496f9dea3fd7c8ebc660fcbe70e1077986f31f34d7eeb4b424cdea6cc32",
+            "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+          },
+          "right": {
+            "schema_version": "3.1",
+            "name": "qhe0-size-domain-v1-invalid",
+            "track": "strengthened",
+            "dataset_digest": "cb1a2d6dbe128acf42f29091735349bdb9fc5a440cabae5569926518f1d01927",
+            "task_keys": [
+              "normal/qiskitHumanEval/0",
+              "hard/qiskitHumanEval/0"
+            ],
+            "request_digests": {
+              "normal/qiskitHumanEval/0": "1cdfa0ca40fc0b1a9d03d616b32c96d7f2f3b6025298d29ec4ce7027ddc0aa66",
+              "hard/qiskitHumanEval/0": "674e30dea115c2c19c66c60bea794c24000b1389d37c94ec5be91a4cae5ac4fb"
+            },
+            "repeats": 1,
+            "system_prompt": null,
+            "extraction": "raw_or_single_python_fence_v1",
+            "retry": {
+              "max_attempts": 3,
+              "statuses": [
+                429,
+                500,
+                502,
+                503,
+                504
+              ],
+              "delays_seconds": [
+                2.0,
+                10.0
+              ],
+              "ambiguous_delivery": "stop"
+            },
+            "model": {
+              "adapter": "ollama",
+              "model": "synthetic-invalid-fixture",
+              "base_url": "http://localhost:11434",
+              "credential_env": null,
+              "settings": [],
+              "accepted_returned_models": [],
+              "model_identity_evidence": null
+            },
+            "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+            "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_digest": "a0c73496f9dea3fd7c8ebc660fcbe70e1077986f31f34d7eeb4b424cdea6cc32",
+            "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+          },
+          "families": {
+            "normal/qiskitHumanEval/0": "qhe/0",
+            "hard/qiskitHumanEval/0": "qhe/0"
+          },
+          "seed": 20260919,
+          "resamples": 1000,
+          "confidence": 0.95,
+          "configuration_comparison": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+          "analysis_source": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "runs": [
+          {
+            "run_id": "8eacf94abdeb486d90c7d8401d1c75ee",
+            "protocol_digest": "ffe2720adc0bbab98ce73625c4c4131796cb955b003d19fefe357269d467b4fc",
+            "evaluation_recipe": "qhe0-size-domain-v1",
+            "track": "strengthened",
+            "planned_samples": 2,
+            "observed_samples": 2,
+            "returned_samples": 2,
+            "judged_samples": 2,
+            "complete": true,
+            "passes": 2,
+            "pass_at_1": 1.0,
+            "score_status": "development_only",
+            "score_blockers": [],
+            "outcome_counts": {
+              "pass": 2,
+              "fail": 0,
+              "candidate_error": 0,
+              "timeout": 0,
+              "unsupported": 0,
+              "infrastructure_error": 0,
+              "unjudged": 0
+            },
+            "cohort": {
+              "missing": [],
+              "unexpected": []
+            },
+            "per_task": [
+              {
+                "task_key": "normal/qiskitHumanEval/0",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 1,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "pass"
+                  }
+                ]
+              },
+              {
+                "task_key": "hard/qiskitHumanEval/0",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 1,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "pass"
+                  }
+                ]
+              }
+            ],
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
+            "certification": "not_certified",
+            "publication_eligible": false,
+            "publication_blockers": [
+              "reviewed_task_and_protocol_admission_required",
+              "independent_reproducibility_required"
+            ],
+            "ledger_integrity": {
+              "events": 20,
+              "chain_head": "597f6541a552693fd33ce56fb1733d4790716edfc35acf18021d8d3cd0097fa4",
+              "integrity": "verified",
+              "external_anchor": "not_checked",
+              "row_bindings": {
+                "status": "verified",
+                "tables": [
+                  "runs",
+                  "run_contexts",
+                  "model_observations",
+                  "attempts",
+                  "deliveries",
+                  "generations",
+                  "judgments",
+                  "judgment_claims"
+                ],
+                "version": 1
+              }
+            },
+            "analysis_identity": {
+              "frozen": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "observed": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "matched": true
+            },
+            "model_identity": {
+              "status": "matched_declared_names",
+              "accepted_names": [
+                "synthetic-valid-fixture"
+              ],
+              "observed_names": [
+                "synthetic-valid-fixture"
+              ],
+              "missing": 0,
+              "mismatched": 0,
+              "weights_identity": "not_verified"
+            },
+            "model_discovery": {
+              "status": "not_observed"
+            }
+          },
+          {
+            "run_id": "fc3ba1771cd94b7a84f0519e4d4d260a",
+            "protocol_digest": "5864492cfc9f6668ef03043be6ca493680b2bf39b6af40bcc873134553deddb3",
+            "evaluation_recipe": "qhe0-size-domain-v1",
+            "track": "strengthened",
+            "planned_samples": 2,
+            "observed_samples": 2,
+            "returned_samples": 2,
+            "judged_samples": 2,
+            "complete": true,
+            "passes": 0,
+            "pass_at_1": 0.0,
+            "score_status": "development_only",
+            "score_blockers": [],
+            "outcome_counts": {
+              "pass": 0,
+              "fail": 2,
+              "candidate_error": 0,
+              "timeout": 0,
+              "unsupported": 0,
+              "infrastructure_error": 0,
+              "unjudged": 0
+            },
+            "cohort": {
+              "missing": [],
+              "unexpected": []
+            },
+            "per_task": [
+              {
+                "task_key": "normal/qiskitHumanEval/0",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 0,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "fail"
+                  }
+                ]
+              },
+              {
+                "task_key": "hard/qiskitHumanEval/0",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 0,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "fail"
+                  }
+                ]
+              }
+            ],
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
+            "certification": "not_certified",
+            "publication_eligible": false,
+            "publication_blockers": [
+              "reviewed_task_and_protocol_admission_required",
+              "independent_reproducibility_required"
+            ],
+            "ledger_integrity": {
+              "events": 20,
+              "chain_head": "597f6541a552693fd33ce56fb1733d4790716edfc35acf18021d8d3cd0097fa4",
+              "integrity": "verified",
+              "external_anchor": "not_checked",
+              "row_bindings": {
+                "status": "verified",
+                "tables": [
+                  "runs",
+                  "run_contexts",
+                  "model_observations",
+                  "attempts",
+                  "deliveries",
+                  "generations",
+                  "judgments",
+                  "judgment_claims"
+                ],
+                "version": 1
+              }
+            },
+            "analysis_identity": {
+              "frozen": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "observed": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "matched": true
+            },
+            "model_identity": {
+              "status": "matched_declared_names",
+              "accepted_names": [
+                "synthetic-invalid-fixture"
+              ],
+              "observed_names": [
+                "synthetic-invalid-fixture"
+              ],
+              "missing": 0,
+              "mismatched": 0,
+              "weights_identity": "not_verified"
+            },
+            "model_discovery": {
+              "status": "not_observed"
+            }
+          }
+        ],
+        "publication_eligible": false,
+        "preregistration": "not_externally_attested",
+        "configuration_equivalence": "not_certified",
+        "uncertainty_scope": "paired family resampling conditional on observed outcomes",
+        "limitations": [
+          "Families are assumed exchangeable, not sampled randomly from all possible tasks.",
+          "No independent resampling of stochastic generations or universal model ranking.",
+          "Percentile bootstrap coverage can be poor for small or unusual samples.",
+          "No multiple-comparison correction or publication admission."
+        ],
+        "status": "development_only",
+        "families": [
+          {
+            "family": "qhe/0",
+            "samples": 2,
+            "left_passes": 2,
+            "right_passes": 0,
+            "tasks": [
+              "hard/qiskitHumanEval/0",
+              "normal/qiskitHumanEval/0"
+            ]
+          }
+        ],
+        "comparison": {
+          "left_minus_right": 1.0,
+          "interval": null,
+          "interval_unavailable_reason": "fewer_than_two_families",
+          "confidence_level": 0.95,
+          "distribution_digest": "daf76e24caab03177468adbde115c54c7a5c6a75a695ca2e515d8d4756bbaae1",
+          "family_count": 1,
+          "rng": "Python 3.12 random.Random/randrange",
+          "python": "3.12.14 (main, Sep  1 2026, 14:17:39) [MSC v.1944 64 bit (AMD64)]"
+        }
+      }
+    },
+    {
+      "recipe": "qhe141-pauli-group-anticommutator-v1",
+      "plan": {
+        "method": "paired-family-percentile-v1",
+        "left": {
+          "schema_version": "3.1",
+          "name": "qhe141-pauli-group-anticommutator-v1-valid",
+          "track": "strengthened",
+          "dataset_digest": "3159dcfe2e76bc372128acbe0842c204ec28ed4a5147d8f5984cc7208392ad54",
+          "task_keys": [
+            "normal/qiskitHumanEval/141",
+            "hard/qiskitHumanEval/141"
+          ],
+          "request_digests": {
+            "normal/qiskitHumanEval/141": "56e26bd3d89f1e0590095762244bde72aee41268527a7c48f1273cc7c469f5c6",
+            "hard/qiskitHumanEval/141": "6ee158c32fa702659d2e79c23cbd7042a31c9050a330b2936bc83a2e263ac6a3"
+          },
+          "repeats": 1,
+          "system_prompt": null,
+          "extraction": "raw_or_single_python_fence_v1",
+          "retry": {
+            "max_attempts": 3,
+            "statuses": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ],
+            "delays_seconds": [
+              2.0,
+              10.0
+            ],
+            "ambiguous_delivery": "stop"
+          },
+          "model": {
+            "adapter": "ollama",
+            "model": "synthetic-valid-fixture",
+            "base_url": "http://localhost:11434",
+            "credential_env": null,
+            "settings": [],
+            "accepted_returned_models": [],
+            "model_identity_evidence": null
+          },
+          "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+          "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+          "judge_digest": "deb33a9407e06543365829e9e3bc74dace3f28ca04abb6f2dd1fb01bcad71b65",
+          "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "right": {
+          "schema_version": "3.1",
+          "name": "qhe141-pauli-group-anticommutator-v1-invalid",
+          "track": "strengthened",
+          "dataset_digest": "3159dcfe2e76bc372128acbe0842c204ec28ed4a5147d8f5984cc7208392ad54",
+          "task_keys": [
+            "normal/qiskitHumanEval/141",
+            "hard/qiskitHumanEval/141"
+          ],
+          "request_digests": {
+            "normal/qiskitHumanEval/141": "e47b00af35777e3866ba9cd60ff5181e520fde6ccfc4ebb909f611df6395c28f",
+            "hard/qiskitHumanEval/141": "a08ac82392ac6f01946b76f8966fbe6b6fdbed6a3094e4897e50e12345885527"
+          },
+          "repeats": 1,
+          "system_prompt": null,
+          "extraction": "raw_or_single_python_fence_v1",
+          "retry": {
+            "max_attempts": 3,
+            "statuses": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ],
+            "delays_seconds": [
+              2.0,
+              10.0
+            ],
+            "ambiguous_delivery": "stop"
+          },
+          "model": {
+            "adapter": "ollama",
+            "model": "synthetic-invalid-fixture",
+            "base_url": "http://localhost:11434",
+            "credential_env": null,
+            "settings": [],
+            "accepted_returned_models": [],
+            "model_identity_evidence": null
+          },
+          "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+          "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+          "judge_digest": "deb33a9407e06543365829e9e3bc74dace3f28ca04abb6f2dd1fb01bcad71b65",
+          "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "families": {
+          "normal/qiskitHumanEval/141": "qhe/141",
+          "hard/qiskitHumanEval/141": "qhe/141"
+        },
+        "seed": 20260919,
+        "resamples": 1000,
+        "confidence": 0.95,
+        "configuration_comparison": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+        "analysis_source": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+      },
+      "report": {
+        "plan_digest": "de9ddd1c3f6683031fbbd7e9a2d6075691e789cbc670a810d3914b60277bb77e",
+        "plan": {
+          "method": "paired-family-percentile-v1",
+          "left": {
+            "schema_version": "3.1",
+            "name": "qhe141-pauli-group-anticommutator-v1-valid",
+            "track": "strengthened",
+            "dataset_digest": "3159dcfe2e76bc372128acbe0842c204ec28ed4a5147d8f5984cc7208392ad54",
+            "task_keys": [
+              "normal/qiskitHumanEval/141",
+              "hard/qiskitHumanEval/141"
+            ],
+            "request_digests": {
+              "normal/qiskitHumanEval/141": "56e26bd3d89f1e0590095762244bde72aee41268527a7c48f1273cc7c469f5c6",
+              "hard/qiskitHumanEval/141": "6ee158c32fa702659d2e79c23cbd7042a31c9050a330b2936bc83a2e263ac6a3"
+            },
+            "repeats": 1,
+            "system_prompt": null,
+            "extraction": "raw_or_single_python_fence_v1",
+            "retry": {
+              "max_attempts": 3,
+              "statuses": [
+                429,
+                500,
+                502,
+                503,
+                504
+              ],
+              "delays_seconds": [
+                2.0,
+                10.0
+              ],
+              "ambiguous_delivery": "stop"
+            },
+            "model": {
+              "adapter": "ollama",
+              "model": "synthetic-valid-fixture",
+              "base_url": "http://localhost:11434",
+              "credential_env": null,
+              "settings": [],
+              "accepted_returned_models": [],
+              "model_identity_evidence": null
+            },
+            "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+            "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_digest": "deb33a9407e06543365829e9e3bc74dace3f28ca04abb6f2dd1fb01bcad71b65",
+            "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+          },
+          "right": {
+            "schema_version": "3.1",
+            "name": "qhe141-pauli-group-anticommutator-v1-invalid",
+            "track": "strengthened",
+            "dataset_digest": "3159dcfe2e76bc372128acbe0842c204ec28ed4a5147d8f5984cc7208392ad54",
+            "task_keys": [
+              "normal/qiskitHumanEval/141",
+              "hard/qiskitHumanEval/141"
+            ],
+            "request_digests": {
+              "normal/qiskitHumanEval/141": "e47b00af35777e3866ba9cd60ff5181e520fde6ccfc4ebb909f611df6395c28f",
+              "hard/qiskitHumanEval/141": "a08ac82392ac6f01946b76f8966fbe6b6fdbed6a3094e4897e50e12345885527"
+            },
+            "repeats": 1,
+            "system_prompt": null,
+            "extraction": "raw_or_single_python_fence_v1",
+            "retry": {
+              "max_attempts": 3,
+              "statuses": [
+                429,
+                500,
+                502,
+                503,
+                504
+              ],
+              "delays_seconds": [
+                2.0,
+                10.0
+              ],
+              "ambiguous_delivery": "stop"
+            },
+            "model": {
+              "adapter": "ollama",
+              "model": "synthetic-invalid-fixture",
+              "base_url": "http://localhost:11434",
+              "credential_env": null,
+              "settings": [],
+              "accepted_returned_models": [],
+              "model_identity_evidence": null
+            },
+            "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+            "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_digest": "deb33a9407e06543365829e9e3bc74dace3f28ca04abb6f2dd1fb01bcad71b65",
+            "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+          },
+          "families": {
+            "normal/qiskitHumanEval/141": "qhe/141",
+            "hard/qiskitHumanEval/141": "qhe/141"
+          },
+          "seed": 20260919,
+          "resamples": 1000,
+          "confidence": 0.95,
+          "configuration_comparison": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+          "analysis_source": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "runs": [
+          {
+            "run_id": "76971993bf964bbabafa3e3f5a1ff622",
+            "protocol_digest": "adbc6c014314a58e3ef2d14511cef2db09cc2f60af222d2489b89dbca21fab86",
+            "evaluation_recipe": "qhe141-pauli-group-anticommutator-v1",
+            "track": "strengthened",
+            "planned_samples": 2,
+            "observed_samples": 2,
+            "returned_samples": 2,
+            "judged_samples": 2,
+            "complete": true,
+            "passes": 2,
+            "pass_at_1": 1.0,
+            "score_status": "development_only",
+            "score_blockers": [],
+            "outcome_counts": {
+              "pass": 2,
+              "fail": 0,
+              "candidate_error": 0,
+              "timeout": 0,
+              "unsupported": 0,
+              "infrastructure_error": 0,
+              "unjudged": 0
+            },
+            "cohort": {
+              "missing": [],
+              "unexpected": []
+            },
+            "per_task": [
+              {
+                "task_key": "normal/qiskitHumanEval/141",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 1,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "pass"
+                  }
+                ]
+              },
+              {
+                "task_key": "hard/qiskitHumanEval/141",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 1,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "pass"
+                  }
+                ]
+              }
+            ],
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
+            "certification": "not_certified",
+            "publication_eligible": false,
+            "publication_blockers": [
+              "reviewed_task_and_protocol_admission_required",
+              "independent_reproducibility_required"
+            ],
+            "ledger_integrity": {
+              "events": 40,
+              "chain_head": "cccec6bc5a96908432ece387fbfe9a9d606e6f0fc37f50624396270fac719386",
+              "integrity": "verified",
+              "external_anchor": "not_checked",
+              "row_bindings": {
+                "status": "verified",
+                "tables": [
+                  "runs",
+                  "run_contexts",
+                  "model_observations",
+                  "attempts",
+                  "deliveries",
+                  "generations",
+                  "judgments",
+                  "judgment_claims"
+                ],
+                "version": 1
+              }
+            },
+            "analysis_identity": {
+              "frozen": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "observed": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "matched": true
+            },
+            "model_identity": {
+              "status": "matched_declared_names",
+              "accepted_names": [
+                "synthetic-valid-fixture"
+              ],
+              "observed_names": [
+                "synthetic-valid-fixture"
+              ],
+              "missing": 0,
+              "mismatched": 0,
+              "weights_identity": "not_verified"
+            },
+            "model_discovery": {
+              "status": "not_observed"
+            }
+          },
+          {
+            "run_id": "bdc4adff6ccf41cf9b065805b1951aa7",
+            "protocol_digest": "0104e4c8bbc49e812310feba25e39a4aafd39062a9d0b17bf31d70c98e1e7b46",
+            "evaluation_recipe": "qhe141-pauli-group-anticommutator-v1",
+            "track": "strengthened",
+            "planned_samples": 2,
+            "observed_samples": 2,
+            "returned_samples": 2,
+            "judged_samples": 2,
+            "complete": true,
+            "passes": 0,
+            "pass_at_1": 0.0,
+            "score_status": "development_only",
+            "score_blockers": [],
+            "outcome_counts": {
+              "pass": 0,
+              "fail": 2,
+              "candidate_error": 0,
+              "timeout": 0,
+              "unsupported": 0,
+              "infrastructure_error": 0,
+              "unjudged": 0
+            },
+            "cohort": {
+              "missing": [],
+              "unexpected": []
+            },
+            "per_task": [
+              {
+                "task_key": "normal/qiskitHumanEval/141",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 0,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "fail"
+                  }
+                ]
+              },
+              {
+                "task_key": "hard/qiskitHumanEval/141",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 0,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "fail"
+                  }
+                ]
+              }
+            ],
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
+            "certification": "not_certified",
+            "publication_eligible": false,
+            "publication_blockers": [
+              "reviewed_task_and_protocol_admission_required",
+              "independent_reproducibility_required"
+            ],
+            "ledger_integrity": {
+              "events": 40,
+              "chain_head": "cccec6bc5a96908432ece387fbfe9a9d606e6f0fc37f50624396270fac719386",
+              "integrity": "verified",
+              "external_anchor": "not_checked",
+              "row_bindings": {
+                "status": "verified",
+                "tables": [
+                  "runs",
+                  "run_contexts",
+                  "model_observations",
+                  "attempts",
+                  "deliveries",
+                  "generations",
+                  "judgments",
+                  "judgment_claims"
+                ],
+                "version": 1
+              }
+            },
+            "analysis_identity": {
+              "frozen": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "observed": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "matched": true
+            },
+            "model_identity": {
+              "status": "matched_declared_names",
+              "accepted_names": [
+                "synthetic-invalid-fixture"
+              ],
+              "observed_names": [
+                "synthetic-invalid-fixture"
+              ],
+              "missing": 0,
+              "mismatched": 0,
+              "weights_identity": "not_verified"
+            },
+            "model_discovery": {
+              "status": "not_observed"
+            }
+          }
+        ],
+        "publication_eligible": false,
+        "preregistration": "not_externally_attested",
+        "configuration_equivalence": "not_certified",
+        "uncertainty_scope": "paired family resampling conditional on observed outcomes",
+        "limitations": [
+          "Families are assumed exchangeable, not sampled randomly from all possible tasks.",
+          "No independent resampling of stochastic generations or universal model ranking.",
+          "Percentile bootstrap coverage can be poor for small or unusual samples.",
+          "No multiple-comparison correction or publication admission."
+        ],
+        "status": "development_only",
+        "families": [
+          {
+            "family": "qhe/141",
+            "samples": 2,
+            "left_passes": 2,
+            "right_passes": 0,
+            "tasks": [
+              "hard/qiskitHumanEval/141",
+              "normal/qiskitHumanEval/141"
+            ]
+          }
+        ],
+        "comparison": {
+          "left_minus_right": 1.0,
+          "interval": null,
+          "interval_unavailable_reason": "fewer_than_two_families",
+          "confidence_level": 0.95,
+          "distribution_digest": "daf76e24caab03177468adbde115c54c7a5c6a75a695ca2e515d8d4756bbaae1",
+          "family_count": 1,
+          "rng": "Python 3.12 random.Random/randrange",
+          "python": "3.12.14 (main, Sep  1 2026, 14:17:39) [MSC v.1944 64 bit (AMD64)]"
+        }
+      }
+    },
+    {
+      "recipe": "task82-file-semantic-v1",
+      "plan": {
+        "method": "paired-family-percentile-v1",
+        "left": {
+          "schema_version": "3.1",
+          "name": "task82-file-semantic-v1-valid",
+          "track": "strengthened",
+          "dataset_digest": "af3acecb39a151243bec740a2288e3aadc3e4cd81052e7ad5d5423efd6623483",
+          "task_keys": [
+            "normal/qiskitHumanEval/82",
+            "hard/qiskitHumanEval/82"
+          ],
+          "request_digests": {
+            "normal/qiskitHumanEval/82": "fd3e1cff87fedc1f29f9f2758a605b0ece4c7226d9658e279ee095095cefebd7",
+            "hard/qiskitHumanEval/82": "f2e2bf67e9e6f2f2654357e1007abfd15570cf022857987c9425367201298f19"
+          },
+          "repeats": 1,
+          "system_prompt": null,
+          "extraction": "raw_or_single_python_fence_v1",
+          "retry": {
+            "max_attempts": 3,
+            "statuses": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ],
+            "delays_seconds": [
+              2.0,
+              10.0
+            ],
+            "ambiguous_delivery": "stop"
+          },
+          "model": {
+            "adapter": "ollama",
+            "model": "synthetic-valid-fixture",
+            "base_url": "http://localhost:11434",
+            "credential_env": null,
+            "settings": [],
+            "accepted_returned_models": [],
+            "model_identity_evidence": null
+          },
+          "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+          "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+          "judge_digest": "f976202ff5863d12fd0b4d4f1fc8b6bfd1e14cdbb5e7c1d0294a829ab22190ee",
+          "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "right": {
+          "schema_version": "3.1",
+          "name": "task82-file-semantic-v1-invalid",
+          "track": "strengthened",
+          "dataset_digest": "af3acecb39a151243bec740a2288e3aadc3e4cd81052e7ad5d5423efd6623483",
+          "task_keys": [
+            "normal/qiskitHumanEval/82",
+            "hard/qiskitHumanEval/82"
+          ],
+          "request_digests": {
+            "normal/qiskitHumanEval/82": "2bc47622ef8ee873aede9ddef22e8297980d2fed56d7e059e20c7849f9740a06",
+            "hard/qiskitHumanEval/82": "6cdb579dda1aadf27efff6300d1e089931a40cfb0045f109eb60e6f885dedbad"
+          },
+          "repeats": 1,
+          "system_prompt": null,
+          "extraction": "raw_or_single_python_fence_v1",
+          "retry": {
+            "max_attempts": 3,
+            "statuses": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ],
+            "delays_seconds": [
+              2.0,
+              10.0
+            ],
+            "ambiguous_delivery": "stop"
+          },
+          "model": {
+            "adapter": "ollama",
+            "model": "synthetic-invalid-fixture",
+            "base_url": "http://localhost:11434",
+            "credential_env": null,
+            "settings": [],
+            "accepted_returned_models": [],
+            "model_identity_evidence": null
+          },
+          "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+          "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+          "judge_digest": "f976202ff5863d12fd0b4d4f1fc8b6bfd1e14cdbb5e7c1d0294a829ab22190ee",
+          "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "families": {
+          "normal/qiskitHumanEval/82": "qhe/82",
+          "hard/qiskitHumanEval/82": "qhe/82"
+        },
+        "seed": 20260919,
+        "resamples": 1000,
+        "confidence": 0.95,
+        "configuration_comparison": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+        "analysis_source": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+      },
+      "report": {
+        "plan_digest": "c6d7fa6443091b2db0c1b7068e2008ad639fc07bc9d8d506146ef2ff55891b86",
+        "plan": {
+          "method": "paired-family-percentile-v1",
+          "left": {
+            "schema_version": "3.1",
+            "name": "task82-file-semantic-v1-valid",
+            "track": "strengthened",
+            "dataset_digest": "af3acecb39a151243bec740a2288e3aadc3e4cd81052e7ad5d5423efd6623483",
+            "task_keys": [
+              "normal/qiskitHumanEval/82",
+              "hard/qiskitHumanEval/82"
+            ],
+            "request_digests": {
+              "normal/qiskitHumanEval/82": "fd3e1cff87fedc1f29f9f2758a605b0ece4c7226d9658e279ee095095cefebd7",
+              "hard/qiskitHumanEval/82": "f2e2bf67e9e6f2f2654357e1007abfd15570cf022857987c9425367201298f19"
+            },
+            "repeats": 1,
+            "system_prompt": null,
+            "extraction": "raw_or_single_python_fence_v1",
+            "retry": {
+              "max_attempts": 3,
+              "statuses": [
+                429,
+                500,
+                502,
+                503,
+                504
+              ],
+              "delays_seconds": [
+                2.0,
+                10.0
+              ],
+              "ambiguous_delivery": "stop"
+            },
+            "model": {
+              "adapter": "ollama",
+              "model": "synthetic-valid-fixture",
+              "base_url": "http://localhost:11434",
+              "credential_env": null,
+              "settings": [],
+              "accepted_returned_models": [],
+              "model_identity_evidence": null
+            },
+            "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+            "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_digest": "f976202ff5863d12fd0b4d4f1fc8b6bfd1e14cdbb5e7c1d0294a829ab22190ee",
+            "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+          },
+          "right": {
+            "schema_version": "3.1",
+            "name": "task82-file-semantic-v1-invalid",
+            "track": "strengthened",
+            "dataset_digest": "af3acecb39a151243bec740a2288e3aadc3e4cd81052e7ad5d5423efd6623483",
+            "task_keys": [
+              "normal/qiskitHumanEval/82",
+              "hard/qiskitHumanEval/82"
+            ],
+            "request_digests": {
+              "normal/qiskitHumanEval/82": "2bc47622ef8ee873aede9ddef22e8297980d2fed56d7e059e20c7849f9740a06",
+              "hard/qiskitHumanEval/82": "6cdb579dda1aadf27efff6300d1e089931a40cfb0045f109eb60e6f885dedbad"
+            },
+            "repeats": 1,
+            "system_prompt": null,
+            "extraction": "raw_or_single_python_fence_v1",
+            "retry": {
+              "max_attempts": 3,
+              "statuses": [
+                429,
+                500,
+                502,
+                503,
+                504
+              ],
+              "delays_seconds": [
+                2.0,
+                10.0
+              ],
+              "ambiguous_delivery": "stop"
+            },
+            "model": {
+              "adapter": "ollama",
+              "model": "synthetic-invalid-fixture",
+              "base_url": "http://localhost:11434",
+              "credential_env": null,
+              "settings": [],
+              "accepted_returned_models": [],
+              "model_identity_evidence": null
+            },
+            "generation_code_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+            "runtime_digest": "2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+            "judge_digest": "f976202ff5863d12fd0b4d4f1fc8b6bfd1e14cdbb5e7c1d0294a829ab22190ee",
+            "analysis_digest": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+          },
+          "families": {
+            "normal/qiskitHumanEval/82": "qhe/82",
+            "hard/qiskitHumanEval/82": "qhe/82"
+          },
+          "seed": 20260919,
+          "resamples": 1000,
+          "confidence": 0.95,
+          "configuration_comparison": "Authored deterministic HTTP fixture; not model generations or model accuracy",
+          "analysis_source": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d"
+        },
+        "runs": [
+          {
+            "run_id": "a1688e52ec1a4a778d469367b832a1f4",
+            "protocol_digest": "ed5f6d7d612ff4ae17abda66e050357804167b43aa06cdf96e39b6979da5e78a",
+            "evaluation_recipe": "task82-file-semantic-v1",
+            "track": "strengthened",
+            "planned_samples": 2,
+            "observed_samples": 2,
+            "returned_samples": 2,
+            "judged_samples": 2,
+            "complete": true,
+            "passes": 2,
+            "pass_at_1": 1.0,
+            "score_status": "development_only",
+            "score_blockers": [],
+            "outcome_counts": {
+              "pass": 2,
+              "fail": 0,
+              "candidate_error": 0,
+              "timeout": 0,
+              "unsupported": 0,
+              "infrastructure_error": 0,
+              "unjudged": 0
+            },
+            "cohort": {
+              "missing": [],
+              "unexpected": []
+            },
+            "per_task": [
+              {
+                "task_key": "normal/qiskitHumanEval/82",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 1,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "pass"
+                  }
+                ]
+              },
+              {
+                "task_key": "hard/qiskitHumanEval/82",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 1,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "pass"
+                  }
+                ]
+              }
+            ],
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
+            "certification": "not_certified",
+            "publication_eligible": false,
+            "publication_blockers": [
+              "reviewed_task_and_protocol_admission_required",
+              "independent_reproducibility_required"
+            ],
+            "ledger_integrity": {
+              "events": 60,
+              "chain_head": "dfc4966022090b58c6f5a48a069ecb80004afe10de1c97a2141e8b5458cc1128",
+              "integrity": "verified",
+              "external_anchor": "not_checked",
+              "row_bindings": {
+                "status": "verified",
+                "tables": [
+                  "runs",
+                  "run_contexts",
+                  "model_observations",
+                  "attempts",
+                  "deliveries",
+                  "generations",
+                  "judgments",
+                  "judgment_claims"
+                ],
+                "version": 1
+              }
+            },
+            "analysis_identity": {
+              "frozen": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "observed": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "matched": true
+            },
+            "model_identity": {
+              "status": "matched_declared_names",
+              "accepted_names": [
+                "synthetic-valid-fixture"
+              ],
+              "observed_names": [
+                "synthetic-valid-fixture"
+              ],
+              "missing": 0,
+              "mismatched": 0,
+              "weights_identity": "not_verified"
+            },
+            "model_discovery": {
+              "status": "not_observed"
+            }
+          },
+          {
+            "run_id": "9ab4e76df3164fa18a34ceb146d56b81",
+            "protocol_digest": "c3fc4c6c48722619ebd48294ba6458443603697955dfc2f47a9198052872db0c",
+            "evaluation_recipe": "task82-file-semantic-v1",
+            "track": "strengthened",
+            "planned_samples": 2,
+            "observed_samples": 2,
+            "returned_samples": 2,
+            "judged_samples": 2,
+            "complete": true,
+            "passes": 0,
+            "pass_at_1": 0.0,
+            "score_status": "development_only",
+            "score_blockers": [],
+            "outcome_counts": {
+              "pass": 0,
+              "fail": 2,
+              "candidate_error": 0,
+              "timeout": 0,
+              "unsupported": 0,
+              "infrastructure_error": 0,
+              "unjudged": 0
+            },
+            "cohort": {
+              "missing": [],
+              "unexpected": []
+            },
+            "per_task": [
+              {
+                "task_key": "normal/qiskitHumanEval/82",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 0,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "fail"
+                  }
+                ]
+              },
+              {
+                "task_key": "hard/qiskitHumanEval/82",
+                "planned_samples": 1,
+                "observed_samples": 1,
+                "passes": 0,
+                "outcomes": [
+                  {
+                    "replicate": 0,
+                    "outcome": "fail"
+                  }
+                ]
+              }
+            ],
+            "estimator": "mean single-attempt success across frozen task/replicate slots",
+            "certification": "not_certified",
+            "publication_eligible": false,
+            "publication_blockers": [
+              "reviewed_task_and_protocol_admission_required",
+              "independent_reproducibility_required"
+            ],
+            "ledger_integrity": {
+              "events": 60,
+              "chain_head": "dfc4966022090b58c6f5a48a069ecb80004afe10de1c97a2141e8b5458cc1128",
+              "integrity": "verified",
+              "external_anchor": "not_checked",
+              "row_bindings": {
+                "status": "verified",
+                "tables": [
+                  "runs",
+                  "run_contexts",
+                  "model_observations",
+                  "attempts",
+                  "deliveries",
+                  "generations",
+                  "judgments",
+                  "judgment_claims"
+                ],
+                "version": 1
+              }
+            },
+            "analysis_identity": {
+              "frozen": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "observed": "b1b75d7cde4f1e5a1f1d00cfd3749e8af5bf489683307e42ec11b862a932482d",
+              "matched": true
+            },
+            "model_identity": {
+              "status": "matched_declared_names",
+              "accepted_names": [
+                "synthetic-invalid-fixture"
+              ],
+              "observed_names": [
+                "synthetic-invalid-fixture"
+              ],
+              "missing": 0,
+              "mismatched": 0,
+              "weights_identity": "not_verified"
+            },
+            "model_discovery": {
+              "status": "not_observed"
+            }
+          }
+        ],
+        "publication_eligible": false,
+        "preregistration": "not_externally_attested",
+        "configuration_equivalence": "not_certified",
+        "uncertainty_scope": "paired family resampling conditional on observed outcomes",
+        "limitations": [
+          "Families are assumed exchangeable, not sampled randomly from all possible tasks.",
+          "No independent resampling of stochastic generations or universal model ranking.",
+          "Percentile bootstrap coverage can be poor for small or unusual samples.",
+          "No multiple-comparison correction or publication admission."
+        ],
+        "status": "development_only",
+        "families": [
+          {
+            "family": "qhe/82",
+            "samples": 2,
+            "left_passes": 2,
+            "right_passes": 0,
+            "tasks": [
+              "hard/qiskitHumanEval/82",
+              "normal/qiskitHumanEval/82"
+            ]
+          }
+        ],
+        "comparison": {
+          "left_minus_right": 1.0,
+          "interval": null,
+          "interval_unavailable_reason": "fewer_than_two_families",
+          "confidence_level": 0.95,
+          "distribution_digest": "daf76e24caab03177468adbde115c54c7a5c6a75a695ca2e515d8d4756bbaae1",
+          "family_count": 1,
+          "rng": "Python 3.12 random.Random/randrange",
+          "python": "3.12.14 (main, Sep  1 2026, 14:17:39) [MSC v.1944 64 bit (AMD64)]"
+        }
+      }
+    }
+  ]
+}
