@@ -37,3 +37,7 @@ results for 14 trusted authored fixtures in a separate diagnostic container. The
 [complete offline reference scan](reliability-evidence/reference-scan-f131336.md) records
 109 passes, 33 unsupported interfaces and one file-boundary error per suite. Reference
 compatibility is not task admission or proof of oracle adequacy.
+
+Tasks 116 and 120 now have separately selected [behavioral revisions](reliability-evidence/gate-semantics-revisions.md).
+They retain historical upstream results and make the changed scoring contract
+public before generation. Finite semantic checks do not certify internal methods.

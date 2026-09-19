@@ -3,6 +3,7 @@
 from typing import Literal, get_args
 
 from graybench.file_judge import QpyFileJudge
+from graybench.gate_semantics import GateSemanticsJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
 from graybench.upstream import UpstreamJudge
 
@@ -12,6 +13,8 @@ EvaluationRecipe = Literal[
     "task82-file-semantic-v1",
     "qhe141-pauli-group-anticommutator-v1",
     "qhe113-barrier-metrics-v1",
+    "qhe116-evolution-semantics-v1",
+    "qhe120-diagonal-semantics-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -23,7 +26,12 @@ class RevisionJudge:
         self.recipe, self.inner, self.image = recipe, inner, image
 
     def revise(self, task):
-        if self.recipe in ("qhe141-pauli-group-anticommutator-v1", "qhe113-barrier-metrics-v1"):
+        if self.recipe in (
+            "qhe141-pauli-group-anticommutator-v1",
+            "qhe113-barrier-metrics-v1",
+            "qhe116-evolution-semantics-v1",
+            "qhe120-diagonal-semantics-v1",
+        ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
         return task
@@ -45,6 +53,8 @@ def recipe_judge(recipe, *, parser_timeout=30, **kwargs):
         inner = PauliAnticommutatorJudge(**kwargs)
     elif recipe == "qhe113-barrier-metrics-v1":
         inner = BarrierMetricsJudge(**kwargs)
+    elif recipe in ("qhe116-evolution-semantics-v1", "qhe120-diagonal-semantics-v1"):
+        inner = GateSemanticsJudge(recipe, **kwargs)
     elif recipe == "task82-file-semantic-v1":
         inner = QpyFileJudge(parser_timeout=parser_timeout, **kwargs)
     else:

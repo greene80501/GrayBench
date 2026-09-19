@@ -215,3 +215,9 @@ separately pinned evaluation environment. Never point these tests at a privilege
 - [Gemini generateContent](https://ai.google.dev/api/generate-content).
 
 Endpoint support and settings still require evidence for the exact model and server version.
+
+Tasks 116 and 120 also have explicit `qhe116-evolution-semantics-v1` and
+`qhe120-diagonal-semantics-v1` development recipes. See the
+[gate semantics contract and limits](../docs/reliability-evidence/gate-semantics-revisions.md)
+before interpreting these results. They score observable behavior, not internal
+construction procedures, and remain distinct from upstream scores.

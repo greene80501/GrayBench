@@ -11,6 +11,8 @@ the default. These selections are development evaluations, not certified scores.
 | `task82-file-semantic-v1` | Task 82 | Original pinned prompt |
 | `qhe141-pauli-group-anticommutator-v1` | Task 141 | Explicit Pauli contract appended before request freezing |
 | `qhe113-barrier-metrics-v1` | Task 113 | Explicit observable metrics and no-mutation contract appended before request freezing |
+| `qhe116-evolution-semantics-v1` | Task 116 | Explicit evolution matrix, phase and behavioral scoring contract |
+| `qhe120-diagonal-semantics-v1` | Task 120 | Explicit diagonal, global-phase allowance and no-mutation contract |
 
 Select exact tasks; a revision rejects other families rather than filtering or
 falling back. From `engine/`, with a model specification and an inspected immutable
@@ -69,3 +71,7 @@ The report is retained as [evaluation-recipe-demo.json](evaluation-recipe-demo.j
 It binds actual worktree bytes, which may differ from Git LF blobs on Windows.
 Final validation: 365 tests passed with Docker enabled in 136.20 seconds, with
 no failures, errors or skips; Ruff lint and formatting passed.
+
+The [task 116/120 gate revisions](gate-semantics-revisions.md) use independent
+expected matrices over varied inputs. They score returned behavior and explicitly
+do not certify the named synthesis/construction procedure.
