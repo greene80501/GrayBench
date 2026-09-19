@@ -1,7 +1,7 @@
 """Native CircuitData membership and owner-created cache nodes.
 
-Instruction streams and runtime variables are separate unfinished capabilities.
-This codec currently admits empty instruction streams and finite numeric phase.
+Packed standard gate streams are supported; retained Python operations, runtime
+variables and symbolic global phase remain separate unfinished capabilities.
 """
 
 import math
@@ -9,6 +9,12 @@ from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError, fields, integer
 from graybench.graph_circuit import CIRCUIT_CODECS, bit_state, restore_bit, validate_bit
+from graybench.graph_packed import (
+    encode_operations,
+    operation_tokens,
+    restore_operations,
+    validate_operations,
+)
 from graybench.graph_scientific import node
 
 SLOTS = {
@@ -31,7 +37,7 @@ class CircuitDataCodec:
         return type(value) is CircuitData
 
     def state(self, value, ref):
-        if len(value) or any(
+        if any(
             getattr(value, "num_" + name)
             for name in (
                 "input_vars",
@@ -41,7 +47,7 @@ class CircuitDataCodec:
                 "declared_stretches",
             )
         ):
-            raise WireError("CircuitData operations/variables require further graph codecs")
+            raise WireError("CircuitData variables require further graph codecs")
         intrinsic = value.copy_empty_like()
         state = {
             "qubits": [bit_state(bit) for bit in intrinsic.qubits],
@@ -49,12 +55,13 @@ class CircuitDataCodec:
             "qregs": [REGISTER.state(reg, ref) for reg in value.qregs],
             "cregs": [REGISTER.state(reg, ref) for reg in value.cregs],
             "phase": value.global_phase,
+            "operations": encode_operations(value, intrinsic, ref),
         }
         state.update({key: ref(getattr(value, attr)) for key, (attr, _) in SLOTS.items()})
         return state
 
     def validate(self, state, index):
-        fields(state, {"qubits", "clbits", "qregs", "cregs", "phase"} | set(SLOTS))
+        fields(state, {"qubits", "clbits", "qregs", "cregs", "phase", "operations"} | set(SLOTS))
         for name, families in (("qubits", {"q", "a"}), ("clbits", {"c"})):
             items = state[name]
             if type(items) is not list or len(items) > 512:
@@ -75,6 +82,7 @@ class CircuitDataCodec:
                 REGISTER.validate(item, index)
                 if item["family"] not in families:
                     raise WireError("Invalid intrinsic register family")
+        validate_operations(state["operations"], len(state["qubits"]), index)
         phase = state["phase"]
         if type(phase) is not float or not math.isfinite(phase) or not 0 <= phase < math.tau:
             raise WireError("CircuitData requires a canonical finite numeric phase")
@@ -110,13 +118,18 @@ class CircuitDataCodec:
                 ("clbits", "cregs", "clbits_cache"),
             ):
                 old_regs, new_regs = previous[regs], state[regs]
-                if new_regs[: len(old_regs)] != old_regs:
-                    raise WireError(
-                        "Register removal/replacement requires another owner transition"
-                    )
-                if previous[bits] != state[bits] or previous[cache] != state[cache]:
+                replacing = previous[bits] != state[bits] or previous[cache] != state[cache]
+                if replacing:
                     value.replace_bits(**{bits: [restore_bit(bit) for bit in state[bits]]})
-                for reg in new_regs[len(old_regs) :]:
+                    # replace_bits discards registrations for this bit family.
+                    pending_regs = new_regs
+                else:
+                    if new_regs[: len(old_regs)] != old_regs:
+                        raise WireError(
+                            "Register removal/replacement requires another owner transition"
+                        )
+                    pending_regs = new_regs[len(old_regs) :]
+                for reg in pending_regs:
                     getattr(value, "add_qreg" if regs == "qregs" else "add_creg")(
                         REGISTER.allocate(reg, index)
                     )
@@ -128,8 +141,14 @@ class CircuitDataCodec:
     def owner_children(self, value, state):
         return {state[key]["ref"]: getattr(value, attr) for key, (attr, _) in SLOTS.items()}
 
-    def tokens(self, state):
+    def owned_tokens(self, state):
         return tuple(state[key] for key in SLOTS)
+
+    def tokens(self, state):
+        return self.owned_tokens(state) + tuple(operation_tokens(state["operations"]))
+
+    def finalize_owner(self, target, state, resolve):
+        restore_operations(target, state, resolve)
 
     def prepare(self, state, resolve, index):
         return state["phase"]

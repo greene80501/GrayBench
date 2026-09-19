@@ -169,7 +169,7 @@ families; new control-flow support remains a separate codec requirement.
 - [ ] Record native pinned-SDK identity behavior for registers/bits, circuit data
   wrappers, instruction copies, parameters, cached definitions and metadata. Turn
   each supported relation into a graph round-trip or update assertion.
-- [ ] Write the held-metadata/returned-root regression:
+- [x] Write the held-metadata/returned-root regression:
 
 ```python
 def test_circuit_update_keeps_existing_root_and_metadata(graph_exchange):
@@ -232,8 +232,12 @@ binding, immutable construction and regular updates. Canonical owner re-encoding
 rejects reconstruction that changes declared state. All objects come only from
 exported records; no private globals or unpassed objects are enumerated.
 
-The foundation is implemented for empty CircuitData membership and BitLocations.
-QuantumCircuit root transport, instruction streams, symbolic phase, variables,
+The foundation now supports CircuitData membership, BitLocations, exact
+QuantumCircuit roots and packed standard operation streams. Python component
+codecs live in graph_quantum_circuit.py; fixed packed operations live in
+graph_packed.py. Owner cache claims use owned_tokens separately from ordinary
+parameter references; finalize_owner installs operations after graph resolution.
+Retained Python instructions, symbolic phase, variables, layouts,
 anonymous identities and late attachment remain incomplete. The regressions below
 remain requirements for the full circuit layer, even where its native owner
 already has corresponding passing tests.

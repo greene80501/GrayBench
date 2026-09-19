@@ -209,6 +209,21 @@ def main():
     assert old is original and owned.qubits is not original and len(original) == 2
     checks.append("owner_transition_binds_new_cache_and_retains_detached_alias")
 
+    circuit = QuantumCircuit(2, metadata={"trace": []})
+    circuit.h(0)
+    circuit.cx(0, 1)
+    view = circuit.data
+    metadata = circuit.metadata
+    remote, held_view, held_metadata = transfer(judge, candidate, (circuit, view, metadata), 21)
+    assert held_view._circuit is remote and remote.metadata is held_metadata
+    remote.rx(0.3, 1)
+    remote.metadata["trace"].append("candidate")
+    assert transfer(candidate, judge, remote, 21) is circuit
+    assert view._circuit is circuit and len(view) == 3
+    assert circuit.metadata is metadata and metadata["trace"] == ["candidate"]
+    assert [item.operation.name for item in circuit.data] == ["h", "cx", "rx"]
+    checks.append("quantum_circuit_root_packed_operations_and_held_components")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -222,6 +237,8 @@ def main():
         "graph_circuit.py",
         "graph_circuit_data.py",
         "graph_owned.py",
+        "graph_quantum_circuit.py",
+        "graph_packed.py",
         "graph_object_arrays.py",
         "graph_expressions.py",
         "symbolic_wire.py",

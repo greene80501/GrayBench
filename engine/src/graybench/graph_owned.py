@@ -30,7 +30,7 @@ def execute_owned(plan, existing_objects, materialize):
             continue
         state = record["state"]
         # One slot per handle, and one native owner per child.
-        tokens = list(codec.tokens(state))
+        tokens = list(codec.owned_tokens(state))
         for token in tokens:
             child = token["ref"]
             if child in claims:
@@ -57,6 +57,9 @@ def execute_owned(plan, existing_objects, materialize):
         raise WireError("Different graph IDs resolved to one owner object")
     for codec, target, prepared in updates:
         codec.apply(target, prepared)
+    for handle, codec, state in owners:
+        if hasattr(codec, "finalize_owner"):
+            codec.finalize_owner(objects[handle], state, objects.__getitem__)
     for handle, codec, state in owners:
         if any(
             objects[child] is not actual
