@@ -18,6 +18,14 @@ The inspection CLI does not launch a billable benchmark campaign. The full-suite
 be exposed after the required interfaces and oracle gates are implemented. Generation adapters
 can currently be exercised programmatically with explicit frozen requests.
 
+## Experimental graph transport
+
+A standalone persistent arena and numeric-storage registry now preserve shared
+container references, cycles, returned-input identity and NumPy buffer/view aliases.
+They are not yet integrated into production worker calls. The six documented
+identity verdict defects remain unresolved in that path. See
+[implementation evidence and remaining limits](../docs/reliability-evidence/graph-core-development.md).
+
 ## Implemented foundation
 
 - Strict public-task and experiment contracts, with exact request hashes frozen before dispatch.

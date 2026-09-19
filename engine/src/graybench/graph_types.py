@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError
+from graybench.graph_numeric import ARRAY_CODECS
 
 SCALAR_MISSING = object()
 
@@ -40,6 +41,19 @@ def token_value(token, resolve):
 @dataclass(frozen=True)
 class ContainerCodec:
     kind: str
+
+    @property
+    def immutable(self):
+        return self.kind == "tuple"
+
+    def array_bytes(self, state):
+        return 0
+
+    def validate_update(self, previous, state):
+        pass  # Tuple immutability is checked on canonical wire bytes in the arena.
+
+    def prepare(self, state, resolve, shape_index):
+        return self.populate(self.allocate(state, shape_index), state, resolve)
 
     def matches(self, value):
         if self.kind in ("list", "tuple", "dict"):
@@ -112,6 +126,7 @@ class ContainerCodec:
 
 
 REGISTRY = {name: ContainerCodec(name) for name in ("list", "tuple", "dict", "property_set")}
+REGISTRY.update(ARRAY_CODECS)
 
 
 def codec_for(value):

@@ -1,7 +1,8 @@
 # Persistent call object graph design
 
 Status: implementation design under the user's approved end-to-end overhaul.
-No graph protocol is implemented or admitted by this document. Existing PR and
+A standalone container/numeric graph is under implementation; production graph
+protocol integration and admission remain unfinished. Existing PR and
 source-bound evidence remain development-only. This is an architectural change,
 not a special-case patch for task147. Execution continues under the standing
 implementation authorization; this document does not claim separate user review.

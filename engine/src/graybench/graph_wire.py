@@ -139,6 +139,7 @@ class GraphArena:
         while pending:
             handle, value, codec = pending.popleft()
             records[handle]["state"] = codec.state(value, ref)
+        self._validate_records(records)
         self._check_depth(records, root_records)
         wire = {
             "format": "call_graph_v1",
@@ -181,7 +182,7 @@ class GraphArena:
             if handle in self._objects:
                 if kind != self._records[handle]["kind"]:
                     raise WireError("Existing graph object changed type")
-                if kind == "tuple" and wire_bytes(record["state"]) != wire_bytes(
+                if REGISTRY[kind].immutable and wire_bytes(record["state"]) != wire_bytes(
                     self._records[handle]["state"]
                 ):
                     raise WireError("Existing immutable graph node was rewritten")
@@ -190,8 +191,7 @@ class GraphArena:
             records[handle] = record
         if not set(self._objects) <= set(records):
             raise WireError("Snapshot omitted an exported graph object")
-        for record in records.values():
-            REGISTRY[record["kind"]].validate(record["state"], records)
+        self._validate_records(records)
         edges = 0
 
         def check(token):
@@ -223,6 +223,17 @@ class GraphArena:
             self._owner, self._generation, sequence, objects, records, tuple(updates), roots
         )
 
+    def _validate_records(self, records):
+        total = 0
+        for handle, record in records.items():
+            codec = REGISTRY[record["kind"]]
+            codec.validate(record["state"], records)
+            total += codec.array_bytes(record["state"])
+            if total > self.limits.array_bytes:
+                raise WireLimitError("Graph array storage exceeds byte limit")
+            if handle in self._records:
+                codec.validate_update(self._records[handle]["state"], record["state"])
+
     def _check_depth(self, records, roots):
         # Canonical root order and explicit stack make sender/receiver checks identical.
         starts = [
@@ -252,8 +263,10 @@ class GraphArena:
     def _materialize(self, records, existing):
         objects = dict(existing)
         for handle, record in records.items():
-            if handle not in objects and record["kind"] != "tuple":
-                objects[handle] = REGISTRY[record["kind"]].allocate(record["state"], records)
+            if handle not in objects:
+                allocated = REGISTRY[record["kind"]].allocate(record["state"], records)
+                if allocated is not None:
+                    objects[handle] = allocated
         building = set()
 
         def resolve(handle, depth=0):
@@ -275,11 +288,10 @@ class GraphArena:
             resolve(handle)
         updates = []
         for handle, record in records.items():
-            if record["kind"] == "tuple":
-                continue
             codec = REGISTRY[record["kind"]]
-            prepared = codec.allocate(record["state"], records)
-            codec.populate(prepared, record["state"], objects.__getitem__)
+            if codec.immutable:
+                continue
+            prepared = codec.prepare(record["state"], objects.__getitem__, records)
             updates.append((codec, objects[handle], prepared))
         return objects, updates
 

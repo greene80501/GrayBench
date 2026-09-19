@@ -106,11 +106,16 @@ def test_shared_positional_keyword_object():
 
 ### Task 2: Numeric storage and scientific/primitive object ownership
 
+In progress: ndarray owner/view and typed NumPy scalar nodes implemented and
+locally tested. Scientific/primitive component graphs and geometry updates remain
+unimplemented. The task is not complete; no production graph admission is claimed.
+
+
 Files: create `graph_numeric.py`, `tests/test_graph_numeric.py`; modify `graph_types.py`.
 Consumes Task 1's fixed NodeCodec contract and arena references. Produces graph-aware
 numeric/scientific/primitive handlers with explicit rejection of unsupported forms.
 
-- [ ] Write native/graph shared-storage tests before handlers:
+- [x] Write native/graph shared-storage tests before handlers:
 
 ```python
 def test_numpy_views_keep_shared_storage(graph_roundtrip):
@@ -123,10 +128,10 @@ def test_numpy_views_keep_shared_storage(graph_roundtrip):
 
   Define `graph_roundtrip` in the test fixture using the two arenas and
   snapshot/prepare/commit sequence from Task 1.
-- [ ] Represent owning numeric buffers and array views with validated dtype, offset,
+- [x] Represent owning numeric buffers and array views with validated dtype, offset,
   shape, strides and writeability. Validate min/max byte addresses for positive,
   negative and zero strides before allocation. Never use object/structured dtypes.
-- [ ] Test disjoint equal arrays stay disjoint, overlapping slices, transposes,
+- [x] Test disjoint equal arrays stay disjoint, overlapping slices, transposes,
   negative strides, read-only views, endian preservation and nonfinite numeric bytes.
 - [ ] Map Statevector/DensityMatrix/Operator/Choi, ScalarOp/SparsePauliOp,
   Clifford/StabilizerState/CNOTDihedral and BitArray/DataBin/PrimitiveResult/
