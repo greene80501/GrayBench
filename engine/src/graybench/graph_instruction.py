@@ -92,7 +92,7 @@ class InstructionCodec:
         name_value(state["_name"])
         integer(state["_num_qubits"], 512)
         integer(state["_num_clbits"], 512)
-        node(state["_params"], index, {"list"})
+        node(state["_params"], index, {"list", "qiskit_frozen_list"})
         if state["_definition"] is not None:
             node(state["_definition"], index, {"quantum_circuit"})
         if state["_label"] is not None:

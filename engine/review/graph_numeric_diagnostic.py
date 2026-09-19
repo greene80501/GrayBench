@@ -271,6 +271,21 @@ def main():
         assert gate._definition is None and gate.base_gate._definition is None
     checks.append("controlled_updates_preserve_native_representation_in_both_directions")
 
+    from qiskit.circuit.singleton import _frozenlist
+
+    values = _frozenlist([1])
+    remote = transfer(judge, candidate, values, 26)
+    assert type(remote) is _frozenlist
+    try:
+        remote.append(2)
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("Frozen list lost its mutation guard")
+    list.append(remote, 2)
+    assert transfer(candidate, judge, remote, 26) is values and values == [1, 2]
+    checks.append("frozen_list_exact_type_guards_and_explicit_base_mutation")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",

@@ -68,6 +68,10 @@ class ContainerCodec:
         return self.populate(self.allocate(state, shape_index), state, resolve)
 
     def matches(self, value):
+        if self.kind == "qiskit_frozen_list":
+            from qiskit.circuit.singleton import _frozenlist
+
+            return type(value) is _frozenlist
         if self.kind in ("list", "tuple", "dict"):
             return type(value) is {"list": list, "tuple": tuple, "dict": dict}[self.kind]
         from qiskit.transpiler import PropertySet
@@ -77,7 +81,7 @@ class ContainerCodec:
     def state(self, value, ref):
         if self.kind == "property_set" and vars(value):
             raise WireError("PropertySet instance attributes require a graph codec")
-        if self.kind in ("list", "tuple"):
+        if self.kind in ("list", "tuple", "qiskit_frozen_list"):
             return [ref(item) for item in value]
         return [[ref(key), ref(item)] for key, item in value.items()]
 
@@ -90,13 +94,17 @@ class ContainerCodec:
             raise WireError("Invalid graph mapping entry")
 
     def tokens(self, state):
-        if self.kind in ("list", "tuple"):
+        if self.kind in ("list", "tuple", "qiskit_frozen_list"):
             yield from state
         else:
             for pair in state:
                 yield from pair
 
     def allocate(self, state, shape_index):
+        if self.kind == "qiskit_frozen_list":
+            from qiskit.circuit.singleton import _frozenlist
+
+            return _frozenlist()
         if self.kind == "list":
             return []
         if self.kind == "tuple":
@@ -111,7 +119,7 @@ class ContainerCodec:
         values = [token_value(token, resolve) for token in self.tokens(state)]
         if self.kind == "tuple":
             return tuple(values)
-        if self.kind == "list":
+        if self.kind in ("list", "qiskit_frozen_list"):
             list.__setitem__(target, slice(None), values)
             return target
         proposed = {}
@@ -128,7 +136,7 @@ class ContainerCodec:
         return target
 
     def apply(self, target, prepared):
-        if self.kind == "list":
+        if self.kind in ("list", "qiskit_frozen_list"):
             list.__setitem__(target, slice(None), prepared)
         elif self.kind in ("dict", "property_set"):
             dict.clear(target)
@@ -137,7 +145,10 @@ class ContainerCodec:
             raise WireError("Immutable graph node cannot be updated")
 
 
-REGISTRY = {name: ContainerCodec(name) for name in ("list", "tuple", "dict", "property_set")}
+REGISTRY = {
+    name: ContainerCodec(name)
+    for name in ("list", "tuple", "dict", "property_set", "qiskit_frozen_list")
+}
 REGISTRY.update(ARRAY_CODECS)
 REGISTRY.update(OBJECT_ARRAY_CODECS)
 REGISTRY.update(SCIENTIFIC_CODECS)

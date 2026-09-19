@@ -412,3 +412,23 @@ delegate to the actual base gate while raw _params remains independent.
 - [ ] Resolve exact singleton base ownership before admitting controlled X families.
 
 This refines Task3; Task4/5 and the full benchmark requirements remain unchanged.
+
+
+### Task3 refinement: singleton allocation phases
+
+The [singleton audit](../../reliability-evidence/singleton-ownership-audit.md)
+confirms that ordinary copying cannot create private staging objects, while a
+manually allocated clone cannot satisfy SDK factory identity. Raw dictionaries and
+cached definitions remain mutable despite the singleton's guarded setters.
+
+- [x] Implement exact _frozenlist graph nodes, preserving public guards and explicit
+  base-list updates, plus instruction parameter references to that kind.
+- [ ] Separate private singleton rehearsal from live fixed-factory binding in the
+  owner commit machinery. Preparation must not mutate the process's real singleton.
+- [ ] Resolve initial binding of factory-owned children versus equal-valued
+  replacement explicitly; preserve dictionary, frozen-list and definition aliases.
+- [ ] Verify factory identity and malformed-update atomicity in separate processes,
+  then cover shared singleton bases in controlled X families.
+
+These requirements refine the existing owner transition plan. They do not permit
+copying private judge globals or narrowing the remaining benchmark objective.
