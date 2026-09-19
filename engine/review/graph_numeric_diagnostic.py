@@ -173,6 +173,29 @@ def main():
     assert retained.tolist() == [1, 2] and held.base is remote
     checks.append("array_geometry_updates_keep_original_storage_and_views")
 
+    from qiskit.circuit import Gate, QuantumRegister, Qubit
+
+    register = QuantumRegister(2, "r")
+    bit, equal = register[0], register[0]
+    remote, first, second, shared = transfer(judge, candidate, (register, bit, equal, bit), 19)
+    assert remote[0] == first == second and first is not second and first is shared
+    assert transfer(candidate, judge, first, 19) is bit
+    checks.append("owned_register_and_bit_wrapper_identity")
+
+    packed = QuantumCircuit(1)
+    packed.rx(0.2, 0)
+    assert packed.data[0].operation is not packed.data[0].operation
+    gate = Gate("g", 1, [0.2])
+    packed.append(gate, [0], copy=False)
+    assert packed.data[-1].operation is gate
+    checks.append("native_packed_versus_python_instruction_ownership")
+
+    previous_uid = Qubit().__reduce__()[1][0]
+    restored = Qubit._from_anonymous(previous_uid + 1)
+    created = Qubit()
+    assert restored == created and restored is not created
+    checks.append("native_anonymous_restore_allocator_collision_observed")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -183,6 +206,7 @@ def main():
         "graph_scientific.py",
         "graph_primitive.py",
         "graph_symbolic.py",
+        "graph_circuit.py",
         "graph_object_arrays.py",
         "graph_expressions.py",
         "symbolic_wire.py",

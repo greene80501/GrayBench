@@ -157,6 +157,11 @@ def test_numpy_views_keep_shared_storage(graph_roundtrip):
 
 ### Task 3: Qiskit circuit and instruction component graphs
 
+In progress: owned bit/register members now have standalone graph codecs. Native
+packed/Python instruction and CircuitData cache findings are recorded in
+[member development evidence](../../reliability-evidence/graph-owned-circuit-members-development.md).
+Anonymous bit identity and circuit-cache attachment remain explicit open design work.
+
 Files: create `graph_circuit.py`, `tests/test_graph_circuit.py`; modify `graph_types.py`.
 Consumes Tasks 1/2. Produces graph-aware handlers for current circuit/instruction
 families; new control-flow support remains a separate codec requirement.

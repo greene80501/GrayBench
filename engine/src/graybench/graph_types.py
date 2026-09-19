@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError
+from graybench.graph_circuit import CIRCUIT_CODECS
 from graybench.graph_expressions import ExpressionCodec
 from graybench.graph_numeric import ARRAY_CODECS
 from graybench.graph_object_arrays import OBJECT_ARRAY_CODECS
@@ -139,6 +140,7 @@ REGISTRY.update(OBJECT_ARRAY_CODECS)
 REGISTRY.update(SCIENTIFIC_CODECS)
 REGISTRY.update(PRIMITIVE_CODECS)
 REGISTRY.update(SYMBOL_CODECS)
+REGISTRY.update(CIRCUIT_CODECS)
 REGISTRY["parameter_expression"] = ExpressionCodec()
 
 

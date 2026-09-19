@@ -250,3 +250,7 @@ notes describe their historical scope. Circuit/RPC integration and admission rem
 [Array metadata updates](../docs/reliability-evidence/graph-array-geometry-development.md)
 now preserve existing objects and storage through supported shape, stride and numeric
 dtype changes. Storage resizing and base/offset changes remain unsupported.
+
+[Circuit-member development](../docs/reliability-evidence/graph-owned-circuit-members-development.md)
+adds register-owned bit/register graphs and records native packed-instruction,
+cache-ownership and anonymous-ID findings. Full circuit transport remains unfinished.
