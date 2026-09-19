@@ -196,6 +196,19 @@ def main():
     assert restored == created and restored is not created
     checks.append("native_anonymous_restore_allocator_collision_observed")
 
+    from qiskit._accelerate.circuit import CircuitData
+
+    register = QuantumRegister(3, "owned")
+    owned = CircuitData(qubits=list(register)[:2])
+    original = owned.qubits
+    remote, held = transfer(judge, candidate, (owned, original), 20)
+    assert remote.qubits is held
+    remote.add_qubit(register[2])
+    result, old = transfer(candidate, judge, (remote, held), 20)
+    assert result is owned and owned.num_qubits == 3
+    assert old is original and owned.qubits is not original and len(original) == 2
+    checks.append("owner_transition_binds_new_cache_and_retains_detached_alias")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -207,6 +220,8 @@ def main():
         "graph_primitive.py",
         "graph_symbolic.py",
         "graph_circuit.py",
+        "graph_circuit_data.py",
+        "graph_owned.py",
         "graph_object_arrays.py",
         "graph_expressions.py",
         "symbolic_wire.py",

@@ -214,28 +214,29 @@ The existing whole-plan review remains after Task 5.
 
 **Fixed interfaces and execution order**
 
-Define internal frozen OwnerTransition records in graph_owned.py. Their fields
-are owner_handle, previous_state, desired_state and child_handles. States are
-private copies of schema-validated records, never user-supplied executable actions.
-child_handles maps only fixed local slot enums (qubits, clbits, qubit_indices,
-clbit_indices) to validated graph IDs. No payload selects a callable or attribute.
+The implemented internal frozen OwnedCommitPlan in graph_owned.py contains
+records, previous_records and roots. These are private copies of schema-validated
+graph data, not payload-selected actions. A separate per-owner record is
+unnecessary: fixed codecs expose transition_owner(value, previous, desired, index)
+and owner_children(value, state). CircuitData cache slots are a fixed local mapping
+for qubits, clbits, qubit_indices and clbit_indices.
 
-The fixed CircuitData codec produces transitions with
-plan_owner(previous_state, desired_state, record_index) -> OwnerTransition.
-It validates intrinsic membership independently of cached Python lists/maps.
-Intrinsic membership is read from a fresh copy_empty_like(), whose getters
-rebuild from Rust state; the original caches are captured separately by reference.
+The graph_owned module exposes the actual implemented signatures:
+- rehearse(records, previous_records, roots, materialize) -> OwnedCommitPlan
+- execute_owned(plan, existing_objects, materialize) -> (objects, resolved_roots)
 
-The graph_owned module exposes:
-- rehearse(records, previous_records, limits) -> OwnedCommitPlan
-- execute_owned(plan, existing_objects) -> (objects, resolved_roots)
+materialize is the arena's bound private construction method, carrying its limits;
+no callback is accepted from wire data. Rehearsal reconstructs the previous graph
+privately, then executes the complete next transition including SDK calls, cache
+binding, immutable construction and regular updates. Canonical owner re-encoding
+rejects reconstruction that changes declared state. All objects come only from
+exported records; no private globals or unpassed objects are enumerated.
 
-rehearse first reconstructs the previously exported graph privately. It then
-executes the exact proposed transition schedule on that private graph, including
-SDK calls, newly created cache binding, regular object updates and immutable
-construction. Late schema, allocation, binding and SDK failures must all occur
-here before any live mutation. All objects are constructed only from exported
-records; no private judge objects or global RNG state are enumerated.
+The foundation is implemented for empty CircuitData membership and BitLocations.
+QuantumCircuit root transport, instruction streams, symbolic phase, variables,
+anonymous identities and late attachment remain incomplete. The regressions below
+remain requirements for the full circuit layer, even where its native owner
+already has corresponding passing tests.
 
 The live commit executes the already validated schedule in this order:
 1. Allocate ordinary mutable shells and new native owner shells.

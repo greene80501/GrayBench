@@ -254,3 +254,8 @@ dtype changes. Storage resizing and base/offset changes remain unsupported.
 [Circuit-member development](../docs/reliability-evidence/graph-owned-circuit-members-development.md)
 adds register-owned bit/register graphs and records native packed-instruction,
 cache-ownership and anonymous-ID findings. Full circuit transport remains unfinished.
+
+[Owner-aware commit development](../docs/reliability-evidence/graph-owner-aware-commit-development.md)
+now rehearses native CircuitData membership transitions privately and binds actual
+cache objects before reference resolution. QuantumCircuit/instruction transport and
+production integration remain unfinished.

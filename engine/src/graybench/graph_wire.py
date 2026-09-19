@@ -58,6 +58,7 @@ class PreparedGraph:
     _records: dict
     _updates: tuple
     _roots: dict
+    _owned_plan: object = None
 
 
 class GraphArena:
@@ -211,6 +212,13 @@ class GraphArena:
             for token in REGISTRY[record["kind"]].tokens(record["state"]):
                 check(token)
         self._check_depth(records, wire["roots"])
+        from graybench.graph_owned import has_owned, rehearse
+
+        if has_owned(records):
+            plan = rehearse(records, self._records, wire["roots"], self._materialize)
+            return PreparedGraph(
+                self._owner, self._generation, sequence, {}, records, (), wire["roots"], plan
+            )
         # Validate hashability/duplicate mapping keys on private staging objects first.
         self._materialize(records, {})
         objects, updates = self._materialize(records, self._objects)
@@ -318,6 +326,21 @@ class GraphArena:
         if prepared._generation != self._generation:
             raise WireError("Stale graph preparation")
         self._sequence(prepared._sequence, self._incoming)
+        if prepared._owned_plan is not None:
+            from graybench.graph_owned import execute_owned
+
+            try:
+                objects, roots = execute_owned(
+                    prepared._owned_plan, self._objects, self._materialize
+                )
+            except BaseException:
+                self.close()
+                raise
+            self._objects, self._records = objects, prepared._records
+            self._ids = {id(value): handle for handle, value in objects.items()}
+            self._incoming = prepared._sequence
+            self._generation += 1
+            return roots
         try:
             for codec, target, state in prepared._updates:
                 codec.apply(target, state)
