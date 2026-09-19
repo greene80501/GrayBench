@@ -10,6 +10,7 @@ the default. These selections are development evaluations, not certified scores.
 | `qhe0-size-domain-v1` | Task 0 | Original pinned prompt |
 | `task82-file-semantic-v1` | Task 82 | Original pinned prompt |
 | `qhe141-pauli-group-anticommutator-v1` | Task 141 | Explicit Pauli contract appended before request freezing |
+| `qhe113-barrier-metrics-v1` | Task 113 | Explicit observable metrics and no-mutation contract appended before request freezing |
 
 Select exact tasks; a revision rejects other families rather than filtering or
 falling back. From `engine/`, with a model specification and an inspected immutable

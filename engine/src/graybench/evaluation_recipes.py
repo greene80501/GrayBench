@@ -3,7 +3,7 @@
 from typing import Literal, get_args
 
 from graybench.file_judge import QpyFileJudge
-from graybench.oracle_review import CircuitSizeJudge, PauliAnticommutatorJudge
+from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
 from graybench.upstream import UpstreamJudge
 
 EvaluationRecipe = Literal[
@@ -11,6 +11,7 @@ EvaluationRecipe = Literal[
     "qhe0-size-domain-v1",
     "task82-file-semantic-v1",
     "qhe141-pauli-group-anticommutator-v1",
+    "qhe113-barrier-metrics-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -22,7 +23,7 @@ class RevisionJudge:
         self.recipe, self.inner, self.image = recipe, inner, image
 
     def revise(self, task):
-        if self.recipe == "qhe141-pauli-group-anticommutator-v1":
+        if self.recipe in ("qhe141-pauli-group-anticommutator-v1", "qhe113-barrier-metrics-v1"):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
         return task
@@ -42,6 +43,8 @@ def recipe_judge(recipe, *, parser_timeout=30, **kwargs):
         inner = CircuitSizeJudge(**kwargs)
     elif recipe == "qhe141-pauli-group-anticommutator-v1":
         inner = PauliAnticommutatorJudge(**kwargs)
+    elif recipe == "qhe113-barrier-metrics-v1":
+        inner = BarrierMetricsJudge(**kwargs)
     elif recipe == "task82-file-semantic-v1":
         inner = QpyFileJudge(parser_timeout=parser_timeout, **kwargs)
     else:

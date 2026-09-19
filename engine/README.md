@@ -160,7 +160,7 @@ provider-reported metadata and verified effective settings.
 ## Adversarial Docker tests
 
 `campaign-plan --evaluation-recipe NAME` explicitly selects the existing task 0,
-82 or 141 development revision. Selection is frozen before generation and checked
+82, 113 or 141 development revision. Selection is frozen before generation and checked
 on resume and comparison; wrong-family cohorts fail rather than being filtered.
 See [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md) for
 commands, source replay rules and the distinction from upstream scores.

@@ -68,3 +68,7 @@ exchange in both directions including explicit mutation reports. Initial tests
 failed on missing transport; the mutation test then correctly used the existing
 call_with_updates API rather than bypassing its mutation policy. A separate
 read-only code review found no actionable issues in this bounded codec change.
+
+A separately selected [barrier-metrics revision](task113-barrier-revision.md) now
+implements a declared observable contract and checks varied circuits. It does not
+replace upstream scores or establish internal algorithm compliance.

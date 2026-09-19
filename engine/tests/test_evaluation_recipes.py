@@ -58,7 +58,10 @@ def test_recipe_plan_freezes_revised_public_request_and_reconstructs(model, task
     assert "PRIVATE_TEST_SENTINEL" not in setup.model_dump_json()
 
 
-@pytest.mark.parametrize("recipe", ["qhe0-size-domain-v1", "task82-file-semantic-v1", "unknown"])
+@pytest.mark.parametrize(
+    "recipe",
+    ["qhe0-size-domain-v1", "task82-file-semantic-v1", "qhe113-barrier-metrics-v1", "unknown"],
+)
 def test_recipe_rejects_wrong_family_or_unknown_name(model, task, recipe):
     with pytest.raises(ValueError):
         build_setup("wrong", model, (pauli_task(task),), IMAGE, evaluation_recipe=recipe)

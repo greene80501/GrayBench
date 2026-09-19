@@ -161,6 +161,112 @@ PAULI_CONTRACT = (
     "Matrix comparisons use absolute tolerance 1e-10 and zero relative tolerance."
 )
 
+BARRIER_CONTRACT = (
+    "For this strengthened track, return a Qiskit PropertySet with Python or NumPy integer "
+    "depth_before, depth_after and width entries, not booleans. "
+    "Width counts quantum and classical bits. "
+    "Compute depth_after by removing only barriers, retaining every other instruction "
+    "and its order. Do not mutate the supplied circuit. Scoring checks these returned "
+    "metrics; it does not prove which internal pass or algorithm was executed."
+)
+
+BARRIER_CHECK = """def check(candidate):
+    from numbers import Integral
+    from qiskit import QuantumCircuit
+    from qiskit.transpiler import PropertySet
+    cases = [QuantumCircuit(0), QuantumCircuit(3, 2)]
+    for n in (2, 3, 5):
+        circuit = QuantumCircuit(n, 2)
+        circuit.h(0)
+        circuit.barrier()
+        circuit.h(n - 1)
+        cases.append(circuit.copy())
+        circuit.barrier(0)
+        circuit.x(0)
+        circuit.x(0)
+        circuit.cx(0, n - 1)
+        circuit.barrier()
+        circuit.barrier()
+        circuit.measure(0, 0)
+        circuit.measure(n - 1, 1)
+        cases.append(circuit)
+    plain = QuantumCircuit(2)
+    plain.x(0)
+    plain.x(0)
+    plain.h(1)
+    cases.append(plain)
+    for circuit in cases:
+        clean = circuit.copy_empty_like()
+        for instruction in circuit.data:
+            if instruction.operation.name != 'barrier':
+                clean.append(instruction.operation, instruction.qubits, instruction.clbits)
+        expected = {'depth_before': circuit.depth(), 'depth_after': clean.depth(),
+                    'width': circuit.width()}
+        result = candidate(circuit)
+        assert isinstance(result, PropertySet), 'Expected a PropertySet'
+        for key, value in expected.items():
+            assert key in result, 'Missing required metric'
+            is_integer = isinstance(result[key], Integral) and not isinstance(result[key], bool)
+            assert is_integer, 'Expected an integer metric'
+            assert result[key] == value, 'Incorrect ' + key
+"""
+
+
+class BarrierMetricsJudge:
+    """Explicit observable-metrics contract; cannot certify internal transformation steps."""
+
+    def __init__(self, **kwargs):
+        self.inner = UpstreamJudge(**kwargs)
+
+    def revise(self, task):
+        if (
+            task.public.family_id != "qhe/113"
+            or task.public.entry_point != "calculate_depth_after_barrier_removal"
+        ):
+            raise ValueError("Barrier metrics revision requires task 113")
+        addition = (
+            ("\n    # " if task.public.prompt_format == "function_completion" else "\n")
+            + BARRIER_CONTRACT
+            + "\n"
+        )
+        prompt = task.public.prompt
+        if not prompt.endswith(addition):
+            prompt += addition
+        return task.model_copy(
+            update={
+                "public": task.public.model_copy(update={"prompt": prompt}),
+                "upstream_test": BARRIER_CHECK,
+            }
+        )
+
+    def configuration(self, task):
+        revised = self.revise(task)
+        if task.digest != revised.digest:
+            raise ValueError("Revise the task before generation and judgment")
+        payload, inner = self.inner.configuration(task)
+        return payload, {
+            "track": "qhe113-barrier-metrics-v1",
+            "source": source_manifest(),
+            "task_digest": task.digest,
+            "public_task_digest": revised.public.digest,
+            "inner": inner,
+            "public_contract": BARRIER_CONTRACT,
+            "release_eligible": False,
+            "domain": "Nine fixed circuits with zero to five qubits; finite coverage only",
+            "limitations": [
+                "Internal transformation procedure is not observable",
+                "Input mutation and unsupported representations remain unscored",
+            ],
+        }
+
+    def evaluate(self, task, completion):
+        _, manifest = self.configuration(task)
+        result = self.inner.evaluate(task, completion)
+        return Judgment(
+            result.outcome, identity(manifest), {"manifest": manifest, "inner": result.evidence}
+        )
+
+
 PAULI_CHECK = """def check(candidate):
     import itertools
     import math
