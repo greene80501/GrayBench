@@ -7,6 +7,7 @@ from graybench.circuit_wire import WireError
 from graybench.graph_numeric import ARRAY_CODECS
 from graybench.graph_primitive import PRIMITIVE_CODECS
 from graybench.graph_scientific import SCIENTIFIC_CODECS
+from graybench.graph_symbolic import SYMBOL_CODECS
 
 SCALAR_MISSING = object()
 
@@ -134,6 +135,7 @@ REGISTRY = {name: ContainerCodec(name) for name in ("list", "tuple", "dict", "pr
 REGISTRY.update(ARRAY_CODECS)
 REGISTRY.update(SCIENTIFIC_CODECS)
 REGISTRY.update(PRIMITIVE_CODECS)
+REGISTRY.update(SYMBOL_CODECS)
 
 
 def codec_for(value):

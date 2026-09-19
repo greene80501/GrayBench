@@ -134,6 +134,21 @@ def main():
     assert transfer(candidate, judge, remote, 14) is sparse and sparse.coeffs[1] == 5
     checks.append("sparse_pauli_storage_without_simplification")
 
+    from qiskit.circuit import ParameterVector
+
+    vector = ParameterVector("v", 3)
+    remote, items, held, uid = transfer(
+        judge, candidate, (vector, vector.params, vector[2], vector._root_uuid), 15
+    )
+    assert remote.params is items and remote[2] is held and remote._root_uuid is uid
+    remote.resize(1)
+    assert transfer(candidate, judge, remote, 15) is vector and len(vector) == 1
+    remote.resize(3)
+    assert remote[2] == held and remote[2] is not held and held.vector is remote
+    transfer(candidate, judge, remote, 16)
+    assert vector[2].vector is vector and len(vector.params) == 3
+    checks.append("parameter_vector_resize_and_detached_identity")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",
@@ -143,6 +158,7 @@ def main():
         "scientific_wire.py",
         "graph_scientific.py",
         "graph_primitive.py",
+        "graph_symbolic.py",
         "primitive_wire.py",
     )
     print(

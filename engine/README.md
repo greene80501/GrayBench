@@ -237,3 +237,8 @@ object references, returned-input identity or cross-call identity. Six protected
 [identity diagnostics](../docs/reliability-evidence/alias-boundary.md) reproduce
 incorrect verdicts. The [graph-protocol plan](../docs/superpowers/plans/2026-09-19-call-object-graph.md)
 is unfinished; these identity-sensitive interfaces are not certified.
+
+Experimental graph symbol identities now preserve Parameter/ParameterVector objects,
+shared vector slots and detached elements across resize. See
+[development evidence](../docs/reliability-evidence/graph-symbol-identities-development.md).
+Expression replay and symbolic object arrays remain pending; production calls still use v3.

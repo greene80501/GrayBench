@@ -60,7 +60,8 @@ Remaining graph capability entries are explicit:
 | Existing tree-supported family or form | Current graph status |
 | --- | --- |
 | Numeric SparsePauliOp, CNOTDihedral | Added by the subsequent [sparse/polynomial increment](graph-sparse-polynomial-development.md); symbolic coefficient arrays remain unsupported. |
-| Parameter, ParameterExpression, parameter-vector elements, symbolic coefficients | Unsupported; shared symbolic-node representation still required. |
+| Parameter, ParameterVector, parameter-vector elements, UUID | Added by the subsequent [symbol identity increment](graph-symbol-identities-development.md). |
+| ParameterExpression, symbolic coefficients | Expression replay and object-reference arrays remain unfinished. |
 | QuantumCircuit, standalone Instruction/Gate and supported standard/custom gate families | Unsupported; Task 3 must preserve component ownership and caches. |
 | Array geometry changes, external buffers, dtype metadata and non-admitted numeric forms | Unsupported as recorded in the numeric increment. |
 | Seeded scientific RNG objects and extra scientific instance attributes | Unsupported; never silently discarded or replaced with judge-global state. |

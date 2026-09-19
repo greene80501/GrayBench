@@ -109,12 +109,13 @@ def test_shared_positional_keyword_object():
 In progress: ndarray owner/view and typed NumPy scalar nodes implemented and
 locally tested. Scientific and primitive wrappers now have component graphs;
 Numeric SparsePauliOp/CNOTDihedral component graphs are also implemented;
-symbolic coefficient arrays/nodes and geometry updates remain unfinished.
+Parameter/vector/element and UUID identities are implemented in graph_symbolic.py;
+expression nodes, symbolic coefficient arrays and geometry updates remain unfinished.
 The task is not complete; no production graph admission is claimed.
 
 
 Files: create `graph_numeric.py`, `graph_scientific.py`, `graph_primitive.py` and
-corresponding tests; modify `graph_types.py` and arena resource accounting. The
+corresponding tests, plus graph_symbolic.py and its tests; modify `graph_types.py` and arena resource accounting. The
 separate modules keep numeric storage, scientific state and primitive field rules
 independently readable. Instance dictionaries are explicit graph nodes with fixed
 field validation, not opaque copies or arbitrary attribute updates.
