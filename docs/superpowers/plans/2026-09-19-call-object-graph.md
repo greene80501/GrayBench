@@ -432,3 +432,24 @@ cached definitions remain mutable despite the singleton's guarded setters.
 
 These requirements refine the existing owner transition plan. They do not permit
 copying private judge globals or narrowing the remaining benchmark objective.
+
+
+### Task3 refinement: fixed public anchor registry
+
+The [fresh-process capture](../../reliability-evidence/singleton-anchor-capture.md)
+produced identical 30-factory/676-object graphs in two Windows processes and two
+pinned Linux containers. Equal-valued replacement is distinguishable only if the
+original identity registry remains frozen for the session.
+
+- [ ] Bootstrap a versioned fixed public SDK anchor registry before candidate/test
+  user code; keep strong original-object references and a verified layout hash.
+- [ ] Add strictly validated anchor metadata only to actually exported nodes;
+  reject unknown, duplicate, incompatible or changed anchor claims.
+- [ ] Rehearse with private cloned anchor objects; bind live commit to actual
+  receiver factory objects. Supply explicit initial state for newly bound native
+  owners instead of pretending they have prior exported records.
+- [ ] Cover original children versus equal replacements, dictionary/list/definition
+  aliases, and dynamic owner cache transitions in separate-process regressions.
+
+The registry proposal does not allow transmitting unpassed public closure state,
+private judge globals or RNG. Runtime implementation and acceptance remain pending.
