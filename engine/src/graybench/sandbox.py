@@ -126,6 +126,9 @@ class Candidate:
         shutil.copyfile(
             Path(__file__).with_name("operator_wire.py"), directory / "operator_wire.py"
         )
+        shutil.copyfile(
+            Path(__file__).with_name("primitive_wire.py"), directory / "primitive_wire.py"
+        )
         args = [
             docker,
             "run",

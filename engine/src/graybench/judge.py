@@ -27,6 +27,7 @@ JUDGE_FILES = (
     "preparation_wire.py",
     "instruction_wire.py",
     "operator_wire.py",
+    "primitive_wire.py",
 )
 ORACLES = frozenset({"task20-ghz-state-v1", "task82-bell-file-state-v1"})
 

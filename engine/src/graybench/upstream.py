@@ -32,6 +32,7 @@ FILES = (
     "preparation_wire.py",
     "instruction_wire.py",
     "operator_wire.py",
+    "primitive_wire.py",
 )
 
 

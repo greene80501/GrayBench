@@ -134,6 +134,7 @@ def answer():
             "instruction_wire.py",
             "operator_wire.py",
             "preparation_wire.py",
+            "primitive_wire.py",
             "scientific_wire.py",
             "symbolic_wire.py",
             "value_wire.py",

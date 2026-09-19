@@ -68,6 +68,13 @@ def encode(item, depth=0):
     scientific = encode_scientific(item)
     if scientific is not None:
         return scientific
+    try:
+        from .primitive_wire import encode_primitive
+    except ImportError:
+        from primitive_wire import encode_primitive
+    primitive = encode_primitive(item, depth)
+    if primitive is not None:
+        return primitive
     raise WireError("Unsupported wire value: " + type(item).__name__)
 
 
@@ -87,6 +94,18 @@ def decode(value, depth=0, budget=None):
         ):
             raise WireError("Invalid complex scalar")
         return complex(value["real"], value["imag"])
+    if type(value) is dict and value.get("kind") in {
+        "bit_array_v1",
+        "data_bin_v1",
+        "primitive_result_v1",
+        "pub_result_v1",
+        "sampler_pub_result_v1",
+    }:
+        try:
+            from .primitive_wire import decode_primitive
+        except ImportError:
+            from primitive_wire import decode_primitive
+        return decode_primitive(value, depth, budget)
     if type(value) is dict and value.get("kind") in {
         "ndarray_v1",
         "numpy_scalar_v1",
