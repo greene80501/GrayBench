@@ -240,8 +240,8 @@ parameter references; finalize_owner installs operations after graph resolution.
 Basic mutable retained Python instructions now have graph_instruction.py component
 codecs and graph_python_ops.py native-cache records. Shared definitions and
 parameter lists are preserved without lazy synthesis. Exact cached native qubit/clbit arities are read through
-DAGOpNode.from_instruction and preserved separately from the current operation. Controlled and
-singleton instructions, symbolic phase, variables, layouts,
+DAGOpNode.from_instruction and preserved separately from the current operation. Controlled components and native-role transitions now have standalone coverage.
+Singleton instructions, symbolic phase, variables, layouts,
 anonymous identities and late attachment remain incomplete. The regressions below
 remain requirements for the full circuit layer, even where its native owner
 already has corresponding passing tests.
@@ -403,11 +403,11 @@ An existing open CRX can remain a native Python operation after being closed;
 an existing closed CRX can remain native standard after being opened. Public params
 delegate to the actual base gate while raw _params remains independent.
 
-- [ ] Add fixed controlled component schemas and regressions for shared base gates,
+- [x] Add fixed controlled component schemas and regressions for shared base gates,
   public/raw parameter lists, raw definitions and current control fields.
-- [ ] Record native standard/Python representation explicitly and verify it in
+- [x] Record native standard/Python representation explicitly and verify it in
   canonical reconstruction. Do not infer it from the current Python control state.
-- [ ] Preserve both open-to-closed and closed-to-open cache transitions, restoring
+- [x] Preserve both open-to-closed and closed-to-open cache transitions, restoring
   every temporary base/controlled dictionary on success or exception.
 - [ ] Resolve exact singleton base ownership before admitting controlled X families.
 

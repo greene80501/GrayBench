@@ -254,6 +254,23 @@ def main():
     assert transfer(candidate, judge, remote, 23) is circuit
     checks.append("cached_native_arities_differ_from_retained_operation")
 
+    from qiskit.circuit.library import CRXGate
+
+    for sequence, initial in ((24, 0), (25, 1)):
+        gate = CRXGate(0.2, ctrl_state=initial)
+        circuit = QuantumCircuit(2)
+        circuit.append(gate, [0, 1], copy=False)
+        name = circuit.data[0].name
+        remote, retained = transfer(judge, candidate, (circuit, gate), sequence)
+        retained.ctrl_state = 1 - initial
+        retained.params[0] = 0.9
+        assert transfer(candidate, judge, remote, sequence) is circuit
+        assert circuit.data[0].operation is gate and gate.params == [0.9]
+        assert circuit.data[0].name == name and circuit.data[0].params == [0.2]
+        assert circuit.data[0].is_standard_gate() is bool(initial)
+        assert gate._definition is None and gate.base_gate._definition is None
+    checks.append("controlled_updates_preserve_native_representation_in_both_directions")
+
     root = Path(graph_module.__file__).parent
     names = (
         "graph_wire.py",

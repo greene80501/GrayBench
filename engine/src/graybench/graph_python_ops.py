@@ -24,6 +24,7 @@ def encode_python(item, operation, intrinsic, ref):
 
     native = DAGOpNode.from_instruction(item)
     return {
+        "native_standard": item.is_standard_gate(),
         "num_qubits": native.num_qubits,
         "num_clbits": native.num_clbits,
         "operation": ref(operation),
@@ -37,8 +38,21 @@ def encode_python(item, operation, intrinsic, ref):
 
 def validate_python(op, qubits, clbits, index):
     fields(
-        op, {"operation", "name", "qubits", "clbits", "params", "label", "num_qubits", "num_clbits"}
+        op,
+        {
+            "operation",
+            "name",
+            "qubits",
+            "clbits",
+            "params",
+            "label",
+            "num_qubits",
+            "num_clbits",
+            "native_standard",
+        },
     )
+    if type(op["native_standard"]) is not bool:
+        raise WireError("Invalid native standard-gate selector")
     integer(op["num_qubits"], 512)
     integer(op["num_clbits"], 512)
     node(op["operation"], index, {"python_instruction"})
@@ -92,10 +106,49 @@ def restore_python(op, qubits, clbits, resolve):
         ],
         _label=op["label"],
     )
-    object.__setattr__(operation, "__dict__", cached)
+    replacements = [(operation, actual, cached)]
+    if "base_gate" in actual:
+        # Public controlled params delegate through the base chain. Cache replay
+        # must temporarily supply the leaf list without replacing actual aliases.
+        base = actual["base_gate"]
+        seen = {id(operation)}
+        while True:
+            if id(base) in seen or len(seen) > 32:
+                raise WireError("Invalid controlled cache base chain")
+            seen.add(id(base))
+            base_actual = vars(base)
+            base_cached = dict(base_actual)
+            base_cached["_params"] = cached["_params"]
+            replacements.append((base, base_actual, base_cached))
+            if "base_gate" not in base_actual:
+                break
+            base = base_actual["base_gate"]
+        has_standard = getattr(type(operation), "_standard_gate", None) is not None
+        cached["_open_ctrl"] = has_standard and not op["native_standard"]
+        if op["native_standard"]:
+            from qiskit.circuit.library import get_standard_gate_name_mapping
+
+            template = get_standard_gate_name_mapping().get(op["name"])
+            if template is None or template.base_class is not type(operation):
+                raise WireError("Native standard class differs from retained operation")
+            cached["_ctrl_state"] = (1 << template.num_ctrl_qubits) - 1
+        if cached["_open_ctrl"]:
+            raw_name, separator, control = op["name"].rpartition("_o")
+            if not separator or not control.isascii() or not control.isdecimal():
+                raise WireError("Unsupported native open-control name")
+            control_value = int(control)
+            if control_value.bit_length() > 512:
+                raise WireError("Native control state exceeds limit")
+            cached["_name"] = raw_name
+            cached["_ctrl_state"] = control_value
+    applied = []
     try:
+        for target, original, temporary in replacements:
+            object.__setattr__(target, "__dict__", temporary)
+            applied.append((target, original))
         return CircuitInstruction(
             operation, [qubits[i] for i in op["qubits"]], [clbits[i] for i in op["clbits"]]
         )
     finally:
-        object.__setattr__(operation, "__dict__", actual)
+        for target, original in reversed(applied):
+            object.__setattr__(target, "__dict__", original)
