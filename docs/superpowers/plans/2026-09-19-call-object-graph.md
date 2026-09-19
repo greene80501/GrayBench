@@ -453,3 +453,10 @@ original identity registry remains frozen for the session.
 
 The registry proposal does not allow transmitting unpassed public closure state,
 private judge globals or RNG. Runtime implementation and acceptance remain pending.
+
+
+PublicAnchorRegistry is implemented in graph_anchors.py with immutable bootstrap
+records, identity-only lookup, strict key/kind/manifest checks and bounded capture.
+Nineteen focused cases and source-bound Windows/Linux comparison with the independent
+capture pass. This completes the registry helper, not its before-user-code startup
+integration or graph commit binding. Those unchecked requirements remain pending.
