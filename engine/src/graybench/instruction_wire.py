@@ -25,9 +25,43 @@ except ImportError:
 def encode_instruction(op, *, depth=0, operation_budget=None):
     from qiskit import QuantumCircuit
     from qiskit.circuit import Gate, Instruction
+    from qiskit.circuit.library import LinearFunction
 
     if depth > 8:
         raise WireLimitError("Instruction definition nesting exceeds limit")
+    if operation_budget is None:
+        operation_budget = [1_000_000]
+    if type(op) is LinearFunction:
+        import numpy as np
+
+        try:
+            from .scientific_wire import MAX_BYTES, array_record
+        except ImportError:
+            from scientific_wire import MAX_BYTES, array_record
+        if (
+            len(op.params) != 2
+            or type(op.linear) is not np.ndarray
+            or op.linear.dtype != np.dtype(bool)
+            or op.linear.shape != (op.num_qubits, op.num_qubits)
+            or op.num_clbits != 0
+        ):
+            raise WireError("Unsupported LinearFunction matrix representation")
+        if op.linear.nbytes > MAX_BYTES:
+            raise WireLimitError("LinearFunction matrix exceeds codec capacity")
+        return {
+            "kind": "linear_function_v1",
+            "name": op.name,
+            "label": op.label,
+            "linear": array_record(op.linear),
+            "original": None
+            if op.original_circuit is None
+            else encode_circuit(
+                op.original_circuit, depth=depth + 1, operation_budget=operation_budget
+            ),
+            "definition": None
+            if op._definition is None
+            else encode_circuit(op._definition, depth=depth + 1, operation_budget=operation_budget),
+        }
     if type(op) in (Gate, Instruction):
         return {
             "kind": "generic_instruction_v1",
@@ -66,6 +100,43 @@ def decode_instruction(value, *, depth=0, operation_budget=None):
         raise WireLimitError("Instruction definition nesting exceeds limit")
     if type(value) is not dict:
         raise WireError("Expected an instruction record")
+    if operation_budget is None:
+        operation_budget = [1_000_000]
+    if value.get("kind") == "linear_function_v1":
+        import numpy as np
+        from qiskit.circuit.library import LinearFunction
+
+        try:
+            from .scientific_wire import decode_array
+        except ImportError:
+            from scientific_wire import decode_array
+        fields(value, {"kind", "name", "label", "linear", "original", "definition"})
+        for key in ("name", "label"):
+            if key == "label" and value[key] is None:
+                continue
+            if type(value[key]) is not str:
+                raise WireError("Invalid LinearFunction name or label")
+            if len(value[key]) > 4096:
+                raise WireLimitError("LinearFunction name or label exceeds codec capacity")
+        matrix = decode_array(value["linear"])
+        if (
+            type(matrix) is not np.ndarray
+            or matrix.dtype != np.dtype(bool)
+            or matrix.ndim != 2
+            or matrix.shape[0] != matrix.shape[1]
+        ):
+            raise WireError("LinearFunction requires a square boolean matrix")
+        op = LinearFunction(matrix, validate_input=False)
+        op.name, op.label = value["name"], value["label"]
+        if value["original"] is not None:
+            op.params[1] = decode_circuit(
+                value["original"], depth=depth + 1, operation_budget=operation_budget
+            )
+        if value["definition"] is not None:
+            op.definition = decode_circuit(
+                value["definition"], depth=depth + 1, operation_budget=operation_budget
+            )
+        return op
     if value.get("kind") == "standard_instruction_v1":
         fields(value, {"kind", "mutable", "circuit"})
         if type(value["mutable"]) is not bool:

@@ -6,6 +6,8 @@ oracles belong to a separately versioned track with the same public requirements
 
 | Task | Evidence | Required resolution |
 | --- | --- | --- |
+| 46 | Both suites accept a fixed three-qubit identity LinearFunction that ignores the requested width and seed. | Check parameter/seed behavior and the declared generation method; see [protected replay](reliability-evidence/linear-functions.md). |
+| 86 | Both suites accept identity blocks with the expected block counts but no requested CX-chain behavior. | Check circuit semantics and declared block constraints together; do not impose the reference's undisclosed extra H gate. |
 | 3 | Both upstream suites accept a blank Matplotlib Figure alongside the circuit. They also accept measuring only qubit 0; the prompt does not clearly specify measurement coverage. | Validate that the drawing represents the returned circuit, and clarify measurement coverage before adding stricter requirements. Faithful Figure transport alone does not repair this oracle. |
 | 26 | Both suites accept a Bell pair on qubits 1 and 2, although the prompt specifies 0 and 1. They reject the requested unmeasured pair because they require an undisclosed measurement and depth 3. | Specify measurement semantics and verify Bell-pair placement/coherence. Avoid incidental reference gate-count/depth requirements. |
 | 9 | Twelve parameterized RX gates plus a barrier pass the current EfficientSU2 oracle despite having no entangling gates. This is distinct from the historical issue already fixed upstream. | Check the requested ansatz semantics using explicit parameter correspondence and equivalent positive implementations. Parameter count alone is insufficient. |

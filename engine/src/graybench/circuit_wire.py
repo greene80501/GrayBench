@@ -108,7 +108,12 @@ def encode_circuit(circuit, *, depth=0, operation_budget=None):
     if operation_budget[0] < 0:
         raise WireLimitError("Instruction graph exceeds codec limit")
     from qiskit.circuit import Gate, Instruction
-    from qiskit.circuit.library import StatePreparation, UnitaryGate, get_standard_gate_name_mapping
+    from qiskit.circuit.library import (
+        LinearFunction,
+        StatePreparation,
+        UnitaryGate,
+        get_standard_gate_name_mapping,
+    )
 
     try:
         from .scientific_wire import array_record
@@ -122,7 +127,7 @@ def encode_circuit(circuit, *, depth=0, operation_budget=None):
     for item in circuit.data:
         op = item.operation
         wire_name = op.name
-        if type(op) in (Gate, Instruction):
+        if type(op) in (Gate, Instruction, LinearFunction):
             try:
                 from .instruction_wire import encode_instruction
             except ImportError:

@@ -113,6 +113,7 @@ def decode(value, depth=0, budget=None):
     if type(value) is dict and value.get("kind") in (
         "generic_instruction_v1",
         "standard_instruction_v1",
+        "linear_function_v1",
     ):
         try:
             from .instruction_wire import decode_instruction
