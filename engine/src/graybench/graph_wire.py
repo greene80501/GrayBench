@@ -59,16 +59,23 @@ class PreparedGraph:
     _updates: tuple
     _roots: dict
     _owned_plan: object = None
+    _anchor_plan: object = None
 
 
 class GraphArena:
-    def __init__(self, *, side, session, limits):
+    def __init__(self, *, side, session, limits, anchors=None):
         if side not in ("judge", "candidate"):
             raise WireError("Unknown graph owner")
         if type(session) is not str or not 1 <= len(session) <= 128:
             raise WireError("Invalid graph session")
         if type(limits) is not GraphLimits:
             raise WireError("Invalid graph limits")
+        if anchors is not None:
+            from graybench.graph_anchors import PublicAnchorRegistry
+
+            if type(anchors) is not PublicAnchorRegistry:
+                raise WireError("Invalid public anchor registry")
+        self.anchors = anchors
         self.side, self.session, self.limits = side, session, limits
         self._prefix = "j:" if side == "judge" else "c:"
         self._objects, self._ids, self._records = {}, {}, {}
@@ -121,6 +128,8 @@ class GraphArena:
             if handle in records:
                 return {"ref": handle}
             codec = codec_for(value)
+            if codec.kind == "public_singleton" and self.anchors is None:
+                raise WireError("Singleton transfer requires explicit public anchors")
             if handle is None:
                 if len(objects) >= self.limits.nodes or next_id >= self.limits.nodes:
                     raise WireLimitError("Graph node limit exceeded")
@@ -130,6 +139,8 @@ class GraphArena:
             elif self._records[handle]["kind"] != codec.kind:
                 raise WireError("Existing graph object changed type")
             records[handle] = {"id": handle, "kind": codec.kind, "state": None}
+            if self.anchors is not None:
+                records[handle]["anchor"] = self.anchors.key_for(value)
             pending.append((handle, value, codec))
             return {"ref": handle}
 
@@ -149,6 +160,9 @@ class GraphArena:
             "roots": root_records,
             "nodes": list(records.values()),
         }
+        if self.anchors is not None:
+            wire["format"] = "call_graph_anchors_v1"
+            wire["anchors"] = self.anchors.manifest()
         if len(wire_bytes(wire)) > self.limits.message_bytes:
             raise WireLimitError("Graph message exceeds byte limit")
         self._objects, self._ids, self._records = objects, identifiers, records
@@ -163,8 +177,16 @@ class GraphArena:
         if len(raw) > self.limits.message_bytes:
             raise WireLimitError("Graph message exceeds byte limit")
         wire = json.loads(raw)
-        fields(wire, {"format", "session", "sequence", "roots", "nodes"})
-        if wire["format"] != "call_graph_v1" or wire["session"] != self.session:
+        anchored = self.anchors is not None
+        fields(
+            wire,
+            {"format", "session", "sequence", "roots", "nodes"}
+            | ({"anchors"} if anchored else set()),
+        )
+        expected_format = "call_graph_anchors_v1" if anchored else "call_graph_v1"
+        if anchored:
+            self.anchors.validate_manifest(wire["anchors"])
+        if wire["format"] != expected_format or wire["session"] != self.session:
             raise WireError("Wrong graph format or session")
         if type(wire["sequence"]) is not int or wire["sequence"] != sequence:
             raise WireError("Unmatched graph sequence")
@@ -172,14 +194,26 @@ class GraphArena:
         if type(wire["nodes"]) is not list or len(wire["nodes"]) > self.limits.nodes:
             raise WireLimitError("Invalid or excessive graph nodes")
         records = {}
+        anchor_claims = set()
         for record in wire["nodes"]:
-            fields(record, {"id", "kind", "state"})
+            fields(record, {"id", "kind", "state"} | ({"anchor"} if anchored else set()))
             handle = self._handle(record["id"])
             if handle in records:
                 raise WireError("Duplicate graph object ID")
             kind = record["kind"]
             if type(kind) is not str or kind not in REGISTRY:
                 raise WireError("Unknown graph kind")
+            if kind == "public_singleton" and not anchored:
+                raise WireError("Singleton transfer requires explicit public anchors")
+            if anchored:
+                key = record["anchor"]
+                if key is not None:
+                    self.anchors.resolve(key, kind=kind)
+                    if key in anchor_claims:
+                        raise WireError("Duplicate public anchor claim")
+                    anchor_claims.add(key)
+                if handle in self._records and key != self._records[handle]["anchor"]:
+                    raise WireError("Existing graph handle changed anchor claim")
             if handle in self._objects:
                 if kind != self._records[handle]["kind"]:
                     raise WireError("Existing graph object changed type")
@@ -214,6 +248,20 @@ class GraphArena:
         self._check_depth(records, wire["roots"])
         from graybench.graph_owned import has_owned, rehearse
 
+        if anchored:
+            from graybench.graph_anchor_bindings import prepare_anchors
+
+            plan = prepare_anchors(self, records, wire["roots"])
+            return PreparedGraph(
+                self._owner,
+                self._generation,
+                sequence,
+                {},
+                records,
+                (),
+                wire["roots"],
+                _anchor_plan=plan,
+            )
         if has_owned(records):
             plan = rehearse(records, self._records, wire["roots"], self._materialize)
             return PreparedGraph(
@@ -327,6 +375,19 @@ class GraphArena:
         if prepared._generation != self._generation:
             raise WireError("Stale graph preparation")
         self._sequence(prepared._sequence, self._incoming)
+        if prepared._anchor_plan is not None:
+            from graybench.graph_anchor_bindings import commit_anchors
+
+            try:
+                objects, roots = commit_anchors(self, prepared._anchor_plan)
+            except BaseException:
+                self.close()
+                raise
+            self._objects, self._records = objects, prepared._records
+            self._ids = {id(value): handle for handle, value in objects.items()}
+            self._incoming = prepared._sequence
+            self._generation += 1
+            return roots
         if prepared._owned_plan is not None:
             from graybench.graph_owned import execute_owned
 

@@ -115,6 +115,8 @@ def main():
         "graph_quantum_circuit.py",
         "graph_packed.py",
         "graph_instruction.py",
+        "graph_singleton.py",
+        "graph_anchor_bindings.py",
         "graph_python_ops.py",
         "graph_object_arrays.py",
         "graph_expressions.py",

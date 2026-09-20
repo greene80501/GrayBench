@@ -423,11 +423,11 @@ cached definitions remain mutable despite the singleton's guarded setters.
 
 - [x] Implement exact _frozenlist graph nodes, preserving public guards and explicit
   base-list updates, plus instruction parameter references to that kind.
-- [ ] Separate private singleton rehearsal from live fixed-factory binding in the
+- [x] Separate private singleton rehearsal from live fixed-factory binding in the
   owner commit machinery. Preparation must not mutate the process's real singleton.
-- [ ] Resolve initial binding of factory-owned children versus equal-valued
+- [x] Resolve initial binding of factory-owned children versus equal-valued
   replacement explicitly; preserve dictionary, frozen-list and definition aliases.
-- [ ] Verify factory identity and malformed-update atomicity in separate processes,
+- [x] Verify factory identity and malformed-update atomicity in separate processes,
   then cover shared singleton bases in controlled X families.
 
 These requirements refine the existing owner transition plan. They do not permit
@@ -443,12 +443,12 @@ original identity registry remains frozen for the session.
 
 - [ ] Bootstrap a versioned fixed public SDK anchor registry before candidate/test
   user code; keep strong original-object references and a verified layout hash.
-- [ ] Add strictly validated anchor metadata only to actually exported nodes;
+- [x] Add strictly validated anchor metadata only to actually exported nodes;
   reject unknown, duplicate, incompatible or changed anchor claims.
-- [ ] Rehearse with private cloned anchor objects; bind live commit to actual
+- [x] Rehearse with private cloned anchor objects; bind live commit to actual
   receiver factory objects. Supply explicit initial state for newly bound native
   owners instead of pretending they have prior exported records.
-- [ ] Cover original children versus equal replacements, dictionary/list/definition
+- [x] Cover original children versus equal replacements, dictionary/list/definition
   aliases, and dynamic owner cache transitions in separate-process regressions.
 
 The registry proposal does not allow transmitting unpassed public closure state,
@@ -468,3 +468,25 @@ aliases, private mutation isolation, frozen history and repeatable independent c
 The codec is private to trusted bootstrap materialization, not transport admission.
 Live binding and peer annotation validation remain unchecked above.
 Evidence: docs/reliability-evidence/private-anchor-copy-development.md.
+
+### Task3 implemented refinement: explicit anchor transfer
+
+GraphArena now accepts an explicit registry and negotiates call_graph_anchors_v1.
+Strict per-export anchor annotations and manifest validation bind original public
+objects without interning equal replacements. Private rehearsal clones the current
+closure of relevant receiver objects and supplies initial native-owner state;
+commit rechecks state and identity before applying only exported objects. This
+extends the frozen-bootstrap copier with the current-state phase needed after
+local mutations. Independent-process alias, factory, rejection and round-trip
+regressions and source-bound Windows/Linux probes pass.
+
+The combined fixture also exposed controlled native representation depending on
+base labels. The fixed native enum plus temporary base-label selection now preserve
+both stored modes without rewriting the user's actual base dictionary.
+See docs/reliability-evidence/anchor-transfer-development.md.
+
+Still required: bootstrap these registries before user code in the actual worker
+and judge (Task4), remaining Task3 interfaces including packed immutable operation
+wrapper ownership and standalone CircuitInstruction, and full Task5 protected
+counterexamples/cohorts. Do not treat direct singleton transfer as full circuit
+interface admission. The overall plan and benchmark objective remain active.

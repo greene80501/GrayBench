@@ -79,7 +79,7 @@ class InstructionCodec:
             for _ in range(32):
                 if "base_gate" not in current:
                     break
-                base = node(current["base_gate"], index, {"python_instruction"})
+                base = node(current["base_gate"], index, {"python_instruction", "public_singleton"})
                 handle = current["base_gate"]["ref"]
                 if handle in seen:
                     raise WireError("Cyclic controlled base graph is unsupported")

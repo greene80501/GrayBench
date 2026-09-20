@@ -123,24 +123,21 @@ def restore_python(op, qubits, clbits, resolve):
             if "base_gate" not in base_actual:
                 break
             base = base_actual["base_gate"]
-        has_standard = getattr(type(operation), "_standard_gate", None) is not None
-        cached["_open_ctrl"] = has_standard and not op["native_standard"]
-        if op["native_standard"]:
-            from qiskit.circuit.library import get_standard_gate_name_mapping
-
-            template = get_standard_gate_name_mapping().get(op["name"])
-            if template is None or template.base_class is not type(operation):
+        standard = getattr(type(operation), "_standard_gate", None)
+        # Native Qiskit selects standard controlled operations only with closed
+        # controls AND an unlabeled immediate base. Either field can have changed
+        # since insertion. Supply a temporary extraction state for the declared
+        # cached representation; restore the actual dictionaries in finally.
+        cached["_open_ctrl"] = False
+        if standard is not None:
+            if op["native_standard"] and standard.name != op["name"]:
                 raise WireError("Native standard class differs from retained operation")
-            cached["_ctrl_state"] = (1 << template.num_ctrl_qubits) - 1
-        if cached["_open_ctrl"]:
-            raw_name, separator, control = op["name"].rpartition("_o")
-            if not separator or not control.isascii() or not control.isdecimal():
-                raise WireError("Unsupported native open-control name")
-            control_value = int(control)
-            if control_value.bit_length() > 512:
-                raise WireError("Native control state exceeds limit")
-            cached["_name"] = raw_name
-            cached["_ctrl_state"] = control_value
+            cached["_ctrl_state"] = (1 << standard.num_ctrl_qubits) - 1
+            # The native Python branch reads the full cached name directly. A
+            # temporary non-None base label selects it even for a closed gate.
+            replacements[1][2]["_label"] = None if op["native_standard"] else ""
+        elif op["native_standard"]:
+            raise WireError("Native standard class differs from retained operation")
     applied = []
     try:
         for target, original, temporary in replacements:

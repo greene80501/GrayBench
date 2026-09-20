@@ -13,6 +13,7 @@ from graybench.graph_object_arrays import OBJECT_ARRAY_CODECS
 from graybench.graph_primitive import PRIMITIVE_CODECS
 from graybench.graph_quantum_circuit import QUANTUM_CIRCUIT_CODECS
 from graybench.graph_scientific import SCIENTIFIC_CODECS
+from graybench.graph_singleton import SingletonCodec
 from graybench.graph_symbolic import SYMBOL_CODECS
 
 SCALAR_MISSING = object()
@@ -159,6 +160,7 @@ REGISTRY.update(CIRCUIT_DATA_CODECS)
 REGISTRY.update(QUANTUM_CIRCUIT_CODECS)
 REGISTRY["parameter_expression"] = ExpressionCodec()
 REGISTRY["python_instruction"] = InstructionCodec()
+REGISTRY["public_singleton"] = SingletonCodec()
 
 
 def codec_for(value):

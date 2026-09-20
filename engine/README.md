@@ -259,3 +259,9 @@ cache-ownership and anonymous-ID findings. Full circuit transport remains unfini
 now rehearses native CircuitData membership transitions privately and binds actual
 cache objects before reference resolution. QuantumCircuit/instruction transport and
 production integration remain unfinished.
+
+Explicit public-anchor transfers are now implemented in the standalone graph API.
+They retain factory and child identity, validate per-node claims, rehearse native
+owner transitions privately, and reject live state/identity drift before commit.
+See docs/reliability-evidence/anchor-transfer-development.md. Production worker
+integration and remaining circuit interfaces are still in progress.
