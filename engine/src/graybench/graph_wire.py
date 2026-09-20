@@ -144,6 +144,8 @@ class GraphArena:
             pending.append((handle, value, codec))
             return {"ref": handle}
 
+        ref.singleton_refs = self.anchors is not None
+
         # Detached exported children remain observable through either side's aliases.
         for value in self._objects.values():
             register(value)

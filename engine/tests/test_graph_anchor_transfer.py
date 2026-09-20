@@ -421,3 +421,131 @@ assert out['qc'].data[0].operation is out['gate']
 """,
         wire,
     )
+
+
+def test_circuit_only_export_preserves_reachable_singleton_state():
+    wire = sender("""
+from qiskit import QuantumCircuit
+qc = QuantumCircuit(1)
+qc.x(0)
+assert qc.data[0].operation is XGate()
+vars(XGate())['_label'] = 'reachable through circuit'
+XGate()._definition.metadata['visible'] = 42
+roots = {'qc': qc}
+""")
+    assert any(n["kind"] == "public_singleton" for n in wire["nodes"])
+    assert receiver(
+        """
+x = XGate()
+prepared = b.prepare(wire, sequence=1)
+assert x.label is None and 'visible' not in x._definition.metadata
+out = b.commit(prepared)['qc']
+assert out.data[0].operation is x
+assert x.label == 'reachable through circuit'
+assert x._definition.metadata['visible'] == 42
+assert out._data[0].label is None and out._data[0].is_standard_gate()
+""",
+        wire,
+    )
+
+
+def test_circuit_retains_distinct_singleton_clone_and_shared_factory_children():
+    wire = sender("""
+from qiskit import QuantumCircuit
+from qiskit.circuit import CircuitInstruction
+clone = object.__new__(type(XGate()))
+object.__setattr__(clone, '__dict__', dict(vars(XGate())))
+vars(clone)['_label'] = 'distinct clone'
+qc = QuantumCircuit(1)
+qc._data.append(CircuitInstruction(clone, qc.qubits, []))
+roots = {'qc': qc, 'clone': clone}
+""")
+    assert receiver(
+        """
+out = b.commit(b.prepare(wire, sequence=1))
+clone = out['clone']
+assert out['qc'].data[0].operation is clone and clone is not XGate()
+assert clone.params is XGate().params
+assert clone._definition is XGate()._definition
+assert clone.label == 'distinct clone' and XGate().label is None
+""",
+        wire,
+    )
+
+
+@pytest.mark.parametrize("name", ["h", "cx", "ccx", "swap"])
+def test_circuit_only_standard_singleton_wrappers_keep_factory_identity(name):
+    wire = sender(f"""
+from qiskit import QuantumCircuit
+from qiskit.circuit.library import get_standard_gate_name_mapping
+gate = get_standard_gate_name_mapping()[{name!r}]
+qc = QuantumCircuit(gate.num_qubits)
+qc.append(gate, qc.qubits, copy=False)
+qc.append(gate, qc.qubits, copy=False)
+vars(gate)['_label'] = 'later wrapper label'
+roots = {{'qc': qc}}
+""")
+    assert receiver(
+        f"""
+from qiskit.circuit.library import get_standard_gate_name_mapping
+gate = get_standard_gate_name_mapping()[{name!r}]
+prepared = b.prepare(wire, sequence=1)
+assert gate.label is None
+qc = b.commit(prepared)['qc']
+assert qc.data[0].operation is qc.data[1].operation is gate
+assert gate.label == 'later wrapper label'
+assert qc._data[0].label is None and qc._data[1].label is None
+assert qc._data[0].is_standard_gate()
+""",
+        wire,
+    )
+
+
+def test_circuit_only_return_updates_original_factory_and_held_children():
+    source = (
+        COMMON
+        + """
+from qiskit import QuantumCircuit
+a = GraphArena(side='judge', session='anchors', limits=GraphLimits(), anchors=registry)
+qc = QuantumCircuit(1)
+qc.x(0)
+x = qc.data[0].operation
+old = x._definition.metadata
+print(json.dumps(a.snapshot({'qc': qc}, sequence=1)), flush=True)
+out = a.commit(a.prepare(json.loads(sys.stdin.readline()), sequence=1))
+assert out['qc'] is qc and qc.data[0].operation is x is XGate()
+assert x.label == 'returned wrapper'
+assert out['old'] is old and out['new'] is x._definition.metadata is not old
+assert qc._data[0].label is None
+print(json.dumps(True))
+"""
+    )
+    with subprocess.Popen(
+        [sys.executable, "-c", source],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    ) as process:
+        try:
+            wire = json.loads(process.stdout.readline())
+            reply = run(
+                """
+b = GraphArena(side='candidate', session='anchors', limits=GraphLimits(), anchors=registry)
+qc = b.commit(b.prepare(json.load(sys.stdin), sequence=1))['qc']
+x = qc.data[0].operation
+old = x._definition.metadata
+vars(x)['_label'] = 'returned wrapper'
+x._definition.metadata = dict(old)
+roots = {'qc': qc, 'old': old, 'new': x._definition.metadata}
+print(json.dumps(b.snapshot(roots, sequence=1)))
+""",
+                wire,
+            )
+            stdout, stderr = process.communicate(json.dumps(reply) + "\n", timeout=30)
+            assert process.returncode == 0, stderr
+            assert json.loads(stdout) is True
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.communicate()

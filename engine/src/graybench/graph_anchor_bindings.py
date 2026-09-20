@@ -37,6 +37,8 @@ def capture_bound(bindings, arena):
             pending.append(handle)
         return {"ref": handle}
 
+    ref.singleton_refs = True
+
     while pending:
         handle = pending.popleft()
         codec = codec_for(objects[handle])
@@ -78,11 +80,13 @@ def prepare_anchors(arena, records, roots):
         if codec.immutable and wire_bytes(record["state"]) != wire_bytes(previous["state"]):
             raise WireError("Immutable bound anchor state changed")
         codec.validate_update(previous["state"], record["state"])
-    staging, _ = execute_owned(OwnedCommitPlan(baseline, {}, {}), {}, arena._materialize)
+    staging, _ = execute_owned(
+        OwnedCommitPlan(baseline, {}, {}, singleton_refs=True), {}, arena._materialize
+    )
     # Keep only exported bindings in the object map. Supplemental objects remain
     # reachable through the staged owners, but cannot become phantom exports.
     staging = {key: staging[key] for key in bindings}
-    plan = OwnedCommitPlan(records, baseline, roots)
+    plan = OwnedCommitPlan(records, baseline, roots, singleton_refs=True)
     execute_owned(plan, staging, arena._materialize)
     return AnchorCommitPlan(plan, bindings, baseline, baseline_objects)
 

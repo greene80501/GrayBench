@@ -265,3 +265,8 @@ They retain factory and child identity, validate per-node claims, rehearse nativ
 owner transitions privately, and reject live state/identity drift before commit.
 See docs/reliability-evidence/anchor-transfer-development.md. Production worker
 integration and remaining circuit interfaces are still in progress.
+
+Anchor-enabled circuit traversal also preserves stable singleton operation wrappers
+when the circuit is the only exported root, including distinct retained clones and
+separate native instruction caches. See
+docs/reliability-evidence/packed-singleton-wrapper-development.md.

@@ -21,6 +21,8 @@ def standards():
 def encode_operations(data, intrinsic, ref):
     from qiskit.exceptions import QiskitError
 
+    from graybench.graph_singleton import SingletonCodec
+
     positions = {bit: i for i, bit in enumerate(intrinsic.qubits)}
     result = []
     if len(data) > 4096:
@@ -31,7 +33,10 @@ def encode_operations(data, intrinsic, ref):
             operation = item.operation
         except (TypeError, ValueError, QiskitError) as exc:
             raise WireError("Invalid packed operation parameters") from exc
-        if operation.mutable and operation is data[i].operation:
+        singleton_ref = getattr(ref, "singleton_refs", False) and SingletonCodec().matches(
+            operation
+        )
+        if (operation.mutable or singleton_ref) and operation is data[i].operation:
             result.append(encode_python(item, operation, intrinsic, ref))
             continue
         if not item.is_standard_gate() or item.name not in standards():

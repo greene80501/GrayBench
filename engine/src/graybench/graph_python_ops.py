@@ -8,8 +8,9 @@ from graybench.graph_symbolic import name_value
 
 def encode_python(item, operation, intrinsic, ref):
     from graybench.graph_instruction import InstructionCodec
+    from graybench.graph_singleton import SingletonCodec
 
-    if not InstructionCodec().matches(operation):
+    if not (InstructionCodec().matches(operation) or SingletonCodec().matches(operation)):
         raise WireError("Retained Python operation requires another component codec")
     from qiskit.circuit import Parameter, ParameterExpression, ParameterVectorElement
 
@@ -55,7 +56,7 @@ def validate_python(op, qubits, clbits, index):
         raise WireError("Invalid native standard-gate selector")
     integer(op["num_qubits"], 512)
     integer(op["num_clbits"], 512)
-    node(op["operation"], index, {"python_instruction"})
+    node(op["operation"], index, {"python_instruction", "public_singleton"})
     name_value(op["name"])
     for key, count in (("qubits", qubits), ("clbits", clbits)):
         if type(op[key]) is not list or len(op[key]) > 512:

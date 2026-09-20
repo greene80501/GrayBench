@@ -490,3 +490,42 @@ and judge (Task4), remaining Task3 interfaces including packed immutable operati
 wrapper ownership and standalone CircuitInstruction, and full Task5 protected
 counterexamples/cohorts. Do not treat direct singleton transfer as full circuit
 interface admission. The overall plan and benchmark objective remain active.
+
+### Task3 packed singleton wrappers
+
+Stable exact-type singleton wrappers obtained through CircuitData are now explicit
+operation refs in anchor-enabled sessions. Native cached values and mode remain
+separate from current wrapper state, and private reconstruction retains manually
+allocated singleton clones. Seven new cross-process cases and fresh Windows/Linux
+factory, clone and controlled-Python round trips verify the circuit-only path.
+Bootstrap/default non-anchor formats are unchanged; this is an explicit anchor
+session capability. Evidence: docs/reliability-evidence/packed-singleton-wrapper-development.md.
+
+Next: standalone CircuitInstruction and other remaining Task3 interfaces, then
+before-user-code registry startup and persistent protected worker integration in
+Task4. Task5 protected counterexamples, full normal/hard cohorts and whole-plan
+review remain required. The benchmark goal and release blocker are unchanged.
+
+### Execution-order refinement: protected vertical verification next
+
+After the anchor and packed-wrapper work, begin Task4's protected call path and
+six preserved identity regressions before finishing the remaining Task3 types.
+This changes execution order, not scope or completion criteria: standalone
+CircuitInstruction, other documented interface gaps and full Task3 admission
+remain required. The purpose is to obtain evidence through the actual protected
+boundary now, then use real cohort failures to prioritize the remaining codecs.
+Do not keep substituting standalone codec successes for protected correctness.
+
+Current integration points are worker.py's protocol3 value/args/kwargs lifecycle,
+sandbox.py's startup handshake/call_encoded and explicit staging files, and
+upstream_process.py's value-only proxy plus upstream.py's relay/source manifests.
+Implement a separately identified protocol4 path with before-user-code bootstrap,
+one persistent arena per side, one graph containing arguments/results/state,
+strict root/sequence/session checks, and no implicit v3 fallback. Host relay must
+not decode untrusted graph objects. Preserve candidate freezing, active-time and
+output budgets, startup/infrastructure classification and source provenance.
+
+Translate the six preserved native/protected cases into actual Docker regressions
+first, then cover mutation-before-exception and retained earlier inputs. Initial
+protected success on those fixtures is still not whole-cohort admission, and must
+not be reported as complete benchmark correctness or a certified model score.

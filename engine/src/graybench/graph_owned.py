@@ -10,6 +10,7 @@ class OwnedCommitPlan:
     records: dict
     previous_records: dict
     roots: dict
+    singleton_refs: bool = False
 
 
 def has_owned(records):
@@ -74,6 +75,8 @@ def execute_owned(plan, existing_objects, materialize, *, codecs=None):
     def reference(value):
         scalar = scalar_record(value)
         return {"ref": identities[id(value)]} if scalar is SCALAR_MISSING else scalar
+
+    reference.singleton_refs = plan.singleton_refs
 
     for handle, codec, state in owners:
         try:
