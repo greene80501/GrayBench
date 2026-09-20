@@ -72,7 +72,19 @@ class Candidate:
         docker: str = "docker",
         public_prefix: str = "",
         opaque_input: bytes | None = None,
+        protocol: int = 3,
+        graph_session: str | None = None,
+        graph_manifest: dict | None = None,
     ):
+        if type(protocol) is not int or protocol not in (3, 4):
+            raise ValueError("Unknown candidate protocol")
+        if protocol == 4 and (
+            type(graph_session) is not str
+            or not 1 <= len(graph_session) <= 128
+            or type(graph_manifest) is not dict
+        ):
+            raise ValueError("Graph protocol requires session and bootstrap manifest")
+        self.protocol, self.graph_session = protocol, graph_session
         if opaque_input is not None and (
             type(opaque_input) is not bytes or len(opaque_input) > MAX_ARTIFACT_BYTES
         ):
@@ -81,12 +93,12 @@ class Candidate:
             raise ValueError("Candidate runtime must use an immutable local image digest")
         if not math.isfinite(timeout) or timeout <= 0:
             raise ValueError("Candidate timeout must be finite and positive")
-        self.name = "graybench-v3-" + uuid.uuid4().hex
+        self.name = f"graybench-v{protocol}-" + uuid.uuid4().hex
         self.docker = docker
         self.timeout = timeout
         self.limit = output_limit
         self.sequence = 0
-        self.directory = tempfile.TemporaryDirectory(prefix="graybench-v3-")
+        self.directory = tempfile.TemporaryDirectory(prefix=f"graybench-v{protocol}-")
         self.process = None
         self.closed = False
         self.readers = []
@@ -108,7 +120,15 @@ class Candidate:
         (directory / "candidate.py").write_text(code, encoding="utf-8")
         if public_prefix:
             (directory / "public_prefix.py").write_text(public_prefix, encoding="utf-8")
-        shutil.copyfile(Path(__file__).with_name("worker.py"), directory / "worker.py")
+        worker = "graph_worker.py" if protocol == 4 else "worker.py"
+        shutil.copyfile(Path(__file__).with_name(worker), directory / "worker.py")
+        if protocol == 4:
+            from graybench.graph_runtime import stage_graph
+
+            stage_graph(directory)
+            (directory / "graph_config.json").write_text(
+                json.dumps({"session": graph_session, "anchors": graph_manifest}), encoding="utf-8"
+            )
         shutil.copyfile(Path(__file__).with_name("circuit_wire.py"), directory / "circuit_wire.py")
         shutil.copyfile(Path(__file__).with_name("value_wire.py"), directory / "value_wire.py")
         shutil.copyfile(
@@ -190,7 +210,10 @@ class Candidate:
             for reader in self.readers:
                 reader.start()
             try:
-                if self._receive() != {"protocol": 3, "runtime_ready": True}:
+                expected = {"protocol": protocol, "runtime_ready": True}
+                if protocol == 4:
+                    expected["anchors"] = graph_manifest
+                if self._receive() != expected:
                     raise CandidateError("Runtime did not initialize the startup protocol")
             except (CandidateError, TimeoutError) as exc:
                 raise SandboxInfrastructureError(
@@ -208,7 +231,9 @@ class Candidate:
             self.active_started = now
             self.deadline = now + timeout
             try:
-                self.process.stdin.write(b'{"protocol":3,"start":true}\n')
+                self.process.stdin.write(
+                    json.dumps({"protocol": protocol, "start": True}).encode() + b"\n"
+                )
                 self.process.stdin.flush()
             except OSError as exc:
                 raise SandboxInfrastructureError(
@@ -221,7 +246,7 @@ class Candidate:
                         "observed_stderr": self.stderr.decode(errors="replace"),
                     },
                 ) from exc
-            if self._receive() != {"protocol": 3, "ready": True}:
+            if self._receive() != {"protocol": protocol, "ready": True}:
                 raise CandidateError("Candidate did not initialize the value protocol")
             self._pause()
         except BaseException:
@@ -354,6 +379,8 @@ class Candidate:
 
     def call_encoded(self, entry_point: str, args_wire, kwargs_wire, *, discard_result=False):
         """Forward a trusted judge's typed inputs without host object reconstruction."""
+        if self.protocol != 3:
+            raise CandidateError("Value calls are not valid in a graph session")
         self.sequence += 1
         request = (
             json.dumps(
@@ -380,6 +407,36 @@ class Candidate:
             self.close()
             raise
 
+    def call_graph(self, entry_point, graph, *, discard_result=False):
+        """Relay a graph envelope without constructing any candidate object on the host."""
+        if self.protocol != 4:
+            raise CandidateError("Graph calls require protocol4")
+        self.sequence += 1
+        request = (
+            json.dumps(
+                {
+                    "protocol": 4,
+                    "session": self.graph_session,
+                    "sequence": self.sequence,
+                    "entry_point": entry_point,
+                    "graph": graph,
+                    "discard_result": discard_result,
+                },
+                allow_nan=False,
+            ).encode()
+            + b"\n"
+        )
+        if len(request) > self.limit:
+            raise CandidateInterfaceError("Graph call input exceeds transport limit")
+        try:
+            self._resume()
+            response = self._exchange(request)
+            self._pause()
+            return response
+        except BaseException:
+            self.close()
+            raise
+
     def _exchange(self, request):
         write_errors = []
 
@@ -399,7 +456,11 @@ class Candidate:
         if write_errors:
             raise CandidateError("Candidate closed its input") from write_errors[0]
         response = self._receive()
-        if type(response) is not dict or response.get("protocol") != 3:
+        if (
+            type(response) is not dict
+            or type(response.get("protocol")) is not int
+            or response["protocol"] != self.protocol
+        ):
             raise CandidateError("Invalid candidate value envelope")
         if type(response.get("sequence")) is not int or response["sequence"] != self.sequence:
             raise CandidateError("Unmatched candidate response")
@@ -413,7 +474,12 @@ class Candidate:
             if response["phase"] != "execution":
                 raise CandidateError("Invalid candidate error phase")
             raise CandidateError(str(response["error"]) + ": " + str(response["detail"]))
-        if set(response) != {"protocol", "sequence", "value", "args_after", "kwargs_after"}:
+        expected = (
+            {"protocol", "sequence", "graph", "exception"}
+            if self.protocol == 4
+            else {"protocol", "sequence", "value", "args_after", "kwargs_after"}
+        )
+        if set(response) != expected:
             raise CandidateError("Unexpected candidate envelope fields")
         return response
 

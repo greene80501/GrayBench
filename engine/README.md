@@ -270,3 +270,12 @@ Anchor-enabled circuit traversal also preserves stable singleton operation wrapp
 when the circuit is the only exported root, including distinct retained clones and
 separate native instruction caches. See
 docs/reliability-evidence/packed-singleton-wrapper-development.md.
+
+The protected graph bridge is available explicitly for development via
+`UpstreamJudge(..., protocol=4)`, `reference-scan --bridge-protocol 4`, or the frozen
+campaign recipe `upstream-graph-v4`. Candidate and trusted judge have separate
+persistent arenas; the host only relays graph envelopes. This path fixes the six
+preserved identity fixtures, but is not yet full-cohort admission or release
+certification. Historical v3 remains identifiable and is never an automatic graph
+fallback. See docs/reliability-evidence/protected-graph-development.md for verified
+scope, exception limits and remaining requirements.

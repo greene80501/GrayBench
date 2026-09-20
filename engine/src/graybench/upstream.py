@@ -45,7 +45,11 @@ class UpstreamJudge:
         timeout=120,
         candidate_timeout=120,
         output_limit=1024 * 1024,
+        protocol=3,
     ):
+        if type(protocol) is not int or protocol not in (3, 4):
+            raise ValueError("Unknown upstream bridge protocol")
+        self.protocol = protocol
         # Use the same immutable-image/resource validation as the fixed-oracle judge.
         ProtectedJudge(image=image, docker=docker, timeout=timeout, output_limit=output_limit)
         self.image, self.docker, self.timeout = image, docker, float(timeout)
@@ -79,6 +83,16 @@ class UpstreamJudge:
             "artifacts.py",
         ):
             files[name] = hashlib.sha256((source / name).read_bytes()).hexdigest()
+        if self.protocol == 4:
+            from graybench.graph_runtime import GRAPH_FILES
+
+            for name in (
+                *GRAPH_FILES,
+                "graph_runtime.py",
+                "graph_worker.py",
+                "upstream_graph_process.py",
+            ):
+                files[name] = hashlib.sha256((source / name).read_bytes()).hexdigest()
         manifest = {
             "files": files,
             "image": self.image,
@@ -89,7 +103,17 @@ class UpstreamJudge:
             "candidate_startup": "runtime-ready-host-start-candidate-ready-v1",
             "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
             "output_limit": self.limit,
-            "protocol": "upstream-proxy-v1",
+            "protocol": "upstream-graph-v4" if self.protocol == 4 else "upstream-proxy-v1",
+            **(
+                {
+                    "graph_roots": "args-kwargs-result-exception_args-v1",
+                    "graph_bootstrap": "qiskit-public-anchors-before-user-code-v1",
+                    "graph_session_policy": "random-per-attempt-v1",
+                    "graph_exceptions": "basic-builtin-type-and-args-v1",
+                }
+                if self.protocol == 4
+                else {}
+            ),
         }
         return payload, manifest
 
@@ -100,6 +124,10 @@ class UpstreamJudge:
         digest = identity(manifest)
         if extracted.error:
             return Judgment("candidate_error", digest, {"detail": extracted.error})
+        graph_session = uuid.uuid4().hex if self.protocol == 4 else None
+        runtime_payload = (
+            {**payload, "graph_session": graph_session} if self.protocol == 4 else payload
+        )
         name = "graybench-upstream-" + uuid.uuid4().hex
         messages = queue.Queue(maxsize=2)
         stopping, exceeded = threading.Event(), threading.Event()
@@ -151,6 +179,14 @@ class UpstreamJudge:
                 {
                     **evidence,
                     "manifest": manifest,
+                    **(
+                        {
+                            "graph_session": graph_session,
+                            "runtime_task_payload_digest": identity(runtime_payload),
+                        }
+                        if self.protocol == 4
+                        else {}
+                    ),
                     "transcript": transcript,
                     "judge_wait_seconds": judge_wait,
                     "candidate_active_seconds": candidate.active_seconds if candidate else None,
@@ -166,9 +202,14 @@ class UpstreamJudge:
 
         with tempfile.TemporaryDirectory(prefix="graybench-upstream-") as directory:
             root = Path(directory)
-            (root / "task.json").write_bytes(canonical(payload))
+            (root / "task.json").write_bytes(canonical(runtime_payload))
             for filename in FILES:
                 shutil.copyfile(source / filename, root / filename)
+            if self.protocol == 4:
+                from graybench.graph_runtime import stage_graph
+
+                stage_graph(root)
+                shutil.copyfile(source / "upstream_graph_process.py", root / "upstream_process.py")
             args = [
                 self.docker,
                 "run",
@@ -266,10 +307,24 @@ class UpstreamJudge:
                                 docker=self.docker,
                                 timeout=self.candidate_timeout,
                                 output_limit=self.limit,
+                                **(
+                                    {
+                                        "protocol": 4,
+                                        "graph_session": graph_session,
+                                        "graph_manifest": message["graph"]["anchors"],
+                                    }
+                                    if self.protocol == 4
+                                    else {}
+                                ),
                             )
-                        returned = candidate.call_encoded(
-                            task.public.entry_point, message["args"], message["kwargs"]
-                        )
+                        if self.protocol == 4:
+                            returned = candidate.call_graph(
+                                task.public.entry_point, message["graph"]
+                            )
+                        else:
+                            returned = candidate.call_encoded(
+                                task.public.entry_point, message["args"], message["kwargs"]
+                            )
                         response = {
                             "sequence": sequence,
                             "outcome": "returned",

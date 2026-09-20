@@ -52,6 +52,7 @@ def main():
     reference.add_argument("output", type=Path)
     reference.add_argument("--image", required=True)
     reference.add_argument("--docker", default="docker")
+    reference.add_argument("--bridge-protocol", type=int, choices=(3, 4), default=3)
     reference.add_argument("--suite", choices=("normal", "hard", "both"), default="both")
     reference.add_argument(
         "--offline", action="store_true", help="Explicitly omit known external-service tasks"
@@ -186,7 +187,7 @@ def main():
         )
         result = run_reference_scan(
             tasks,
-            UpstreamJudge(image=args.image, docker=args.docker),
+            UpstreamJudge(image=args.image, docker=args.docker, protocol=args.bridge_protocol),
             args.output,
             selection={"offline": args.offline, "excluded": excluded},
         )

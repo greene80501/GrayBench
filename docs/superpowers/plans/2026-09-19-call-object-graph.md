@@ -529,3 +529,26 @@ Translate the six preserved native/protected cases into actual Docker regression
 first, then cover mutation-before-exception and retained earlier inputs. Initial
 protected success on those fixtures is still not whole-cohort admission, and must
 not be reported as complete benchmark correctness or a certified model score.
+
+### Task4 protected graph path implemented; admission still open
+
+A separately selected protocol4 now connects graph_worker.py and
+upstream_graph_process.py through Candidate.call_graph and UpstreamJudge(protocol=4).
+The explicit graph_runtime.py staging list and all graph sources are included in
+configuration provenance; the existing broad source_manifest already includes new
+engine modules. graph_rpc.py validates call roots and an explicit basic builtin
+value-exception contract. Registry bootstrap precedes user code; per-attempt random
+session IDs are recorded separately from stable configuration identity.
+
+The six native identity cases, retained inputs, mutation-before-caught-exception,
+circuit-only singleton state and malformed response cases now have actual protected
+Docker tests. Fatal bridge failures remain fatal even if test code catches them.
+The explicit campaign recipe upstream-graph-v4 and reference-scan --bridge-protocol 4
+make protocol selection frozen and reviewable. v3 is not a graph fallback.
+
+See docs/reliability-evidence/protected-graph-development.md. Continue with Task5's
+remaining protected adversarial cases and targeted50/63/72/73/147 reference replays,
+then full normal/hard calibration. Remaining Task3 interfaces and broader exception
+semantics remain required; passing this vertical slice is not whole-cohort admission
+or release completion. Promote the graph path as the normal default only after the
+needed admission/regression evidence is reviewed; legacy defaults are not certified.
