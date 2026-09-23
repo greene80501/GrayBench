@@ -389,8 +389,8 @@ Consumes v4 integration. Produces auditable admission evidence with remaining bl
 
 ## Self-review and execution state
 
-The ten spec invariants map to Tasks1–5: identity/topology/validation (1), storage
-and nested ownership (2–3), persistent calls/exceptions/privacy (4), and adversarial
+The ten spec invariants map to Tasks1â€“5: identity/topology/validation (1), storage
+and nested ownership (2â€“3), persistent calls/exceptions/privacy (4), and adversarial
 plus real-cohort evidence (5). All five review-focus cases have explicit tests.
 This plan does not claim implementation completion or user review of this artifact.
 Continue inline under the existing goal authorization; no parallel implementation
@@ -555,3 +555,16 @@ then full normal/hard calibration. Remaining Task3 interfaces and broader except
 semantics remain required; passing this vertical slice is not whole-cohort admission
 or release completion. Promote the graph path as the normal default only after the
 needed admission/regression evidence is reviewed; legacy defaults are not certified.
+
+### Task3 layout and transpilation metadata
+
+The circuit component codec now has fixed Layout slot and TranspileLayout dictionary
+schemas. It preserves exposed maps, detached equal replacements, actual bit-wrapper
+identities and the presence of optional latency fields. Native and protected tests
+cover these relationships and malformed-state rejection. The source-guarded targeted
+replay passes tasks10,16,17,18,19,20,21,25 in both suites. Tasks22/86 still require
+instruction codecs, and task100 reaches the packed-operation limit.
+
+Evidence: docs/reliability-evidence/graph-layout-development.md. Full regression
+verification passed 848 tests in 364.89 seconds with no failures, errors or skips. This advances the metadata/layout requirement without
+completing Task3 or removing the other admission and reproducibility requirements.
