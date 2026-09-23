@@ -14,3 +14,4 @@ docs/reliability-evidence/GrayBench-native-capture-delta.json -text whitespace=t
 docs/reliability-evidence/GrayBench-capture-instrumented-after.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task109_oracle_probe*.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task109_parameterization_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/converted_instruction_reference.py -text whitespace=trailing-space,space-before-tab,cr-at-eol

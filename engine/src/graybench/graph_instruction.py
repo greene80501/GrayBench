@@ -23,9 +23,14 @@ DELAY_ATTRS = ATTRS + (("_unit", "_unit"),)
 IF_ELSE_ATTRS = ATTRS + (("_condition", "_condition"),)
 
 
-def attributes(selector):
+def attributes(selector, values=()):
     from qiskit.circuit import ControlledGate
 
+    # The pinned converters add these fields to otherwise plain instances.
+    # Preserve absence as well as presence; do not invent converter metadata.
+    optional = {"gate": "condition", "instruction": "_condition"}.get(selector)
+    if optional is not None and optional in values:
+        return ATTRS + ((optional, optional),)
     if selector == "state_preparation":
         return STATE_PREPARATION_ATTRS
     if selector == "delay":
@@ -90,7 +95,7 @@ class InstructionCodec:
 
     def state(self, value, ref):
         selector = next(key for key, cls in classes().items() if type(value) is cls)
-        attrs = attributes(selector)
+        attrs = attributes(selector, vars(value))
         if set(vars(value)) != {key for key, _ in attrs}:
             raise WireError("Extra or missing instruction fields require another codec")
         return {
@@ -106,7 +111,7 @@ class InstructionCodec:
             or state["class"] not in classes()
         ):
             raise WireError("Unknown fixed instruction class")
-        attrs = attributes(state["class"])
+        attrs = attributes(state["class"], state)
         fields(state, {"class", "attributes"} | {key for key, _ in attrs})
         validate_attributes(state, index, attrs)
         if attrs is DELAY_ATTRS:
@@ -144,7 +149,9 @@ class InstructionCodec:
             name_value(state["_label"])
 
     def tokens(self, state):
-        return (state["attributes"],) + tuple(state[key] for key, _ in attributes(state["class"]))
+        return (state["attributes"],) + tuple(
+            state[key] for key, _ in attributes(state["class"], state)
+        )
 
     def allocate(self, state, index):
         return object.__new__(classes()[state["class"]])

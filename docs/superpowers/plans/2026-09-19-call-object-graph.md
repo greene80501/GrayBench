@@ -728,3 +728,21 @@ A semantic revision still needs explicit domain/resource requirements and honest
 finite-coverage guarantees. No oracle or runtime was changed in this audit.
 The engine guide now distinguishes the implemented opt-in graph protocols from
 historical v3, and keeps reference compatibility separate from oracle admission.
+
+### Converted Gate and Instruction metadata
+
+The pinned native converters add Gate.condition and Instruction._condition,
+which the fixed graph schema previously rejected. The codec now preserves these
+class-specific optional fields, absence versus null, actual dictionary identity,
+and supported child aliases through mutation and deletion. Other fields and
+classes remain closed. Four local controls failed before implementation; the
+focused suite passes46 and the full Docker suite passes972 with zero skips.
+Independent read-only review found no blocking defect.
+
+The exact selected12-case reference comparison changes90/91/112/119/125 in both
+suites fromunsupported toPASS. Task120remainsunsupported at a deeper retained
+operation. Fullchains/taskselection/completions and source identities are verified;
+three checkout newline-only differences are explicitly disclosed alongside the
+sole semantic file change. Raw results and limitations are preserved in
+docs/reliability-evidence/graph-converted-instructions-development.md. These
+replays do not replace a full-cohort calibration or establish oracle admission.
