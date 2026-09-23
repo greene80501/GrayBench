@@ -95,3 +95,8 @@ finite observable guarantees and unresolved requirements honestly, include
 independent valid parameterizations, and test controls for missing arcs, extra
 resources and non-equatorial outputs. Task 109 remains unadmitted. Improving
 transport speed or completing 1,000 calls does not resolve this oracle defect.
+
+The [parameterization follow-up](task109-parameterization-contract.md) now includes
+a short-arc false accept and valid slow/fourfold rotations. It demonstrates why
+fixed-range or four-point variation checks would be an unfair repair of the
+original unspecified parameter domain.
