@@ -607,3 +607,16 @@ See docs/reliability-evidence/graph-reconstruction-outcomes-development.md for
 verification status. Actual late-owner alias support, classical expression
 conditions, loops, remaining interfaces, resource configuration, oracle review
 and the other release gates are still required.
+
+
+### Task3 classical expression conditions
+
+A fixed classical AST codec preserves held root identity while treating native
+child getters as intrinsic values. Python IfElse conditions remain separate from
+native cached expressions. Nineteen regressions cover all seven expression forms,
+equal distinct roots, malformed trees, bounded recursion and protected execution.
+The source-guarded task128 reference passes in both suites; raw evidence and
+verification status are in docs/reliability-evidence/graph-classical-development.md.
+This does not complete loop, circuit-variable/capture, duration-literal or broader
+interface support. Full normal/hard admission and all other release gates remain
+required; the two-case replay is not a new aggregate score.

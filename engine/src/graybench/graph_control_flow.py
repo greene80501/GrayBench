@@ -54,6 +54,14 @@ def restore_branch(state, resolve):
 
 def encode_condition(condition):
     from qiskit.circuit import ClassicalRegister, Clbit
+    from qiskit.circuit.classical import expr
+
+    from graybench.graph_classical import encode, validate
+
+    if isinstance(condition, expr.Expr):
+        state = encode(condition)
+        validate(state)
+        return {"kind": "expression", "expression": state}
 
     if type(condition) is not tuple or len(condition) != 2:
         raise WireError("Classical expression condition requires another codec")
@@ -68,6 +76,12 @@ def encode_condition(condition):
 
 
 def validate_condition(state):
+    if type(state) is dict and state.get("kind") == "expression":
+        from graybench.graph_classical import validate
+
+        fields(state, {"kind", "expression"})
+        validate(state["expression"])
+        return
     fields(state, {"kind", "target", "value"})
     if state["kind"] == "bit":
         validate_bit(state["target"])
@@ -82,6 +96,10 @@ def validate_condition(state):
 
 
 def restore_condition(state):
+    if state["kind"] == "expression":
+        from graybench.graph_classical import restore
+
+        return restore(state["expression"])
     target = (
         restore_bit(state["target"])
         if state["kind"] == "bit"

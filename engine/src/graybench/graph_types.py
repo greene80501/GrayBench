@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from graybench.circuit_wire import WireError
 from graybench.graph_circuit import CIRCUIT_CODECS
 from graybench.graph_circuit_data import CIRCUIT_DATA_CODECS
+from graybench.graph_classical import ClassicalExpressionCodec
 from graybench.graph_expressions import ExpressionCodec
 from graybench.graph_instruction import InstructionCodec
 from graybench.graph_numeric import ARRAY_CODECS
@@ -159,6 +160,7 @@ REGISTRY.update(CIRCUIT_CODECS)
 REGISTRY.update(CIRCUIT_DATA_CODECS)
 REGISTRY.update(QUANTUM_CIRCUIT_CODECS)
 REGISTRY["parameter_expression"] = ExpressionCodec()
+REGISTRY["classical_expression"] = ClassicalExpressionCodec()
 REGISTRY["python_instruction"] = InstructionCodec()
 REGISTRY["public_singleton"] = SingletonCodec()
 
