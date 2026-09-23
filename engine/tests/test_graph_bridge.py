@@ -250,7 +250,7 @@ def answer(): return ticks
         code,
         image=IMAGE,
         docker=DOCKER,
-        timeout=4,
+        timeout=15,
         protocol=4,
         graph_session="freeze-fixture",
         graph_manifest=registry.manifest(),
@@ -261,7 +261,9 @@ def answer(): return ticks
         state = json.loads(subprocess.check_output([DOCKER, "inspect", candidate.name]))
         assert state[0]["State"]["Paused"] is True
         used = candidate.active_seconds
-        time.sleep(4.2)
+        # Exceed the active budget while paused, with enough bootstrap headroom
+        # to reach this assertion on a busy Docker host.
+        time.sleep(15.2)
         assert candidate.active_seconds == used
         second = candidate.call_graph(
             "answer", arena.snapshot({"args": (), "kwargs": {}}, sequence=2)
@@ -271,7 +273,7 @@ def answer(): return ticks
 
 
 def test_graph_timeout_cannot_be_caught_as_a_passing_value():
-    result = UpstreamJudge(image=IMAGE, docker=DOCKER, protocol=4, candidate_timeout=4).evaluate(
+    result = UpstreamJudge(image=IMAGE, docker=DOCKER, protocol=4, candidate_timeout=15).evaluate(
         task("""def check(candidate):
     try: candidate()
     except BaseException: pass

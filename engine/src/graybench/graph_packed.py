@@ -39,6 +39,21 @@ def encode_operations(data, intrinsic, ref):
         if (operation.mutable or singleton_ref) and operation is data[i].operation:
             result.append(encode_python(item, operation, intrinsic, ref))
             continue
+        from qiskit.circuit import Barrier
+        from qiskit.dagcircuit import DAGOpNode
+
+        if type(operation) is Barrier:
+            if item.name != "barrier" or item.params or item.clbits:
+                raise WireError("Unsupported packed barrier state")
+            result.append(
+                {
+                    "directive": "barrier",
+                    "num_qubits": DAGOpNode.from_instruction(item).num_qubits,
+                    "qubits": [positions[q] for q in item.qubits],
+                    "label": item.label,
+                }
+            )
+            continue
         if not item.is_standard_gate() or item.name not in standards():
             raise WireError("Nonstandard instruction graph is not implemented")
         if operation.name != item.name or operation.num_qubits != len(item.qubits):
@@ -58,6 +73,21 @@ def validate_operations(operations, qubits, clbits, index):
     if type(operations) is not list or len(operations) > 4096:
         raise WireError("Invalid packed operation stream")
     for op in operations:
+        if type(op) is dict and "directive" in op:
+            fields(op, {"directive", "num_qubits", "qubits", "label"})
+            if op["directive"] != "barrier":
+                raise WireError("Unknown packed directive")
+            integer(op["num_qubits"], 512)
+            if type(op["qubits"]) is not list or len(op["qubits"]) > 512:
+                raise WireError("Invalid packed barrier operands")
+            for position in op["qubits"]:
+                if integer(position, 511) >= qubits:
+                    raise WireError("Packed barrier references missing bit")
+            if op["label"] is not None and (
+                type(op["label"]) is not str or len(op["label"]) > 4096
+            ):
+                raise WireError("Invalid packed barrier label")
+            continue
         if type(op) is dict and "operation" in op:
             validate_python(op, qubits, clbits, index)
             continue
@@ -81,6 +111,8 @@ def validate_operations(operations, qubits, clbits, index):
 
 def operation_tokens(operations):
     for op in operations:
+        if "directive" in op:
+            continue
         if "operation" in op:
             yield from python_tokens(op)
             continue
@@ -98,6 +130,18 @@ def restore_operations(target, state, resolve):
     prepared = []
     try:
         for op in state["operations"]:
+            if "directive" in op:
+                # Qiskit's Python constructor caches its Barrier object. A fixed
+                # native conversion drops that cache, preserving the source's
+                # fresh-wrapper behavior instead of inventing a retained object.
+                from qiskit import QuantumCircuit
+                from qiskit.converters import circuit_to_dag, dag_to_circuit
+
+                template = QuantumCircuit(op["num_qubits"])
+                template.barrier(label=op["label"])
+                native = dag_to_circuit(circuit_to_dag(template))._data[0]
+                prepared.append(native.replace(qubits=[qubits[i] for i in op["qubits"]]))
+                continue
             if "operation" in op:
                 prepared.append(restore_python(op, qubits, clbits, resolve))
                 continue

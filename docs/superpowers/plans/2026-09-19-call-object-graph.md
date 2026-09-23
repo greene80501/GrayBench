@@ -329,16 +329,16 @@ create `tests/test_graph_bridge.py`.
 Consumes the completed arena and type registry. Produces a separately identified
 v4 candidate/protected-judge call path with no implicit v3 fallback.
 
-- [ ] Translate the six preserved diagnostic fixtures into protected regression tests
+- [x] Translate the six preserved diagnostic fixtures into protected regression tests
   with native expected outcomes: five passes and one failure, never the old outcomes.
-- [ ] Initialize one arena per candidate/oracle attempt and synchronize every exported
+- [x] Initialize one arena per candidate/oracle attempt and synchronize every exported
   mutable node, not just nodes reachable from the latest arguments. Host orchestration
   forwards validated envelope bytes and never reconstructs candidate graph objects.
-- [ ] Replace separately encoded value/args/kwargs fields with one graph envelope and
+- [x] Replace separately encoded value/args/kwargs fields with one graph envelope and
   exact root validation. Returned input IDs resolve to original judge objects.
-- [ ] Add a retained-input test where call two mutates an object supplied in call one
+- [x] Add a retained-input test where call two mutates an object supplied in call one
   but absent from call two's arguments. Verify mutation through an old judge alias.
-- [ ] Add mutate-then-raise behavior:
+- [x] Add mutate-then-raise behavior:
 
 ```python
 def candidate(values):
@@ -353,11 +353,14 @@ def check(proxy):
 ```
 
   In protected test source use ordinary try/except/assert rather than importing pytest.
-- [ ] Add a fixed inert exception allowlist and distinguish returned, raised,
+- [x] Add a fixed inert exception allowlist and distinguish returned, raised,
   codec/runtime failure envelopes. Apply validated preceding mutations before raising
   the admitted exception in the oracle. Unknown exceptions remain unsupported.
 - [ ] Preserve startup handshake, pause/resume boundaries, active-time accounting,
   byte limits, discard-result behavior and runtime/error classifications.
+  Core regressions pass at 3ed07d2. Still open: unexpected bridge exceptions can
+  be swallowed by test code, and configured graph/transport limits need a complete
+  audit. Three new fault-injection regressions reproduce the false-pass gap.
 - [ ] Freeze v4/registry identity in configuration and campaign resume. Reject protocol
   mismatch before dispatch, and retain a clearly identified historical v3 path only
   for source-specific replay, not automatic scoring fallback.
@@ -374,7 +377,7 @@ Consumes v4 integration. Produces auditable admission evidence with remaining bl
   updates. Verify rejection before existing judge state changes.
 - [ ] Verify mounts still exclude private tests, references, credentials and Docker
   socket from the candidate. No graph field authorizes a host constructor or code path.
-- [ ] Replay tasks50/63/72/73/147 on both pinned suites; record control-flow/RNG/oracle
+- [x] Replay tasks50/63/72/73/147 on both pinned suites; record control-flow/RNG/oracle
   limitations separately. Never copy the private test's seeded RNG into the candidate.
 - [ ] Run the full regression suite with Docker and one exclusive source-bound offline
   reference scan per suite. Compare previously passing task outcomes to the preserved

@@ -25,7 +25,7 @@ def attributes(selector):
 
 @cache
 def classes():
-    from qiskit.circuit import ControlledGate, Gate, Instruction
+    from qiskit.circuit import Barrier, ControlledGate, Gate, Instruction
     from qiskit.circuit.library import MCXGate, get_standard_gate_name_mapping
 
     result = {
@@ -33,6 +33,7 @@ def classes():
         "instruction": Instruction,
         "controlled": ControlledGate,
         "mcx": MCXGate,
+        "barrier": Barrier,
     }
     expected = {key for key, _ in ATTRS}
     for name, template in get_standard_gate_name_mapping().items():

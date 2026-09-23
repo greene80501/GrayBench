@@ -81,8 +81,11 @@ mutated circuits contain retained Python operation types without admitted codecs
 The ten-case scan is complete and its event chain verifies. Raw evidence:
 `GrayBench-v4-protected-targeted-reference.jsonl`, SHA256
 `64cb094d4525c7961220774236346b0632ac7f496a0626c8379490d5fb696f72`.
-This is not an aggregate normal/hard score. A separate full offline scan is running;
-its results must be inspected before making any new aggregate admission claim.
+This is not an aggregate normal/hard score. The separate full offline scan is now
+complete: see [the baseline report](reference-scan-3ed07d2.md) for its verified
+80 passes, 62 unsupported cases and one infrastructure error per suite, including
+explicit comparison with the previous v3 baseline. These are reference compatibility
+counts, not task admission or model accuracy.
 
 Task63 also seeds NumPy only inside its private test process. Resolving its codec
 gap will not authorize transferring that private RNG state into the candidate.

@@ -96,6 +96,20 @@ def main():
         except BridgeFailure as exc:
             bridge_failure = exc
             raise
+        except BaseException as exc:
+            if any(exc is item for item in remote_exceptions):
+                raise
+            # Record failure before touching its diagnostic: even __str__ may
+            # fail. Only explicitly reconstructed candidate exceptions may be
+            # consumed by test code without making this attempt unresolved.
+            bridge_failure = BridgeFailure(
+                "infrastructure_error", "Unexpected trusted bridge failure"
+            )
+            try:
+                bridge_failure.detail += f": {type(exc).__name__}: {exc}"[:4096]
+            except BaseException:
+                pass
+            raise bridge_failure from exc
 
     evidence = {}
     try:
