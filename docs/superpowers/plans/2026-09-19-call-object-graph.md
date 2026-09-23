@@ -654,3 +654,20 @@ require declared evaluation conditions. No hidden seed transfer or implicit
 semantic-recipe fallback is acceptable. The DAG allocator reproducer demonstrates
 why native pickle-state reconstruction alone is not a faithful graph codec.
 Full task/oracle audit, provider calibration and reproduction remain open.
+
+
+### Resource configuration propagation
+
+The graph limit record is now SDK-independent, frozen in the judge payload and
+manifest, and validated by both runtime arenas. The trusted response reader uses
+the same configured byte ceiling. Defaults and cumulative output accounting are
+unchanged. Eight new tests and a source-bound before/after fixture verify that an
+explicit 4 MiB budget works while the default 1 MiB rejection remains intact.
+All 922 Docker regression tests pass; see graph-resource-contract-development.md.
+
+Task109's 1000 calls expose cumulative full-history retransmission: the recorded
+run exhausts output at call27. The next resource investigation must profile
+incremental transport/reconstruction while preserving detached aliases, mutation
+and validation semantics. Increasing a cap alone is insufficient. Task100's
+packed-operation budget and randomized private inputs remain separate policy
+issues. All prior interface, oracle, provider and reproduction gates remain open.

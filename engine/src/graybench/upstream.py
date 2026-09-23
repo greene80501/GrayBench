@@ -72,6 +72,10 @@ class UpstreamJudge:
             "prefix": prefix,
             "entry_point": task.public.entry_point,
         }
+        if self.protocol == 4:
+            from graybench.graph_limits import GraphLimits
+
+            payload["graph_limits"] = GraphLimits(message_bytes=self.limit).record()
         source = Path(__file__).parent
         files = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in FILES}
         for name in (
@@ -110,6 +114,8 @@ class UpstreamJudge:
                     "graph_bootstrap": "qiskit-public-anchors-before-user-code-v1",
                     "graph_session_policy": "random-per-attempt-v1",
                     "graph_exceptions": "basic-builtin-type-and-args-v1",
+                    "graph_limits": payload["graph_limits"],
+                    "wire_output_accounting": "cumulative-per-process-including-bootstrap-v1",
                 }
                 if self.protocol == 4
                 else {}

@@ -123,11 +123,19 @@ class Candidate:
         worker = "graph_worker.py" if protocol == 4 else "worker.py"
         shutil.copyfile(Path(__file__).with_name(worker), directory / "worker.py")
         if protocol == 4:
+            from graybench.graph_limits import GraphLimits
             from graybench.graph_runtime import stage_graph
 
             stage_graph(directory)
             (directory / "graph_config.json").write_text(
-                json.dumps({"session": graph_session, "anchors": graph_manifest}), encoding="utf-8"
+                json.dumps(
+                    {
+                        "session": graph_session,
+                        "anchors": graph_manifest,
+                        "limits": GraphLimits(message_bytes=output_limit).record(),
+                    }
+                ),
+                encoding="utf-8",
             )
         shutil.copyfile(Path(__file__).with_name("circuit_wire.py"), directory / "circuit_wire.py")
         shutil.copyfile(Path(__file__).with_name("value_wire.py"), directory / "value_wire.py")

@@ -24,7 +24,10 @@ def main():
     calls = 0
     registry = PublicAnchorRegistry.capture()
     arena = GraphArena(
-        side="judge", session=task["graph_session"], limits=GraphLimits(), anchors=registry
+        side="judge",
+        session=task["graph_session"],
+        limits=GraphLimits.from_record(task["graph_limits"]),
+        anchors=registry,
     )
     remote_exceptions = []
     bridge_failure = None
@@ -43,8 +46,8 @@ def main():
             file=channel,
             flush=True,
         )
-        line = sys.stdin.readline(1024 * 1024 + 1)
-        if not line or len(line) > 1024 * 1024:
+        line = sys.stdin.readline(arena.limits.message_bytes + 1)
+        if not line or len(line) > arena.limits.message_bytes:
             raise BridgeFailure("infrastructure_error", "Missing or oversized bridge response")
         response = json.loads(line)
         if type(response.get("sequence")) is not int or response["sequence"] != calls:

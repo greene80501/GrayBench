@@ -22,7 +22,10 @@ def main():
     registry = PublicAnchorRegistry.capture()
     registry.validate_manifest(config["anchors"])
     arena = GraphArena(
-        side="candidate", session=config["session"], limits=GraphLimits(), anchors=registry
+        side="candidate",
+        session=config["session"],
+        limits=GraphLimits.from_record(config["limits"]),
+        anchors=registry,
     )
     namespace = {"__name__": "candidate"}
     with contextlib.redirect_stdout(sys.stderr):

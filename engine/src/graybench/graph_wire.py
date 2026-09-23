@@ -5,6 +5,7 @@ from collections import deque
 from dataclasses import dataclass
 
 from graybench.circuit_wire import WireError, WireLimitError, fields
+from graybench.graph_limits import GraphLimits
 from graybench.graph_types import (
     REGISTRY,
     SCALAR_MISSING,
@@ -13,31 +14,6 @@ from graybench.graph_types import (
     scalar_value,
     token_value,
 )
-
-
-@dataclass(frozen=True)
-class GraphLimits:
-    nodes: int = 100_000
-    edges: int = 100_000
-    message_bytes: int = 1_048_576
-    array_bytes: int = 524_288
-    matrix_bytes: int = 524_288
-    depth: int = 32
-
-    def __post_init__(self):
-        ceilings = dict(
-            nodes=100_000,
-            edges=100_000,
-            message_bytes=16_777_216,
-            array_bytes=524_288,
-            matrix_bytes=524_288,
-            depth=32,
-        )
-        if any(
-            type(getattr(self, key)) is not int or not 1 <= getattr(self, key) <= maximum
-            for key, maximum in ceilings.items()
-        ):
-            raise WireError("Invalid graph resource limit")
 
 
 def wire_bytes(value):

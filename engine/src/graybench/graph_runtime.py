@@ -5,6 +5,7 @@ from pathlib import Path
 
 GRAPH_FILES = (
     "graph_wire.py",
+    "graph_limits.py",
     "graph_anchors.py",
     "graph_anchor_bindings.py",
     "graph_singleton.py",
