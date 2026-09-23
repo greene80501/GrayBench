@@ -20,3 +20,6 @@ docs/reliability-evidence/verify_diagonal_reference.py -text whitespace=trailing
 docs/reliability-evidence/task109_full_delta.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/audit_delta_transcript.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/test_audit_delta_transcript.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/circuit_subclass_reference.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/verify_circuit_subclass_reference.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task63_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol

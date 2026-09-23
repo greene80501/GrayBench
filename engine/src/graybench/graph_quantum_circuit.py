@@ -36,11 +36,34 @@ ATTRS = {
 }
 LAYOUT_SLOTS = ("_p2v", "_regs", "_v2p")
 LATENCIES = ("_clbit_write_latency", "_conditional_latency")
+QFT_FIELDS = (
+    "_is_initialized",
+    "_qregs",
+    "_cregs",
+    "_is_built",
+    "_approximation_degree",
+    "_do_swaps",
+    "_insert_barriers",
+    "_inverse",
+)
 
 
-def attributes(kind, values):
-    return ATTRS[kind] + (
-        tuple((key, key) for key in LATENCIES if key in values) if kind == "quantum_circuit" else ()
+@cache
+def circuit_subclasses():
+    from qiskit.circuit.library import QFT, GraphState
+
+    return {"qft": QFT, "graph_state": GraphState}
+
+
+def attributes(kind, values, selector=None):
+    return (
+        ATTRS[kind]
+        + (
+            tuple((key, key) for key in LATENCIES if key in values)
+            if kind == "quantum_circuit"
+            else ()
+        )
+        + (tuple((key, key) for key in QFT_FIELDS) if selector == "qft" else ())
     )
 
 
@@ -79,18 +102,26 @@ class CircuitComponentCodec:
     immutable: bool = False
 
     def matches(self, value):
-        return type(value) is classes()[self.kind]
+        return type(value) is classes()[self.kind] or (
+            self.kind == "quantum_circuit" and type(value) in circuit_subclasses().values()
+        )
 
     def state(self, value, ref):
         if self.kind == "circuit_scope":
             return {"circuit": ref(value.circuit)}
         if self.kind == "layout":
             return {key: ref(getattr(value, key)) for key in LAYOUT_SLOTS}
-        attrs = attributes(self.kind, vars(value))
+        selector = (
+            next((name for name, cls in circuit_subclasses().items() if type(value) is cls), None)
+            if self.kind == "quantum_circuit"
+            else None
+        )
+        attrs = attributes(self.kind, vars(value), selector)
         expected = {key for key, _ in attrs}
         if set(vars(value)) != expected:
             raise WireError("Extra or missing circuit instance fields are unsupported")
         return {
+            **({"class": selector} if selector is not None else {}),
             **{key: ref(vars(value)[attr]) for key, attr in attrs},
             "attributes": ref(vars(value)),
         }
@@ -112,9 +143,35 @@ class CircuitComponentCodec:
             for register in node(state["_regs"], index, {"list"})["state"]:
                 quantum_member(register, index, "qiskit_register")
             return
-        attrs = attributes(self.kind, state)
-        fields(state, {key for key, _ in attrs} | {"attributes"})
+        selector = state.get("class") if type(state) is dict else None
+        if selector is not None and (
+            self.kind != "quantum_circuit"
+            or type(selector) is not str
+            or selector not in circuit_subclasses()
+        ):
+            raise WireError("Unknown fixed circuit class")
+        attrs = attributes(self.kind, state, selector)
+        fields(
+            state,
+            {key for key, _ in attrs}
+            | {"attributes"}
+            | ({"class"} if selector is not None else set()),
+        )
         validate_attributes(state, index, attrs)
+        if selector == "qft":
+            for key in (
+                "_is_initialized",
+                "_is_built",
+                "_do_swaps",
+                "_insert_barriers",
+                "_inverse",
+            ):
+                if type(state[key]) is not bool:
+                    raise WireError("Invalid raw QFT flag")
+            if type(state["_approximation_degree"]) is not int:
+                raise WireError("Invalid raw QFT approximation degree")
+            for key in ("_qregs", "_cregs"):
+                node(state[key], index, {"list"})
         if self.kind == "transpile_layout":
             for key in ("initial_layout", "final_layout"):
                 if state[key] is not None:
@@ -156,9 +213,13 @@ class CircuitComponentCodec:
             return (state["circuit"],)
         if self.kind == "layout":
             return tuple(state[key] for key in LAYOUT_SLOTS)
-        return tuple(state[key] for key, _ in attributes(self.kind, state)) + (state["attributes"],)
+        return tuple(state[key] for key, _ in attributes(self.kind, state, state.get("class"))) + (
+            state["attributes"],
+        )
 
     def allocate(self, state, index):
+        if self.kind == "quantum_circuit" and "class" in state:
+            return object.__new__(circuit_subclasses()[state["class"]])
         return object.__new__(classes()[self.kind])
 
     def prepare(self, state, resolve, index):
@@ -178,7 +239,8 @@ class CircuitComponentCodec:
             object.__setattr__(target, "__dict__", prepared)
 
     def validate_update(self, previous, state):
-        pass
+        if previous.get("class") != state.get("class"):
+            raise WireError("Circuit class cannot change")
 
     def array_bytes(self, state):
         return 0
