@@ -3,3 +3,5 @@ engine/** text eol=lf
 docs/reliability-evidence/*.jsonl -text
 
 docs/reliability-evidence/dag_native_probe.py -text
+docs/reliability-evidence/profile_graph_roundtrips.py -text
+docs/reliability-evidence/GrayBench-native-graph-profile-46b7487.json -text

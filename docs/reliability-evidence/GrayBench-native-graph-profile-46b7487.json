@@ -1,0 +1,2387 @@
+{
+  "purpose": "local repeated-call graph profiling; not model scoring or protected timing",
+  "source": {
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+      "campaign_setup.py": "cc0ddf518b6e439f3ebf97618b5a8d6d639cde6ac5abeb40602208d358ad3fa2",
+      "circuit_wire.py": "22df31fcdd81c05d7976e2dd61519921ae0d608bfde1f843906271bd3e90c178",
+      "cli.py": "5e802910b4b033ab08cdfa54c3f8454aff16128e6ad582a9c9f5249d02ebaed0",
+      "comparison.py": "51bdf1f379b37fa1b4e7d3853ace19b29d485450a63f2024f7ccb662ffc7d38b",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "eb99193eaa376759de6cf71eac97175b57df876cf609f361dc894ced7528755c",
+      "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+      "evaluation_campaign.py": "7626fcafec0577cf0ad0385325e379718d99a6a8c4b0b566de4517671233dda9",
+      "evaluation_recipes.py": "c584d6241ad69df2a48d40b0c8c394d95e939ab098caa390208dd4ac463d13c1",
+      "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+      "file_judge.py": "3a544ede1310cdf458221fb8800c6380820a115840f1bbf3a1780175891384ee",
+      "gate_semantics.py": "faeda2a1e8f7084584e7bccf9f2f8cdd1d2e4826c72c51efbdfbfc5733cd592f",
+      "graph_anchor_bindings.py": "eeceeee2320f91f05785992c1dff1c5a6905e81a930575349306c92fc7f3bf57",
+      "graph_anchors.py": "82b41296b54898897bfc20c8384d0e2313cb80f0a181b663efac5f672715ed58",
+      "graph_circuit.py": "f1514d8b9ff015c13a00a66ac733ad5d0703f311e11d83fbc44644bca8e62078",
+      "graph_circuit_data.py": "7f90dc0fdda3d317edf87a0a265d342293aed3bc9c4aa6cbfde92b363cd373ae",
+      "graph_classical.py": "67a554b91bbdca06a4f090bf314d7f5e856a6bdb6c7516fb9f67c7fc5d3ae1d7",
+      "graph_control_flow.py": "30717bf5bc99d71c1d4e5a5525e2b3c950b0ec79525b3eb9128d1503a984cd6e",
+      "graph_expressions.py": "1d26c6a7b5acbe6594de7047827aa2ff191174afc43506da6b49250b429a4a5a",
+      "graph_instruction.py": "fe6cafd735dcb4c4322ad7ec8e6e02ef9fa60c8a51779786400f96814f6b0107",
+      "graph_limits.py": "bd091ae68507a0095d6aa9eb17aca82895d70dbb1637be00b1bbddabace9990d",
+      "graph_loops.py": "bf648fef060474ca9c01fcd45d2ba78dfb1326fefd7b1fc4de9c99bb4f329796",
+      "graph_numeric.py": "fac33466832cbfe237b10ca4350d92b189cbe9d5602d94fbd4646f5f5c1cb39b",
+      "graph_object_arrays.py": "00d539bd78574ff20a8f161a6584a546af85c7548aefb0baefe7d1d620113139",
+      "graph_owned.py": "b4352a2df3c96f439daae00a4df4667bd1d702b4a51a4f915abae6e77083a5a3",
+      "graph_packed.py": "b16a949a07a928b6094b637c9837694adc6078d179ca6307102467c4cc8467ce",
+      "graph_primitive.py": "93e00a01ca82db28e2406f0e4547e01a4a18eff8ad550598217fb53755a920b5",
+      "graph_python_ops.py": "cfd3f2f20c08c6f1712b7c0231799c7bc6c6745e3eb25f107f62e2f140abbfa7",
+      "graph_quantum_circuit.py": "00a05946c7507b8a68828906df2dc7ab71bf0ca239363eb77760b0413b9ffd74",
+      "graph_rpc.py": "bc4907cf431176de72bebacc50c05f2d823c64a45bc7e0f9188924fadbd2dda8",
+      "graph_runtime.py": "0b789fd1ad6ea091f16e793240291dfd22771c9aa3e26459ed0fec5c806b0ad0",
+      "graph_scientific.py": "4a6e6ec2cde102332172995755994b8330a4cba0290cc7d45f9cc90d21de4ede",
+      "graph_singleton.py": "6cc416d0a7fee03ed08e846d62d74ac05df931e859116ae1bfb6ef197a4de3e5",
+      "graph_symbolic.py": "1ad6203955c88aad849c861962e6058d652c05a2168617cd8b6a28ce69bf87aa",
+      "graph_types.py": "1b4c83a9e4e2b0fd7f733faeb6bceaac13c4ab395ab0b5076b894998582d935d",
+      "graph_wire.py": "365df0ada9ebd515659f75f7ce4c76c735e20a000cd8222240fa28c7c53fc7cc",
+      "graph_worker.py": "38bc537490f7d2d02d8611d53dd711420ca815fbca0c8e603f5bf592a51d4c6a",
+      "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+      "instruction_wire.py": "1473e89c76bdf8344cb23dbfd76fb7a920966dc60ec09e8c181e0489ea218e3c",
+      "judge.py": "711384c4f35baebb8f4e127815e322d912b528756d29ac2951a4edb087a335c3",
+      "judge_process.py": "b85b373a96de296c172f72710da2365a16213e2a93f47ffb257cb2aa08b43f3a",
+      "ledger.py": "e0806b1028fc4a5add23f9364cb5eded8837867ff954919f3de955ec279d30dd",
+      "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+      "model_discovery.py": "f67a77cee033d0abb73bd24b50c23ea659aec33bee219f8a57ffc34754c11f65",
+      "operator_wire.py": "d94dda29d683afaa60df8040ad395f050cd8bc74bf9f4f2debc8afcfffac7f72",
+      "oracle_review.py": "956c9e44d194b9f2c21930bf072ff4d65fafde1df5bfd6c786b16619ce68c2f1",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "primitive_wire.py": "291bf8d84fb95cdd74577de83ec8adcb93a05fa14750fec1e914e2c343e91d52",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "4f1c1574e8202326a76e4b1a23338df57fc2bcec0f7fb49001574ff1bc09c7ee",
+      "qpy_decoder.py": "ed8a3e9a63d8778e3703a9b0b4bb7f29a7c10ca4afcb7c930cb8a7144c77abdd",
+      "reference_scan.py": "522762c402f2e16e08514af4d4135e6c0cc35ba488de2738ac6387617578bca3",
+      "sandbox.py": "27712fa5f7cea9d1b206f2764d98679a948a8261c5054bd6aebccc54e954b989",
+      "scientific_wire.py": "926ecf36b0823a13d30bbaa674ed72caed6f9ac272cb427670dd12f3a707cf51",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "transport.py": "421732f8e327a10e3a67d8756a7d87fc6d69e60e60916e533993e9d891e1148f",
+      "upstream.py": "f8adf9d2d9427b0482d41b20e27f1cd9ae2180a83710e4ae62608b242b03ab6b",
+      "upstream_graph_process.py": "6d0c3e2be9141f58c5ee31c0898d6d894640c7fff55880e409c9dd33a8a68440",
+      "upstream_process.py": "b6582742fbfc4b90137b40a190c2b580622b6a6940f171eee31ba5975cc00d16",
+      "value_wire.py": "a11eeff9a9635bdc63c5779015c92ca118e4ec3baa14a71f01b0432300c80211",
+      "worker.py": "da22781001f0d7ad7f23c193a4ff04365caa861784f7e95d3453c99edc50016b"
+    },
+    "digest": "20f516ef9257c6037f0f63b6f0044881a6b3c015d2e3224f1f359d3bdd8d3ee7"
+  },
+  "probe_sha256": "26de4952f9f864b40c3f8b65e05e1a7d43b6cac4ec1b4e0f18f8e50113ced91c",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "message_limit": 16777216,
+  "calls": 100,
+  "elapsed_seconds": 18.0958153999527,
+  "total_graph_bytes": 24503549,
+  "rows": [
+    {
+      "call": 1,
+      "forward": {
+        "nodes": 2,
+        "graph_bytes": 390,
+        "changed_records": 2,
+        "changed_record_bytes": 103
+      },
+      "backward": {
+        "nodes": 39,
+        "graph_bytes": 5465,
+        "changed_records": 37,
+        "changed_record_bytes": 4993
+      },
+      "seconds": {
+        "judge_snapshot": 8.9599983766675e-05,
+        "candidate_prepare": 0.002277799998410046,
+        "candidate_commit": 4.8799964133650064e-05,
+        "candidate_snapshot": 0.0014618000132031739,
+        "judge_prepare": 0.0018354000058025122,
+        "judge_commit": 0.0008545000455342233
+      }
+    },
+    {
+      "call": 2,
+      "forward": {
+        "nodes": 40,
+        "graph_bytes": 5427,
+        "changed_records": 2,
+        "changed_record_bytes": 616
+      },
+      "backward": {
+        "nodes": 57,
+        "graph_bytes": 7811,
+        "changed_records": 17,
+        "changed_record_bytes": 2321
+      },
+      "seconds": {
+        "judge_snapshot": 0.0008338000043295324,
+        "candidate_prepare": 0.00283880002098158,
+        "candidate_commit": 0.0011694999993778765,
+        "candidate_snapshot": 0.001428099989425391,
+        "judge_prepare": 0.002756199974101037,
+        "judge_commit": 0.0013669999898411334
+      }
+    },
+    {
+      "call": 3,
+      "forward": {
+        "nodes": 58,
+        "graph_bytes": 7772,
+        "changed_records": 2,
+        "changed_record_bytes": 619
+      },
+      "backward": {
+        "nodes": 75,
+        "graph_bytes": 10156,
+        "changed_records": 17,
+        "changed_record_bytes": 2321
+      },
+      "seconds": {
+        "judge_snapshot": 0.0011422999668866396,
+        "candidate_prepare": 0.003452999982982874,
+        "candidate_commit": 0.0016783999744802713,
+        "candidate_snapshot": 0.001504999992903322,
+        "judge_prepare": 0.011401300027500838,
+        "judge_commit": 0.001782700011972338
+      }
+    },
+    {
+      "call": 4,
+      "forward": {
+        "nodes": 76,
+        "graph_bytes": 10117,
+        "changed_records": 2,
+        "changed_record_bytes": 619
+      },
+      "backward": {
+        "nodes": 93,
+        "graph_bytes": 12501,
+        "changed_records": 17,
+        "changed_record_bytes": 2321
+      },
+      "seconds": {
+        "judge_snapshot": 0.0014975000522099435,
+        "candidate_prepare": 0.0040425999904982746,
+        "candidate_commit": 0.0021274000173434615,
+        "candidate_snapshot": 0.0018840000266209245,
+        "judge_prepare": 0.004247899982146919,
+        "judge_commit": 0.0022577999625355005
+      }
+    },
+    {
+      "call": 5,
+      "forward": {
+        "nodes": 94,
+        "graph_bytes": 12462,
+        "changed_records": 2,
+        "changed_record_bytes": 619
+      },
+      "backward": {
+        "nodes": 111,
+        "graph_bytes": 14856,
+        "changed_records": 17,
+        "changed_record_bytes": 2331
+      },
+      "seconds": {
+        "judge_snapshot": 0.0018630999838933349,
+        "candidate_prepare": 0.004751599975861609,
+        "candidate_commit": 0.002548899967223406,
+        "candidate_snapshot": 0.0021650000126101077,
+        "judge_prepare": 0.005092500010505319,
+        "judge_commit": 0.0027222000062465668
+      }
+    },
+    {
+      "call": 6,
+      "forward": {
+        "nodes": 112,
+        "graph_bytes": 14817,
+        "changed_records": 2,
+        "changed_record_bytes": 619
+      },
+      "backward": {
+        "nodes": 129,
+        "graph_bytes": 17241,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0021037000115029514,
+        "candidate_prepare": 0.005433300044387579,
+        "candidate_commit": 0.002984599967021495,
+        "candidate_snapshot": 0.0026218999992124736,
+        "judge_prepare": 0.005745699978433549,
+        "judge_commit": 0.003116199979558587
+      }
+    },
+    {
+      "call": 7,
+      "forward": {
+        "nodes": 130,
+        "graph_bytes": 17201,
+        "changed_records": 2,
+        "changed_record_bytes": 624
+      },
+      "backward": {
+        "nodes": 147,
+        "graph_bytes": 19625,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0025349000352434814,
+        "candidate_prepare": 0.006449999986216426,
+        "candidate_commit": 0.0034272000193595886,
+        "candidate_snapshot": 0.002770999970380217,
+        "judge_prepare": 0.0076697999611496925,
+        "judge_commit": 0.003735099977348
+      }
+    },
+    {
+      "call": 8,
+      "forward": {
+        "nodes": 148,
+        "graph_bytes": 19585,
+        "changed_records": 2,
+        "changed_record_bytes": 624
+      },
+      "backward": {
+        "nodes": 165,
+        "graph_bytes": 22009,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.002779000031296164,
+        "candidate_prepare": 0.007180000015068799,
+        "candidate_commit": 0.003898399998433888,
+        "candidate_snapshot": 0.0031083000358194113,
+        "judge_prepare": 0.007741699984762818,
+        "judge_commit": 0.003975300001911819
+      }
+    },
+    {
+      "call": 9,
+      "forward": {
+        "nodes": 166,
+        "graph_bytes": 21969,
+        "changed_records": 2,
+        "changed_record_bytes": 624
+      },
+      "backward": {
+        "nodes": 183,
+        "graph_bytes": 24393,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.002949400048237294,
+        "candidate_prepare": 0.007799100014381111,
+        "candidate_commit": 0.004424199985805899,
+        "candidate_snapshot": 0.0033843000419437885,
+        "judge_prepare": 0.00879769999301061,
+        "judge_commit": 0.004876799997873604
+      }
+    },
+    {
+      "call": 10,
+      "forward": {
+        "nodes": 184,
+        "graph_bytes": 24356,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 201,
+        "graph_bytes": 26780,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0032893000170588493,
+        "candidate_prepare": 0.00839179998729378,
+        "candidate_commit": 0.004760100040584803,
+        "candidate_snapshot": 0.004983199993148446,
+        "judge_prepare": 0.009001999977044761,
+        "judge_commit": 0.0050963000394403934
+      }
+    },
+    {
+      "call": 11,
+      "forward": {
+        "nodes": 202,
+        "graph_bytes": 26741,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 219,
+        "graph_bytes": 29165,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.003918099973816425,
+        "candidate_prepare": 0.009831000003032386,
+        "candidate_commit": 0.005365799996070564,
+        "candidate_snapshot": 0.004086099972482771,
+        "judge_prepare": 0.009816800011321902,
+        "judge_commit": 0.005397700006142259
+      }
+    },
+    {
+      "call": 12,
+      "forward": {
+        "nodes": 220,
+        "graph_bytes": 29126,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 237,
+        "graph_bytes": 31550,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0043453999678604305,
+        "candidate_prepare": 0.010223300021607429,
+        "candidate_commit": 0.005891499982681125,
+        "candidate_snapshot": 0.004407899978104979,
+        "judge_prepare": 0.01070169999729842,
+        "judge_commit": 0.005968400044366717
+      }
+    },
+    {
+      "call": 13,
+      "forward": {
+        "nodes": 238,
+        "graph_bytes": 31511,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 255,
+        "graph_bytes": 33935,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.004790000035427511,
+        "candidate_prepare": 0.010785899998154491,
+        "candidate_commit": 0.006426099978853017,
+        "candidate_snapshot": 0.004856900020968169,
+        "judge_prepare": 0.011260500003118068,
+        "judge_commit": 0.006332000019028783
+      }
+    },
+    {
+      "call": 14,
+      "forward": {
+        "nodes": 256,
+        "graph_bytes": 33896,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 273,
+        "graph_bytes": 36320,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.005119699984788895,
+        "candidate_prepare": 0.01151939999544993,
+        "candidate_commit": 0.006866299954708666,
+        "candidate_snapshot": 0.004999700002372265,
+        "judge_prepare": 0.011926400009542704,
+        "judge_commit": 0.006924300047103316
+      }
+    },
+    {
+      "call": 15,
+      "forward": {
+        "nodes": 274,
+        "graph_bytes": 36281,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 291,
+        "graph_bytes": 38705,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.005353899963665754,
+        "candidate_prepare": 0.01330330001655966,
+        "candidate_commit": 0.007259499980136752,
+        "candidate_snapshot": 0.005380899994634092,
+        "judge_prepare": 0.01260270003695041,
+        "judge_commit": 0.0073154999990947545
+      }
+    },
+    {
+      "call": 16,
+      "forward": {
+        "nodes": 292,
+        "graph_bytes": 38666,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 309,
+        "graph_bytes": 41090,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0054579999996349216,
+        "candidate_prepare": 0.012837600021157414,
+        "candidate_commit": 0.007510800031013787,
+        "candidate_snapshot": 0.005524399981368333,
+        "judge_prepare": 0.013300300051923841,
+        "judge_commit": 0.007641200034413487
+      }
+    },
+    {
+      "call": 17,
+      "forward": {
+        "nodes": 310,
+        "graph_bytes": 41051,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 327,
+        "graph_bytes": 43475,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.005747599992901087,
+        "candidate_prepare": 0.013747500022873282,
+        "candidate_commit": 0.007988199999090284,
+        "candidate_snapshot": 0.005879300006199628,
+        "judge_prepare": 0.014744299987796694,
+        "judge_commit": 0.017518799984827638
+      }
+    },
+    {
+      "call": 18,
+      "forward": {
+        "nodes": 328,
+        "graph_bytes": 43436,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 345,
+        "graph_bytes": 45860,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.005974100029561669,
+        "candidate_prepare": 0.014390199969056994,
+        "candidate_commit": 0.00820959999691695,
+        "candidate_snapshot": 0.006497500056866556,
+        "judge_prepare": 0.014514999988023192,
+        "judge_commit": 0.008213500026613474
+      }
+    },
+    {
+      "call": 19,
+      "forward": {
+        "nodes": 346,
+        "graph_bytes": 45821,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 363,
+        "graph_bytes": 48245,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.006028899981174618,
+        "candidate_prepare": 0.01536570000462234,
+        "candidate_commit": 0.008466100029181689,
+        "candidate_snapshot": 0.006361800013110042,
+        "judge_prepare": 0.01608860003761947,
+        "judge_commit": 0.009402600000612438
+      }
+    },
+    {
+      "call": 20,
+      "forward": {
+        "nodes": 364,
+        "graph_bytes": 48206,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 381,
+        "graph_bytes": 50630,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.006866400013677776,
+        "candidate_prepare": 0.0161077999509871,
+        "candidate_commit": 0.009290199959650636,
+        "candidate_snapshot": 0.0072120000259019434,
+        "judge_prepare": 0.01623090001521632,
+        "judge_commit": 0.009253699972759932
+      }
+    },
+    {
+      "call": 21,
+      "forward": {
+        "nodes": 382,
+        "graph_bytes": 50591,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 399,
+        "graph_bytes": 53015,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.006690000009257346,
+        "candidate_prepare": 0.017191699997056276,
+        "candidate_commit": 0.009607099986169487,
+        "candidate_snapshot": 0.007073800021316856,
+        "judge_prepare": 0.01691700000083074,
+        "judge_commit": 0.010308100027032197
+      }
+    },
+    {
+      "call": 22,
+      "forward": {
+        "nodes": 400,
+        "graph_bytes": 52976,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 417,
+        "graph_bytes": 55400,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0074121999787166715,
+        "candidate_prepare": 0.017643500003032386,
+        "candidate_commit": 0.010989999980665743,
+        "candidate_snapshot": 0.008005899959243834,
+        "judge_prepare": 0.01773210003739223,
+        "judge_commit": 0.01023800001712516
+      }
+    },
+    {
+      "call": 23,
+      "forward": {
+        "nodes": 418,
+        "graph_bytes": 55361,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 435,
+        "graph_bytes": 57785,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.007305899984203279,
+        "candidate_prepare": 0.018731099960859865,
+        "candidate_commit": 0.010521399963181466,
+        "candidate_snapshot": 0.007697199995163828,
+        "judge_prepare": 0.019661700003780425,
+        "judge_commit": 0.010984099993947893
+      }
+    },
+    {
+      "call": 24,
+      "forward": {
+        "nodes": 436,
+        "graph_bytes": 57746,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 453,
+        "graph_bytes": 60170,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0076902000000700355,
+        "candidate_prepare": 0.019259899971075356,
+        "candidate_commit": 0.011423600022681057,
+        "candidate_snapshot": 0.007953899970743805,
+        "judge_prepare": 0.019257500011008233,
+        "judge_commit": 0.020922499999869615
+      }
+    },
+    {
+      "call": 25,
+      "forward": {
+        "nodes": 454,
+        "graph_bytes": 60131,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 471,
+        "graph_bytes": 62555,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.007914899964816868,
+        "candidate_prepare": 0.019609800016041845,
+        "candidate_commit": 0.011758200009353459,
+        "candidate_snapshot": 0.008133299998007715,
+        "judge_prepare": 0.019766399986110628,
+        "judge_commit": 0.012065699964296073
+      }
+    },
+    {
+      "call": 26,
+      "forward": {
+        "nodes": 472,
+        "graph_bytes": 62516,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 489,
+        "graph_bytes": 64940,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.008429099980276078,
+        "candidate_prepare": 0.020135599945206195,
+        "candidate_commit": 0.012407300004269928,
+        "candidate_snapshot": 0.008573000028263777,
+        "judge_prepare": 0.020418800006154925,
+        "judge_commit": 0.014001500036101788
+      }
+    },
+    {
+      "call": 27,
+      "forward": {
+        "nodes": 490,
+        "graph_bytes": 64901,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 507,
+        "graph_bytes": 67325,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.009166300005745143,
+        "candidate_prepare": 0.02204940002411604,
+        "candidate_commit": 0.013133900007233024,
+        "candidate_snapshot": 0.008831600018311292,
+        "judge_prepare": 0.02134259999729693,
+        "judge_commit": 0.012807499966584146
+      }
+    },
+    {
+      "call": 28,
+      "forward": {
+        "nodes": 508,
+        "graph_bytes": 67286,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 525,
+        "graph_bytes": 69710,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.008800000010523945,
+        "candidate_prepare": 0.021860200038645416,
+        "candidate_commit": 0.013627000036649406,
+        "candidate_snapshot": 0.009441600006539375,
+        "judge_prepare": 0.02382729999953881,
+        "judge_commit": 0.013139599992427975
+      }
+    },
+    {
+      "call": 29,
+      "forward": {
+        "nodes": 526,
+        "graph_bytes": 69671,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 543,
+        "graph_bytes": 72095,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.009309299988672137,
+        "candidate_prepare": 0.023547700024209917,
+        "candidate_commit": 0.012879199988674372,
+        "candidate_snapshot": 0.009479500004090369,
+        "judge_prepare": 0.024369099992327392,
+        "judge_commit": 0.013576600002124906
+      }
+    },
+    {
+      "call": 30,
+      "forward": {
+        "nodes": 544,
+        "graph_bytes": 72056,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 561,
+        "graph_bytes": 74480,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.009441100002732128,
+        "candidate_prepare": 0.03471560002071783,
+        "candidate_commit": 0.013436899986118078,
+        "candidate_snapshot": 0.009724300005473197,
+        "judge_prepare": 0.02461850002873689,
+        "judge_commit": 0.01379519997863099
+      }
+    },
+    {
+      "call": 31,
+      "forward": {
+        "nodes": 562,
+        "graph_bytes": 74441,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 579,
+        "graph_bytes": 76865,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.01019500003894791,
+        "candidate_prepare": 0.025081700005102903,
+        "candidate_commit": 0.01397749996976927,
+        "candidate_snapshot": 0.011138100002426654,
+        "judge_prepare": 0.025039999978616834,
+        "judge_commit": 0.014955599966924638
+      }
+    },
+    {
+      "call": 32,
+      "forward": {
+        "nodes": 580,
+        "graph_bytes": 76826,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 597,
+        "graph_bytes": 79250,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.009916600014548749,
+        "candidate_prepare": 0.024961500021163374,
+        "candidate_commit": 0.01518340001348406,
+        "candidate_snapshot": 0.01049720001174137,
+        "judge_prepare": 0.025673800031654537,
+        "judge_commit": 0.015676000039093196
+      }
+    },
+    {
+      "call": 33,
+      "forward": {
+        "nodes": 598,
+        "graph_bytes": 79211,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 615,
+        "graph_bytes": 81635,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.010669700044672936,
+        "candidate_prepare": 0.0272660999908112,
+        "candidate_commit": 0.014967700000852346,
+        "candidate_snapshot": 0.011124600016046315,
+        "judge_prepare": 0.02672239998355508,
+        "judge_commit": 0.015484800038393587
+      }
+    },
+    {
+      "call": 34,
+      "forward": {
+        "nodes": 616,
+        "graph_bytes": 81596,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 633,
+        "graph_bytes": 84020,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.011222899949643761,
+        "candidate_prepare": 0.02652800001669675,
+        "candidate_commit": 0.01608450000640005,
+        "candidate_snapshot": 0.011058899981435388,
+        "judge_prepare": 0.027094399963971227,
+        "judge_commit": 0.025841099966783077
+      }
+    },
+    {
+      "call": 35,
+      "forward": {
+        "nodes": 634,
+        "graph_bytes": 83981,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 651,
+        "graph_bytes": 86405,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.011104400036856532,
+        "candidate_prepare": 0.02746129996376112,
+        "candidate_commit": 0.015449300000909716,
+        "candidate_snapshot": 0.011483200010843575,
+        "judge_prepare": 0.027081900043413043,
+        "judge_commit": 0.016507500025909394
+      }
+    },
+    {
+      "call": 36,
+      "forward": {
+        "nodes": 652,
+        "graph_bytes": 86366,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 669,
+        "graph_bytes": 88790,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.011188899981789291,
+        "candidate_prepare": 0.02832370001124218,
+        "candidate_commit": 0.015996000031009316,
+        "candidate_snapshot": 0.011331600020639598,
+        "judge_prepare": 0.02842029999010265,
+        "judge_commit": 0.01629449997562915
+      }
+    },
+    {
+      "call": 37,
+      "forward": {
+        "nodes": 670,
+        "graph_bytes": 88751,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 687,
+        "graph_bytes": 91175,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.011603499995544553,
+        "candidate_prepare": 0.02869870001450181,
+        "candidate_commit": 0.01774510001996532,
+        "candidate_snapshot": 0.013631000008899719,
+        "judge_prepare": 0.029558699985500425,
+        "judge_commit": 0.01741039997432381
+      }
+    },
+    {
+      "call": 38,
+      "forward": {
+        "nodes": 688,
+        "graph_bytes": 91136,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 705,
+        "graph_bytes": 93560,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.012163000006694347,
+        "candidate_prepare": 0.02945450000697747,
+        "candidate_commit": 0.018079300003591925,
+        "candidate_snapshot": 0.012722900020889938,
+        "judge_prepare": 0.04156069998862222,
+        "judge_commit": 0.017352900002151728
+      }
+    },
+    {
+      "call": 39,
+      "forward": {
+        "nodes": 706,
+        "graph_bytes": 93521,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 723,
+        "graph_bytes": 95945,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.012213199981488287,
+        "candidate_prepare": 0.02964549994794652,
+        "candidate_commit": 0.018404000031296164,
+        "candidate_snapshot": 0.01275080000050366,
+        "judge_prepare": 0.031298199959564954,
+        "judge_commit": 0.01842540001962334
+      }
+    },
+    {
+      "call": 40,
+      "forward": {
+        "nodes": 724,
+        "graph_bytes": 95906,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 741,
+        "graph_bytes": 98330,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.012613500002771616,
+        "candidate_prepare": 0.03170779999345541,
+        "candidate_commit": 0.018722000007983297,
+        "candidate_snapshot": 0.013135300017893314,
+        "judge_prepare": 0.03196220000972971,
+        "judge_commit": 0.01822060003178194
+      }
+    },
+    {
+      "call": 41,
+      "forward": {
+        "nodes": 742,
+        "graph_bytes": 98291,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 759,
+        "graph_bytes": 100715,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.013064600003417581,
+        "candidate_prepare": 0.033710099989548326,
+        "candidate_commit": 0.019317700003739446,
+        "candidate_snapshot": 0.01347369997529313,
+        "judge_prepare": 0.033855199988465756,
+        "judge_commit": 0.019039300037547946
+      }
+    },
+    {
+      "call": 42,
+      "forward": {
+        "nodes": 760,
+        "graph_bytes": 100676,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 777,
+        "graph_bytes": 103100,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.01379830000223592,
+        "candidate_prepare": 0.033588699996471405,
+        "candidate_commit": 0.032277600024826825,
+        "candidate_snapshot": 0.013389000028837472,
+        "judge_prepare": 0.034640799975022674,
+        "judge_commit": 0.019825900031719357
+      }
+    },
+    {
+      "call": 43,
+      "forward": {
+        "nodes": 778,
+        "graph_bytes": 103061,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 795,
+        "graph_bytes": 105485,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.013716899964492768,
+        "candidate_prepare": 0.034058499964885414,
+        "candidate_commit": 0.02067709999391809,
+        "candidate_snapshot": 0.013892000017222017,
+        "judge_prepare": 0.03409780003130436,
+        "judge_commit": 0.020670500001870096
+      }
+    },
+    {
+      "call": 44,
+      "forward": {
+        "nodes": 796,
+        "graph_bytes": 105446,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 813,
+        "graph_bytes": 107870,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.013587300025392324,
+        "candidate_prepare": 0.03434780001407489,
+        "candidate_commit": 0.02041080000344664,
+        "candidate_snapshot": 0.014721999992616475,
+        "judge_prepare": 0.03438959998311475,
+        "judge_commit": 0.021095699979923666
+      }
+    },
+    {
+      "call": 45,
+      "forward": {
+        "nodes": 814,
+        "graph_bytes": 107831,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 831,
+        "graph_bytes": 110255,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.014214799972251058,
+        "candidate_prepare": 0.035215499985497445,
+        "candidate_commit": 0.021146400016732514,
+        "candidate_snapshot": 0.01631400000769645,
+        "judge_prepare": 0.048856699955649674,
+        "judge_commit": 0.02084149996517226
+      }
+    },
+    {
+      "call": 46,
+      "forward": {
+        "nodes": 832,
+        "graph_bytes": 110216,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 849,
+        "graph_bytes": 112640,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.015327800007071346,
+        "candidate_prepare": 0.037190300005022436,
+        "candidate_commit": 0.021338499966077507,
+        "candidate_snapshot": 0.015715699992142618,
+        "judge_prepare": 0.03762210003333166,
+        "judge_commit": 0.021876900049392134
+      }
+    },
+    {
+      "call": 47,
+      "forward": {
+        "nodes": 850,
+        "graph_bytes": 112601,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 867,
+        "graph_bytes": 115025,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.014964399975724518,
+        "candidate_prepare": 0.03692549996776506,
+        "candidate_commit": 0.021708999993279576,
+        "candidate_snapshot": 0.015455199987627566,
+        "judge_prepare": 0.039841000048909336,
+        "judge_commit": 0.024293299997225404
+      }
+    },
+    {
+      "call": 48,
+      "forward": {
+        "nodes": 868,
+        "graph_bytes": 114986,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 885,
+        "graph_bytes": 117410,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.015572600008454174,
+        "candidate_prepare": 0.038598200015258044,
+        "candidate_commit": 0.02196779998484999,
+        "candidate_snapshot": 0.015918900026008487,
+        "judge_prepare": 0.037446599977556616,
+        "judge_commit": 0.03576990001602098
+      }
+    },
+    {
+      "call": 49,
+      "forward": {
+        "nodes": 886,
+        "graph_bytes": 117371,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 903,
+        "graph_bytes": 119795,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.015259400010108948,
+        "candidate_prepare": 0.0378150999895297,
+        "candidate_commit": 0.022513599949888885,
+        "candidate_snapshot": 0.015426800004206598,
+        "judge_prepare": 0.03874139999970794,
+        "judge_commit": 0.023035700025502592
+      }
+    },
+    {
+      "call": 50,
+      "forward": {
+        "nodes": 904,
+        "graph_bytes": 119756,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 921,
+        "graph_bytes": 122180,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.015797399973962456,
+        "candidate_prepare": 0.039488399983383715,
+        "candidate_commit": 0.023278000007849187,
+        "candidate_snapshot": 0.01689329999499023,
+        "judge_prepare": 0.04200170002877712,
+        "judge_commit": 0.025552699982654303
+      }
+    },
+    {
+      "call": 51,
+      "forward": {
+        "nodes": 922,
+        "graph_bytes": 122141,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 939,
+        "graph_bytes": 124565,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0167481999960728,
+        "candidate_prepare": 0.04061969998292625,
+        "candidate_commit": 0.023968700028490275,
+        "candidate_snapshot": 0.01714189996710047,
+        "judge_prepare": 0.0542651999858208,
+        "judge_commit": 0.02390139998169616
+      }
+    },
+    {
+      "call": 52,
+      "forward": {
+        "nodes": 940,
+        "graph_bytes": 124526,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 957,
+        "graph_bytes": 126950,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.0179704999900423,
+        "candidate_prepare": 0.043196699989493936,
+        "candidate_commit": 0.024211600015405566,
+        "candidate_snapshot": 0.017200700007379055,
+        "judge_prepare": 0.04408109997166321,
+        "judge_commit": 0.024363200005609542
+      }
+    },
+    {
+      "call": 53,
+      "forward": {
+        "nodes": 958,
+        "graph_bytes": 126911,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 975,
+        "graph_bytes": 129335,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.017187499965075403,
+        "candidate_prepare": 0.04154859995469451,
+        "candidate_commit": 0.02422720001777634,
+        "candidate_snapshot": 0.01948760001687333,
+        "judge_prepare": 0.04429419996449724,
+        "judge_commit": 0.02478289999999106
+      }
+    },
+    {
+      "call": 54,
+      "forward": {
+        "nodes": 976,
+        "graph_bytes": 129296,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 993,
+        "graph_bytes": 131720,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.017137099988758564,
+        "candidate_prepare": 0.04231450002407655,
+        "candidate_commit": 0.025181700009852648,
+        "candidate_snapshot": 0.028973400010727346,
+        "judge_prepare": 0.04279330000281334,
+        "judge_commit": 0.024248700006864965
+      }
+    },
+    {
+      "call": 55,
+      "forward": {
+        "nodes": 994,
+        "graph_bytes": 131681,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 1011,
+        "graph_bytes": 134105,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.017978799995034933,
+        "candidate_prepare": 0.043127099983394146,
+        "candidate_commit": 0.024868300009984523,
+        "candidate_snapshot": 0.018034999957308173,
+        "judge_prepare": 0.04344199999468401,
+        "judge_commit": 0.02495770005043596
+      }
+    },
+    {
+      "call": 56,
+      "forward": {
+        "nodes": 1012,
+        "graph_bytes": 134066,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 1029,
+        "graph_bytes": 136490,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.01886799995554611,
+        "candidate_prepare": 0.04477750003570691,
+        "candidate_commit": 0.025355599995236844,
+        "candidate_snapshot": 0.01816159998998046,
+        "judge_prepare": 0.044584899966139346,
+        "judge_commit": 0.02606160001596436
+      }
+    },
+    {
+      "call": 57,
+      "forward": {
+        "nodes": 1030,
+        "graph_bytes": 136451,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 1047,
+        "graph_bytes": 138875,
+        "changed_records": 17,
+        "changed_record_bytes": 2360
+      },
+      "seconds": {
+        "judge_snapshot": 0.018164800014346838,
+        "candidate_prepare": 0.05647119996137917,
+        "candidate_commit": 0.02575010003056377,
+        "candidate_snapshot": 0.019918099977076054,
+        "judge_prepare": 0.04589990002568811,
+        "judge_commit": 0.028524799970909953
+      }
+    },
+    {
+      "call": 58,
+      "forward": {
+        "nodes": 1048,
+        "graph_bytes": 138836,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 1065,
+        "graph_bytes": 141272,
+        "changed_records": 17,
+        "changed_record_bytes": 2372
+      },
+      "seconds": {
+        "judge_snapshot": 0.018708799965679646,
+        "candidate_prepare": 0.04805529996519908,
+        "candidate_commit": 0.026845799991860986,
+        "candidate_snapshot": 0.019046599976718426,
+        "judge_prepare": 0.04802630003541708,
+        "judge_commit": 0.02960850001545623
+      }
+    },
+    {
+      "call": 59,
+      "forward": {
+        "nodes": 1066,
+        "graph_bytes": 141233,
+        "changed_records": 2,
+        "changed_record_bytes": 625
+      },
+      "backward": {
+        "nodes": 1083,
+        "graph_bytes": 143697,
+        "changed_records": 17,
+        "changed_record_bytes": 2399
+      },
+      "seconds": {
+        "judge_snapshot": 0.02011270000366494,
+        "candidate_prepare": 0.046392499993089586,
+        "candidate_commit": 0.02673979999963194,
+        "candidate_snapshot": 0.01926809997530654,
+        "judge_prepare": 0.0702385000186041,
+        "judge_commit": 0.02782159997150302
+      }
+    },
+    {
+      "call": 60,
+      "forward": {
+        "nodes": 1084,
+        "graph_bytes": 143657,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1101,
+        "graph_bytes": 146123,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.01915840001311153,
+        "candidate_prepare": 0.048305500007700175,
+        "candidate_commit": 0.028713800013065338,
+        "candidate_snapshot": 0.020037700014654547,
+        "judge_prepare": 0.04732650000369176,
+        "judge_commit": 0.02862600004300475
+      }
+    },
+    {
+      "call": 61,
+      "forward": {
+        "nodes": 1102,
+        "graph_bytes": 146083,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1119,
+        "graph_bytes": 148549,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.019451600033789873,
+        "candidate_prepare": 0.04904709995025769,
+        "candidate_commit": 0.02825560001656413,
+        "candidate_snapshot": 0.020498599973507226,
+        "judge_prepare": 0.05063730000983924,
+        "judge_commit": 0.029766399995423853
+      }
+    },
+    {
+      "call": 62,
+      "forward": {
+        "nodes": 1120,
+        "graph_bytes": 148509,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1137,
+        "graph_bytes": 150975,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.020112099999096245,
+        "candidate_prepare": 0.06332959997234866,
+        "candidate_commit": 0.029294000007212162,
+        "candidate_snapshot": 0.02012619999004528,
+        "judge_prepare": 0.04963189997943118,
+        "judge_commit": 0.028896500007249415
+      }
+    },
+    {
+      "call": 63,
+      "forward": {
+        "nodes": 1138,
+        "graph_bytes": 150935,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1155,
+        "graph_bytes": 153401,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02000009996118024,
+        "candidate_prepare": 0.05057570000644773,
+        "candidate_commit": 0.03107500000623986,
+        "candidate_snapshot": 0.02159159997245297,
+        "judge_prepare": 0.0543024999788031,
+        "judge_commit": 0.03004399995552376
+      }
+    },
+    {
+      "call": 64,
+      "forward": {
+        "nodes": 1156,
+        "graph_bytes": 153361,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1173,
+        "graph_bytes": 155827,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02066720003494993,
+        "candidate_prepare": 0.052070400037337095,
+        "candidate_commit": 0.029620900051668286,
+        "candidate_snapshot": 0.032782599970232695,
+        "judge_prepare": 0.05116139998426661,
+        "judge_commit": 0.03142930002650246
+      }
+    },
+    {
+      "call": 65,
+      "forward": {
+        "nodes": 1174,
+        "graph_bytes": 155787,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1191,
+        "graph_bytes": 158253,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02196640003239736,
+        "candidate_prepare": 0.05484060000162572,
+        "candidate_commit": 0.032474400009959936,
+        "candidate_snapshot": 0.023067500034812838,
+        "judge_prepare": 0.06066620000638068,
+        "judge_commit": 0.032057000033091754
+      }
+    },
+    {
+      "call": 66,
+      "forward": {
+        "nodes": 1192,
+        "graph_bytes": 158213,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1209,
+        "graph_bytes": 160679,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.022115400002803653,
+        "candidate_prepare": 0.055067600042093545,
+        "candidate_commit": 0.031858299975283444,
+        "candidate_snapshot": 0.022944600030314177,
+        "judge_prepare": 0.07227740000234917,
+        "judge_commit": 0.0325963000068441
+      }
+    },
+    {
+      "call": 67,
+      "forward": {
+        "nodes": 1210,
+        "graph_bytes": 160639,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1227,
+        "graph_bytes": 163105,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.022065300028771162,
+        "candidate_prepare": 0.055098399985581636,
+        "candidate_commit": 0.03442219999851659,
+        "candidate_snapshot": 0.02231719996780157,
+        "judge_prepare": 0.06023299996741116,
+        "judge_commit": 0.03423290001228452
+      }
+    },
+    {
+      "call": 68,
+      "forward": {
+        "nodes": 1228,
+        "graph_bytes": 163065,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1245,
+        "graph_bytes": 165531,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.023295700026210397,
+        "candidate_prepare": 0.05739919998450205,
+        "candidate_commit": 0.0322794999810867,
+        "candidate_snapshot": 0.02322700002696365,
+        "judge_prepare": 0.055844000016804785,
+        "judge_commit": 0.04652259999420494
+      }
+    },
+    {
+      "call": 69,
+      "forward": {
+        "nodes": 1246,
+        "graph_bytes": 165491,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1263,
+        "graph_bytes": 167957,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.022549499990418553,
+        "candidate_prepare": 0.05558489996474236,
+        "candidate_commit": 0.032619799952954054,
+        "candidate_snapshot": 0.023072500014677644,
+        "judge_prepare": 0.059294499980751425,
+        "judge_commit": 0.03483259998029098
+      }
+    },
+    {
+      "call": 70,
+      "forward": {
+        "nodes": 1264,
+        "graph_bytes": 167917,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1281,
+        "graph_bytes": 170383,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02479900000616908,
+        "candidate_prepare": 0.05891650001285598,
+        "candidate_commit": 0.03391380002722144,
+        "candidate_snapshot": 0.022335999994538724,
+        "judge_prepare": 0.056546000007074326,
+        "judge_commit": 0.04657880001468584
+      }
+    },
+    {
+      "call": 71,
+      "forward": {
+        "nodes": 1282,
+        "graph_bytes": 170343,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1299,
+        "graph_bytes": 172809,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02259299997240305,
+        "candidate_prepare": 0.058834999974351376,
+        "candidate_commit": 0.03472430002875626,
+        "candidate_snapshot": 0.02339899999788031,
+        "judge_prepare": 0.05612919997656718,
+        "judge_commit": 0.033209099958185107
+      }
+    },
+    {
+      "call": 72,
+      "forward": {
+        "nodes": 1300,
+        "graph_bytes": 172769,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1317,
+        "graph_bytes": 175235,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.025437199976295233,
+        "candidate_prepare": 0.05893230001674965,
+        "candidate_commit": 0.03421480004908517,
+        "candidate_snapshot": 0.02359469997463748,
+        "judge_prepare": 0.05970100004924461,
+        "judge_commit": 0.049090899992734194
+      }
+    },
+    {
+      "call": 73,
+      "forward": {
+        "nodes": 1318,
+        "graph_bytes": 175195,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1335,
+        "graph_bytes": 177661,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.023156900017056614,
+        "candidate_prepare": 0.060124100011307746,
+        "candidate_commit": 0.03565219999291003,
+        "candidate_snapshot": 0.02457219996722415,
+        "judge_prepare": 0.06098759995074943,
+        "judge_commit": 0.036000499967485666
+      }
+    },
+    {
+      "call": 74,
+      "forward": {
+        "nodes": 1336,
+        "graph_bytes": 177621,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1353,
+        "graph_bytes": 180087,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.025189099949784577,
+        "candidate_prepare": 0.0654348999960348,
+        "candidate_commit": 0.03600110003026202,
+        "candidate_snapshot": 0.026080999989062548,
+        "judge_prepare": 0.07330490002641454,
+        "judge_commit": 0.03506759996525943
+      }
+    },
+    {
+      "call": 75,
+      "forward": {
+        "nodes": 1354,
+        "graph_bytes": 180047,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1371,
+        "graph_bytes": 182513,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.024189599964302033,
+        "candidate_prepare": 0.06065130000934005,
+        "candidate_commit": 0.03530940000200644,
+        "candidate_snapshot": 0.02458279998973012,
+        "judge_prepare": 0.06038390001049265,
+        "judge_commit": 0.03786819998640567
+      }
+    },
+    {
+      "call": 76,
+      "forward": {
+        "nodes": 1372,
+        "graph_bytes": 182473,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1389,
+        "graph_bytes": 184939,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.026200199965387583,
+        "candidate_prepare": 0.06140400003641844,
+        "candidate_commit": 0.03559889999451116,
+        "candidate_snapshot": 0.024501999956555665,
+        "judge_prepare": 0.07601429999340326,
+        "judge_commit": 0.03647079999791458
+      }
+    },
+    {
+      "call": 77,
+      "forward": {
+        "nodes": 1390,
+        "graph_bytes": 184899,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1407,
+        "graph_bytes": 187365,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03143530001398176,
+        "candidate_prepare": 0.06316630000947043,
+        "candidate_commit": 0.03671460004989058,
+        "candidate_snapshot": 0.025217599992174655,
+        "judge_prepare": 0.06301280000479892,
+        "judge_commit": 0.035984600021038204
+      }
+    },
+    {
+      "call": 78,
+      "forward": {
+        "nodes": 1408,
+        "graph_bytes": 187325,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1425,
+        "graph_bytes": 189791,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.024953500018455088,
+        "candidate_prepare": 0.062019200006034225,
+        "candidate_commit": 0.0576050000381656,
+        "candidate_snapshot": 0.024522299994714558,
+        "judge_prepare": 0.06184629997005686,
+        "judge_commit": 0.03669350000564009
+      }
+    },
+    {
+      "call": 79,
+      "forward": {
+        "nodes": 1426,
+        "graph_bytes": 189751,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1443,
+        "graph_bytes": 192217,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03018760000122711,
+        "candidate_prepare": 0.06141590001061559,
+        "candidate_commit": 0.036029100010637194,
+        "candidate_snapshot": 0.02537519996985793,
+        "judge_prepare": 0.06562349997693673,
+        "judge_commit": 0.037872000015340745
+      }
+    },
+    {
+      "call": 80,
+      "forward": {
+        "nodes": 1444,
+        "graph_bytes": 192177,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1461,
+        "graph_bytes": 194643,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.026217999984510243,
+        "candidate_prepare": 0.07988759997533634,
+        "candidate_commit": 0.03736449999269098,
+        "candidate_snapshot": 0.025797500042244792,
+        "judge_prepare": 0.06433179997839034,
+        "judge_commit": 0.03785359999164939
+      }
+    },
+    {
+      "call": 81,
+      "forward": {
+        "nodes": 1462,
+        "graph_bytes": 194603,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1479,
+        "graph_bytes": 197069,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02604669996071607,
+        "candidate_prepare": 0.06814559997292235,
+        "candidate_commit": 0.037629100028425455,
+        "candidate_snapshot": 0.025829599995631725,
+        "judge_prepare": 0.06429059995571151,
+        "judge_commit": 0.03796779998810962
+      }
+    },
+    {
+      "call": 82,
+      "forward": {
+        "nodes": 1480,
+        "graph_bytes": 197029,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1497,
+        "graph_bytes": 199495,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03919129999121651,
+        "candidate_prepare": 0.06449750001775101,
+        "candidate_commit": 0.03855539998039603,
+        "candidate_snapshot": 0.02615170000353828,
+        "judge_prepare": 0.06664829998044297,
+        "judge_commit": 0.03834230004576966
+      }
+    },
+    {
+      "call": 83,
+      "forward": {
+        "nodes": 1498,
+        "graph_bytes": 199455,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1515,
+        "graph_bytes": 201921,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02664530003676191,
+        "candidate_prepare": 0.06802339997375384,
+        "candidate_commit": 0.03920220001600683,
+        "candidate_snapshot": 0.028373099979944527,
+        "judge_prepare": 0.08304110000608489,
+        "judge_commit": 0.03897789999609813
+      }
+    },
+    {
+      "call": 84,
+      "forward": {
+        "nodes": 1516,
+        "graph_bytes": 201881,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1533,
+        "graph_bytes": 204347,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.026109599974006414,
+        "candidate_prepare": 0.06630530004622415,
+        "candidate_commit": 0.04119000001810491,
+        "candidate_snapshot": 0.027109300019219518,
+        "judge_prepare": 0.0667453000205569,
+        "judge_commit": 0.03907890000846237
+      }
+    },
+    {
+      "call": 85,
+      "forward": {
+        "nodes": 1534,
+        "graph_bytes": 204307,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1551,
+        "graph_bytes": 206773,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.026902700017672032,
+        "candidate_prepare": 0.06819359998917207,
+        "candidate_commit": 0.03954969998449087,
+        "candidate_snapshot": 0.04072500002803281,
+        "judge_prepare": 0.07423729996662587,
+        "judge_commit": 0.04038079996826127
+      }
+    },
+    {
+      "call": 86,
+      "forward": {
+        "nodes": 1552,
+        "graph_bytes": 206733,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1569,
+        "graph_bytes": 209199,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03910430002724752,
+        "candidate_prepare": 0.06854070001281798,
+        "candidate_commit": 0.039774300006683916,
+        "candidate_snapshot": 0.027774900023359805,
+        "judge_prepare": 0.07333070004824549,
+        "judge_commit": 0.04167790000792593
+      }
+    },
+    {
+      "call": 87,
+      "forward": {
+        "nodes": 1570,
+        "graph_bytes": 209159,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1587,
+        "graph_bytes": 211625,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.028497499995864928,
+        "candidate_prepare": 0.08575909998035058,
+        "candidate_commit": 0.04129220003960654,
+        "candidate_snapshot": 0.029055299994070083,
+        "judge_prepare": 0.07025200000498444,
+        "judge_commit": 0.04189069999847561
+      }
+    },
+    {
+      "call": 88,
+      "forward": {
+        "nodes": 1588,
+        "graph_bytes": 211585,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1605,
+        "graph_bytes": 214051,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.028711299994029105,
+        "candidate_prepare": 0.0707406000001356,
+        "candidate_commit": 0.04181690001860261,
+        "candidate_snapshot": 0.029050500015728176,
+        "judge_prepare": 0.08738250000169501,
+        "judge_commit": 0.04208320000907406
+      }
+    },
+    {
+      "call": 89,
+      "forward": {
+        "nodes": 1606,
+        "graph_bytes": 214011,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1623,
+        "graph_bytes": 216477,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.027998300036415458,
+        "candidate_prepare": 0.07012170000234619,
+        "candidate_commit": 0.044260499998927116,
+        "candidate_snapshot": 0.02832519996445626,
+        "judge_prepare": 0.07047829998191446,
+        "judge_commit": 0.043469500029459596
+      }
+    },
+    {
+      "call": 90,
+      "forward": {
+        "nodes": 1624,
+        "graph_bytes": 216437,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1641,
+        "graph_bytes": 218903,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03234069998143241,
+        "candidate_prepare": 0.07224660000065342,
+        "candidate_commit": 0.05871770001249388,
+        "candidate_snapshot": 0.03192969999508932,
+        "judge_prepare": 0.07379920000676066,
+        "judge_commit": 0.04299139999784529
+      }
+    },
+    {
+      "call": 91,
+      "forward": {
+        "nodes": 1642,
+        "graph_bytes": 218863,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1659,
+        "graph_bytes": 221329,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.029588100034743547,
+        "candidate_prepare": 0.07266659999731928,
+        "candidate_commit": 0.04248350003035739,
+        "candidate_snapshot": 0.02946619997965172,
+        "judge_prepare": 0.07446340000024065,
+        "judge_commit": 0.06010729999979958
+      }
+    },
+    {
+      "call": 92,
+      "forward": {
+        "nodes": 1660,
+        "graph_bytes": 221289,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1677,
+        "graph_bytes": 223755,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03080250002676621,
+        "candidate_prepare": 0.07389139995211735,
+        "candidate_commit": 0.043734600010793656,
+        "candidate_snapshot": 0.029284799995366484,
+        "judge_prepare": 0.07428719999734312,
+        "judge_commit": 0.04788879997795448
+      }
+    },
+    {
+      "call": 93,
+      "forward": {
+        "nodes": 1678,
+        "graph_bytes": 223715,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1695,
+        "graph_bytes": 226181,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02969429997028783,
+        "candidate_prepare": 0.07619589997921139,
+        "candidate_commit": 0.04366000002482906,
+        "candidate_snapshot": 0.04631200002040714,
+        "judge_prepare": 0.07416219997685403,
+        "judge_commit": 0.043267900007776916
+      }
+    },
+    {
+      "call": 94,
+      "forward": {
+        "nodes": 1696,
+        "graph_bytes": 226141,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1713,
+        "graph_bytes": 228607,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.02980819996446371,
+        "candidate_prepare": 0.07552260003285483,
+        "candidate_commit": 0.04450839996570721,
+        "candidate_snapshot": 0.030115599976852536,
+        "judge_prepare": 0.07527729996945709,
+        "judge_commit": 0.044508400023914874
+      }
+    },
+    {
+      "call": 95,
+      "forward": {
+        "nodes": 1714,
+        "graph_bytes": 228567,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1731,
+        "graph_bytes": 231033,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.04573729995172471,
+        "candidate_prepare": 0.07968610001262277,
+        "candidate_commit": 0.05013570003211498,
+        "candidate_snapshot": 0.030344400031026453,
+        "judge_prepare": 0.07402250001905486,
+        "judge_commit": 0.045555699965916574
+      }
+    },
+    {
+      "call": 96,
+      "forward": {
+        "nodes": 1732,
+        "graph_bytes": 230993,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1749,
+        "graph_bytes": 233459,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.030705499986652285,
+        "candidate_prepare": 0.08369739999761805,
+        "candidate_commit": 0.04872000002069399,
+        "candidate_snapshot": 0.047619900025893,
+        "judge_prepare": 0.07833950000349432,
+        "judge_commit": 0.04766290000407025
+      }
+    },
+    {
+      "call": 97,
+      "forward": {
+        "nodes": 1750,
+        "graph_bytes": 233419,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1767,
+        "graph_bytes": 235885,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.0315903999726288,
+        "candidate_prepare": 0.08036909997463226,
+        "candidate_commit": 0.04540339997038245,
+        "candidate_snapshot": 0.03145289997337386,
+        "judge_prepare": 0.0785957999760285,
+        "judge_commit": 0.04712830000789836
+      }
+    },
+    {
+      "call": 98,
+      "forward": {
+        "nodes": 1768,
+        "graph_bytes": 235845,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1785,
+        "graph_bytes": 238311,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.048292000021319836,
+        "candidate_prepare": 0.07865470001706854,
+        "candidate_commit": 0.046389899973291904,
+        "candidate_snapshot": 0.03421859996160492,
+        "judge_prepare": 0.07796319999033585,
+        "judge_commit": 0.04641400004038587
+      }
+    },
+    {
+      "call": 99,
+      "forward": {
+        "nodes": 1786,
+        "graph_bytes": 238271,
+        "changed_records": 2,
+        "changed_record_bytes": 630
+      },
+      "backward": {
+        "nodes": 1803,
+        "graph_bytes": 240737,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.03167710005072877,
+        "candidate_prepare": 0.08254630002193153,
+        "candidate_commit": 0.046946699963882565,
+        "candidate_snapshot": 0.047810700023546815,
+        "judge_prepare": 0.08124830003362149,
+        "judge_commit": 0.04606309998780489
+      }
+    },
+    {
+      "call": 100,
+      "forward": {
+        "nodes": 1804,
+        "graph_bytes": 240700,
+        "changed_records": 2,
+        "changed_record_bytes": 631
+      },
+      "backward": {
+        "nodes": 1821,
+        "graph_bytes": 243166,
+        "changed_records": 17,
+        "changed_record_bytes": 2401
+      },
+      "seconds": {
+        "judge_snapshot": 0.031788399966899306,
+        "candidate_prepare": 0.08049250004114583,
+        "candidate_commit": 0.046134699950926006,
+        "candidate_snapshot": 0.03263209998840466,
+        "judge_prepare": 0.08039349998580292,
+        "judge_commit": 0.0644064000225626
+      }
+    }
+  ],
+  "limitations": [
+    "Local arenas share a process; no Docker, pipe or JSON-envelope costs.",
+    "changed_record_bytes is a hypothetical diff estimate, not a validated protocol.",
+    "No retained objects are discarded."
+  ]
+}

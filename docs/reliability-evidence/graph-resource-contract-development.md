@@ -47,9 +47,12 @@ GraphArena.snapshot explicitly revisits every exported object to preserve detach
 aliases, and the host output counter accumulates across calls. A larger individual
 message limit alone does not address this growth.
 
-Next profile repeated-call behavior and review bounded incremental transport and
-reconstruction, preserving detached aliases and atomic validation. Any protocol
-change needs its own malformed-frame, stale-state, mutation and identity tests.
+The [100-call profile](graph-repeated-call-profile.md) now records 24.5 MB of
+graph traffic and 13.4 seconds in preparation/commit, with only 302 KB of changed
+records. This is local diagnostic evidence, not protected timing. Review bounded
+incremental transport and reconstruction while preserving detached aliases and
+atomic validation. Any protocol change needs its own malformed-frame, stale-state,
+mutation and identity tests.
 Task 100 separately uses randomized Solovay-Kitaev decomposition and reaches the
 4096packed-operation budget. Both resource calibration and judge-input randomness
 need explicit frozen policies; neither should be tuned to individual model answers.
