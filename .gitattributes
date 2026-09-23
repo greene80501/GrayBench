@@ -1,3 +1,5 @@
 engine/** text eol=lf
 .github/workflows/engine.yml text eol=lf
 docs/reliability-evidence/*.jsonl -text
+
+docs/reliability-evidence/dag_native_probe.py -text

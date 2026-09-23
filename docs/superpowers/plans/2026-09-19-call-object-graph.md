@@ -637,3 +637,20 @@ source and preserve task-level changes from the historical baseline. Do not add
 targeted passes to an old aggregate. External task requirements remain explicitly
 in the full catalog. Remaining interfaces, uniform resource limits, oracle audit,
 provider calibration and reproduction still block release certification.
+
+
+### Complete post-loop reference inventory
+
+The unchanged38db7fa source completed all286 offline cases. Each143-task suite
+has113pass,28unsupported,1fail(task63),1infrastructure(task82). Exact task
+identities and exclusions match3ed07d2; each suite gains33passes with no prior
+pass regressions. Full raw evidence, verified chain/source and68transitions are
+preserved in docs/reliability-evidence/reference-scan-38db7fa.md and its JSON
+artifacts. These are calibration outcomes, not model scores or certification.
+
+The next work must address the explicit remaining interfaces and uniform
+resource policy, while task63's private RNG coupling and task82's file assumption
+require declared evaluation conditions. No hidden seed transfer or implicit
+semantic-recipe fallback is acceptable. The DAG allocator reproducer demonstrates
+why native pickle-state reconstruction alone is not a faithful graph codec.
+Full task/oracle audit, provider calibration and reproduction remain open.
