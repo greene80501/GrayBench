@@ -713,3 +713,18 @@ regressions include equal-but-distinct supplemental children and closure after
 partial live application; all960Docker tests pass. Independent read-only review
 found no correctness blocker. Remaining reconstruction, concurrency guarantees,
 interfaces, oracle, provider and reproduction requirements remain open.
+
+### Task 109 oracle audit and current guide
+
+The exact private check accepts both a fixed plus state and a parameter that only
+changes global phase. The corrected trusted native probe executes all1,000calls
+for four fixtures in each suite and records Bloch-vector witnesses. All8results
+and call counts are verified. This exposes a coverage defect independent of the
+protected transport's resource/performance issue. Preserve the two flawed
+preliminary diagnostic attempts as such; they do not support normal-suite verdicts.
+See docs/reliability-evidence/task109-oracle-review.md for exact evidence and limits.
+
+A semantic revision still needs explicit domain/resource requirements and honest
+finite-coverage guarantees. No oracle or runtime was changed in this audit.
+The engine guide now distinguishes the implemented opt-in graph protocols from
+historical v3, and keeps reference compatibility separate from oracle admission.

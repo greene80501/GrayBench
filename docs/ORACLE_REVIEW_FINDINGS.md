@@ -6,6 +6,7 @@ oracles belong to a separately versioned track with the same public requirements
 
 | Task | Evidence | Required resolution |
 | --- | --- | --- |
+| 109 | Both suites accept a fixed plus state and a parameter that changes only global phase through all 1,000 checks. The test checks polar angle but never equatorial coverage. | Specify the parameter/resource contract and test physical state variation; parameter count alone is insufficient. See [exact-test native diagnostic](reliability-evidence/task109-oracle-review.md). |
 | 116 / 120 | Both normal and hard upstream tests accept fixed circuits that ignore all function arguments and match only the single tested example. | Exercise varied Pauli strings, times, widths and diagonal phases against independent semantic expectations. See [protected evidence](reliability-evidence/numeric-gate-transport.md). Hamiltonian/diagonal transport support does not repair these tests. |
 | 114 | Both exact upstream tests accept physical qubit 8 instead of the requested isolated qubit 7, because they check only node count. | Verify physical-qubit identities as well as directed edges. Graph transport also needs mutation/cache fidelity; see [diagnostic evidence](reliability-evidence/task114-graph-review.md). |
 | 113 | Both suites accept a constant plain dictionary ignoring the input, while the PropertySet reference was initially unsupported by the bridge. The transport follow-up now passes the reference but leaves the false accept intact. | Preserve the required return type and test varied inputs including cases where removing barriers changes depth; see [protected evidence](reliability-evidence/task113-contract-review.md). Do not confuse transport support with oracle correctness. |
@@ -34,8 +35,8 @@ not replace historical upstream scores.
 
 The [task 3/26 review](reliability-evidence/task3-26-review.md) includes exact pinned-test
 results for 14 trusted authored fixtures in a separate diagnostic container. The latest
-[complete offline reference scan](reliability-evidence/reference-scan-f131336.md) records
-109 passes, 33 unsupported interfaces and one file-boundary error per suite. Reference
+[complete graph offline reference scan](reliability-evidence/reference-scan-38db7fa.md) records
+113 passes, 28 unsupported interfaces, one failure and one file-boundary error per suite. Reference
 compatibility is not task admission or proof of oracle adequacy.
 
 Tasks 116 and 120 now have separately selected [behavioral revisions](reliability-evidence/gate-semantics-revisions.md).
@@ -48,6 +49,8 @@ public before generation. Finite semantic checks do not certify internal methods
 Six [native-versus-protected identity probes](reliability-evidence/alias-boundary.md)
 reproduce one false acceptance and five false rejections caused by value-only
 transport. This affects identity-sensitive behavior even without a visible value
-mutation. The graph-protocol replacement is designed but not implemented. Existing
-release-ineligible status remains necessary; passing unit tests do not prove this
-interface correct.
+mutation. The opt-in [protected graph protocol](reliability-evidence/protected-graph-development.md)
+now repairs those six fixtures. Historical protocol 3 retains these defects and
+is not an automatic fallback. Full SDK coverage and calibration remain unfinished;
+release-ineligible status remains necessary. Passing these controls does not
+certify every interface or the adequacy of the upstream tests.

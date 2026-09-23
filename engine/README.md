@@ -1,281 +1,130 @@
-# GrayBench 3 replacement engine
+# GrayBench replacement engine
 
-This is a fresh Python 3.12 implementation of the accepted
-[reliability plan](../docs/RELIABILITY_PLAN.md). It is under construction. The root-level V2
-package remains available to reproduce historical pilots. Do not mix its scores with this engine.
+A Python 3.12 implementation of the [reliability plan](../docs/RELIABILITY_PLAN.md).
+This engine is under development and is **not certified for model ranking**.
+The root-level V2 package and its pilot results remain historical evidence.
+Engine version 3 and graph protocol 4 are different version identifiers.
 
-From this directory:
+## Start here
+
+Run from this directory:
 
 ```sh
 uv sync --locked --extra dataset --extra qiskit
 uv run graybench doctor
 uv run graybench inventory ../data/datasets
-uv run pytest
-uv run ruff check src tests
+uv run graybench --help
 ```
 
-The inspection CLI does not launch a billable benchmark campaign. The full-suite runner will
-be exposed after the required interfaces and oracle gates are implemented. Generation adapters
-can currently be exercised programmatically with explicit frozen requests.
+`inventory` imports the pinned 151 normal and 151 hard records and emits review
+cards. Loading records or passing their reference tests does not admit them for
+publication. The offline cohort excludes eight explicit service-dependent
+families per suite, leaving 143 tasks each. See the
+[complete graph reference scan](../docs/reliability-evidence/reference-scan-38db7fa.md).
 
-## Experimental graph transport
+## Execution conditions
 
-A standalone persistent arena and numeric-storage registry now preserve shared
-container references, cycles, returned-input identity and NumPy buffer/view aliases.
-Scientific and primitive wrappers additionally preserve actual component and
-instance-dictionary references; see [current scope](../docs/reliability-evidence/graph-scientific-primitive-development.md).
-They are not yet integrated into production worker calls. The six documented
-identity verdict defects remain unresolved in that path. See
-[implementation evidence and remaining limits](../docs/reliability-evidence/graph-core-development.md).
+| Selection | Behavior | Current limitation |
+|---|---|---|
+| `upstream` (default) | Historical protocol-3 value transport and exact pinned tests | Known object-identity verdict defects; retained for explicit historical conditions |
+| `upstream-graph-v4` | Protected protocol-4 judge with complete graph snapshots | Incomplete SDK coverage and resource calibration |
+| `upstream-graph-delta-v1` | Same graph validation with changed-record transport | Reduces wire traffic; still captures and reconstructs retained object history |
+| Named semantic revision | Explicitly revised task contract/test, frozen before generation | Development-only; not an upstream score or complete task certification |
 
-## Implemented foundation
+There is no automatic fallback between these conditions. Semantic revisions
+currently cover tasks 0, 82, 113, 116, 120 and 141. See
+[evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md),
+[gate revisions](../docs/reliability-evidence/gate-semantics-revisions.md), and
+[the registry](src/graybench/evaluation_recipes.py) for exact names and family checks.
 
-- Strict public-task and experiment contracts, with exact request hashes frozen before dispatch.
-- Independent identities for dataset, generation code, runtime, judge, and analysis.
-- Native Ollama, OpenAI Chat Completions, OpenAI Responses, and Gemini request/response adapters.
-  OpenAI-compatible endpoints can use their own model IDs and base URLs. Additional native
-  interfaces register through the `graybench.adapters` package entry-point group.
-- Explicit model settings with evidence. Unknown, ignored, or unsupported requested settings
-  fail before generation. No default temperature, helpful prompts, tools, or answer repair.
-  An accepted setting is not falsely represented as provider-confirmed effective behavior.
-- Single-attempt bounded HTTP transport, no redirects or automatic retries, API keys sourced
-  from named environment variables, credential echoes redacted from recorded responses.
-- An append-only SQLite ledger with frozen schedules, exclusive dispatch claims, bounded retry
-  eligibility, immutable returned answers and judgments, content hashes, and an event chain.
-  A database owner can still rewrite SQLite itself; the chain is not an external signature.
-- Incomplete or unsupported judgments produce no aggregate accuracy score. Historical rescoring
-  by a different judge cannot alter the frozen experiment's reported score.
-- A candidate-only Docker worker: no tests, reference answers, credentials, or Docker socket
-  are mounted. The host decodes bounded plain values and makes the correctness decision.
-  Candidate stdout has no verdict authority. Runtime images must use immutable local IDs.
-- A bounded circuit codec exchanges standard instructions, registers, global phase,
-  and initial/routing permutations using a fixed constructor registry. No QPY or pickle is
-  deserialized. Circuit wire v4 preserves parameter UUIDs, vector ordering and a bounded fixed
-  vocabulary of symbolic operations. Reconstruction uses the pinned Qiskit 2.4 structured replay
-  interface, never expression-string evaluation. Custom instructions, open controls and control
-  flow remain unsupported. Matrix-defined UnitaryGate instructions preserve their numeric data
-  without repairing nonunitary values, and supported instruction labels survive transport.
-  It is not a complete serialization of circuit metadata or original virtual-qubit identity.
-- StatePreparation preserves its original argument, current parameters, label/int mode and
-  inverse flag. Reconstruction does not normalize again. Normal and hard tasks 5 and 6 pass
-  targeted reference checks; modified/cached definitions and cross-object aliases still need
-  an explicit representation before complete SDK equivalence can be claimed.
-- Explicit `call_with_updates` records changed arguments. The simpler read-only call refuses
-  to silently discard mutations. An upstream-compatible mutation/alias bridge is still required.
-- Numeric arrays and NumPy scalars retain dtype, byte order, shape and exact numeric bytes;
-  object/string/structured dtypes and oversized allocations are rejected. Statevectors,
-  density matrices and rectangular operators retain their subsystem dimensions. Complex
-  array values, signed zero and non-finite numeric array values are not silently repaired.
-- Clifford and unseeded StabilizerState values retain their boolean tableaux and phase bits;
-  Choi channels retain numeric data and input/output subsystem dimensions. Invalid symplectic
-  or nonphysical values are not repaired. Explicit RNG state and bound subsystem arguments
-  remain unsupported for these new representations.
-- `Candidate.call_wire` forwards typed data without host object reconstruction. `ProtectedJudge`
-  runs fixed trusted semantic oracles in a separate container with disjoint mounts and bounded
-  memory, CPU, wall time and output. Its provenance binds source files, image, resource policy
-  and exact input hash. Judge failures remain unscored infrastructure outcomes. The current
-  registry contains the task-20 behavioral oracle; the full upstream-test bridge is unfinished.
-- `UpstreamJudge` now runs the pinned upstream `check` function in a separate trusted container
-  and proxies calls into the candidate container without host object reconstruction. It records
-  complete bounded wire transcripts and source/input identities, invokes `check` once, and
-  preserves candidate state between calls. Input mutation and unsupported value interfaces
-  remain explicit unresolved outcomes. Non-assertion test errors remain unscored pending review.
-- The first full reference-interface scan ran all 143 offline tasks in each suite: 80 passed
-  in each, with the other outcomes retained for diagnosis. This is not model accuracy. It exposed
-  register-backed bit identity loss; circuit wire format v2 fixes that and all four affected
-  normal/hard task-38/task-87 cases pass a separate replay. Full scan and replay remain distinct.
-- Targeted symbolic and NumPy-parameter replays now pass tasks 7, 8, 9, 99, 111 and 127 in both
-  suites. This is compatibility evidence, not a rerun of the full scan or task certification.
-- Worker protocol 3 separates execution exceptions from decoding/encoding diagnostics. Codec
-  diagnostics produce unscored unsupported outcomes pending adjudication. A candidate can spoof
-  such a diagnostic, but cannot earn a pass or complete aggregate score through it.
-- A separate strengthened task-20 oracle checks mapped GHZ+ state fidelity, following final
-  logical-qubit positions and accepting global phase. Two positive constructions pass and four
-  shape-compatible mutants fail. It does not prove which pass-manager algorithm generated a
-  returned circuit; that specification requirement remains unverified.
-- Strict byte-pinned imports of all 151 normal and 151 hard Qiskit HumanEval records, public/private
-  record separation, and an explicit review inventory. External-service membership is provisional
-  and must be reviewed; no task becomes eligible merely because its reference happens to pass.
-- Relevant environment, package, complete engine source, and NVIDIA GPU provenance. Ollama
-  discovery preserves server version, model details, tags/digests, and loaded-model observations.
+The graph bridge is implemented and opt-in. It uses separate persistent arenas in
+candidate and trusted judge containers; the host relays bounded data without
+constructing candidate-supplied Qiskit objects. Its retained references, cycles,
+mutation and selected SDK cache/owner semantics repair the six preserved identity
+fixtures from the value-only bridge. That does not establish arbitrary Python or
+Qiskit equivalence. See [protected graph scope](../docs/reliability-evidence/protected-graph-development.md),
+[delta transport](../docs/reliability-evidence/graph-delta-transport-development.md),
+and [live capture validation](../docs/reliability-evidence/graph-live-capture-development.md).
 
-## Required work before release
+Candidates have no private tests, reference answers, credentials or Docker socket
+mounted. Runtime images must use immutable local `sha256:...` IDs. Candidate
+processes freeze between calls. Bootstrap and active-wall-time accounting are
+explicit; resource ceilings remain subject to calibration. Candidate output has
+no verdict authority. Unsupported interfaces and judge infrastructure failures
+remain unscored blockers. Basic exception type/argument transport is bounded;
+arbitrary exception metadata is not supported.
 
-1. Rich, bounded Qiskit value codecs; mutations to arguments; files; transformation-pass callbacks;
-   type fidelity; and complete upstream-proxy semantics through the independent judge. The current
-   scientific-value/numeric-circuit worker is not a complete Qiskit executor. Candidate-reported
-   errors are untrusted.
-   Candidate containers now freeze between calls, so judge delays do not consume their active
-   wall-time allowance and background processes cannot run for free. Startup and lifecycle
-   overhead are conservatively charged. Calibration of these overheads remains required before
-   choosing published execution limits; this is an active wall-time policy, not CPU accounting.
-   A persistent local Docker API connection handles pause/unpause without launching a CLI
-   process for every call. This resolves the reproduced task-109 reference timeout caused by
-   the cost of 1,000 call boundaries. Remote Docker control endpoints are not supported here.
-2. Reviewed specifications and stronger semantic oracles for every admitted task, independent
-   positive implementations, and meaningful mutants. The strengthened task-20 behavioral oracle
-   rejects the reproduced empty-circuit false acceptance, but its complete specification review
-   is unfinished. The inventory explicitly marks every task unreviewed.
-3. Complete campaign orchestration with model drift checks, full provenance and eligibility
-   before generation. `GenerationRunner.step()` now dispatches at most one frozen request,
-   checks source/request/endpoint identities, and resumes from the ledger. Retry backoff is
-   enforced transactionally across restarts; pending/ambiguous delivery stops dispatch.
-   `UpstreamCampaign` now binds the supplied task records, per-task judge configurations and
-   immutable image before dispatch, and schedules protected judgments from saved answers.
-   Judgment intent is append-only; interrupted oracle execution stops rather than rerolling.
-   `campaign-create SETUP CACHE LEDGER` saves a validated development setup without generation;
-   `campaign-step LEDGER RUN_ID CACHE [--docker PATH]` resumes at most one action using the
-   stored setup. The setup includes a frozen Protocol, image, execution and HTTP limits.
-   Python/OS/package/source provenance is stored append-only and checked before CLI resume.
-   `campaign-plan MODEL CACHE OUTPUT --image IMAGE --name NAME --suite both` builds that setup
-   offline from both full pinned suites; use `--task SUITE/TASK_ID` repeatedly for an explicit
-   selection. `--repeats N` and an optional UTF-8 `--system-prompt FILE` are frozen in the plan.
-   Existing output files are not overwritten. Known external-service tasks are reported, not
-   silently filtered. Task adequacy/admission reviews and model drift checks remain
-   required. Identity validation does not certify an oracle or make a cohort release-eligible.
-   Protocol 3.1 requires returned model names to match the requested name or an explicit
-   `accepted_returned_models` list backed by `model_identity_evidence`. Missing/unexpected
-   names retain answers but stop dispatch and suppress aggregate accuracy. This is a provider
-   name check, not weight verification. Protocol 3.0 runs need their original engine for replay.
-   `campaign-observe LEDGER RUN_ID` saves provider discovery evidence. Once a baseline exists,
-   generation steps refresh it before dispatch; missing/changed discovery identity stops the
-   run and suppresses aggregate accuracy. Ollama comparison uses the exact catalog model digest,
-   server version and show configuration; volatile load state remains recorded separately.
-   Discovery is currently optional for development runs. Hosted metadata extraction is
-   implemented; effective-setting and model-native capability validation remain incomplete.
-4. Provider capability evidence and live contract checks; model-native budget calibration;
-   independent reproducibility runs; repeated/paired statistical analysis; published-score
-   compatibility records; and a release manifest anchored outside candidate execution.
-5. Migration of the user-facing commands and documentation to the replacement once its gates pass.
+## Campaigns and provenance
 
-No existing result has become a certified score merely because these foundation tests pass.
-Development summaries use the frozen schedule denominator, expose per-task outcomes
-and score blockers, and require the frozen analysis source. See
-[report integrity](../docs/reliability-evidence/summary-integrity.md) for snapshot
-consistency, provenance checks and the remaining publication requirements.
-New ledgers also bind exact database records into their event history. The
-[row-binding verifier](../docs/reliability-evidence/event-row-bindings.md) rejects
-unrecorded or inconsistent answers/judgments. Legacy logs require their original engine.
+Adapters cover Ollama, OpenAI Chat Completions, OpenAI Responses and Gemini.
+OpenAI-compatible endpoints have explicit base URLs and model IDs; additional
+native adapters use the `graybench.adapters` entry-point group. This is an
+extension mechanism, not verified support for every model. Exact endpoint/model
+settings need evidence. An accepted request setting is not proof the provider
+honored it. No default helpful prompt, answer repair or hidden retry is added.
 
-`comparison-plan` and `compare` provide explicit development comparisons with paired
-task-family resampling. They require matched, complete protocols and retain normal/hard
-variants together. See [paired comparisons](../docs/reliability-evidence/paired-comparisons.md)
-for commands, statistical assumptions and the remaining calibration requirements.
+`campaign-plan` freezes selected tasks, requests and an explicit evaluation recipe.
+`campaign-create` saves the validated setup without generating answers.
+`campaign-step` performs at most one scheduled generation or protected judgment;
+it may make a billable request. `campaign-observe` records provider metadata.
+Use each command's `--help` for required arguments. See
+[model discovery](../docs/reliability-evidence/model-discovery.md) and
+[evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md).
 
-`campaign-observe` now supports model-specific metadata from OpenAI Chat/Responses
-and Gemini as well as Ollama. [Discovery evidence](../docs/reliability-evidence/model-discovery.md)
-describes raw HTTP records, conservative drift blocking and the distinction between
-provider-reported metadata and verified effective settings.
+The append-only ledger binds schedules, requests, returned answers, judgments,
+artifacts and event history. Source, environment, image and configuration
+identities are recorded. Ambiguous dispatch or interrupted judgment blocks
+automatic replay. Provider name and discovery checks detect specified metadata
+changes; they cannot verify proprietary model weights. Development discovery is
+optional; live capability calibration remains required for release.
 
-## Adversarial Docker tests
+`verify-ledger` validates retained evidence. `summary` reports completeness and
+score blockers before accuracy. `comparison-plan` and `compare` require matched,
+complete protocols and keep normal/hard task families together during paired
+resampling. See [report integrity](../docs/reliability-evidence/summary-integrity.md),
+[row bindings](../docs/reliability-evidence/event-row-bindings.md), and
+[comparisons](../docs/reliability-evidence/paired-comparisons.md).
+Hashes and SQLite append rules are not external authenticity guarantees.
 
-`campaign-plan --evaluation-recipe NAME` explicitly selects the existing task 0,
-82, 113 or 141 development revision. Selection is frozen before generation and checked
-on resume and comparison; wrong-family cohorts fail rather than being filtered.
-See [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md) for
-commands, source replay rules and the distinction from upstream scores.
+## Reference and regression checks
 
-Runtime preparation and candidate execution use an explicit startup handshake.
-Bootstrap failures remain unscored and bootstrap time is excluded from the candidate
-budget; see [runtime attribution](../docs/reliability-evidence/runtime-bootstrap.md).
+```sh
+uv run graybench reference-scan CACHE NEW_OUTPUT --image sha256:IMAGE_ID --offline --bridge-protocol 4
+uv run graybench reference-inspect NEW_OUTPUT
+uv run --extra qiskit --extra dataset pytest
+uv run ruff check src tests
+uv run ruff format --check src tests
+```
 
-Circuit wire v5 supports bounded nested definitions for plain Qiskit Gate/Instruction
-objects and selected standalone standard instructions, with names and JSON metadata.
-See [instruction transport](../docs/reliability-evidence/instruction-definitions.md)
-for validated cases, limits and remaining subclass/cache restrictions.
-ScalarOp and SparsePauliOp now have bounded data-only exchange preserving terms,
-phases, symbolic coefficients and subsystem bindings; see [operator evidence](../docs/reliability-evidence/sparse-operators.md).
-CNOTDihedral exchange preserves affine and polynomial state, including the SDK's
-distinct list/array shift forms; see [transport evidence](../docs/reliability-evidence/dihedral-transport.md).
+Replace the uppercase placeholders. Add `--docker PATH` when Docker is not on PATH.
+The reference CLI selects full snapshots for protocol 4; delta reference probes
+currently use the Python API described in the delta document. Output files are
+reserved exclusively and are never overwritten. A pending invocation needs
+adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
 
-The reusable oracle-review runner records authored counterexamples separately from
-model scores. [Task0/1 review](../docs/reliability-evidence/task0-1-review.md) reproduces
-upstream false accepts and documents the explicit task0 size revision. Task1 still
-needs a contract decision about what returned counts can establish.
+For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
+Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
+Without the image setting, Docker tests skip. The latest verified runtime at
+`0379d13` passed 960 tests with zero failures, errors or skips. That result covers
+the regression suite, not every benchmark requirement.
 
-Candidate output files can be captured as opaque bytes while all candidate processes
-remain frozen. The isolated workspace uses a bounded ephemeral tmpfs volume. See
-[file capture](../docs/reliability-evidence/file-capture.md) for the initial boundary
-and limitations; capture alone does not establish file correctness.
-The separate development `QpyFileJudge` now implements a three-container task-82
-[semantic track](../docs/reliability-evidence/task82-semantic-track.md). It is not
-silently enabled for upstream campaigns and remains release-ineligible.
+The latest complete graph reference scan, at `38db7fa`, records **113 pass,
+28 unsupported, one fail and one infrastructure error per offline suite**.
+Subsequent targeted evidence does not replace that aggregate. Full scan source,
+task identities, exclusions, raw outcomes and unresolved cases are linked above.
 
-Large circuit exchange uses bounded lossless compression without removing gates.
-Wire capacity failures remain unscored; diagnostic floods remain resource failures.
-See [transport calibration](../docs/reliability-evidence/large-circuit-transport.md)
-for limits, adversarial checks and separate normal/hard task-100 reference evidence.
+## Remaining admission work
 
-`reference-scan CACHE OUTPUT --image IMAGE --offline` calibrates both pinned offline reference
-suites into a new append-only JSONL file. Omit `--offline` only for an explicitly planned full
-service-dependent calibration. `reference-inspect OUTPUT` checks its event chain and identifies
-pending invocations. These commands produce compatibility evidence, never LLM accuracy scores.
+- Complete SDK/interface fidelity and uniform resource calibration, including long
+  repeated-call workloads. No object-history dropping to manufacture a pass.
+- Audit every public requirement with valid alternatives and meaningful mutants.
+  [Known oracle defects](../docs/ORACLE_REVIEW_FINDINGS.md) remain separate from
+  transport compatibility. Task 63's private RNG assumption and task 82's file
+  boundary need explicit conditions or revisions.
+- Validate live provider capabilities, effective settings and model provenance;
+  freeze assistance, budgets, sampling and recovery before a campaign.
+- Complete fresh holdout design, independent reproduction, external release
+  signing and requirement-by-requirement review. Preserve all earlier evidence.
 
-Set `GRAYBENCH_TEST_IMAGE` to the locally inspected `sha256:...` image ID and optionally
-`GRAYBENCH_DOCKER` to the Docker executable. Run `uv run pytest`. Docker tests are explicitly
-skipped without that image setting. The image must have Python 3.12; Qiskit support will use the
-separately pinned evaluation environment. Never point these tests at a privileged custom wrapper.
-
-## Provider references
-
-- [Ollama chat](https://docs.ollama.com/api/chat),
-  [model tags](https://docs.ollama.com/api/tags), and
-  [documentation index](https://docs.ollama.com/llms.txt).
-- [OpenAI Responses reference](https://developers.openai.com/api/reference/typescript/resources/responses/methods/create).
-- [Gemini generateContent](https://ai.google.dev/api/generate-content).
-
-Endpoint support and settings still require evidence for the exact model and server version.
-
-Tasks 116 and 120 also have explicit `qhe116-evolution-semantics-v1` and
-`qhe120-diagonal-semantics-v1` development recipes. See the
-[gate semantics contract and limits](../docs/reliability-evidence/gate-semantics-revisions.md)
-before interpreting these results. They score observable behavior, not internal
-construction procedures, and remain distinct from upstream scores.
-
-Known interface defect: the current value-only bridge does not preserve shared
-object references, returned-input identity or cross-call identity. Six protected
-[identity diagnostics](../docs/reliability-evidence/alias-boundary.md) reproduce
-incorrect verdicts. The [graph-protocol plan](../docs/superpowers/plans/2026-09-19-call-object-graph.md)
-is unfinished; these identity-sensitive interfaces are not certified.
-
-Experimental graph symbol identities now preserve Parameter/ParameterVector objects,
-shared vector slots and detached elements across resize. See
-[development evidence](../docs/reliability-evidence/graph-symbol-identities-development.md).
-Expression replay and symbolic object arrays remain pending; production calls still use v3.
-
-[Symbolic graph storage](../docs/reliability-evidence/graph-symbolic-storage-development.md)
-now includes bounded expression replay and object-reference arrays. Earlier increment
-notes describe their historical scope. Circuit/RPC integration and admission remain pending.
-
-[Array metadata updates](../docs/reliability-evidence/graph-array-geometry-development.md)
-now preserve existing objects and storage through supported shape, stride and numeric
-dtype changes. Storage resizing and base/offset changes remain unsupported.
-
-[Circuit-member development](../docs/reliability-evidence/graph-owned-circuit-members-development.md)
-adds register-owned bit/register graphs and records native packed-instruction,
-cache-ownership and anonymous-ID findings. Full circuit transport remains unfinished.
-
-[Owner-aware commit development](../docs/reliability-evidence/graph-owner-aware-commit-development.md)
-now rehearses native CircuitData membership transitions privately and binds actual
-cache objects before reference resolution. QuantumCircuit/instruction transport and
-production integration remain unfinished.
-
-Explicit public-anchor transfers are now implemented in the standalone graph API.
-They retain factory and child identity, validate per-node claims, rehearse native
-owner transitions privately, and reject live state/identity drift before commit.
-See docs/reliability-evidence/anchor-transfer-development.md. Production worker
-integration and remaining circuit interfaces are still in progress.
-
-Anchor-enabled circuit traversal also preserves stable singleton operation wrappers
-when the circuit is the only exported root, including distinct retained clones and
-separate native instruction caches. See
-docs/reliability-evidence/packed-singleton-wrapper-development.md.
-
-The protected graph bridge is available explicitly for development via
-`UpstreamJudge(..., protocol=4)`, `reference-scan --bridge-protocol 4`, or the frozen
-campaign recipe `upstream-graph-v4`. Candidate and trusted judge have separate
-persistent arenas; the host only relays graph envelopes. This path fixes the six
-preserved identity fixtures, but is not yet full-cohort admission or release
-certification. Historical v3 remains identifiable and is never an automatic graph
-fallback. See docs/reliability-evidence/protected-graph-development.md for verified
-scope, exception limits and remaining requirements.
+Green tests and passing canonical solutions do not make a benchmark fair or its
+oracles adequate. Publication eligibility remains false until those gates pass.
