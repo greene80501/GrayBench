@@ -13,7 +13,16 @@ def encode_python(item, operation, intrinsic, ref, *, depth=0, budget=None, reta
 
     if not (InstructionCodec().matches(operation) or SingletonCodec().matches(operation)):
         raise WireError("Retained Python operation requires another component codec")
-    from qiskit.circuit import IfElseOp, Parameter, ParameterExpression, ParameterVectorElement
+    from qiskit.circuit import (
+        ForLoopOp,
+        IfElseOp,
+        Parameter,
+        ParameterExpression,
+        ParameterVectorElement,
+        WhileLoopOp,
+    )
+
+    block_operation = type(operation) in (IfElseOp, ForLoopOp, WhileLoopOp)
 
     def parameter(value):
         if type(value) in (Parameter, ParameterExpression, ParameterVectorElement):
@@ -29,23 +38,33 @@ def encode_python(item, operation, intrinsic, ref, *, depth=0, budget=None, reta
         "native_standard": item.is_standard_gate(),
         "num_qubits": native.num_qubits,
         "num_clbits": native.num_clbits,
-        **({"operation": ref(operation)} if retained else {"control_flow": "if_else"}),
+        **({"operation": ref(operation)} if retained else {"control_flow": item.name}),
         "name": item.name,
         "qubits": [qpos[q] for q in item.qubits],
         "clbits": [cpos[c] for c in item.clbits],
-        "params": [] if type(operation) is IfElseOp else [parameter(p) for p in item.params],
+        "params": [] if block_operation else [parameter(p) for p in item.params],
         "label": item.label,
     }
     from qiskit.circuit import Delay
     from qiskit.circuit.library import UnitaryGate
 
-    if type(operation) is IfElseOp:
+    if block_operation:
         from graybench.graph_control_flow import encode_branch, encode_condition, native_operation
 
+        cached_params = item.params
+        branches = cached_params[2:] if type(operation) is ForLoopOp else cached_params
         result["branches"] = [
-            encode_branch(branch, ref, depth=depth + 1, budget=budget) for branch in item.params
+            encode_branch(branch, ref, depth=depth + 1, budget=budget) for branch in branches
         ]
-        result["condition"] = encode_condition(native_operation(item, intrinsic).condition)
+        if type(operation) is ForLoopOp:
+            from graybench.graph_loops import encode_indices
+
+            result["indices"] = encode_indices(cached_params[0])
+            result["loop_parameter"] = (
+                None if cached_params[1] is None else encode(cached_params[1], ref)
+            )
+        else:
+            result["condition"] = encode_condition(native_operation(item, intrinsic).condition)
     if type(operation) is UnitaryGate:
         result["matrix"] = array_record(item.matrix)
     if type(operation) is Delay:
@@ -70,12 +89,21 @@ def validate_python(op, qubits, clbits, index, *, depth=0, budget=None):
             raise WireError("Invalid referenced instruction state")
         selector = component["state"].get("class")
     else:
-        if op["control_flow"] != "if_else":
+        if op["control_flow"] not in (
+            "if_else",
+            "for_loop",
+            "while_loop",
+            "break_loop",
+            "continue_loop",
+        ):
             raise WireError("Unknown native control flow")
-        selector = "if_else"
+        selector = op["control_flow"]
     is_delay = selector == "delay"
     is_unitary = selector == "unitary"
     is_if_else = selector == "if_else"
+    is_while = selector == "while_loop"
+    is_for = selector == "for_loop"
+    has_blocks = is_if_else or is_while or is_for
     fields(
         op,
         {
@@ -91,18 +119,29 @@ def validate_python(op, qubits, clbits, index, *, depth=0, budget=None):
         | ({"operation"} if retained else {"control_flow"})
         | ({"unit"} if is_delay else set())
         | ({"matrix"} if is_unitary else set())
-        | ({"branches", "condition"} if is_if_else else set()),
+        | ({"branches"} if has_blocks else set())
+        | ({"condition"} if is_if_else or is_while else set())
+        | ({"indices", "loop_parameter"} if is_for else set()),
     )
-    if is_if_else:
+    if has_blocks:
         from graybench.graph_control_flow import validate_branch, validate_condition
 
         if (
             type(op["branches"]) is not list
-            or len(op["branches"]) not in (1, 2)
+            or len(op["branches"]) not in ((1, 2) if is_if_else else (1,))
             or op["params"] != []
         ):
-            raise WireError("Invalid native if-else branches")
-        validate_condition(op["condition"])
+            raise WireError("Invalid native control-flow branches")
+        if is_for:
+            from graybench.graph_loops import restore_indices
+
+            restore_indices(op["indices"])
+            if op["loop_parameter"] is not None:
+                validate(op["loop_parameter"], index)
+                if op["loop_parameter"].get("kind") not in ("symbol", "element"):
+                    raise WireError("Invalid loop parameter")
+        else:
+            validate_condition(op["condition"])
         for branch in op["branches"]:
             validate_branch(branch, index, depth=depth + 1, budget=budget)
     if is_delay:
@@ -134,6 +173,8 @@ def validate_python(op, qubits, clbits, index, *, depth=0, budget=None):
 def python_tokens(op):
     if "operation" in op:
         yield op["operation"]
+    if op.get("loop_parameter") is not None:
+        yield from vector_tokens(op["loop_parameter"])
     if "branches" in op:
         from graybench.graph_packed import operation_tokens
 
@@ -175,17 +216,35 @@ def restore_python(op, qubits, clbits, resolve):
     from graybench.graph_types import token_value
 
     if "control_flow" in op:
-        from qiskit.circuit import IfElseOp
+        from qiskit.circuit import BreakLoopOp, ContinueLoopOp, ForLoopOp, IfElseOp, WhileLoopOp
 
         from graybench.graph_control_flow import restore_branch, restore_condition
 
-        blocks = [restore_branch(branch, resolve) for branch in op["branches"]]
-        operation = IfElseOp(
-            restore_condition(op["condition"]),
-            blocks[0],
-            blocks[1] if len(blocks) == 2 else None,
-            label=op["label"],
-        )
+        blocks = [restore_branch(branch, resolve) for branch in op.get("branches", [])]
+        if op["control_flow"] == "if_else":
+            operation = IfElseOp(
+                restore_condition(op["condition"]),
+                blocks[0],
+                blocks[1] if len(blocks) == 2 else None,
+                label=op["label"],
+            )
+        elif op["control_flow"] == "while_loop":
+            operation = WhileLoopOp(
+                restore_condition(op["condition"]), blocks[0], label=op["label"]
+            )
+        elif op["control_flow"] == "for_loop":
+            from graybench.graph_loops import restore_indices
+
+            parameter = (
+                None if op["loop_parameter"] is None else replay(op["loop_parameter"], resolve)
+            )
+            operation = ForLoopOp(
+                restore_indices(op["indices"]), parameter, blocks[0], label=op["label"]
+            )
+        else:
+            cls = BreakLoopOp if op["control_flow"] == "break_loop" else ContinueLoopOp
+            operation = cls(op["num_qubits"], op["num_clbits"])
+            operation.label = op["label"]
         return CircuitInstruction(
             operation, [qubits[i] for i in op["qubits"]], [clbits[i] for i in op["clbits"]]
         )
@@ -215,9 +274,18 @@ def restore_python(op, qubits, clbits, resolve):
         from graybench.graph_control_flow import restore_branch, restore_condition
 
         cached["_params"] = [restore_branch(branch, resolve) for branch in op["branches"]]
-        if len(cached["_params"]) == 1:
+        if "indices" in op:
+            from graybench.graph_loops import restore_indices
+
+            cached["_params"] = [
+                restore_indices(op["indices"]),
+                None if op["loop_parameter"] is None else replay(op["loop_parameter"], resolve),
+                cached["_params"][0],
+            ]
+        elif type(operation).__name__ == "IfElseOp" and len(cached["_params"]) == 1:
             cached["_params"].append(None)
-        cached["_condition"] = restore_condition(op["condition"])
+        if "condition" in op:
+            cached["_condition"] = restore_condition(op["condition"])
     replacements = [(operation, actual, cached)]
     if "base_gate" in actual:
         # Public controlled params delegate through the base chain. Cache replay

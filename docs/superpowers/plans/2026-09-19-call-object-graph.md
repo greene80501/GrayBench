@@ -620,3 +620,20 @@ verification status are in docs/reliability-evidence/graph-classical-development
 This does not complete loop, circuit-variable/capture, duration-literal or broader
 interface support. Full normal/hard admission and all other release gates remain
 required; the two-case replay is not a new aggregate score.
+
+
+### Task3 loop state and native snapshots
+
+For/while loops and break/continue operations now use fixed instruction schemas.
+A range component preserves retained Python identity without enumerating values;
+native index sets, loop parameters and branch snapshots remain intrinsic values
+with their observed fresh-wrapper behavior. Eleven new tests include compiled
+loops, malformed state and actual protected parameterized loops with conditional
+breaks. The task150 source-guarded reference replay passes both suites. See
+docs/reliability-evidence/graph-loop-development.md for verification status.
+
+Next refresh the complete offline normal/hard reference cohort against unchanged
+source and preserve task-level changes from the historical baseline. Do not add
+targeted passes to an old aggregate. External task requirements remain explicitly
+in the full catalog. Remaining interfaces, uniform resource limits, oracle audit,
+provider calibration and reproduction still block release certification.

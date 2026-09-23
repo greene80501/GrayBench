@@ -52,11 +52,19 @@ def encode_operations(data, intrinsic, ref, *, depth=0, budget=None):
                 encode_python(item, operation, intrinsic, ref, depth=depth, budget=budget)
             )
             continue
-        from qiskit.circuit import Barrier, Delay, IfElseOp
+        from qiskit.circuit import (
+            Barrier,
+            BreakLoopOp,
+            ContinueLoopOp,
+            Delay,
+            ForLoopOp,
+            IfElseOp,
+            WhileLoopOp,
+        )
         from qiskit.circuit.library import UnitaryGate
         from qiskit.dagcircuit import DAGOpNode
 
-        if type(operation) is IfElseOp:
+        if type(operation) in (IfElseOp, ForLoopOp, WhileLoopOp, BreakLoopOp, ContinueLoopOp):
             result.append(
                 encode_python(
                     item, operation, intrinsic, ref, depth=depth, budget=budget, retained=False

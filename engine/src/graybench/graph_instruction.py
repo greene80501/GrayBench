@@ -30,14 +30,25 @@ def attributes(selector):
         return STATE_PREPARATION_ATTRS
     if selector == "delay":
         return DELAY_ATTRS
-    if selector == "if_else":
+    if selector in ("if_else", "while_loop"):
         return IF_ELSE_ATTRS
     return CONTROL_ATTRS if issubclass(classes()[selector], ControlledGate) else ATTRS
 
 
 @cache
 def classes():
-    from qiskit.circuit import Barrier, ControlledGate, Delay, Gate, IfElseOp, Instruction
+    from qiskit.circuit import (
+        Barrier,
+        BreakLoopOp,
+        ContinueLoopOp,
+        ControlledGate,
+        Delay,
+        ForLoopOp,
+        Gate,
+        IfElseOp,
+        Instruction,
+        WhileLoopOp,
+    )
     from qiskit.circuit.library import (
         LinearFunction,
         MCXGate,
@@ -57,6 +68,10 @@ def classes():
         "delay": Delay,
         "unitary": UnitaryGate,
         "if_else": IfElseOp,
+        "for_loop": ForLoopOp,
+        "while_loop": WhileLoopOp,
+        "break_loop": BreakLoopOp,
+        "continue_loop": ContinueLoopOp,
     }
     expected = {key for key, _ in ATTRS}
     for name, template in get_standard_gate_name_mapping().items():

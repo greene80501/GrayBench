@@ -9,6 +9,7 @@ from graybench.graph_circuit_data import CIRCUIT_DATA_CODECS
 from graybench.graph_classical import ClassicalExpressionCodec
 from graybench.graph_expressions import ExpressionCodec
 from graybench.graph_instruction import InstructionCodec
+from graybench.graph_loops import RangeCodec
 from graybench.graph_numeric import ARRAY_CODECS
 from graybench.graph_object_arrays import OBJECT_ARRAY_CODECS
 from graybench.graph_primitive import PRIMITIVE_CODECS
@@ -161,6 +162,7 @@ REGISTRY.update(CIRCUIT_DATA_CODECS)
 REGISTRY.update(QUANTUM_CIRCUIT_CODECS)
 REGISTRY["parameter_expression"] = ExpressionCodec()
 REGISTRY["classical_expression"] = ClassicalExpressionCodec()
+REGISTRY["range"] = RangeCodec()
 REGISTRY["python_instruction"] = InstructionCodec()
 REGISTRY["public_singleton"] = SingletonCodec()
 
