@@ -204,7 +204,7 @@ def answer(*args):
 """,
         code,
     )
-    assert result.outcome in {"candidate_error", "infrastructure_error"}, result
+    assert result.outcome == "candidate_error", result
 
 
 def test_unknown_exception_metadata_blocks_completeness_even_if_test_catches_everything():

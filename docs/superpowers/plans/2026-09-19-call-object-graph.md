@@ -389,8 +389,8 @@ Consumes v4 integration. Produces auditable admission evidence with remaining bl
 
 ## Self-review and execution state
 
-The ten spec invariants map to Tasks1â€“5: identity/topology/validation (1), storage
-and nested ownership (2â€“3), persistent calls/exceptions/privacy (4), and adversarial
+The ten spec invariants map to Tasks1Ã¢â‚¬â€œ5: identity/topology/validation (1), storage
+and nested ownership (2Ã¢â‚¬â€œ3), persistent calls/exceptions/privacy (4), and adversarial
 plus real-cohort evidence (5). All five review-focus cases have explicit tests.
 This plan does not claim implementation completion or user review of this artifact.
 Continue inline under the existing goal authorization; no parallel implementation
@@ -598,8 +598,12 @@ Two earlier replays remain preserved: each exposed a transport defect on task72,
 first operation copying and then discarded singleton caches. See
 docs/reliability-evidence/graph-control-flow-development.md for all raw evidence.
 
-Before further admission, separate internal graph reconstruction errors from
-invalid candidate payloads: the current generic WireError classification can turn
-an internal transport defect into a scored candidate_error. This is the next
-priority. Classical expression conditions, loops, remaining interfaces, resource
-configuration, oracle review and the other release gates are still required.
+The subsequent reconstruction-outcome increment separates internal owner failures
+from invalid candidate payloads and removes generic ValueError/TypeError from
+candidate-error handlers. Protected fault and ledger tests demonstrate score
+blocking; malformed envelopes remain candidate_error. The six-case before/after
+fault replay preserves identical case identities and complete source-bound chains.
+See docs/reliability-evidence/graph-reconstruction-outcomes-development.md for
+verification status. Actual late-owner alias support, classical expression
+conditions, loops, remaining interfaces, resource configuration, oracle review
+and the other release gates are still required.

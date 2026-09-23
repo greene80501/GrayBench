@@ -8,6 +8,7 @@ from pathlib import Path
 
 from graybench.circuit_wire import WireError, WireLimitError
 from graybench.graph_anchors import PublicAnchorRegistry
+from graybench.graph_owned import GraphReconstructionError
 from graybench.graph_rpc import EXCEPTIONS, validate_arguments, validate_root_shapes, validate_roots
 from graybench.graph_wire import GraphArena, GraphLimits
 
@@ -33,7 +34,9 @@ def main():
         calls += 1
         try:
             outgoing = arena.snapshot({"args": args, "kwargs": kwargs}, sequence=calls)
-        except (WireError, TypeError) as exc:
+        except GraphReconstructionError as exc:
+            raise BridgeFailure("infrastructure_error", str(exc)) from exc
+        except WireError as exc:
             raise BridgeFailure("unsupported", str(exc)) from exc
         print(
             json.dumps({"kind": "call", "sequence": calls, "graph": outgoing}, allow_nan=False),
@@ -80,9 +83,11 @@ def main():
             if type(roots["exception_args"]) is not tuple or roots["result"] is not None:
                 raise WireError("Invalid exception result roots")
             exc = EXCEPTIONS[raised](*roots["exception_args"])
+        except GraphReconstructionError as exc:
+            raise BridgeFailure("infrastructure_error", str(exc)) from exc
         except WireLimitError as exc:
             raise BridgeFailure("unsupported", str(exc)) from exc
-        except (WireError, ValueError, TypeError) as exc:
+        except WireError as exc:
             raise BridgeFailure("candidate_error", str(exc)) from exc
         remote_exceptions.append(exc)
         raise exc

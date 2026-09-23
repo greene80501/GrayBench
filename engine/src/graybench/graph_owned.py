@@ -5,6 +5,10 @@ from dataclasses import dataclass
 from graybench.circuit_wire import WireError
 
 
+class GraphReconstructionError(WireError):
+    """Validated state could not be reproduced; this is not a model verdict."""
+
+
 @dataclass(frozen=True)
 class OwnedCommitPlan:
     records: dict
@@ -51,7 +55,9 @@ def execute_owned(plan, existing_objects, materialize, *, codecs=None):
     for handle, codec, state in owners:
         for child, actual in codec.owner_children(objects[handle], state).items():
             if child in objects and objects[child] is not actual:
-                raise WireError("Cannot bind an existing graph object to a different owner cache")
+                raise GraphReconstructionError(
+                    "Cannot bind an existing graph object to a different owner cache"
+                )
             objects[child] = actual
 
     objects, updates = materialize(plan.records, objects)
@@ -67,7 +73,7 @@ def execute_owned(plan, existing_objects, materialize, *, codecs=None):
             objects[child] is not actual
             for child, actual in codec.owner_children(objects[handle], state).items()
         ):
-            raise WireError("Owner update invalidated bound cache objects")
+            raise GraphReconstructionError("Owner reconstruction invalidated bound cache objects")
     from graybench.graph_wire import wire_bytes
 
     identities = {id(value): handle for handle, value in objects.items()}
@@ -82,9 +88,11 @@ def execute_owned(plan, existing_objects, materialize, *, codecs=None):
         try:
             actual = codec.state(objects[handle], reference)
         except KeyError as exc:
-            raise WireError("Owner exposed an unbound cache object") from exc
+            raise GraphReconstructionError(
+                "Owner reconstruction exposed an unbound cache object"
+            ) from exc
         if wire_bytes(actual) != wire_bytes(state):
-            raise WireError("Native owner reconstruction changed the declared state")
+            raise GraphReconstructionError("Native owner reconstruction changed the declared state")
     roots = {key: token_value(token, objects.__getitem__) for key, token in plan.roots.items()}
     return objects, roots
 
