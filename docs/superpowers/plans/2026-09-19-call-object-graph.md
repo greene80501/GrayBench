@@ -583,3 +583,23 @@ passes tasks4/5/6/22/46/86 in both suites; it is not a new aggregate score.
 Evidence: docs/reliability-evidence/graph-special-instructions-development.md.
 Other interfaces, the uniform resource-limit audit, complete oracle admission,
 provider calibration and reproducibility remain required.
+
+### Task3 conditional branch state and shared leaf operations
+
+IfElseOp now preserves original Python branches separately from native branch
+snapshots, including shared leaf operations and fresh compiled wrappers. Bit and
+register conditions retain independent cached values. Branch trees share bounded
+operation and matrix budgets. Nine new regressions include nested input mutation,
+private singleton rehearsal, malformed branch data and protected execution.
+
+The final full suite passes 872 tests in 348.98 seconds without failures, errors
+or skips. The final source-guarded replay passes tasks51/72/88/121 in both suites.
+Two earlier replays remain preserved: each exposed a transport defect on task72,
+first operation copying and then discarded singleton caches. See
+docs/reliability-evidence/graph-control-flow-development.md for all raw evidence.
+
+Before further admission, separate internal graph reconstruction errors from
+invalid candidate payloads: the current generic WireError classification can turn
+an internal transport defect into a scored candidate_error. This is the next
+priority. Classical expression conditions, loops, remaining interfaces, resource
+configuration, oracle review and the other release gates are still required.

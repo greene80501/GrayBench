@@ -7,13 +7,13 @@ from graybench.graph_symbolic import name_value
 from graybench.scientific_wire import array_record, decode_array
 
 
-def encode_python(item, operation, intrinsic, ref):
+def encode_python(item, operation, intrinsic, ref, *, depth=0, budget=None, retained=True):
     from graybench.graph_instruction import InstructionCodec
     from graybench.graph_singleton import SingletonCodec
 
     if not (InstructionCodec().matches(operation) or SingletonCodec().matches(operation)):
         raise WireError("Retained Python operation requires another component codec")
-    from qiskit.circuit import Parameter, ParameterExpression, ParameterVectorElement
+    from qiskit.circuit import IfElseOp, Parameter, ParameterExpression, ParameterVectorElement
 
     def parameter(value):
         if type(value) in (Parameter, ParameterExpression, ParameterVectorElement):
@@ -29,16 +29,23 @@ def encode_python(item, operation, intrinsic, ref):
         "native_standard": item.is_standard_gate(),
         "num_qubits": native.num_qubits,
         "num_clbits": native.num_clbits,
-        "operation": ref(operation),
+        **({"operation": ref(operation)} if retained else {"control_flow": "if_else"}),
         "name": item.name,
         "qubits": [qpos[q] for q in item.qubits],
         "clbits": [cpos[c] for c in item.clbits],
-        "params": [parameter(p) for p in item.params],
+        "params": [] if type(operation) is IfElseOp else [parameter(p) for p in item.params],
         "label": item.label,
     }
     from qiskit.circuit import Delay
     from qiskit.circuit.library import UnitaryGate
 
+    if type(operation) is IfElseOp:
+        from graybench.graph_control_flow import encode_branch, encode_condition, native_operation
+
+        result["branches"] = [
+            encode_branch(branch, ref, depth=depth + 1, budget=budget) for branch in item.params
+        ]
+        result["condition"] = encode_condition(native_operation(item, intrinsic).condition)
     if type(operation) is UnitaryGate:
         result["matrix"] = array_record(item.matrix)
     if type(operation) is Delay:
@@ -53,16 +60,25 @@ def encode_python(item, operation, intrinsic, ref):
     return result
 
 
-def validate_python(op, qubits, clbits, index):
+def validate_python(op, qubits, clbits, index, *, depth=0, budget=None):
     if type(op) is not dict:
         raise WireError("Invalid retained instruction record")
-    component = node(op.get("operation"), index, {"python_instruction", "public_singleton"})
-    is_delay = component["state"].get("class") == "delay"
-    is_unitary = component["state"].get("class") == "unitary"
+    retained = "control_flow" not in op
+    if retained:
+        component = node(op.get("operation"), index, {"python_instruction", "public_singleton"})
+        if type(component["state"]) is not dict:
+            raise WireError("Invalid referenced instruction state")
+        selector = component["state"].get("class")
+    else:
+        if op["control_flow"] != "if_else":
+            raise WireError("Unknown native control flow")
+        selector = "if_else"
+    is_delay = selector == "delay"
+    is_unitary = selector == "unitary"
+    is_if_else = selector == "if_else"
     fields(
         op,
         {
-            "operation",
             "name",
             "qubits",
             "clbits",
@@ -72,9 +88,23 @@ def validate_python(op, qubits, clbits, index):
             "num_clbits",
             "native_standard",
         }
+        | ({"operation"} if retained else {"control_flow"})
         | ({"unit"} if is_delay else set())
-        | ({"matrix"} if is_unitary else set()),
+        | ({"matrix"} if is_unitary else set())
+        | ({"branches", "condition"} if is_if_else else set()),
     )
+    if is_if_else:
+        from graybench.graph_control_flow import validate_branch, validate_condition
+
+        if (
+            type(op["branches"]) is not list
+            or len(op["branches"]) not in (1, 2)
+            or op["params"] != []
+        ):
+            raise WireError("Invalid native if-else branches")
+        validate_condition(op["condition"])
+        for branch in op["branches"]:
+            validate_branch(branch, index, depth=depth + 1, budget=budget)
     if is_delay:
         name_value(op["unit"])
     if type(op["native_standard"]) is not bool:
@@ -83,7 +113,6 @@ def validate_python(op, qubits, clbits, index):
     integer(op["num_clbits"], 512)
     if is_unitary:
         validate_intrinsic_matrix(op)
-    node(op["operation"], index, {"python_instruction", "public_singleton"})
     name_value(op["name"])
     for key, count in (("qubits", qubits), ("clbits", clbits)):
         if type(op[key]) is not list or len(op[key]) > 512:
@@ -103,7 +132,13 @@ def validate_python(op, qubits, clbits, index):
 
 
 def python_tokens(op):
-    yield op["operation"]
+    if "operation" in op:
+        yield op["operation"]
+    if "branches" in op:
+        from graybench.graph_packed import operation_tokens
+
+        for branch in op["branches"]:
+            yield from operation_tokens(branch["operations"])
     for parameter in op["params"]:
         if "expression" in parameter:
             yield from vector_tokens(parameter["expression"])
@@ -127,7 +162,11 @@ def validate_intrinsic_matrix(op):
 
 def intrinsic_matrix_bytes(operations):
     # Intrinsic matrices are values, not persistent Python graph objects.
-    return sum(16 * (1 << (2 * op["num_qubits"])) for op in operations if "matrix" in op)
+    return sum(16 * (1 << (2 * op["num_qubits"])) for op in operations if "matrix" in op) + sum(
+        intrinsic_matrix_bytes(branch["operations"])
+        for op in operations
+        for branch in op.get("branches", [])
+    )
 
 
 def restore_python(op, qubits, clbits, resolve):
@@ -135,6 +174,21 @@ def restore_python(op, qubits, clbits, resolve):
 
     from graybench.graph_types import token_value
 
+    if "control_flow" in op:
+        from qiskit.circuit import IfElseOp
+
+        from graybench.graph_control_flow import restore_branch, restore_condition
+
+        blocks = [restore_branch(branch, resolve) for branch in op["branches"]]
+        operation = IfElseOp(
+            restore_condition(op["condition"]),
+            blocks[0],
+            blocks[1] if len(blocks) == 2 else None,
+            label=op["label"],
+        )
+        return CircuitInstruction(
+            operation, [qubits[i] for i in op["qubits"]], [clbits[i] for i in op["clbits"]]
+        )
     operation = resolve(op["operation"]["ref"])
     actual = vars(operation)
     # The native instruction caches values when it first retains this object.
@@ -157,6 +211,13 @@ def restore_python(op, qubits, clbits, resolve):
         cached["_unit"] = op["unit"]
     if "matrix" in op:
         cached["_params"] = [decode_array(op["matrix"])]
+    if "branches" in op:
+        from graybench.graph_control_flow import restore_branch, restore_condition
+
+        cached["_params"] = [restore_branch(branch, resolve) for branch in op["branches"]]
+        if len(cached["_params"]) == 1:
+            cached["_params"].append(None)
+        cached["_condition"] = restore_condition(op["condition"])
     replacements = [(operation, actual, cached)]
     if "base_gate" in actual:
         # Public controlled params delegate through the base chain. Cache replay

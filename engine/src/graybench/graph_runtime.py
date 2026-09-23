@@ -22,6 +22,7 @@ GRAPH_FILES = (
     "graph_packed.py",
     "graph_instruction.py",
     "graph_python_ops.py",
+    "graph_control_flow.py",
     "graph_object_arrays.py",
     "graph_expressions.py",
     "symbolic_wire.py",

@@ -63,6 +63,11 @@ class CircuitDataCodec:
 
     def validate(self, state, index):
         fields(state, {"qubits", "clbits", "qregs", "cregs", "phase", "operations"} | set(SLOTS))
+        self.validate_intrinsic(state, index)
+        for key, (_, kind) in SLOTS.items():
+            node(state[key], index, {kind})
+
+    def validate_intrinsic(self, state, index, *, depth=0, budget=None):
         for name, families in (("qubits", {"q", "a"}), ("clbits", {"c"})):
             items = state[name]
             if type(items) is not list or len(items) > 512:
@@ -83,12 +88,17 @@ class CircuitDataCodec:
                 REGISTER.validate(item, index)
                 if item["family"] not in families:
                     raise WireError("Invalid intrinsic register family")
-        validate_operations(state["operations"], len(state["qubits"]), len(state["clbits"]), index)
+        validate_operations(
+            state["operations"],
+            len(state["qubits"]),
+            len(state["clbits"]),
+            index,
+            depth=depth,
+            budget=budget,
+        )
         phase = state["phase"]
         if type(phase) is not float or not math.isfinite(phase) or not 0 <= phase < math.tau:
             raise WireError("CircuitData requires a canonical finite numeric phase")
-        for key, (_, kind) in SLOTS.items():
-            node(state[key], index, {kind})
 
     def allocate(self, state, index):
         from qiskit._accelerate.circuit import CircuitData

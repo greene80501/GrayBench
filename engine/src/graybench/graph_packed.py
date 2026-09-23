@@ -2,7 +2,7 @@
 
 from functools import cache
 
-from graybench.circuit_wire import WireError, fields, integer
+from graybench.circuit_wire import WireError, WireLimitError, fields, integer
 from graybench.graph_expressions import encode, replay, validate, vector_tokens
 from graybench.graph_python_ops import (
     encode_python,
@@ -26,15 +26,18 @@ def standards():
     }
 
 
-def encode_operations(data, intrinsic, ref):
+def encode_operations(data, intrinsic, ref, *, depth=0, budget=None):
     from qiskit.exceptions import QiskitError
 
     from graybench.graph_singleton import SingletonCodec
 
     positions = {bit: i for i, bit in enumerate(intrinsic.qubits)}
     result = []
-    if len(data) > 4096:
-        raise WireError("Packed operation count exceeds limit")
+    if budget is None:
+        budget = [4096]
+    budget[0] -= len(data)
+    if depth > 16 or budget[0] < 0:
+        raise WireLimitError("Packed operation tree exceeds limit")
     for i in range(len(data)):
         item = data[i]
         try:
@@ -45,12 +48,21 @@ def encode_operations(data, intrinsic, ref):
             operation
         )
         if (operation.mutable or singleton_ref) and operation is data[i].operation:
-            result.append(encode_python(item, operation, intrinsic, ref))
+            result.append(
+                encode_python(item, operation, intrinsic, ref, depth=depth, budget=budget)
+            )
             continue
-        from qiskit.circuit import Barrier, Delay
+        from qiskit.circuit import Barrier, Delay, IfElseOp
         from qiskit.circuit.library import UnitaryGate
         from qiskit.dagcircuit import DAGOpNode
 
+        if type(operation) is IfElseOp:
+            result.append(
+                encode_python(
+                    item, operation, intrinsic, ref, depth=depth, budget=budget, retained=False
+                )
+            )
+            continue
         if type(operation) in (Barrier, Delay, UnitaryGate):
             kind = {Barrier: "barrier", Delay: "delay", UnitaryGate: "unitary"}[type(operation)]
             if item.name != kind or item.clbits or (kind != "delay" and item.params):
@@ -82,9 +94,14 @@ def encode_operations(data, intrinsic, ref):
     return result
 
 
-def validate_operations(operations, qubits, clbits, index):
+def validate_operations(operations, qubits, clbits, index, *, depth=0, budget=None):
     if type(operations) is not list or len(operations) > 4096:
         raise WireError("Invalid packed operation stream")
+    if budget is None:
+        budget = [4096]
+    budget[0] -= len(operations)
+    if depth > 16 or budget[0] < 0:
+        raise WireLimitError("Packed operation tree exceeds limit")
     for op in operations:
         if type(op) is dict and "directive" in op:
             kind = op["directive"]
@@ -118,8 +135,8 @@ def validate_operations(operations, qubits, clbits, index):
             ):
                 raise WireError("Invalid packed barrier label")
             continue
-        if type(op) is dict and "operation" in op:
-            validate_python(op, qubits, clbits, index)
+        if type(op) is dict and ("operation" in op or "control_flow" in op):
+            validate_python(op, qubits, clbits, index, depth=depth, budget=budget)
             continue
         fields(op, {"name", "qubits", "params", "label"})
         name = op["name"]
@@ -145,7 +162,7 @@ def operation_tokens(operations):
             if op["directive"] == "delay":
                 yield from vector_tokens(op["params"][0])
             continue
-        if "operation" in op:
+        if "operation" in op or "control_flow" in op:
             yield from python_tokens(op)
             continue
         for parameter in op["params"]:
@@ -190,8 +207,13 @@ def restore_operations(target, state, resolve):
                 native = dag_to_circuit(circuit_to_dag(template))._data[0]
                 prepared.append(native.replace(qubits=[qubits[i] for i in op["qubits"]]))
                 continue
-            if "operation" in op:
-                prepared.append(restore_python(op, qubits, clbits, resolve))
+            if "operation" in op or "control_flow" in op:
+                item = restore_python(op, qubits, clbits, resolve)
+                if "control_flow" in op:
+                    from graybench.graph_control_flow import native_instruction
+
+                    item = native_instruction(item, intrinsic)
+                prepared.append(item)
                 continue
             prepared.append(
                 CircuitInstruction.from_standard(
