@@ -302,6 +302,10 @@ class GraphArena:
             REGISTRY[records[handle]["kind"]].array_bytes(records[handle]["state"])
             for handle in matrix_owners
         )
+        for record in records.values():
+            codec = REGISTRY[record["kind"]]
+            if hasattr(codec, "inline_matrix_bytes"):
+                matrix_bytes += codec.inline_matrix_bytes(record["state"])
         if matrix_bytes > self.limits.matrix_bytes:
             raise WireLimitError("Graph matrix storage exceeds byte limit")
 

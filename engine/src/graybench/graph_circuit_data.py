@@ -15,6 +15,7 @@ from graybench.graph_packed import (
     restore_operations,
     validate_operations,
 )
+from graybench.graph_python_ops import intrinsic_matrix_bytes
 from graybench.graph_scientific import node
 
 SLOTS = {
@@ -160,7 +161,10 @@ class CircuitDataCodec:
         pass
 
     def array_bytes(self, state):
-        return 0
+        return intrinsic_matrix_bytes(state["operations"])
+
+    def inline_matrix_bytes(self, state):
+        return intrinsic_matrix_bytes(state["operations"])
 
     def matrix_refs(self, state):
         return ()

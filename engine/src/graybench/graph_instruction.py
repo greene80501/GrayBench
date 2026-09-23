@@ -16,17 +16,32 @@ CONTROL_ATTRS = ATTRS + tuple(
     (key, key) for key in ("base_gate", "_num_ctrl_qubits", "_ctrl_state", "_open_ctrl")
 )
 
+STATE_PREPARATION_ATTRS = ATTRS + tuple(
+    (key, key) for key in ("_params_arg", "_inverse", "_from_label", "_from_int")
+)
+DELAY_ATTRS = ATTRS + (("_unit", "_unit"),)
+
 
 def attributes(selector):
     from qiskit.circuit import ControlledGate
 
+    if selector == "state_preparation":
+        return STATE_PREPARATION_ATTRS
+    if selector == "delay":
+        return DELAY_ATTRS
     return CONTROL_ATTRS if issubclass(classes()[selector], ControlledGate) else ATTRS
 
 
 @cache
 def classes():
-    from qiskit.circuit import Barrier, ControlledGate, Gate, Instruction
-    from qiskit.circuit.library import MCXGate, get_standard_gate_name_mapping
+    from qiskit.circuit import Barrier, ControlledGate, Delay, Gate, Instruction
+    from qiskit.circuit.library import (
+        LinearFunction,
+        MCXGate,
+        StatePreparation,
+        UnitaryGate,
+        get_standard_gate_name_mapping,
+    )
 
     result = {
         "gate": Gate,
@@ -34,6 +49,10 @@ def classes():
         "controlled": ControlledGate,
         "mcx": MCXGate,
         "barrier": Barrier,
+        "linear_function": LinearFunction,
+        "state_preparation": StatePreparation,
+        "delay": Delay,
+        "unitary": UnitaryGate,
     }
     expected = {key for key, _ in ATTRS}
     for name, template in get_standard_gate_name_mapping().items():
@@ -71,6 +90,12 @@ class InstructionCodec:
         attrs = attributes(state["class"])
         fields(state, {"class", "attributes"} | {key for key, _ in attrs})
         validate_attributes(state, index, attrs)
+        if attrs is DELAY_ATTRS:
+            name_value(state["_unit"])
+        if attrs is STATE_PREPARATION_ATTRS:
+            for key in ("_inverse", "_from_label", "_from_int"):
+                if type(state[key]) is not bool:
+                    raise WireError("Invalid raw state-preparation flag")
         if attrs is CONTROL_ATTRS:
             count = integer(state["_num_ctrl_qubits"], 512)
             integer(state["_ctrl_state"], (1 << count) - 1)

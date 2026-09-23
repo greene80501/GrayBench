@@ -4,6 +4,7 @@ from graybench.circuit_wire import WireError, fields, integer
 from graybench.graph_expressions import encode, replay, validate, vector_tokens
 from graybench.graph_scientific import node
 from graybench.graph_symbolic import name_value
+from graybench.scientific_wire import array_record, decode_array
 
 
 def encode_python(item, operation, intrinsic, ref):
@@ -24,7 +25,7 @@ def encode_python(item, operation, intrinsic, ref):
     from qiskit.dagcircuit import DAGOpNode
 
     native = DAGOpNode.from_instruction(item)
-    return {
+    result = {
         "native_standard": item.is_standard_gate(),
         "num_qubits": native.num_qubits,
         "num_clbits": native.num_clbits,
@@ -35,9 +36,29 @@ def encode_python(item, operation, intrinsic, ref):
         "params": [parameter(p) for p in item.params],
         "label": item.label,
     }
+    from qiskit.circuit import Delay
+    from qiskit.circuit.library import UnitaryGate
+
+    if type(operation) is UnitaryGate:
+        result["matrix"] = array_record(item.matrix)
+    if type(operation) is Delay:
+        # Read the intrinsic unit through a native conversion which discards the
+        # Python operation cache. The retained wrapper may have been mutated.
+        from qiskit import QuantumCircuit
+        from qiskit.converters import circuit_to_dag, dag_to_circuit
+
+        template = QuantumCircuit(len(item.qubits))
+        template._data.append(item.replace(qubits=template.qubits))
+        result["unit"] = dag_to_circuit(circuit_to_dag(template)).data[0].operation.unit
+    return result
 
 
 def validate_python(op, qubits, clbits, index):
+    if type(op) is not dict:
+        raise WireError("Invalid retained instruction record")
+    component = node(op.get("operation"), index, {"python_instruction", "public_singleton"})
+    is_delay = component["state"].get("class") == "delay"
+    is_unitary = component["state"].get("class") == "unitary"
     fields(
         op,
         {
@@ -50,12 +71,18 @@ def validate_python(op, qubits, clbits, index):
             "num_qubits",
             "num_clbits",
             "native_standard",
-        },
+        }
+        | ({"unit"} if is_delay else set())
+        | ({"matrix"} if is_unitary else set()),
     )
+    if is_delay:
+        name_value(op["unit"])
     if type(op["native_standard"]) is not bool:
         raise WireError("Invalid native standard-gate selector")
     integer(op["num_qubits"], 512)
     integer(op["num_clbits"], 512)
+    if is_unitary:
+        validate_intrinsic_matrix(op)
     node(op["operation"], index, {"python_instruction", "public_singleton"})
     name_value(op["name"])
     for key, count in (("qubits", qubits), ("clbits", clbits)):
@@ -84,6 +111,25 @@ def python_tokens(op):
             yield parameter["value"]
 
 
+def validate_intrinsic_matrix(op):
+    matrix = decode_array(op["matrix"])
+    width = integer(op["num_qubits"], 7)
+    if (
+        op["matrix"]["kind"] != "ndarray_v1"
+        or matrix.dtype.kind != "c"
+        or matrix.dtype.itemsize != 16
+        or matrix.shape != (1 << width, 1 << width)
+        or op["num_clbits"] != 0
+        or op["params"] != []
+    ):
+        raise WireError("Invalid intrinsic unitary matrix")
+
+
+def intrinsic_matrix_bytes(operations):
+    # Intrinsic matrices are values, not persistent Python graph objects.
+    return sum(16 * (1 << (2 * op["num_qubits"])) for op in operations if "matrix" in op)
+
+
 def restore_python(op, qubits, clbits, resolve):
     from qiskit.circuit import CircuitInstruction
 
@@ -107,6 +153,10 @@ def restore_python(op, qubits, clbits, resolve):
         ],
         _label=op["label"],
     )
+    if "unit" in op:
+        cached["_unit"] = op["unit"]
+    if "matrix" in op:
+        cached["_params"] = [decode_array(op["matrix"])]
     replacements = [(operation, actual, cached)]
     if "base_gate" in actual:
         # Public controlled params delegate through the base chain. Cache replay

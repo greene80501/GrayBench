@@ -568,3 +568,18 @@ instruction codecs, and task100 reaches the packed-operation limit.
 Evidence: docs/reliability-evidence/graph-layout-development.md. Full regression
 verification passed 848 tests in 364.89 seconds with no failures, errors or skips. This advances the metadata/layout requirement without
 completing Task3 or removing the other admission and reproducibility requirements.
+
+### Task3 special instruction state and native caches
+
+Fixed LinearFunction, StatePreparation, Delay and UnitaryGate graph components
+preserve actual dictionaries, raw arguments and parameter aliases separately from
+native circuit caches. Native Delay/Unitary descriptors preserve fresh wrappers
+and labels. Inline cached matrix storage counts against both aggregate array and
+matrix budgets. Fifteen new tests include protected execution, cache divergence,
+malformed matrices and memory limits. The full Docker-enabled suite passes 863
+tests with zero failures, errors or skips. The source-guarded twelve-case replay
+passes tasks4/5/6/22/46/86 in both suites; it is not a new aggregate score.
+
+Evidence: docs/reliability-evidence/graph-special-instructions-development.md.
+Other interfaces, the uniform resource-limit audit, complete oracle admission,
+provider calibration and reproducibility remain required.
