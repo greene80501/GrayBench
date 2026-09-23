@@ -1,0 +1,1598 @@
+{
+  "purpose": "Local source-bound transport comparison; not protected timing or model scoring.",
+  "mode": "delta-v1",
+  "source": {
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+      "campaign_setup.py": "cc0ddf518b6e439f3ebf97618b5a8d6d639cde6ac5abeb40602208d358ad3fa2",
+      "circuit_wire.py": "22df31fcdd81c05d7976e2dd61519921ae0d608bfde1f843906271bd3e90c178",
+      "cli.py": "5e802910b4b033ab08cdfa54c3f8454aff16128e6ad582a9c9f5249d02ebaed0",
+      "comparison.py": "51bdf1f379b37fa1b4e7d3853ace19b29d485450a63f2024f7ccb662ffc7d38b",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "eb99193eaa376759de6cf71eac97175b57df876cf609f361dc894ced7528755c",
+      "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+      "evaluation_campaign.py": "7626fcafec0577cf0ad0385325e379718d99a6a8c4b0b566de4517671233dda9",
+      "evaluation_recipes.py": "dee7f83964380cff9aff26b1a9851d63920e934963405b32bd18060f9f9f011c",
+      "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+      "file_judge.py": "3a544ede1310cdf458221fb8800c6380820a115840f1bbf3a1780175891384ee",
+      "gate_semantics.py": "faeda2a1e8f7084584e7bccf9f2f8cdd1d2e4826c72c51efbdfbfc5733cd592f",
+      "graph_anchor_bindings.py": "fdf562866df92092a71dab8e6304c2466fa59ee16170ca1ef4338292acce9ccc",
+      "graph_anchors.py": "82b41296b54898897bfc20c8384d0e2313cb80f0a181b663efac5f672715ed58",
+      "graph_circuit.py": "f1514d8b9ff015c13a00a66ac733ad5d0703f311e11d83fbc44644bca8e62078",
+      "graph_circuit_data.py": "7f90dc0fdda3d317edf87a0a265d342293aed3bc9c4aa6cbfde92b363cd373ae",
+      "graph_classical.py": "67a554b91bbdca06a4f090bf314d7f5e856a6bdb6c7516fb9f67c7fc5d3ae1d7",
+      "graph_control_flow.py": "30717bf5bc99d71c1d4e5a5525e2b3c950b0ec79525b3eb9128d1503a984cd6e",
+      "graph_delta.py": "db059f24489c3d88222bb0503395b04e036b984a548502cc96740355f8ec6846",
+      "graph_expressions.py": "1d26c6a7b5acbe6594de7047827aa2ff191174afc43506da6b49250b429a4a5a",
+      "graph_instruction.py": "fe6cafd735dcb4c4322ad7ec8e6e02ef9fa60c8a51779786400f96814f6b0107",
+      "graph_limits.py": "7f8dc443dd3428a591c79f3473081461ef06d90acaec2ed1f684c59dedca4c31",
+      "graph_loops.py": "bf648fef060474ca9c01fcd45d2ba78dfb1326fefd7b1fc4de9c99bb4f329796",
+      "graph_numeric.py": "fac33466832cbfe237b10ca4350d92b189cbe9d5602d94fbd4646f5f5c1cb39b",
+      "graph_object_arrays.py": "00d539bd78574ff20a8f161a6584a546af85c7548aefb0baefe7d1d620113139",
+      "graph_owned.py": "b4352a2df3c96f439daae00a4df4667bd1d702b4a51a4f915abae6e77083a5a3",
+      "graph_packed.py": "b16a949a07a928b6094b637c9837694adc6078d179ca6307102467c4cc8467ce",
+      "graph_primitive.py": "93e00a01ca82db28e2406f0e4547e01a4a18eff8ad550598217fb53755a920b5",
+      "graph_python_ops.py": "cfd3f2f20c08c6f1712b7c0231799c7bc6c6745e3eb25f107f62e2f140abbfa7",
+      "graph_quantum_circuit.py": "00a05946c7507b8a68828906df2dc7ab71bf0ca239363eb77760b0413b9ffd74",
+      "graph_rpc.py": "bc4907cf431176de72bebacc50c05f2d823c64a45bc7e0f9188924fadbd2dda8",
+      "graph_runtime.py": "bbaaf493cc867f1e2962930d4504eabb3fa7646dacad53c4880c1367417f15da",
+      "graph_scientific.py": "4a6e6ec2cde102332172995755994b8330a4cba0290cc7d45f9cc90d21de4ede",
+      "graph_singleton.py": "6cc416d0a7fee03ed08e846d62d74ac05df931e859116ae1bfb6ef197a4de3e5",
+      "graph_symbolic.py": "1ad6203955c88aad849c861962e6058d652c05a2168617cd8b6a28ce69bf87aa",
+      "graph_types.py": "1b4c83a9e4e2b0fd7f733faeb6bceaac13c4ab395ab0b5076b894998582d935d",
+      "graph_wire.py": "365df0ada9ebd515659f75f7ce4c76c735e20a000cd8222240fa28c7c53fc7cc",
+      "graph_worker.py": "8bccdf8229c72e5eba15e1eb51f93141b82accfa44256d2b52776efe0dfd28aa",
+      "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+      "instruction_wire.py": "1473e89c76bdf8344cb23dbfd76fb7a920966dc60ec09e8c181e0489ea218e3c",
+      "judge.py": "711384c4f35baebb8f4e127815e322d912b528756d29ac2951a4edb087a335c3",
+      "judge_process.py": "b85b373a96de296c172f72710da2365a16213e2a93f47ffb257cb2aa08b43f3a",
+      "ledger.py": "e0806b1028fc4a5add23f9364cb5eded8837867ff954919f3de955ec279d30dd",
+      "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+      "model_discovery.py": "f67a77cee033d0abb73bd24b50c23ea659aec33bee219f8a57ffc34754c11f65",
+      "operator_wire.py": "d94dda29d683afaa60df8040ad395f050cd8bc74bf9f4f2debc8afcfffac7f72",
+      "oracle_review.py": "956c9e44d194b9f2c21930bf072ff4d65fafde1df5bfd6c786b16619ce68c2f1",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "primitive_wire.py": "291bf8d84fb95cdd74577de83ec8adcb93a05fa14750fec1e914e2c343e91d52",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "4f1c1574e8202326a76e4b1a23338df57fc2bcec0f7fb49001574ff1bc09c7ee",
+      "qpy_decoder.py": "ed8a3e9a63d8778e3703a9b0b4bb7f29a7c10ca4afcb7c930cb8a7144c77abdd",
+      "reference_scan.py": "522762c402f2e16e08514af4d4135e6c0cc35ba488de2738ac6387617578bca3",
+      "sandbox.py": "050d7e4d71825bb24dd61825b669d4847cf1a7572f87effb4191fb792e7535a3",
+      "scientific_wire.py": "926ecf36b0823a13d30bbaa674ed72caed6f9ac272cb427670dd12f3a707cf51",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "transport.py": "421732f8e327a10e3a67d8756a7d87fc6d69e60e60916e533993e9d891e1148f",
+      "upstream.py": "22eac45f952c6f667c3e9435e465c3d71acbde9e4800604ffb88939249925263",
+      "upstream_graph_process.py": "c172dfad586c28d0c9dabb759e2b160709a8bc73d9467059f15682c9c2e6e558",
+      "upstream_process.py": "b6582742fbfc4b90137b40a190c2b580622b6a6940f171eee31ba5975cc00d16",
+      "value_wire.py": "a11eeff9a9635bdc63c5779015c92ca118e4ec3baa14a71f01b0432300c80211",
+      "worker.py": "da22781001f0d7ad7f23c193a4ff04365caa861784f7e95d3453c99edc50016b"
+    },
+    "digest": "b3e96e20fe32de55cf8874403a0decf738594f358637903faa3eaf0927c3562e"
+  },
+  "probe_sha256": "89e8d57451971ef8c349715ddaa165fb9af2f5fadf230e008f140b8cc0588089",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "wire_limit": 16777216,
+  "state_limit": 16777216,
+  "calls": 100,
+  "elapsed_seconds": 19.632428399985656,
+  "total_graph_bytes": 397729,
+  "stage_seconds": {
+    "judge_snapshot": 2.8234566001337953,
+    "candidate_prepare": 4.709302099887282,
+    "candidate_commit": 2.171782899647951,
+    "candidate_snapshot": 2.8774355998029932,
+    "judge_prepare": 4.775596599618439,
+    "judge_commit": 2.1709704002714716
+  },
+  "rows": [
+    {
+      "call": 1,
+      "forward_bytes": 483,
+      "backward_bytes": 5519,
+      "forward_records": 2,
+      "backward_records": 37,
+      "seconds": {
+        "judge_snapshot": 0.00015159999020397663,
+        "candidate_prepare": 0.002923599968198687,
+        "candidate_commit": 6.430002395063639e-05,
+        "candidate_snapshot": 0.0021241999929770827,
+        "judge_prepare": 0.0021043000160716474,
+        "judge_commit": 0.0009720000089146197
+      }
+    },
+    {
+      "call": 2,
+      "forward_bytes": 1058,
+      "backward_bytes": 2828,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0017689999658614397,
+        "candidate_prepare": 0.002558099979069084,
+        "candidate_commit": 0.0010247999452985823,
+        "candidate_snapshot": 0.0100644999765791,
+        "judge_prepare": 0.0031638999935239553,
+        "judge_commit": 0.0012722000246867537
+      }
+    },
+    {
+      "call": 3,
+      "forward_bytes": 1061,
+      "backward_bytes": 2828,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0019450999679975212,
+        "candidate_prepare": 0.0034706000005826354,
+        "candidate_commit": 0.0014115000376477838,
+        "candidate_snapshot": 0.0025053999852389097,
+        "judge_prepare": 0.00439590000314638,
+        "judge_commit": 0.0016695000231266022
+      }
+    },
+    {
+      "call": 4,
+      "forward_bytes": 1061,
+      "backward_bytes": 2828,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0024624000070616603,
+        "candidate_prepare": 0.004334700002800673,
+        "candidate_commit": 0.0018006000318564475,
+        "candidate_snapshot": 0.003246000036597252,
+        "judge_prepare": 0.004786300007253885,
+        "judge_commit": 0.0020314999856054783
+      }
+    },
+    {
+      "call": 5,
+      "forward_bytes": 1061,
+      "backward_bytes": 2838,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0029516000067815185,
+        "candidate_prepare": 0.005551799957174808,
+        "candidate_commit": 0.002201199997216463,
+        "candidate_snapshot": 0.0035223999875597656,
+        "judge_prepare": 0.005664600001182407,
+        "judge_commit": 0.002473900036420673
+      }
+    },
+    {
+      "call": 6,
+      "forward_bytes": 1061,
+      "backward_bytes": 2868,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.003814700001385063,
+        "candidate_prepare": 0.006514099950436503,
+        "candidate_commit": 0.0027107999776490033,
+        "candidate_snapshot": 0.004174100002273917,
+        "judge_prepare": 0.006559400004334748,
+        "judge_commit": 0.002805399999488145
+      }
+    },
+    {
+      "call": 7,
+      "forward_bytes": 1066,
+      "backward_bytes": 2868,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.004075500008184463,
+        "candidate_prepare": 0.007938800030387938,
+        "candidate_commit": 0.0029929999727755785,
+        "candidate_snapshot": 0.004634900018572807,
+        "judge_prepare": 0.007602299971040338,
+        "judge_commit": 0.003272400004789233
+      }
+    },
+    {
+      "call": 8,
+      "forward_bytes": 1066,
+      "backward_bytes": 2868,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0044861999922432005,
+        "candidate_prepare": 0.00794140005018562,
+        "candidate_commit": 0.003404000017326325,
+        "candidate_snapshot": 0.005181299988180399,
+        "judge_prepare": 0.008624800015240908,
+        "judge_commit": 0.0036299999919719994
+      }
+    },
+    {
+      "call": 9,
+      "forward_bytes": 1066,
+      "backward_bytes": 2868,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0050240999553352594,
+        "candidate_prepare": 0.008590999990701675,
+        "candidate_commit": 0.003709700016770512,
+        "candidate_snapshot": 0.00569980003638193,
+        "judge_prepare": 0.009344200021587312,
+        "judge_commit": 0.004186100035440177
+      }
+    },
+    {
+      "call": 10,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.005468900024425238,
+        "candidate_prepare": 0.009580700017977506,
+        "candidate_commit": 0.004176399961579591,
+        "candidate_snapshot": 0.006238000001758337,
+        "judge_prepare": 0.009998599998652935,
+        "judge_commit": 0.004459100018721074
+      }
+    },
+    {
+      "call": 11,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.006089200032874942,
+        "candidate_prepare": 0.010566300014033914,
+        "candidate_commit": 0.004628999973647296,
+        "candidate_snapshot": 0.00646870001219213,
+        "judge_prepare": 0.011988200014457107,
+        "judge_commit": 0.0052625000244006515
+      }
+    },
+    {
+      "call": 12,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.006881800014525652,
+        "candidate_prepare": 0.01111650001257658,
+        "candidate_commit": 0.004959999991115183,
+        "candidate_snapshot": 0.007215199992060661,
+        "judge_prepare": 0.011557299993000925,
+        "judge_commit": 0.005217799975071102
+      }
+    },
+    {
+      "call": 13,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.007521399995312095,
+        "candidate_prepare": 0.012647199968341738,
+        "candidate_commit": 0.005269199959002435,
+        "candidate_snapshot": 0.007509999966714531,
+        "judge_prepare": 0.012541700038127601,
+        "judge_commit": 0.005956800014246255
+      }
+    },
+    {
+      "call": 14,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.007580599980428815,
+        "candidate_prepare": 0.012975199962966144,
+        "candidate_commit": 0.005724399990867823,
+        "candidate_snapshot": 0.01636559999315068,
+        "judge_prepare": 0.013873899995815009,
+        "judge_commit": 0.006152899994049221
+      }
+    },
+    {
+      "call": 15,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.008193499990738928,
+        "candidate_prepare": 0.014261499978601933,
+        "candidate_commit": 0.0061280999798327684,
+        "candidate_snapshot": 0.008697999990545213,
+        "judge_prepare": 0.01421300001675263,
+        "judge_commit": 0.006590700009837747
+      }
+    },
+    {
+      "call": 16,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.008785300015006214,
+        "candidate_prepare": 0.0149983000010252,
+        "candidate_commit": 0.0066102000419050455,
+        "candidate_snapshot": 0.00947490002727136,
+        "judge_prepare": 0.015422500029671937,
+        "judge_commit": 0.0069191999500617385
+      }
+    },
+    {
+      "call": 17,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.009503200009930879,
+        "candidate_prepare": 0.01551959995413199,
+        "candidate_commit": 0.006900999986100942,
+        "candidate_snapshot": 0.010203199984971434,
+        "judge_prepare": 0.016050599981099367,
+        "judge_commit": 0.007214199984446168
+      }
+    },
+    {
+      "call": 18,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.00981109996791929,
+        "candidate_prepare": 0.01638380001531914,
+        "candidate_commit": 0.007320100034121424,
+        "candidate_snapshot": 0.010434299998451024,
+        "judge_prepare": 0.017117900017183274,
+        "judge_commit": 0.007647700025700033
+      }
+    },
+    {
+      "call": 19,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.010326999996323138,
+        "candidate_prepare": 0.017255600017961115,
+        "candidate_commit": 0.007910699991043657,
+        "candidate_snapshot": 0.010737899981904775,
+        "judge_prepare": 0.017712300003040582,
+        "judge_commit": 0.008248500002082437
+      }
+    },
+    {
+      "call": 20,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.01057119999313727,
+        "candidate_prepare": 0.018366899981629103,
+        "candidate_commit": 0.016975299979094416,
+        "candidate_snapshot": 0.011202700028661638,
+        "judge_prepare": 0.01889179996214807,
+        "judge_commit": 0.00830739998491481
+      }
+    },
+    {
+      "call": 21,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.011971700005233288,
+        "candidate_prepare": 0.01936900004511699,
+        "candidate_commit": 0.008796399983111769,
+        "candidate_snapshot": 0.01162020000629127,
+        "judge_prepare": 0.01951289997668937,
+        "judge_commit": 0.008701200014911592
+      }
+    },
+    {
+      "call": 22,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.011945999984163791,
+        "candidate_prepare": 0.01982980000320822,
+        "candidate_commit": 0.009010300040245056,
+        "candidate_snapshot": 0.01230040000518784,
+        "judge_prepare": 0.020461999985855073,
+        "judge_commit": 0.009756900020875037
+      }
+    },
+    {
+      "call": 23,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.012919400003738701,
+        "candidate_prepare": 0.021109099965542555,
+        "candidate_commit": 0.009254899981897324,
+        "candidate_snapshot": 0.013144299970008433,
+        "judge_prepare": 0.021180299983825535,
+        "judge_commit": 0.010969199996907264
+      }
+    },
+    {
+      "call": 24,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.013374800037126988,
+        "candidate_prepare": 0.022740299988072366,
+        "candidate_commit": 0.009699699992779642,
+        "candidate_snapshot": 0.013354599999729544,
+        "judge_prepare": 0.022737699968274683,
+        "judge_commit": 0.009983800002373755
+      }
+    },
+    {
+      "call": 25,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.023524800024461,
+        "candidate_prepare": 0.02238120004767552,
+        "candidate_commit": 0.010282000002916902,
+        "candidate_snapshot": 0.01369009999325499,
+        "judge_prepare": 0.023085900000296533,
+        "judge_commit": 0.0104614999727346
+      }
+    },
+    {
+      "call": 26,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.013577000005170703,
+        "candidate_prepare": 0.023339100007433444,
+        "candidate_commit": 0.010579599998891354,
+        "candidate_snapshot": 0.014426699955947697,
+        "judge_prepare": 0.023186000005807728,
+        "judge_commit": 0.010656600003130734
+      }
+    },
+    {
+      "call": 27,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.014137099962681532,
+        "candidate_prepare": 0.026281500002369285,
+        "candidate_commit": 0.01075640000635758,
+        "candidate_snapshot": 0.015616699995007366,
+        "judge_prepare": 0.0242803999572061,
+        "judge_commit": 0.011583500017877668
+      }
+    },
+    {
+      "call": 28,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.014517900010105222,
+        "candidate_prepare": 0.024858799995854497,
+        "candidate_commit": 0.011089199979323894,
+        "candidate_snapshot": 0.015226999996230006,
+        "judge_prepare": 0.025228100013919175,
+        "judge_commit": 0.011223199951928109
+      }
+    },
+    {
+      "call": 29,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.023972800001502037,
+        "candidate_prepare": 0.026088499987963587,
+        "candidate_commit": 0.011607800028286874,
+        "candidate_snapshot": 0.0161523999995552,
+        "judge_prepare": 0.02603900001849979,
+        "judge_commit": 0.011861899984069169
+      }
+    },
+    {
+      "call": 30,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.015860200044699013,
+        "candidate_prepare": 0.026774399972055107,
+        "candidate_commit": 0.011945999984163791,
+        "candidate_snapshot": 0.016285000019706786,
+        "judge_prepare": 0.027285499963909388,
+        "judge_commit": 0.013577799953054637
+      }
+    },
+    {
+      "call": 31,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.016947700001765043,
+        "candidate_prepare": 0.028280000027734786,
+        "candidate_commit": 0.012604799994733185,
+        "candidate_snapshot": 0.017359499994199723,
+        "judge_prepare": 0.028343999991193414,
+        "judge_commit": 0.013302800012752414
+      }
+    },
+    {
+      "call": 32,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.016531000030227005,
+        "candidate_prepare": 0.030115900037344545,
+        "candidate_commit": 0.01308699999935925,
+        "candidate_snapshot": 0.03224139998201281,
+        "judge_prepare": 0.030269600043538958,
+        "judge_commit": 0.013521699991542846
+      }
+    },
+    {
+      "call": 33,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.01777310000034049,
+        "candidate_prepare": 0.030923100013751537,
+        "candidate_commit": 0.014734100026544183,
+        "candidate_snapshot": 0.0188462000223808,
+        "judge_prepare": 0.031380799948237836,
+        "judge_commit": 0.015208200027700514
+      }
+    },
+    {
+      "call": 34,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.01986260002013296,
+        "candidate_prepare": 0.03150599997024983,
+        "candidate_commit": 0.01392549998126924,
+        "candidate_snapshot": 0.018535900046117604,
+        "judge_prepare": 0.031228599953465164,
+        "judge_commit": 0.015002099971752614
+      }
+    },
+    {
+      "call": 35,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.01843860000371933,
+        "candidate_prepare": 0.030746000004000962,
+        "candidate_commit": 0.01458489999640733,
+        "candidate_snapshot": 0.0187838000128977,
+        "judge_prepare": 0.04189369996311143,
+        "judge_commit": 0.014259399962611496
+      }
+    },
+    {
+      "call": 36,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.019551999983377755,
+        "candidate_prepare": 0.033003400021698326,
+        "candidate_commit": 0.014075500017497689,
+        "candidate_snapshot": 0.0207263000193052,
+        "judge_prepare": 0.0327755999751389,
+        "judge_commit": 0.014522000041324645
+      }
+    },
+    {
+      "call": 37,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.019601200008764863,
+        "candidate_prepare": 0.03303799999412149,
+        "candidate_commit": 0.01518200000282377,
+        "candidate_snapshot": 0.02032450004480779,
+        "judge_prepare": 0.033279300027061254,
+        "judge_commit": 0.015442600008100271
+      }
+    },
+    {
+      "call": 38,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.020100100024137646,
+        "candidate_prepare": 0.03621150000253692,
+        "candidate_commit": 0.01651559997117147,
+        "candidate_snapshot": 0.02109509997535497,
+        "judge_prepare": 0.04676519997883588,
+        "judge_commit": 0.0159731000312604
+      }
+    },
+    {
+      "call": 39,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.020371399994473904,
+        "candidate_prepare": 0.03477660001954064,
+        "candidate_commit": 0.01621149998391047,
+        "candidate_snapshot": 0.021469500032253563,
+        "judge_prepare": 0.035680499975569546,
+        "judge_commit": 0.016325099975802004
+      }
+    },
+    {
+      "call": 40,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.021153899957425892,
+        "candidate_prepare": 0.03554099996108562,
+        "candidate_commit": 0.016858699964359403,
+        "candidate_snapshot": 0.021366500004660338,
+        "judge_prepare": 0.03732920001493767,
+        "judge_commit": 0.018215999996755272
+      }
+    },
+    {
+      "call": 41,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.021859999978914857,
+        "candidate_prepare": 0.03722960001323372,
+        "candidate_commit": 0.027487199986353517,
+        "candidate_snapshot": 0.02175740001257509,
+        "judge_prepare": 0.03670850000344217,
+        "judge_commit": 0.016781100013758987
+      }
+    },
+    {
+      "call": 42,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.021552399965003133,
+        "candidate_prepare": 0.03642780001973733,
+        "candidate_commit": 0.016833599947858602,
+        "candidate_snapshot": 0.022496299992781132,
+        "judge_prepare": 0.03736049996223301,
+        "judge_commit": 0.01808170002186671
+      }
+    },
+    {
+      "call": 43,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.02807949995622039,
+        "candidate_prepare": 0.04206690000137314,
+        "candidate_commit": 0.017167999991215765,
+        "candidate_snapshot": 0.02334110002266243,
+        "judge_prepare": 0.03985360002843663,
+        "judge_commit": 0.01753179996740073
+      }
+    },
+    {
+      "call": 44,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03557589999400079,
+        "candidate_prepare": 0.039451399992685765,
+        "candidate_commit": 0.018215099989902228,
+        "candidate_snapshot": 0.024019999953452498,
+        "judge_prepare": 0.03914569999324158,
+        "judge_commit": 0.01801640004850924
+      }
+    },
+    {
+      "call": 45,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.023869699973147362,
+        "candidate_prepare": 0.03994149999925867,
+        "candidate_commit": 0.018388600030448288,
+        "candidate_snapshot": 0.02444040001137182,
+        "judge_prepare": 0.04226590000325814,
+        "judge_commit": 0.01814990001730621
+      }
+    },
+    {
+      "call": 46,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.024564700026530772,
+        "candidate_prepare": 0.0417365999892354,
+        "candidate_commit": 0.01908879994880408,
+        "candidate_snapshot": 0.033969599986448884,
+        "judge_prepare": 0.04217389994300902,
+        "judge_commit": 0.02036170003702864
+      }
+    },
+    {
+      "call": 47,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.02600529999472201,
+        "candidate_prepare": 0.04288650001399219,
+        "candidate_commit": 0.018806999956723303,
+        "candidate_snapshot": 0.025684099993668497,
+        "judge_prepare": 0.042260600021108985,
+        "judge_commit": 0.020016099966596812
+      }
+    },
+    {
+      "call": 48,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.02477849996648729,
+        "candidate_prepare": 0.042328800016548485,
+        "candidate_commit": 0.019741499971132725,
+        "candidate_snapshot": 0.02673679997678846,
+        "judge_prepare": 0.05651129997568205,
+        "judge_commit": 0.019160500029101968
+      }
+    },
+    {
+      "call": 49,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.025442799960728735,
+        "candidate_prepare": 0.042778799950610846,
+        "candidate_commit": 0.019779799971729517,
+        "candidate_snapshot": 0.026944099983666092,
+        "judge_prepare": 0.043951000028755516,
+        "judge_commit": 0.01956919999793172
+      }
+    },
+    {
+      "call": 50,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.02674159995513037,
+        "candidate_prepare": 0.045171599951572716,
+        "candidate_commit": 0.020413899968843907,
+        "candidate_snapshot": 0.028908099979162216,
+        "judge_prepare": 0.045054999995045364,
+        "judge_commit": 0.0203095999895595
+      }
+    },
+    {
+      "call": 51,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03688580001471564,
+        "candidate_prepare": 0.050502700032666326,
+        "candidate_commit": 0.024063599994406104,
+        "candidate_snapshot": 0.03203569998731837,
+        "judge_prepare": 0.04748209996614605,
+        "judge_commit": 0.020739200001116842
+      }
+    },
+    {
+      "call": 52,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.027731699985451996,
+        "candidate_prepare": 0.04759380000177771,
+        "candidate_commit": 0.022138499945867807,
+        "candidate_snapshot": 0.028679799987003207,
+        "judge_prepare": 0.04695839999476448,
+        "judge_commit": 0.02123160002520308
+      }
+    },
+    {
+      "call": 53,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.027810900006443262,
+        "candidate_prepare": 0.0576166000100784,
+        "candidate_commit": 0.020815700001548976,
+        "candidate_snapshot": 0.028130899998359382,
+        "judge_prepare": 0.04763059999095276,
+        "judge_commit": 0.022891499975230545
+      }
+    },
+    {
+      "call": 54,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03145849995780736,
+        "candidate_prepare": 0.05510640004649758,
+        "candidate_commit": 0.02325839997502044,
+        "candidate_snapshot": 0.02949129999615252,
+        "judge_prepare": 0.05072739999741316,
+        "judge_commit": 0.02316929999506101
+      }
+    },
+    {
+      "call": 55,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.030451000027824193,
+        "candidate_prepare": 0.06147800001781434,
+        "candidate_commit": 0.022535500000230968,
+        "candidate_snapshot": 0.02960840001469478,
+        "judge_prepare": 0.04964159999508411,
+        "judge_commit": 0.0231027000118047
+      }
+    },
+    {
+      "call": 56,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03226020000874996,
+        "candidate_prepare": 0.0489784000092186,
+        "candidate_commit": 0.02261370001360774,
+        "candidate_snapshot": 0.02993120002793148,
+        "judge_prepare": 0.0499905000324361,
+        "judge_commit": 0.02274290000787005
+      }
+    },
+    {
+      "call": 57,
+      "forward_bytes": 1069,
+      "backward_bytes": 2870,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03043690003687516,
+        "candidate_prepare": 0.06661520001944155,
+        "candidate_commit": 0.023654300021007657,
+        "candidate_snapshot": 0.030667099985294044,
+        "judge_prepare": 0.050270300009287894,
+        "judge_commit": 0.023034900019410998
+      }
+    },
+    {
+      "call": 58,
+      "forward_bytes": 1069,
+      "backward_bytes": 2882,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.030176900036167353,
+        "candidate_prepare": 0.051577000005636364,
+        "candidate_commit": 0.02409089996945113,
+        "candidate_snapshot": 0.030990999948699027,
+        "judge_prepare": 0.05212040001060814,
+        "judge_commit": 0.023740099975839257
+      }
+    },
+    {
+      "call": 59,
+      "forward_bytes": 1069,
+      "backward_bytes": 2910,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.031002200033981353,
+        "candidate_prepare": 0.0635294999810867,
+        "candidate_commit": 0.024371700012125075,
+        "candidate_snapshot": 0.03257949999533594,
+        "judge_prepare": 0.05379119998542592,
+        "judge_commit": 0.024944800010416657
+      }
+    },
+    {
+      "call": 60,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03153750003548339,
+        "candidate_prepare": 0.052784300001803786,
+        "candidate_commit": 0.024670500017236918,
+        "candidate_snapshot": 0.03340020001633093,
+        "judge_prepare": 0.05484060000162572,
+        "judge_commit": 0.0382571000372991
+      }
+    },
+    {
+      "call": 61,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03173180000158027,
+        "candidate_prepare": 0.055943200015462935,
+        "candidate_commit": 0.025120100006461143,
+        "candidate_snapshot": 0.037008200015407056,
+        "judge_prepare": 0.056617400026880205,
+        "judge_commit": 0.028981400013435632
+      }
+    },
+    {
+      "call": 62,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03923529997700825,
+        "candidate_prepare": 0.0560651000123471,
+        "candidate_commit": 0.02684990002308041,
+        "candidate_snapshot": 0.0351096999947913,
+        "judge_prepare": 0.08262499998090789,
+        "judge_commit": 0.02582899999106303
+      }
+    },
+    {
+      "call": 63,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03349130001151934,
+        "candidate_prepare": 0.0566609000088647,
+        "candidate_commit": 0.02667210000799969,
+        "candidate_snapshot": 0.03622549999272451,
+        "judge_prepare": 0.05998409999301657,
+        "judge_commit": 0.02984390000347048
+      }
+    },
+    {
+      "call": 64,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03565929998876527,
+        "candidate_prepare": 0.05884199996944517,
+        "candidate_commit": 0.02854749996913597,
+        "candidate_snapshot": 0.047591099981218576,
+        "judge_prepare": 0.06569749995833263,
+        "judge_commit": 0.02847790002124384
+      }
+    },
+    {
+      "call": 65,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03711600002134219,
+        "candidate_prepare": 0.05995289998827502,
+        "candidate_commit": 0.026912200031802058,
+        "candidate_snapshot": 0.03681790002156049,
+        "judge_prepare": 0.06320350000169128,
+        "judge_commit": 0.02849140000762418
+      }
+    },
+    {
+      "call": 66,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.034902899991720915,
+        "candidate_prepare": 0.07106219994602725,
+        "candidate_commit": 0.026799999992363155,
+        "candidate_snapshot": 0.03575390001060441,
+        "judge_prepare": 0.06001880002440885,
+        "judge_commit": 0.02741150005022064
+      }
+    },
+    {
+      "call": 67,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0351469999877736,
+        "candidate_prepare": 0.06028189999051392,
+        "candidate_commit": 0.027076800004579127,
+        "candidate_snapshot": 0.035671599966008216,
+        "judge_prepare": 0.07451130001572892,
+        "judge_commit": 0.02767670003231615
+      }
+    },
+    {
+      "call": 68,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0352337000076659,
+        "candidate_prepare": 0.0615694000152871,
+        "candidate_commit": 0.0308781000203453,
+        "candidate_snapshot": 0.038209900027140975,
+        "judge_prepare": 0.062298999982886016,
+        "judge_commit": 0.030284999986179173
+      }
+    },
+    {
+      "call": 69,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.037471899995580316,
+        "candidate_prepare": 0.06384040002012625,
+        "candidate_commit": 0.041423299990128726,
+        "candidate_snapshot": 0.03880630002822727,
+        "judge_prepare": 0.06407369999215007,
+        "judge_commit": 0.02858889999333769
+      }
+    },
+    {
+      "call": 70,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03718520002439618,
+        "candidate_prepare": 0.06520179996732622,
+        "candidate_commit": 0.028570400027092546,
+        "candidate_snapshot": 0.03825929999584332,
+        "judge_prepare": 0.06314460001885891,
+        "judge_commit": 0.028741999994963408
+      }
+    },
+    {
+      "call": 71,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04841420002048835,
+        "candidate_prepare": 0.06334270001389086,
+        "candidate_commit": 0.029013299965299666,
+        "candidate_snapshot": 0.0386651000007987,
+        "judge_prepare": 0.06299309997120872,
+        "judge_commit": 0.02823479997459799
+      }
+    },
+    {
+      "call": 72,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.03925019997404888,
+        "candidate_prepare": 0.06580809998558834,
+        "candidate_commit": 0.02938610001001507,
+        "candidate_snapshot": 0.049921799974981695,
+        "judge_prepare": 0.06342489999951795,
+        "judge_commit": 0.029321800044272095
+      }
+    },
+    {
+      "call": 73,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.038332700030878186,
+        "candidate_prepare": 0.06383110000751913,
+        "candidate_commit": 0.029329199984204024,
+        "candidate_snapshot": 0.04047999996691942,
+        "judge_prepare": 0.06697240000357851,
+        "judge_commit": 0.030135400011204183
+      }
+    },
+    {
+      "call": 74,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04934369999682531,
+        "candidate_prepare": 0.0668186999973841,
+        "candidate_commit": 0.029917699983343482,
+        "candidate_snapshot": 0.0400800000061281,
+        "judge_prepare": 0.06501820002449676,
+        "judge_commit": 0.03079530003014952
+      }
+    },
+    {
+      "call": 75,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04114380001556128,
+        "candidate_prepare": 0.06680480000795797,
+        "candidate_commit": 0.029886700038332492,
+        "candidate_snapshot": 0.053462999989278615,
+        "judge_prepare": 0.07016420003492385,
+        "judge_commit": 0.03147339995484799
+      }
+    },
+    {
+      "call": 76,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.040119600016623735,
+        "candidate_prepare": 0.06772380002075806,
+        "candidate_commit": 0.030881999991834164,
+        "candidate_snapshot": 0.040651699993759394,
+        "judge_prepare": 0.06703659996856004,
+        "judge_commit": 0.030405100027564913
+      }
+    },
+    {
+      "call": 77,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.05096100002992898,
+        "candidate_prepare": 0.07061669998802245,
+        "candidate_commit": 0.030438999994657934,
+        "candidate_snapshot": 0.04098409996367991,
+        "judge_prepare": 0.07101809995947406,
+        "judge_commit": 0.03169440000783652
+      }
+    },
+    {
+      "call": 78,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04127640003571287,
+        "candidate_prepare": 0.06854030000977218,
+        "candidate_commit": 0.044076899997889996,
+        "candidate_snapshot": 0.04102869995404035,
+        "judge_prepare": 0.07196540001314133,
+        "judge_commit": 0.031729200039990246
+      }
+    },
+    {
+      "call": 79,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.046505299978889525,
+        "candidate_prepare": 0.07105379999848083,
+        "candidate_commit": 0.032732299994677305,
+        "candidate_snapshot": 0.043825000000651926,
+        "judge_prepare": 0.0873520000022836,
+        "judge_commit": 0.0348117999965325
+      }
+    },
+    {
+      "call": 80,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04486900003394112,
+        "candidate_prepare": 0.07309159997384995,
+        "candidate_commit": 0.03440679999766871,
+        "candidate_snapshot": 0.04386089998297393,
+        "judge_prepare": 0.07441709999693558,
+        "judge_commit": 0.03329510003095493
+      }
+    },
+    {
+      "call": 81,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04389879998052493,
+        "candidate_prepare": 0.08437759999651462,
+        "candidate_commit": 0.0339553999947384,
+        "candidate_snapshot": 0.043610499997157604,
+        "judge_prepare": 0.07147530000656843,
+        "judge_commit": 0.033074700040742755
+      }
+    },
+    {
+      "call": 82,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04323199996724725,
+        "candidate_prepare": 0.07266000000527129,
+        "candidate_commit": 0.033634799998253584,
+        "candidate_snapshot": 0.05469379998976365,
+        "judge_prepare": 0.07459869998274371,
+        "judge_commit": 0.03339429997140542
+      }
+    },
+    {
+      "call": 83,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0428480000118725,
+        "candidate_prepare": 0.0740234000259079,
+        "candidate_commit": 0.033450699993409216,
+        "candidate_snapshot": 0.04410599998664111,
+        "judge_prepare": 0.07436919998144731,
+        "judge_commit": 0.05184889998054132
+      }
+    },
+    {
+      "call": 84,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04496209998615086,
+        "candidate_prepare": 0.07534979999763891,
+        "candidate_commit": 0.03444690001197159,
+        "candidate_snapshot": 0.044940799998585135,
+        "judge_prepare": 0.0758223999873735,
+        "judge_commit": 0.03446659998735413
+      }
+    },
+    {
+      "call": 85,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04525820002891123,
+        "candidate_prepare": 0.088207799999509,
+        "candidate_commit": 0.03526940004667267,
+        "candidate_snapshot": 0.04601990000810474,
+        "judge_prepare": 0.07815100002335384,
+        "judge_commit": 0.03473909996682778
+      }
+    },
+    {
+      "call": 86,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04586020001443103,
+        "candidate_prepare": 0.07896100002108142,
+        "candidate_commit": 0.04886760003864765,
+        "candidate_snapshot": 0.04621820000465959,
+        "judge_prepare": 0.07661709998501465,
+        "judge_commit": 0.03473179996944964
+      }
+    },
+    {
+      "call": 87,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0485511000151746,
+        "candidate_prepare": 0.07827509997878224,
+        "candidate_commit": 0.0354018000070937,
+        "candidate_snapshot": 0.046081700013019145,
+        "judge_prepare": 0.09307470003841445,
+        "judge_commit": 0.037194799981079996
+      }
+    },
+    {
+      "call": 88,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04645570000866428,
+        "candidate_prepare": 0.07956159999594092,
+        "candidate_commit": 0.03703439998207614,
+        "candidate_snapshot": 0.048450800008140504,
+        "judge_prepare": 0.079923199955374,
+        "judge_commit": 0.049710199993569404
+      }
+    },
+    {
+      "call": 89,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04689459997462109,
+        "candidate_prepare": 0.07773929997347295,
+        "candidate_commit": 0.03548399999272078,
+        "candidate_snapshot": 0.04827530001057312,
+        "judge_prepare": 0.08259040000848472,
+        "judge_commit": 0.03673980000894517
+      }
+    },
+    {
+      "call": 90,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.05084440001519397,
+        "candidate_prepare": 0.09924439998576418,
+        "candidate_commit": 0.036415699985809624,
+        "candidate_snapshot": 0.047133700049016625,
+        "judge_prepare": 0.08073899999726564,
+        "judge_commit": 0.037245200015604496
+      }
+    },
+    {
+      "call": 91,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.049031300004571676,
+        "candidate_prepare": 0.08402239996939898,
+        "candidate_commit": 0.050508900021668524,
+        "candidate_snapshot": 0.048913000035099685,
+        "judge_prepare": 0.08029940002597868,
+        "judge_commit": 0.036870300013106316
+      }
+    },
+    {
+      "call": 92,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.04772070003673434,
+        "candidate_prepare": 0.08059889997821301,
+        "candidate_commit": 0.038051199982874095,
+        "candidate_snapshot": 0.049801799992565066,
+        "judge_prepare": 0.09774419997120276,
+        "judge_commit": 0.039441099972464144
+      }
+    },
+    {
+      "call": 93,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.05315110000083223,
+        "candidate_prepare": 0.08412529999623075,
+        "candidate_commit": 0.0382316000177525,
+        "candidate_snapshot": 0.05030439997790381,
+        "judge_prepare": 0.1017229999997653,
+        "judge_commit": 0.03958290000446141
+      }
+    },
+    {
+      "call": 94,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.0515791000216268,
+        "candidate_prepare": 0.08437319996301085,
+        "candidate_commit": 0.03845529997488484,
+        "candidate_snapshot": 0.050754699972458184,
+        "judge_prepare": 0.08357079996494576,
+        "judge_commit": 0.03946649999124929
+      }
+    },
+    {
+      "call": 95,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.06781400000909343,
+        "candidate_prepare": 0.08409339998615906,
+        "candidate_commit": 0.03878520004218444,
+        "candidate_snapshot": 0.05050179996760562,
+        "judge_prepare": 0.08678319997852668,
+        "judge_commit": 0.04470490000676364
+      }
+    },
+    {
+      "call": 96,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.05410770000889897,
+        "candidate_prepare": 0.10077980003552511,
+        "candidate_commit": 0.04337700002361089,
+        "candidate_snapshot": 0.052984600013587624,
+        "judge_prepare": 0.08962709998013452,
+        "judge_commit": 0.03974659997038543
+      }
+    },
+    {
+      "call": 97,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.05401520000305027,
+        "candidate_prepare": 0.10129660001257434,
+        "candidate_commit": 0.03884049999760464,
+        "candidate_snapshot": 0.05130370002007112,
+        "judge_prepare": 0.08673470001667738,
+        "judge_commit": 0.03965019999304786
+      }
+    },
+    {
+      "call": 98,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.051748699974268675,
+        "candidate_prepare": 0.08635110000614077,
+        "candidate_commit": 0.0536073999828659,
+        "candidate_snapshot": 0.05573759996332228,
+        "judge_prepare": 0.09204089996637776,
+        "judge_commit": 0.0425507000181824
+      }
+    },
+    {
+      "call": 99,
+      "forward_bytes": 1074,
+      "backward_bytes": 2912,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.053049599984660745,
+        "candidate_prepare": 0.0920926000108011,
+        "candidate_commit": 0.04253559996141121,
+        "candidate_snapshot": 0.06926560000283644,
+        "judge_prepare": 0.08993210003245622,
+        "judge_commit": 0.04187910002656281
+      }
+    },
+    {
+      "call": 100,
+      "forward_bytes": 1077,
+      "backward_bytes": 2914,
+      "forward_records": 2,
+      "backward_records": 17,
+      "seconds": {
+        "judge_snapshot": 0.05327510001370683,
+        "candidate_prepare": 0.08990710001671687,
+        "candidate_commit": 0.04164660000242293,
+        "candidate_snapshot": 0.053843799978494644,
+        "judge_prepare": 0.10494639998069033,
+        "judge_commit": 0.041038199968170375
+      }
+    }
+  ],
+  "limitations": [
+    "Two local arenas share a process and public-anchor registry; no Docker, pipe or envelopes.",
+    "Single wall-clock observation per mode; unrelated machine load is not controlled.",
+    "All exported objects remain retained and full graph validation/reconstruction still runs."
+  ]
+}

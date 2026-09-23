@@ -694,3 +694,22 @@ Next address full-history capture/reconstruction costs without discarding aliase
 or replacing actual live-state baselines with stale serialized history. Complete
 the1000-call workload and full transport admission after that change. No default
 promotion or calibrated model score is justified by this development increment.
+
+### Validated capture reuse and live-state failure classification
+
+Commit still recaptures the complete actual object closure and verifies every
+identity, but compares against immutable validated preparation bytes instead of
+encoding the baseline and validating an identical table again. The instrumented
+100-call workload retains400captures and600native reconstruction calls while
+record/depth validation falls from800to600passes. A single uninstrumented delta
+observation falls from22.27sto19.63s with identical397729graph bytes. This is not
+an asymptotic or1000-call performance solution.
+
+Four protected controls also exposed trusted live-state races being scored as
+candidate errors. These now become infrastructure errors and block scoring, even
+if the private test catches them. Complete source-bound before/after evidence is
+preserved in docs/reliability-evidence/graph-live-capture-development.md. Six new
+regressions include equal-but-distinct supplemental children and closure after
+partial live application; all960Docker tests pass. Independent read-only review
+found no correctness blocker. Remaining reconstruction, concurrency guarantees,
+interfaces, oracle, provider and reproduction requirements remain open.
