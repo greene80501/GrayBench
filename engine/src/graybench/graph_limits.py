@@ -36,3 +36,20 @@ class GraphLimits:
     def from_record(cls, record):
         fields(record, {"nodes", "edges", "message_bytes", "array_bytes", "matrix_bytes", "depth"})
         return cls(**record)
+
+
+def transport_record(mode, wire_bytes, state_bytes=None):
+    """Freeze wire and expanded-state bounds without importing the SDK."""
+    if type(mode) is not str or mode not in ("snapshot-v1", "delta-v1"):
+        raise WireError("Unknown graph transport")
+    state_bytes = wire_bytes if state_bytes is None else state_bytes
+    GraphLimits(message_bytes=wire_bytes)
+    GraphLimits(message_bytes=state_bytes)
+    if mode == "snapshot-v1" and state_bytes != wire_bytes:
+        raise WireError("Snapshot transport requires equal wire and state byte limits")
+    return {"mode": mode, "wire_bytes": wire_bytes, "state_bytes": state_bytes}
+
+
+def validate_transport(record):
+    fields(record, {"mode", "wire_bytes", "state_bytes"})
+    return transport_record(record["mode"], record["wire_bytes"], record["state_bytes"])

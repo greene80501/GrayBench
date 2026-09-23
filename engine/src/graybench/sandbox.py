@@ -75,6 +75,8 @@ class Candidate:
         protocol: int = 3,
         graph_session: str | None = None,
         graph_manifest: dict | None = None,
+        graph_transport: str = "snapshot-v1",
+        graph_state_limit: int | None = None,
     ):
         if type(protocol) is not int or protocol not in (3, 4):
             raise ValueError("Unknown candidate protocol")
@@ -85,6 +87,15 @@ class Candidate:
         ):
             raise ValueError("Graph protocol requires session and bootstrap manifest")
         self.protocol, self.graph_session = protocol, graph_session
+        from graybench.graph_limits import transport_record
+
+        if protocol != 4 and (graph_transport != "snapshot-v1" or graph_state_limit is not None):
+            raise ValueError("Graph transport settings require protocol4")
+        transport = (
+            transport_record(graph_transport, output_limit, graph_state_limit)
+            if protocol == 4
+            else None
+        )
         if opaque_input is not None and (
             type(opaque_input) is not bytes or len(opaque_input) > MAX_ARTIFACT_BYTES
         ):
@@ -132,7 +143,8 @@ class Candidate:
                     {
                         "session": graph_session,
                         "anchors": graph_manifest,
-                        "limits": GraphLimits(message_bytes=output_limit).record(),
+                        "limits": GraphLimits(message_bytes=transport["state_bytes"]).record(),
+                        "transport": transport,
                     }
                 ),
                 encoding="utf-8",

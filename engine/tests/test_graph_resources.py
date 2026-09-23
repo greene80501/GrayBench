@@ -80,3 +80,64 @@ assert not any(name.split('.')[0] in {'numpy', 'qiskit'} for name in sys.modules
         timeout=15,
     )
     assert result.returncode == 0, result.stderr
+
+
+def test_delta_transport_and_expanded_capacity_are_frozen_independently():
+    item = task("def check(candidate): assert candidate() == 1")
+    snapshot = UpstreamJudge(image=IMAGE, protocol=4)
+    delta = UpstreamJudge(
+        image=IMAGE, protocol=4, graph_transport="delta-v1", graph_state_limit=4194304
+    )
+    payload, manifest = delta.configuration(item)
+    assert (
+        payload["graph_transport"]
+        == manifest["graph_transport"]
+        == {
+            "mode": "delta-v1",
+            "wire_bytes": 1048576,
+            "state_bytes": 4194304,
+        }
+    )
+    assert payload["graph_limits"]["message_bytes"] == 4194304
+    assert manifest["output_limit"] == 1048576
+    assert identity(manifest) != identity(snapshot.configuration(item)[1])
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"protocol": 3, "graph_transport": "delta-v1"},
+        {"protocol": 4, "graph_transport": "unknown"},
+        {"protocol": 4, "graph_state_limit": True},
+        {"protocol": 4, "graph_state_limit": 16777217},
+        {"protocol": 4, "graph_state_limit": 4194304},
+    ],
+)
+def test_invalid_or_ineffective_transport_configuration_rejected(kwargs):
+    with pytest.raises(ValueError):
+        UpstreamJudge(image=IMAGE, **kwargs)
+
+
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Immutable image required")
+def test_delta_protected_calls_propagate_retained_mutations_under_wire_budget():
+    item = task("""def check(candidate):
+    held = [0, ['x' * 20000]]
+    assert candidate(held) is held
+    for i in range(1, 61):
+        assert candidate() == i
+        assert held[0] == i
+""")
+    code = """held = None
+def answer(value=None):
+    global held
+    if value is not None:
+        held = value
+        return held
+    held[0] += 1
+    return held[0]
+"""
+    result = UpstreamJudge(
+        image=IMAGE, docker=DOCKER, protocol=4, graph_transport="delta-v1"
+    ).evaluate(item, code)
+    assert result.outcome == "pass", result.evidence.get("detail")
+    assert result.evidence["calls"] == 61

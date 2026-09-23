@@ -49,6 +49,22 @@ def test_explicit_graph_recipe_cannot_be_overridden_to_v3():
         recipe_judge("upstream-graph-v4", image=IMAGE, protocol=3)
 
 
+def test_delta_recipe_roundtrip_preserves_transport_and_model_requests(model, task):
+    item = fixture(task)
+    full = build_setup("full", model, (item,), IMAGE, evaluation_recipe="upstream-graph-v4")
+    delta = build_setup("delta", model, (item,), IMAGE, evaluation_recipe="upstream-graph-delta-v1")
+    restored = CampaignSetup.model_validate_json(delta.model_dump_json())
+    judge = restored.judge()
+    assert judge.graph_transport["mode"] == "delta-v1"
+    assert delta.protocol.request_digests == full.protocol.request_digests
+    assert delta.protocol.judge_digest != full.protocol.judge_digest
+    validate_cohort(restored.protocol, (item,), judge)
+    with pytest.raises(StateError):
+        validate_cohort(restored.protocol, (item,), full.judge())
+    with pytest.raises(ValueError):
+        recipe_judge("upstream-graph-delta-v1", image=IMAGE, graph_transport="snapshot-v1")
+
+
 def test_reference_scan_cli_selects_graph_protocol(task, monkeypatch, capsys, tmp_path):
     item = fixture(task)
     monkeypatch.setattr(

@@ -46,10 +46,21 @@ class UpstreamJudge:
         candidate_timeout=120,
         output_limit=1024 * 1024,
         protocol=3,
+        graph_transport="snapshot-v1",
+        graph_state_limit=None,
     ):
         if type(protocol) is not int or protocol not in (3, 4):
             raise ValueError("Unknown upstream bridge protocol")
         self.protocol = protocol
+        from graybench.graph_limits import transport_record
+
+        if protocol != 4 and (graph_transport != "snapshot-v1" or graph_state_limit is not None):
+            raise ValueError("Graph transport settings require protocol4")
+        self.graph_transport = (
+            transport_record(graph_transport, output_limit, graph_state_limit)
+            if protocol == 4
+            else None
+        )
         # Use the same immutable-image/resource validation as the fixed-oracle judge.
         ProtectedJudge(image=image, docker=docker, timeout=timeout, output_limit=output_limit)
         self.image, self.docker, self.timeout = image, docker, float(timeout)
@@ -75,7 +86,10 @@ class UpstreamJudge:
         if self.protocol == 4:
             from graybench.graph_limits import GraphLimits
 
-            payload["graph_limits"] = GraphLimits(message_bytes=self.limit).record()
+            payload["graph_limits"] = GraphLimits(
+                message_bytes=self.graph_transport["state_bytes"]
+            ).record()
+            payload["graph_transport"] = dict(self.graph_transport)
         source = Path(__file__).parent
         files = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in FILES}
         for name in (
@@ -115,6 +129,7 @@ class UpstreamJudge:
                     "graph_session_policy": "random-per-attempt-v1",
                     "graph_exceptions": "basic-builtin-type-and-args-v1",
                     "graph_limits": payload["graph_limits"],
+                    "graph_transport": payload["graph_transport"],
                     "wire_output_accounting": "cumulative-per-process-including-bootstrap-v1",
                 }
                 if self.protocol == 4
@@ -318,6 +333,8 @@ class UpstreamJudge:
                                         "protocol": 4,
                                         "graph_session": graph_session,
                                         "graph_manifest": message["graph"]["anchors"],
+                                        "graph_transport": self.graph_transport["mode"],
+                                        "graph_state_limit": self.graph_transport["state_bytes"],
                                     }
                                     if self.protocol == 4
                                     else {}

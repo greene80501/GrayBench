@@ -671,3 +671,26 @@ incremental transport/reconstruction while preserving detached aliases, mutation
 and validation semantics. Increasing a cap alone is insufficient. Task100's
 packed-operation budget and randomized private inputs remain separate policy
 issues. All prior interface, oracle, provider and reproduction gates remain open.
+
+### Incremental transport, reconstruction still required
+
+The opt-in `upstream-graph-delta-v1` recipe preserves graph semantics and model
+requests while freezing a distinct transport identity and separate wire/state
+bounds. Changed-record frames bind to the previous and resulting full state;
+receivers still perform full private rehearsal and live mutation checks. Malformed
+frames cannot advance the base, and uncertain outgoing/commit state closes the
+session. All954 Docker regressions pass; 32 new cases cover transport, budgets,
+campaign restoration and protected positive/negative controls.
+
+The paired61-call retained-state fixture changes from snapshot infrastructure
+failure after47recorded calls to delta pass under identical1MiB budgets. The
+100-call local circuit profile reduces graph bytes from24,501,949 to397,729 but
+increases observed time from18.34s to22.27s. Preserve this adverse timing result:
+wire reduction is implemented, reconstruction performance is not solved.
+Raw source-bound evidence, hashes and limitations are in
+docs/reliability-evidence/graph-delta-transport-development.md.
+
+Next address full-history capture/reconstruction costs without discarding aliases
+or replacing actual live-state baselines with stale serialized history. Complete
+the1000-call workload and full transport admission after that change. No default
+promotion or calibrated model score is justified by this development increment.

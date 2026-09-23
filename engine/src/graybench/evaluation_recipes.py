@@ -10,6 +10,7 @@ from graybench.upstream import UpstreamJudge
 EvaluationRecipe = Literal[
     "upstream",
     "upstream-graph-v4",
+    "upstream-graph-delta-v1",
     "qhe0-size-domain-v1",
     "task82-file-semantic-v1",
     "qhe141-pauli-group-anticommutator-v1",
@@ -46,10 +47,13 @@ class RevisionJudge:
 
 def recipe_judge(recipe, *, parser_timeout=30, **kwargs):
     kwargs.setdefault("timeout", 120.0)
-    if recipe == "upstream-graph-v4":
+    if recipe in ("upstream-graph-v4", "upstream-graph-delta-v1"):
         if kwargs.pop("protocol", 4) != 4:
             raise ValueError("Graph recipe cannot select another protocol")
-        return UpstreamJudge(protocol=4, **kwargs)
+        transport = "delta-v1" if recipe == "upstream-graph-delta-v1" else "snapshot-v1"
+        if kwargs.pop("graph_transport", transport) != transport:
+            raise ValueError("Graph recipe cannot select another transport")
+        return UpstreamJudge(protocol=4, graph_transport=transport, **kwargs)
     if recipe == "upstream":
         return UpstreamJudge(**kwargs)
     if recipe == "qhe0-size-domain-v1":

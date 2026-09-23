@@ -8,6 +8,8 @@ from pathlib import Path
 
 from graybench.circuit_wire import WireError, WireLimitError
 from graybench.graph_anchors import PublicAnchorRegistry
+from graybench.graph_delta import DeltaGraphArena
+from graybench.graph_limits import validate_transport
 from graybench.graph_owned import GraphReconstructionError
 from graybench.graph_rpc import EXCEPTIONS, validate_arguments, validate_root_shapes, validate_roots
 from graybench.graph_wire import GraphArena, GraphLimits
@@ -29,6 +31,11 @@ def main():
         limits=GraphLimits.from_record(task["graph_limits"]),
         anchors=registry,
     )
+    transport = validate_transport(task["graph_transport"])
+    if transport["state_bytes"] != arena.limits.message_bytes:
+        raise WireError("Graph state and transport limits differ")
+    if transport["mode"] == "delta-v1":
+        arena = DeltaGraphArena(arena, wire_limit=transport["wire_bytes"])
     remote_exceptions = []
     bridge_failure = None
 
@@ -46,8 +53,8 @@ def main():
             file=channel,
             flush=True,
         )
-        line = sys.stdin.readline(arena.limits.message_bytes + 1)
-        if not line or len(line) > arena.limits.message_bytes:
+        line = sys.stdin.readline(transport["wire_bytes"] + 1)
+        if not line or len(line) > transport["wire_bytes"]:
             raise BridgeFailure("infrastructure_error", "Missing or oversized bridge response")
         response = json.loads(line)
         if type(response.get("sequence")) is not int or response["sequence"] != calls:
@@ -76,7 +83,8 @@ def main():
                 if wire["graph"]["roots"][key] != outgoing["roots"][key]:
                     raise WireError("Candidate replaced an argument root")
             prepared = arena.prepare(wire["graph"], sequence=calls)
-            validate_root_shapes(wire["graph"], response=True, raised=raised)
+            expanded = prepared.snapshot if isinstance(arena, DeltaGraphArena) else wire["graph"]
+            validate_root_shapes(expanded, response=True, raised=raised)
             roots = arena.commit(prepared)
             validate_arguments(roots)
             if raised is None:

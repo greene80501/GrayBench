@@ -7,6 +7,8 @@ from pathlib import Path
 
 from graybench.circuit_wire import WireError, fields
 from graybench.graph_anchors import PublicAnchorRegistry
+from graybench.graph_delta import DeltaGraphArena
+from graybench.graph_limits import validate_transport
 from graybench.graph_rpc import (
     exception_name,
     validate_arguments,
@@ -27,6 +29,11 @@ def main():
         limits=GraphLimits.from_record(config["limits"]),
         anchors=registry,
     )
+    transport = validate_transport(config["transport"])
+    if transport["state_bytes"] != arena.limits.message_bytes:
+        raise WireError("Graph state and transport limits differ")
+    if transport["mode"] == "delta-v1":
+        arena = DeltaGraphArena(arena, wire_limit=transport["wire_bytes"])
     namespace = {"__name__": "candidate"}
     with contextlib.redirect_stdout(sys.stderr):
         prefix = Path("/input/public_prefix.py")
@@ -66,7 +73,10 @@ def main():
             validate_roots(request["graph"], {"args", "kwargs"})
             with contextlib.redirect_stdout(sys.stderr):
                 prepared = arena.prepare(request["graph"], sequence=sequence)
-                validate_root_shapes(request["graph"])
+                expanded = (
+                    prepared.snapshot if isinstance(arena, DeltaGraphArena) else request["graph"]
+                )
+                validate_root_shapes(expanded)
                 roots = arena.commit(prepared)
                 validate_arguments(roots)
                 phase = "execution"
