@@ -21,6 +21,7 @@ STATE_PREPARATION_ATTRS = ATTRS + tuple(
 )
 DELAY_ATTRS = ATTRS + (("_unit", "_unit"),)
 IF_ELSE_ATTRS = ATTRS + (("_condition", "_condition"),)
+UNIFORM_ROTATION_ATTRS = ATTRS + (("rot_axes", "rot_axes"),)
 
 
 def attributes(selector, values=()):
@@ -31,6 +32,8 @@ def attributes(selector, values=()):
     optional = {"gate": "condition", "instruction": "_condition"}.get(selector)
     if optional is not None and optional in values:
         return ATTRS + ((optional, optional),)
+    if selector in ("uc_pauli_rot", "ucrx", "ucry", "ucrz"):
+        return UNIFORM_ROTATION_ATTRS
     if selector == "state_preparation":
         return STATE_PREPARATION_ATTRS
     if selector == "delay":
@@ -55,12 +58,17 @@ def classes():
         WhileLoopOp,
     )
     from qiskit.circuit.library import (
+        DiagonalGate,
         LinearFunction,
         MCXGate,
         StatePreparation,
+        UCRXGate,
+        UCRYGate,
+        UCRZGate,
         UnitaryGate,
         get_standard_gate_name_mapping,
     )
+    from qiskit.circuit.library.generalized_gates.uc_pauli_rot import UCPauliRotGate
 
     result = {
         "gate": Gate,
@@ -72,6 +80,11 @@ def classes():
         "state_preparation": StatePreparation,
         "delay": Delay,
         "unitary": UnitaryGate,
+        "diagonal": DiagonalGate,
+        "uc_pauli_rot": UCPauliRotGate,
+        "ucrx": UCRXGate,
+        "ucry": UCRYGate,
+        "ucrz": UCRZGate,
         "if_else": IfElseOp,
         "for_loop": ForLoopOp,
         "while_loop": WhileLoopOp,
@@ -116,6 +129,8 @@ class InstructionCodec:
         validate_attributes(state, index, attrs)
         if attrs is DELAY_ATTRS:
             name_value(state["_unit"])
+        if attrs is UNIFORM_ROTATION_ATTRS:
+            name_value(state["rot_axes"])
         if attrs is STATE_PREPARATION_ATTRS:
             for key in ("_inverse", "_from_label", "_from_int"):
                 if type(state[key]) is not bool:

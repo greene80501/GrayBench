@@ -746,3 +746,6 @@ three checkout newline-only differences are explicitly disclosed alongside the
 sole semantic file change. Raw results and limitations are preserved in
 docs/reliability-evidence/graph-converted-instructions-development.md. These
 replays do not replace a full-cohort calibration or establish oracle admission.
+
+### Diagonal state and completed long reference
+Exact fixed diagonal/rotation classes now preserve raw state and caches; 986 Docker tests pass without skips. Task120 passes in both targeted replays. The isolated task109 hard diagnostic completed all 1000 calls with explicit expanded limits; its transcript audit passed. See docs/reliability-evidence/graph-diagonal-development.md and task109-full-delta-reference.md. Full admission, normal long-workload calibration and oracle revisions remain incomplete.

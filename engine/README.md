@@ -105,8 +105,8 @@ adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
 For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
 Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
 Without the image setting, Docker tests skip. The latest verified runtime passed
-972 tests with zero failures, errors or skips; see the
-[converter-metadata increment](../docs/reliability-evidence/graph-converted-instructions-development.md).
+986 tests with zero failures, errors or skips; see the
+[diagonal-state increment](../docs/reliability-evidence/graph-diagonal-development.md).
 That result covers the regression suite, not every benchmark requirement.
 
 The latest complete graph reference scan, at `38db7fa`, records **113 pass,

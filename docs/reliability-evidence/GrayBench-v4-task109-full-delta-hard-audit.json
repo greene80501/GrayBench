@@ -1,0 +1,43 @@
+{
+  "evidence": {
+    "complete": true,
+    "pending_task": null,
+    "planned": 1,
+    "results": {
+      "hard/qiskitHumanEval/109": "pass"
+    },
+    "chain_head": "da6d45fa0481a0c399cce5e0c22cf2a9a19073248b71de3a99eb9da124f90150",
+    "purpose": "reference interface calibration; not model scoring",
+    "file_sha256": "37d91eb19dd00adb4ace7743eba907af748a3f00d2610a2c292cef7bb31750c4"
+  },
+  "results": [
+    {
+      "task": "hard/qiskitHumanEval/109",
+      "outcome": "pass",
+      "recorded_calls": 1000,
+      "frames": 2000,
+      "graph_frame_bytes": 4053875,
+      "first_frame": {
+        "sequence": 1,
+        "side": "judge",
+        "nodes": 2,
+        "changed_nodes": 2,
+        "state_bytes": 397,
+        "frame_bytes": 498
+      },
+      "last_frame": {
+        "sequence": 1000,
+        "side": "candidate",
+        "nodes": 18021,
+        "changed_nodes": 17,
+        "state_bytes": 2459246,
+        "frame_bytes": 2973
+      },
+      "candidate_active_seconds": 1348.515999999072,
+      "judge_wait_seconds": 1290.488000000827,
+      "wall_seconds": 2640.545999999973,
+      "detail": null
+    }
+  ],
+  "verification": "event and transcript hashes, manifest digest, bidirectional delta bases/result hashes, session/sequence, and declared node/state/frame bounds; data only, not SDK semantic re-execution"
+}
