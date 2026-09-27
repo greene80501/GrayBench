@@ -27,11 +27,24 @@ EXTERNAL_IDS = frozenset({43, 97, 98, 122, 129, 133, 134, 146})
 KNOWN_FINDINGS = {
     0: ["Upstream accepts a constant three-qubit circuit that ignores the requested size"],
     1: ["Upstream accepts fabricated balanced counts, negative counts and fractional counts"],
+    3: ["Upstream accepts a blank figure and leaves measurement coverage ambiguous"],
     9: ["Upstream accepts an RX-only non-entangling ansatz"],
     14: ["Upstream accepts two shots instead of the explicitly requested 100"],
     20: ["Empty circuit with correct layout accepted by upstream oracle"],
+    26: ["Upstream accepts a Bell pair on the wrong qubits and requires undisclosed measurement"],
     32: ["Oracle depends on an undisclosed signed observable coefficient"],
     35: ["Oracle depends on undisclosed variational parameter preparation"],
+    37: ["Upstream accepts fabricated primitive data with an invalid bit string"],
+    46: ["Upstream accepts a fixed-width identity function that ignores width and seed"],
+    63: ["Private RNG state is unavailable to the candidate; canonical results vary across runs"],
+    82: ["Protected upstream bridge cannot see bell.qpy across the candidate/judge boundary"],
+    86: ["Upstream accepts identity blocks without the requested CX-chain behavior"],
+    109: ["Upstream accepts a fixed physical state despite its parameter-variation request"],
+    113: ["Upstream accepts a constant dictionary in place of computed PropertySet metrics"],
+    114: ["Upstream accepts the wrong physical qubit when the coupling-map node count matches"],
+    116: ["Upstream accepts a fixed circuit that ignores Hamiltonian and time inputs"],
+    120: ["Upstream accepts a fixed circuit that ignores diagonal-phase inputs"],
+    141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
 
