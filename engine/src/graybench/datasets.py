@@ -45,6 +45,7 @@ KNOWN_FINDINGS = {
     114: ["Upstream accepts the wrong physical qubit when the coupling-map node count matches"],
     115: ["Upstream accepts zero errors and UGate parameters with wrong names or constant values"],
     116: ["Upstream accepts a fixed circuit that ignores Hamiltonian and time inputs"],
+    117: ["Upstream accepts input-independent and nonunitary circuits for unitary decomposition"],
     120: ["Upstream accepts a fixed circuit that ignores diagonal-phase inputs"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
