@@ -63,6 +63,40 @@ reproduction, not expected values for a GrayBench run with other models or a
 different prompt protocol. An output-only match in percentage would not verify
 that the same tasks passed.
 
+## ScienceEval's public 151-task condition
+
+[ScienceEval's published table at commit `1683e498`](https://github.com/ScienceOne-AI/ScienceEval/blob/1683e4987bab03b706307b5cb9b4a46e8fed5e89/README.md#-evaluation-results)
+lists Qiskit HumanEval results including Gemini-2.5-Pro **52.98%**,
+OpenAI-o3-High **47.02%**, and Qwen3-8B **23.18%**. These are ScienceEval
+results, not GrayBench results. The table does not list GPT-4o mini or Gemini
+2.5 Flash. Its [Qiskit HumanEval dataset](https://github.com/ScienceOne-AI/ScienceEval/blob/1683e4987bab03b706307b5cb9b4a46e8fed5e89/benchmarks/Qiskit_HumanEval/Qhumaneval.jsonl)
+has 151 unique IDs 0–150 (SHA-256 of the downloaded JSONL:
+`6e447d84713b4f0d335ceeb95bbbb4eaf809543ef9dbe7cb6463300d4841628d`).
+Comparing decoded values of all six fields by `task_id` shows that **all 151
+records exactly match** the upstream `0.1.0` JSON described below. Relative to
+GrayBench's pinned current *normal* parquet, the dataset has 23 different
+prompts, 19 different canonical solutions, 138 different test strings, 3
+different entry points, and 1 different difficulty value; only 9 complete
+records match. The hard suite has a different prompt format and no complete
+record matches this dataset. This is a verified dataset-revision difference,
+not merely a shared denominator.
+
+ScienceEval's [runner](https://github.com/ScienceOne-AI/ScienceEval/blob/1683e4987bab03b706307b5cb9b4a46e8fed5e89/benchmarks/Qiskit_HumanEval/run.py)
+adds an instruction to return only function code, extracts the last Python
+fenced block, removes triple-quoted text, and discards lines beginning with
+`import`, `from`, or `def` before passing a completion to `human-eval`.
+Its [reproduction guidance](https://github.com/ScienceOne-AI/ScienceEval/blob/1683e4987bab03b706307b5cb9b4a46e8fed5e89/README.md#-reproducing-evaluation-results)
+sets temperature 0.6, top-p 0.95, and presence penalty 1.0 for its ScienceOne
+base-model Qiskit run, with model-specific token caps. The
+[Qiskit-specific README](https://github.com/ScienceOne-AI/ScienceEval/blob/1683e4987bab03b706307b5cb9b4a46e8fed5e89/benchmarks/Qiskit_HumanEval/README.md)
+uses Python 3.12, but its [requirements](https://github.com/ScienceOne-AI/ScienceEval/blob/1683e4987bab03b706307b5cb9b4a46e8fed5e89/benchmarks/Qiskit_HumanEval/requirements.txt)
+do not pin Qiskit or `human-eval`. No per-task outputs accompany that pinned
+repository tree. Consequently the table is a useful historical reference, but
+neither its score nor its per-task pass set can be treated as an exact control
+for a current GrayBench normal or hard run. A matched reproduction would need
+to freeze the old dataset, full request and extraction protocol, model
+revision/endpoint, dependency environment, and raw generations.
+
 ## Public-release drift check
 
 The upstream repository's [first public release, `0.1.0`](https://github.com/qiskit-community/qiskit-human-eval/releases/tag/0.1.0),
