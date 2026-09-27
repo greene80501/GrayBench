@@ -1,7 +1,7 @@
 # Current release gates, 2026-09-27
 
 This is a read-only release-path audit of the development engine at analysis
-source digest `0d6c1f963527a8c3a0daf5905ebc9e16e9d66b78c189bfae602801dad38e520b`.
+source digest `05438b07b272b0d1ae8af293c8704e886d1ef2e6dd8538b88f162e335108aa0e`.
 It does not admit tasks, certify a model, or alter a saved attempt. No provider
 request was made.
 
@@ -21,7 +21,7 @@ that the underlying oracles are correct.
 
 Importing both pinned suites through `inventory` returned 302 cards. All 302
 have pending specification, oracle and wire-interface reviews; none is
-release-eligible and `release_ready` is false. Eighty-eight cards currently
+release-eligible and `release_ready` is false. Ninety-two cards currently
 carry at least one known-finding tag, because a task number appears separately
 in normal and hard. Sixteen cards are marked external-service dependent.
 The card counts describe the provisional inventory, not completed reviews.
