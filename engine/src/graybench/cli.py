@@ -92,6 +92,11 @@ def main():
     plan.add_argument("--parser-image", help="Immutable task82 QPY parser image digest")
     plan.add_argument("--name", required=True)
     plan.add_argument("--evaluation-recipe", choices=RECIPES, default="upstream")
+    plan.add_argument(
+        "--extraction",
+        choices=("raw_or_single_python_fence_v1", "unique_entrypoint_fence_v2"),
+        default="raw_or_single_python_fence_v1",
+    )
     plan.add_argument("--repeats", type=int, default=1)
     plan.add_argument("--system-prompt", type=Path)
     selection = plan.add_mutually_exclusive_group(required=True)
@@ -228,6 +233,7 @@ def main():
             args.image,
             repeats=args.repeats,
             evaluation_recipe=args.evaluation_recipe,
+            extraction=args.extraction,
             parser_image=args.parser_image,
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt

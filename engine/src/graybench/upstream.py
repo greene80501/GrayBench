@@ -12,8 +12,9 @@ import time
 import uuid
 from pathlib import Path
 
+from graybench.contracts import ExtractionPolicy
 from graybench.datasets import JudgeTask
-from graybench.extraction import extract
+from graybench.extraction import EXTRACTION_POLICIES, extract
 from graybench.identity import canonical, identity
 from graybench.judge import Judgment, ProtectedJudge
 from graybench.sandbox import (
@@ -48,9 +49,13 @@ class UpstreamJudge:
         protocol=3,
         graph_transport="snapshot-v1",
         graph_state_limit=None,
+        extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
     ):
         if type(protocol) is not int or protocol not in (3, 4):
             raise ValueError("Unknown upstream bridge protocol")
+        if extraction not in EXTRACTION_POLICIES:
+            raise ValueError("Unknown extraction policy")
+        self.extraction = extraction
         self.protocol = protocol
         from graybench.graph_limits import transport_record
 
@@ -121,6 +126,7 @@ class UpstreamJudge:
             "candidate_startup": "runtime-ready-host-start-candidate-ready-v1",
             "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
             "output_limit": self.limit,
+            "extraction_policy": self.extraction,
             "protocol": "upstream-graph-v4" if self.protocol == 4 else "upstream-proxy-v1",
             **(
                 {
@@ -139,12 +145,16 @@ class UpstreamJudge:
         return payload, manifest
 
     def evaluate(self, task: JudgeTask, completion: str) -> Judgment:
-        extracted = extract(completion, task.public)
+        extracted = extract(completion, task.public, self.extraction)
         payload, manifest = self.configuration(task)
         source = Path(__file__).parent
         digest = identity(manifest)
         if extracted.error:
-            return Judgment("candidate_error", digest, {"detail": extracted.error})
+            return Judgment(
+                "candidate_error",
+                digest,
+                {"detail": extracted.error, "extraction_method": extracted.method},
+            )
         graph_session = uuid.uuid4().hex if self.protocol == 4 else None
         runtime_payload = (
             {**payload, "graph_session": graph_session} if self.protocol == 4 else payload
@@ -217,6 +227,7 @@ class UpstreamJudge:
                     "wall_seconds": time.monotonic() - start,
                     "completion_sha256": hashlib.sha256(completion.encode()).hexdigest(),
                     "extracted_code_sha256": hashlib.sha256(extracted.code.encode()).hexdigest(),
+                    "extraction_method": extracted.method,
                     "public_task_digest": task.public.digest,
                 },
             )

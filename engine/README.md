@@ -68,7 +68,14 @@ extension mechanism, not verified support for every model. Exact endpoint/model
 settings need evidence. An accepted request setting is not proof the provider
 honored it. No default helpful prompt, answer repair or hidden retry is added.
 
-`campaign-plan` freezes selected tasks, requests and an explicit evaluation recipe.
+`campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
+and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.
+The separate `unique_entrypoint_fence_v2` development condition can select
+the sole Python block defining the public entry point from a multi-block
+answer; duplicate alternatives and malformed fences reject. The selected
+method and exact judge policy are retained in judgment evidence and cohort
+identity. This is a labeled formatting-sensitivity condition, not an
+automatic retry or repair. See the [extraction policy evidence](../docs/reliability-evidence/extraction-protocol-v2-development.md).
 `campaign-create` saves the validated setup without generating answers.
 `campaign-step` performs at most one scheduled generation or protected judgment;
 it may make a billable request. `campaign-observe` records provider metadata.

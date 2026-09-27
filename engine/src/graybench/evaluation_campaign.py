@@ -28,6 +28,11 @@ def cohort_identities(tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dic
 
 
 def validate_cohort(protocol: Protocol, tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dict:
+    concrete = judge
+    while hasattr(concrete, "inner"):
+        concrete = concrete.inner
+    if getattr(concrete, "extraction", None) != protocol.extraction:
+        raise StateError("Judge extraction differs from frozen protocol")
     binding = cohort_identities(tasks, judge)
     if protocol.track != getattr(judge, "track", "upstream"):
         raise StateError("Judge cannot execute a different evaluation track")

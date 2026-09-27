@@ -5,7 +5,8 @@ import hashlib
 import re
 
 from graybench.artifacts import ArtifactUnsupported
-from graybench.extraction import extract
+from graybench.contracts import ExtractionPolicy
+from graybench.extraction import EXTRACTION_POLICIES, extract
 from graybench.identity import identity
 from graybench.judge import Judgment, ProtectedJudge
 from graybench.provenance import source_manifest
@@ -31,9 +32,13 @@ class QpyFileJudge:
         parser_timeout=30,
         timeout=30,
         output_limit=1048576,
+        extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
     ):
         if track not in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
             raise ValueError("Unknown task 82 file semantic track")
+        if extraction not in EXTRACTION_POLICIES:
+            raise ValueError("Unknown extraction policy")
+        self.extraction = extraction
         parser_image = image if parser_image is None else parser_image
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", parser_image):
             raise ValueError("QPY parser requires an immutable runtime image")
@@ -64,6 +69,7 @@ class QpyFileJudge:
             "candidate_timeout": self.candidate_timeout,
             "parser_timeout": self.parser_timeout,
             "output_limit": self.output_limit,
+            "extraction_policy": self.extraction,
             "oracle": self.oracle.manifest("task82-bell-file-state-v1"),
             "artifact": {"name": "bell.qpy", "max_bytes": 4 * 1024 * 1024},
             "return_value": "ignored as in upstream check",
@@ -76,15 +82,18 @@ class QpyFileJudge:
     def evaluate(self, task, completion):
         _, manifest = self.configuration(task)
         digest = identity(manifest)
-        evidence = {
-            "manifest": manifest,
-            "completion_sha256": hashlib.sha256(completion.encode()).hexdigest(),
-        }
+        extracted = extract(completion, task.public, self.extraction)
+        evidence = {"manifest": manifest, "extraction_method": extracted.method}
+        try:
+            evidence["completion_sha256"] = hashlib.sha256(completion.encode()).hexdigest()
+        except UnicodeEncodeError:
+            if not extracted.error:
+                raise
+            evidence["completion_encoding"] = "unencodable_utf8"
 
         def finish(outcome, **extra):
             return Judgment(outcome, digest, {**evidence, **extra})
 
-        extracted = extract(completion, task.public)
         if extracted.error:
             return finish("candidate_error", detail=extracted.error)
         phase = "candidate"

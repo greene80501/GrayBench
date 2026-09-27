@@ -100,6 +100,9 @@ class RetryPolicy(Contract):
         return self
 
 
+ExtractionPolicy = Literal["raw_or_single_python_fence_v1", "unique_entrypoint_fence_v2"]
+
+
 class Protocol(Contract):
     schema_version: Literal["3.1"] = "3.1"
     name: str = Field(min_length=1)
@@ -109,7 +112,7 @@ class Protocol(Contract):
     request_digests: dict[str, str]
     repeats: int = Field(default=1, ge=1, le=1000)
     system_prompt: str | None = None
-    extraction: Literal["raw_or_single_python_fence_v1"] = "raw_or_single_python_fence_v1"
+    extraction: ExtractionPolicy = "raw_or_single_python_fence_v1"
     retry: RetryPolicy = RetryPolicy()
     model: ModelSpec
     generation_code_digest: str = Field(pattern="^[0-9a-f]{64}$")

@@ -30,6 +30,61 @@ def test_builder_binds_requests_without_including_private_source(model, task):
         build_setup("duplicate", model, (private, private), setup.image)
 
 
+def test_extraction_policy_is_frozen_in_judge_and_cohort(model, task):
+    private = private_task(task)
+    image = "sha256:" + "0" * 64
+    original = build_setup("v1", model, (private,), image)
+    revised = build_setup(
+        "v2",
+        model,
+        (private,),
+        image,
+        extraction="unique_entrypoint_fence_v2",
+    )
+    assert revised.protocol.extraction == "unique_entrypoint_fence_v2"
+    assert revised.protocol.judge_digest != original.protocol.judge_digest
+    restored = CampaignSetup.model_validate_json(revised.model_dump_json())
+    validate_cohort(restored.protocol, (private,), restored.judge())
+    with pytest.raises(StateError, match="extraction|judge_digest"):
+        validate_cohort(revised.protocol, (private,), original.judge())
+    forged = original.protocol.model_copy(update={"extraction": "unique_entrypoint_fence_v2"})
+    with pytest.raises(StateError, match="extraction"):
+        validate_cohort(forged, (private,), original.judge())
+
+
+def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch):
+    private = private_task(task)
+    monkeypatch.setattr(
+        "graybench.cli.load_suite", lambda suite, _: (private,) if suite == "hard" else ()
+    )
+    spec = tmp_path / "model.json"
+    spec.write_text(model.model_dump_json())
+    output = tmp_path / "setup.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "graybench",
+            "campaign-plan",
+            str(spec),
+            str(tmp_path),
+            str(output),
+            "--image",
+            "sha256:" + "0" * 64,
+            "--name",
+            "extraction-v2",
+            "--suite",
+            "hard",
+            "--extraction",
+            "unique_entrypoint_fence_v2",
+        ],
+    )
+    main()
+    assert CampaignSetup.model_validate_json(output.read_bytes()).protocol.extraction == (
+        "unique_entrypoint_fence_v2"
+    )
+
+
 def test_cli_plan_is_offline_explicit_and_does_not_overwrite(
     tmp_path, model, task, monkeypatch, capsys
 ):

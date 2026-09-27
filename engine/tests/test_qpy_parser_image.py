@@ -32,6 +32,18 @@ def test_parser_image_requires_immutable_digest():
         QpyFileJudge(image=BASE, parser_image="qiskit:2.5.2")
 
 
+def test_v2_file_judge_classifies_unencodable_response_as_candidate_error():
+    response = (
+        "```python\ndef create_binary_serialization(): pass\ud800\n```\n"
+        "```python\nprint('example')\n```"
+    )
+    result = QpyFileJudge(image=BASE, extraction="unique_entrypoint_fence_v2").evaluate(
+        task(), response
+    )
+    assert result.outcome == "candidate_error"
+    assert result.evidence["extraction_method"] == "rejected"
+
+
 def test_distinct_parser_image_is_frozen_and_used_only_for_decoder(monkeypatch):
     seen = []
 

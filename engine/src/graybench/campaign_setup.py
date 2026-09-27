@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from graybench.contracts import Contract, ModelSpec, Protocol
+from graybench.contracts import Contract, ExtractionPolicy, ModelSpec, Protocol
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
 from graybench.evaluation_recipes import EvaluationRecipe, recipe_judge, revised_tasks
@@ -46,6 +46,7 @@ class CampaignSetup(Contract):
             output_limit=self.output_limit,
             parser_timeout=self.parser_timeout,
             parser_image=self.parser_image,
+            extraction=self.protocol.extraction,
         )
 
     def tasks(self, cache: Path):
@@ -96,9 +97,12 @@ def build_setup(
     system_prompt: str | None = None,
     evaluation_recipe: EvaluationRecipe = "upstream",
     parser_image: str | None = None,
+    extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
-    judge = recipe_judge(evaluation_recipe, image=image, parser_image=parser_image)
+    judge = recipe_judge(
+        evaluation_recipe, image=image, parser_image=parser_image, extraction=extraction
+    )
     tasks = revised_tasks(tasks, judge)
     binding = cohort_identities(tasks, judge)
     source = source_manifest()["digest"]
@@ -115,6 +119,7 @@ def build_setup(
         model=model,
         repeats=repeats,
         system_prompt=system_prompt,
+        extraction=extraction,
         task_keys=tuple(requests),
         request_digests=requests,
         dataset_digest=binding["dataset_digest"],

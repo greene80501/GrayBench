@@ -68,3 +68,7 @@ An independent two-slot local Ollama development pilot is recorded in
 [`compatible-provider-local-pilot.md`](compatible-provider-local-pilot.md).
 It exercised the real route and exposed a multi-block answer rejected by the
 frozen extractor; it is not a release score or compatibility certification.
+The optional, separately frozen
+[`unique_entrypoint_fence_v2`](extraction-protocol-v2-development.md) condition
+is intended to measure sensitivity to that response format; it does not
+change or rescore the preserved pilot.

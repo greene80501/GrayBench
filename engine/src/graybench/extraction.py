@@ -3,8 +3,15 @@
 import ast
 import re
 from dataclasses import dataclass
+from typing import get_args
 
-from graybench.contracts import PublicTask
+from graybench.contracts import ExtractionPolicy, PublicTask
+
+EXTRACTION_POLICIES = get_args(ExtractionPolicy)
+FENCE = re.compile(r"^```([^\n`]*)\r?\n(.*?)^```[ \t]*$", flags=re.MULTILINE | re.DOTALL)
+FENCE_V2_MULTIBLOCK = re.compile(
+    r"^```([^\n`]*)\r?\n(.*?)^```[ \t]*\r?$", flags=re.MULTILINE | re.DOTALL
+)
 
 
 @dataclass(frozen=True)
@@ -15,16 +22,158 @@ class Extracted:
     public_prefix: str = ""
 
 
-def extract(text: str, task: PublicTask) -> Extracted:
-    if "```" in text:
-        fences = list(
-            re.finditer(r"^```([^\n`]*)\r?\n(.*?)^```[ \t]*$", text, flags=re.MULTILINE | re.DOTALL)
+def _class_declares_global(body: list[ast.stmt], name: str) -> bool:
+    def declares(node: ast.AST) -> bool:
+        if isinstance(node, ast.Global):
+            return name in node.names
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+            return False
+        return any(declares(child) for child in ast.iter_child_nodes(node))
+
+    return any(declares(statement) for statement in body)
+
+
+def _entrypoint_bindings(node: ast.AST, name: str, *, active: bool = True) -> int:
+    """Count bindings in the module scope, including executed class-body globals."""
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        # The body has its own scope. Decorators, defaults, and annotations are
+        # evaluated in the containing scope when the definition is constructed.
+        evaluated = [*node.decorator_list, node.args, node.returns, *node.type_params]
+        return int(active and node.name == name) + sum(
+            _entrypoint_bindings(child, name, active=active)
+            for child in evaluated
+            if child is not None
         )
-        if len(fences) != 1 or fences[0][1].strip().lower() not in {"", "python", "py"}:
+    if isinstance(node, ast.ClassDef):
+        evaluated = [*node.decorator_list, *node.bases, *node.keywords, *node.type_params]
+        body_active = _class_declares_global(node.body, name)
+        return (
+            int(active and node.name == name)
+            + sum(_entrypoint_bindings(child, name, active=active) for child in evaluated)
+            + sum(_entrypoint_bindings(child, name, active=body_active) for child in node.body)
+        )
+    if isinstance(node, ast.Lambda):
+        return _entrypoint_bindings(node.args, name, active=active)
+    if isinstance(node, (ast.ListComp, ast.SetComp, ast.GeneratorExp, ast.DictComp)):
+        # Comprehension loop targets live in a local scope. Assignment
+        # expressions in their element/filter expressions bind outside it.
+        expressions = [node.key, node.value] if isinstance(node, ast.DictComp) else [node.elt]
+        for generator in node.generators:
+            expressions.extend([generator.iter, *generator.ifs])
+        return sum(_entrypoint_bindings(child, name, active=active) for child in expressions)
+    if isinstance(node, ast.Import):
+        return int(active) * sum(
+            (alias.asname or alias.name.split(".", 1)[0]) == name for alias in node.names
+        )
+    if isinstance(node, ast.ImportFrom):
+        # A wildcard import may bind any public entry point; do not inspect or
+        # execute the module to decide whether it happens to contain this one.
+        return int(active) * sum(
+            alias.name == "*" or (alias.asname or alias.name) == name for alias in node.names
+        )
+    if isinstance(node, (ast.ExceptHandler, ast.MatchAs, ast.MatchStar)):
+        binding = int(active and node.name == name)
+    elif isinstance(node, ast.MatchMapping):
+        binding = int(active and node.rest == name)
+    else:
+        binding = 0
+    return (
+        binding
+        + int(
+            active
+            and isinstance(node, ast.Name)
+            and isinstance(node.ctx, ast.Store)
+            and node.id == name
+        )
+        + sum(
+            _entrypoint_bindings(child, name, active=active) for child in ast.iter_child_nodes(node)
+        )
+    )
+
+
+def _v2_multifence(text: str, task: PublicTask, fences: list[re.Match]) -> Extracted:
+    definition = re.compile(
+        rf"(?m)^[ \t]*(?:(?:async[ \t]+)?def|class)[ \t]+{re.escape(task.entry_point)}\b"
+    )
+    assignment = re.compile(
+        rf"(?m)^[ \t]*{re.escape(task.entry_point)}\b[ \t]*(?:[+\-*/%@&|^=]|<<|>>|:)"
+    )
+    outside = "".join(
+        text[end:start]
+        for end, start in zip(
+            (0, *(match.end() for match in fences)),
+            (*(match.start() for match in fences), len(text)),
+            strict=True,
+        )
+    )
+    if definition.search(outside) or assignment.search(outside):
+        return Extracted("", "rejected", "Expected one unambiguous entry-point Python code block")
+    matches = []
+    for fence in fences:
+        if fence[1].strip().lower() not in {"", "python", "py"}:
+            continue
+        code = fence[2]
+        try:
+            tree = ast.parse(code)
+        except (SyntaxError, ValueError, UnicodeError, RecursionError):
+            if definition.search(code) or assignment.search(code):
+                return Extracted(
+                    "", "rejected", "Expected one unambiguous entry-point Python code block"
+                )
+            continue
+        definitions = sum(
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name == task.entry_point
+            for node in tree.body
+        )
+        bindings = _entrypoint_bindings(tree, task.entry_point)
+        if bindings and (definitions != 1 or bindings != 1):
+            return Extracted(
+                "", "rejected", "Expected one unambiguous entry-point Python code block"
+            )
+        if definitions == 1:
+            matches.append(code)
+    if len(matches) != 1:
+        return Extracted("", "rejected", "Expected one unambiguous entry-point Python code block")
+    return Extracted(matches[0], "unique_entrypoint_fence_v2")
+
+
+def extract(
+    text: str,
+    task: PublicTask,
+    policy: ExtractionPolicy = "raw_or_single_python_fence_v1",
+) -> Extracted:
+    if policy not in EXTRACTION_POLICIES:
+        raise ValueError("Unknown extraction policy")
+    if policy == "unique_entrypoint_fence_v2":
+        try:
+            text.encode("utf-8")
+        except UnicodeEncodeError:
+            return Extracted("", "rejected", "Response is not UTF-8 encodable")
+    if "```" in text:
+        fence_pattern = (
+            FENCE_V2_MULTIBLOCK
+            if policy == "unique_entrypoint_fence_v2" and text.count("```") > 2
+            else FENCE
+        )
+        fences = list(fence_pattern.finditer(text))
+        if policy == "raw_or_single_python_fence_v1" and (
+            len(fences) != 1 or fences[0][1].strip().lower() not in {"", "python", "py"}
+        ):
             return Extracted("", "rejected", "Expected one unambiguous Python code block")
-        if text.count("```") != 2:
+        if text.count("```") != 2 * len(fences):
             return Extracted("", "rejected", "Ambiguous fence delimiters")
-        code, method = fences[0][2], "single_fence"
+        if len(fences) == 1:
+            if fences[0][1].strip().lower() not in {"", "python", "py"}:
+                return Extracted("", "rejected", "Expected one unambiguous Python code block")
+            code, method = fences[0][2], "single_fence"
+        elif policy == "unique_entrypoint_fence_v2" and len(fences) > 1:
+            selected = _v2_multifence(text, task, fences)
+            if selected.error:
+                return selected
+            code, method = selected.code, selected.method
+        else:
+            return Extracted("", "rejected", "Expected one unambiguous Python code block")
     else:
         code, method = text, "raw"
     if not code.strip():
@@ -40,6 +189,10 @@ def extract(text: str, task: PublicTask) -> Extracted:
             )
         except SyntaxError:
             full = False
+        except (ValueError, UnicodeError, RecursionError):
+            if policy == "unique_entrypoint_fence_v2":
+                return Extracted("", "rejected", "Invalid Python source")
+            raise
         if not full:
             code = task.prompt + code
             method += "+prompt"
