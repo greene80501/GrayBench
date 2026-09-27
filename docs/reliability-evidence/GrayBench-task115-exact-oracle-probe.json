@@ -1,0 +1,118 @@
+{
+  "kind": "graybench_task115_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "60a713e9dbbf4da13e86672e76cc926b504bf22ae11912cbf4da43eeaf7c43b5",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "fab7d10842b0df5a7bf9be1c77e651ed978db7bd8a531c683e765a7626512c13",
+      "case": "reference",
+      "candidate_sha256": "1988d2b66a05428b5540f3d3c4517743dfc0892b164a2d64ee19dcd25d0fac41",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "fab7d10842b0df5a7bf9be1c77e651ed978db7bd8a531c683e765a7626512c13",
+      "case": "zero_errors",
+      "candidate_sha256": "3b8ae92fb46476be5cb328eb6416a683aff25ec94ee53e6b7946f32da88d4af7",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "fab7d10842b0df5a7bf9be1c77e651ed978db7bd8a531c683e765a7626512c13",
+      "case": "wrong_parameter_names",
+      "candidate_sha256": "531f14cbdf41b8a0f27d1652f1720512760a70cb081f44076039a6672df71a6d",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "fab7d10842b0df5a7bf9be1c77e651ed978db7bd8a531c683e765a7626512c13",
+      "case": "constant_ugate",
+      "candidate_sha256": "65383a72705eac03e4697ce5802e55cf069f090b371d6026c31e711eca0c99ef",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "fab7d10842b0df5a7bf9be1c77e651ed978db7bd8a531c683e765a7626512c13",
+      "case": "negative_error_control",
+      "candidate_sha256": "5e022cee94c1508711bc3890d434652f8c26914cd05b2accfed53f9bdac10a1a",
+      "outcome": "fail",
+      "assertion": "Expected -0.1 >= 0"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "fab7d10842b0df5a7bf9be1c77e651ed978db7bd8a531c683e765a7626512c13",
+      "case": "zero_duration_control",
+      "candidate_sha256": "7a61af18ee8151a54cfdab046a187aaf9567e3502d27fc7172495839c37a9ef1",
+      "outcome": "fail",
+      "assertion": "Expected 0.0 > 0"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f121cd556732ce734f18c66c3b8d431b1ad9c52c41c53806eea80feadc361a79",
+      "case": "reference",
+      "candidate_sha256": "415547689d432f5bdc594bdf0a20caf6244a982f1f15cc14e6cb6cc62b4772a5",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f121cd556732ce734f18c66c3b8d431b1ad9c52c41c53806eea80feadc361a79",
+      "case": "zero_errors",
+      "candidate_sha256": "81a8f71ae823ff579f8ded0ec6afd88b93ef200d42a4034db6258f91c5dbf16d",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f121cd556732ce734f18c66c3b8d431b1ad9c52c41c53806eea80feadc361a79",
+      "case": "wrong_parameter_names",
+      "candidate_sha256": "5df7aebea79ce757fbc579f3389f3da9a43b140cb53dff71028ec2a16a7f09b3",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f121cd556732ce734f18c66c3b8d431b1ad9c52c41c53806eea80feadc361a79",
+      "case": "constant_ugate",
+      "candidate_sha256": "f432c7f9630d1c76b550e1f6e7a38f036aef7a580cad3e990d97017fd69c394f",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f121cd556732ce734f18c66c3b8d431b1ad9c52c41c53806eea80feadc361a79",
+      "case": "negative_error_control",
+      "candidate_sha256": "18718a01b0c774e4192b3739744841eb79e57562aa47822c596ff7868e363317",
+      "outcome": "fail",
+      "assertion": "Expected -0.1 >= 0"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f121cd556732ce734f18c66c3b8d431b1ad9c52c41c53806eea80feadc361a79",
+      "case": "zero_duration_control",
+      "candidate_sha256": "07d3b80cc002c998956d3ce6165a614144ff3aa6545a7cd885d200101e754a62",
+      "outcome": "fail",
+      "assertion": "Expected 0.0 > 0"
+    }
+  ]
+}
