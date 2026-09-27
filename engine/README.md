@@ -30,6 +30,7 @@ families per suite, leaving 143 tasks each. See the
 | `upstream-graph-v4` | Protected protocol-4 judge with complete graph snapshots | Incomplete SDK coverage and resource calibration; candidate snapshot substitution is not attested |
 | `upstream-graph-delta-v1` | Same graph validation with changed-record transport | Reduces wire traffic; still cannot attest a candidate's native return object |
 | Named semantic revision | Explicitly revised task contract/test, frozen before generation | Development-only; not an upstream score or complete task certification |
+| `qhe-pinned-native-v1` | Candidate and original pinned test run in one isolated Python/Qiskit process | Preserves native semantics, but same-process candidate code can inspect or tamper with tests; development-only |
 
 There is no automatic fallback between these conditions. Semantic revisions
 currently cover tasks 0, 2, 63, 82, 113, 116, 120 and 141. See
@@ -50,8 +51,10 @@ Python or Qiskit equivalence or native-object integrity. See
 [delta transport](../docs/reliability-evidence/graph-delta-transport-development.md),
 and [live capture validation](../docs/reliability-evidence/graph-live-capture-development.md).
 
-Candidates have no private tests, reference answers, credentials or Docker socket
-mounted. Runtime images must use immutable local `sha256:...` IDs. Candidate
+Protected-track candidates have no private tests or reference answers mounted.
+Native-track candidates share a process with the pinned test; this limitation is
+recorded in each judgment. Neither track mounts credentials or the Docker socket.
+Runtime images must use immutable local `sha256:...` IDs. Protected candidate
 processes freeze between calls. Bootstrap and active-wall-time accounting are
 explicit; resource ceilings remain subject to calibration. Candidate output has
 no verdict authority. Unsupported interfaces and judge infrastructure failures
@@ -95,6 +98,26 @@ to this 151-task condition are recorded in the
 `campaign-create` saves the validated setup without generating answers.
 `campaign-step` performs at most one scheduled generation or protected judgment;
 it may make a billable request. `campaign-observe` records provider metadata.
+`native-plan` freezes one pinned normal or hard suite, an immutable image,
+exclusions, extraction policy, requests and judge limits. Its default
+`offline_143` population excludes the eight known external-service tasks;
+`custom_development` requires explicit `--task` keys and cannot be labeled a
+143-task score. `native-create` saves the run without generation, and
+`native-step` performs at most one generation or native judgment. A step may
+make a billable model request. Run `campaign-observe` with the native ledger to
+record provider metadata. For example:
+
+```sh
+uv run graybench native-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'pinned normal offline' --suite normal --image sha256:IMAGE_ID
+uv run graybench native-create SETUP.json CACHE LEDGER.sqlite
+uv run graybench campaign-observe LEDGER.sqlite RUN_ID
+uv run graybench native-step LEDGER.sqlite RUN_ID CACHE
+uv run graybench summary LEDGER.sqlite RUN_ID
+```
+
+The native report names exactly one suite, population and denominator. It never
+combines normal and hard, and `publication_eligible` remains false until task
+admission and independent reproduction are complete.
 Use each command's `--help` for required arguments. See
 [model discovery](../docs/reliability-evidence/model-discovery.md) and
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md).
@@ -115,9 +138,10 @@ those runs retain a publication blocker. Live capability calibration remains
 required for release.
 
 `verify-ledger` validates retained evidence. `summary` reports completeness and
-score blockers before accuracy. `comparison-plan` and `compare` require matched,
-complete protocols and keep normal/hard task families together during paired
-resampling. See [report integrity](../docs/reliability-evidence/summary-integrity.md),
+score blockers before accuracy. The existing `comparison-plan` and `compare`
+commands handle matched legacy/protected setups and keep normal/hard task
+families together during paired resampling; they do not yet accept native setup
+files. See [report integrity](../docs/reliability-evidence/summary-integrity.md),
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
 [comparisons](../docs/reliability-evidence/paired-comparisons.md).
 Hashes and SQLite append rules are not external authenticity guarantees.

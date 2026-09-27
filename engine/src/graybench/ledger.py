@@ -645,6 +645,7 @@ class Ledger:
         if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
             raise StateError("Judge must have a content identity")
         with self.transaction():
+            self._require_native_judge_claim(sample_id, judge_digest)
             self._require_model_observation_for_judgment(sample_id)
             artifact = self._blob(evidence)
             self.db.execute(
@@ -664,6 +665,7 @@ class Ledger:
         if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
             raise StateError("Judge must have a content identity")
         with self.transaction():
+            self._require_native_judge_identity(sample_id, judge_digest)
             self._require_model_observation_for_judgment(sample_id)
             if self.db.execute(
                 "SELECT 1 FROM judgments WHERE sample_id=? AND judge_digest=?",
@@ -674,6 +676,26 @@ class Ledger:
                 "INSERT INTO judgment_claims VALUES (?,?,?)", (sample_id, judge_digest, now())
             )
             self._event("judgment_started", sample_id=sample_id, judge_digest=judge_digest)
+
+    def _require_native_judge_identity(self, sample_id: str, judge_digest: str) -> bool:
+        sample = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
+        if sample is None:
+            raise StateError("Unscheduled sample")
+        protocol = self.protocol(sample["run_id"])
+        if protocol.track == "qhe-pinned-native-v1":
+            if judge_digest != protocol.judge_digest:
+                raise StateError("Frozen native judge identity mismatch")
+            return True
+        return False
+
+    def _require_native_judge_claim(self, sample_id: str, judge_digest: str) -> None:
+        if not self._require_native_judge_identity(sample_id, judge_digest):
+            return
+        if not self.db.execute(
+            "SELECT 1 FROM judgment_claims WHERE sample_id=? AND judge_digest=?",
+            (sample_id, judge_digest),
+        ).fetchone():
+            raise StateError("Native judgment requires a prior durable claim")
 
     def _require_model_observation_for_judgment(self, sample_id: str) -> None:
         sample = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
@@ -826,6 +848,16 @@ class Ledger:
             "protocol_digest": protocol.digest,
             "evaluation_recipe": recipe,
             "track": protocol.track,
+            **(
+                {
+                    "suite": protocol.native_suite,
+                    "population": protocol.native_population,
+                    "native_cohort_digest": protocol.native_cohort_digest,
+                    "denominator": len(expected),
+                }
+                if protocol.track == "qhe-pinned-native-v1"
+                else {}
+            ),
             "planned_samples": len(expected),
             "observed_samples": len(rows),
             "returned_samples": sum(r["content"] is not None for r in rows),

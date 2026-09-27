@@ -31,6 +31,9 @@ def validate_plan(plan):
     for field in (
         "schema_version",
         "track",
+        "native_cohort_digest",
+        "native_suite",
+        "native_population",
         "dataset_digest",
         "judge_digest",
         "runtime_digest",

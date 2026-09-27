@@ -1,6 +1,6 @@
 # Separate native and protected Qiskit HumanEval tracks
 
-Status: written design for user review. This document does not admit a task,
+Status: implementation in progress. This document does not admit a task,
 change a saved score, or authorize a model campaign.
 
 ## Purpose and decision

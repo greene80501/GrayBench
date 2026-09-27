@@ -93,10 +93,10 @@
 - Consumes: Tasks 1–3, existing generation `Protocol`, `Ledger`, `Judgment`.
 - Produces: a versioned native protocol/campaign binding and a report with one suite, explicit denominator, per-task outcomes, and `publication_eligible: false`.
 
-- [ ] **Step 1: Write failing tests** proving a frozen native task set cannot switch suite, task bytes, extraction, image, judge, or source on resume; an interrupted native judgment does not silently rerun; old V3 protocol digests and ledgers remain unchanged; mixed-suite or mixed-track reporting is rejected; a complete native development run remains ineligible for publication.
-- [ ] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_campaign.py -q`; expect failure before implementation.
-- [ ] **Step 3: Implement** an additive versioned binding and CLI commands for freezing and stepping a native campaign, retaining old schema semantics. Use the existing append-only claim/event path for the new judgment identity. Report the explicit suite and population without a combined headline score.
-- [ ] **Step 4: Run** the focused tests, the complete engine suite, Ruff, and a pinned-image reference/control replay; expect all to pass, with any unsupported tasks reported explicitly.
+- [x] **Step 1: Write failing tests** proving a frozen native task set cannot switch suite, task bytes, extraction, image, judge, or source on resume; an interrupted native judgment does not silently rerun; old V3 protocol digests and ledgers remain unchanged; mixed-suite or mixed-track reporting is rejected; a complete native development run remains ineligible for publication.
+- [x] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_campaign.py -q`; expect failure before implementation.
+- [x] **Step 3: Implement** an additive versioned binding and CLI commands for freezing and stepping a native campaign, retaining old schema semantics. Use the existing append-only claim/event path for the new judgment identity. Report the explicit suite and population without a combined headline score.
+- [x] **Step 4: Run** the focused tests, the complete engine suite, Ruff, and a pinned-image reference/control replay; expect all to pass, with any unsupported tasks reported explicitly.
 - [ ] **Step 5: Commit** the integration and verification evidence, then update the draft PR description around the final behavior.
 
 ## Follow-on plans

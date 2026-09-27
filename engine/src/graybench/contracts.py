@@ -115,7 +115,17 @@ class ModelObservationTiming(Contract):
 class Protocol(Contract):
     schema_version: Literal["3.1", "3.2", "3.3"] = "3.1"
     name: str = Field(min_length=1)
-    track: Literal["upstream", "strengthened", "robustness"]
+    track: Literal["upstream", "strengthened", "robustness", "qhe-pinned-native-v1"]
+    # Absent fields are omitted to preserve historical protocol identities.
+    native_cohort_digest: str | None = Field(
+        default=None, pattern="^[0-9a-f]{64}$", exclude_if=lambda value: value is None
+    )
+    native_suite: Literal["normal", "hard"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
+    native_population: Literal["offline_143", "custom_development"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
     dataset_digest: str = Field(pattern="^[0-9a-f]{64}$")
     task_keys: tuple[str, ...]
     request_digests: dict[str, str]
@@ -148,6 +158,18 @@ class Protocol(Contract):
             for value in self.request_digests.values()
         ):
             raise ValueError("Invalid frozen request digest")
+        native_fields = (
+            self.native_cohort_digest,
+            self.native_suite,
+            self.native_population,
+        )
+        if self.track == "qhe-pinned-native-v1":
+            if self.schema_version != "3.3" or any(value is None for value in native_fields):
+                raise ValueError("Native track requires protocol 3.3 and complete cohort identity")
+            if any(not key.startswith(f"{self.native_suite}/") for key in self.task_keys):
+                raise ValueError("Native protocol cannot mix suites")
+        elif any(value is not None for value in native_fields):
+            raise ValueError("Native cohort fields require the native track")
         return self
 
 

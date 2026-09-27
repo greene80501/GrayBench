@@ -116,6 +116,7 @@ class NativeJudge:
         ):
             raise ValueError("Invalid native resource limit")
         self.cohort, self.tasks, self.cache = cohort, tasks, cache
+        self.image, self.extraction = cohort.image, cohort.extraction
         self.docker, self.timeout, self.output_limit = docker, timeout, output_limit
         self.memory_bytes, self.cpus = memory_bytes, cpus
         self.pids_limit, self.tmpfs_bytes = pids_limit, tmpfs_bytes

@@ -260,6 +260,13 @@ def verify_records(db, events):
             key = (event["sample_id"], event["judge_digest"])
             if event["sample_id"] not in returned:
                 raise ValueError("Judgment precedes a returned generation")
+            sample = samples[event["sample_id"]]
+            protocol = protocols[sample["run_id"]]
+            if protocol.track == "qhe-pinned-native-v1":
+                if event["judge_digest"] != protocol.judge_digest:
+                    raise ValueError("Native judgment differs from frozen judge identity")
+                if kind == "judgment_recorded" and key not in claimed:
+                    raise ValueError("Native judgment lacks a prior durable claim")
             if kind == "judgment_started":
                 claimed.add(key)
             elif key in all_claims and key not in claimed:

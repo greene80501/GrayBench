@@ -14,6 +14,8 @@ from graybench.extraction import EXTRACTION_POLICIES
 from graybench.identity import canonical
 from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
+from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
+from graybench.native_cohort import freeze_native_cohort, task_key
 from graybench.provenance import environment
 from graybench.providers import adapter
 from graybench.reference_scan import inspect_reference_scan, run_reference_scan
@@ -121,6 +123,40 @@ def main():
     step.add_argument("run_id")
     step.add_argument("cache", type=Path)
     step.add_argument("--docker", default="docker")
+    native_plan = commands.add_parser(
+        "native-plan", help="Freeze one pinned native QHE suite; development only"
+    )
+    native_plan.add_argument("model_spec", type=Path)
+    native_plan.add_argument("cache", type=Path)
+    native_plan.add_argument("output", type=Path)
+    native_plan.add_argument("--name", required=True)
+    native_plan.add_argument("--label", required=True)
+    native_plan.add_argument("--suite", choices=("normal", "hard"), required=True)
+    native_plan.add_argument(
+        "--population", choices=("offline_143", "custom_development"), default="offline_143"
+    )
+    native_plan.add_argument("--image", required=True)
+    native_plan.add_argument(
+        "--task", action="append", help="Exact suite/task key for a custom cohort"
+    )
+    native_plan.add_argument(
+        "--extraction", choices=EXTRACTION_POLICIES, default="raw_or_single_python_fence_v1"
+    )
+    native_plan.add_argument("--repeats", type=int, default=1)
+    native_plan.add_argument("--system-prompt", type=Path)
+    native_create = commands.add_parser(
+        "native-create", help="Create a frozen native development run"
+    )
+    native_create.add_argument("setup", type=Path)
+    native_create.add_argument("cache", type=Path)
+    native_create.add_argument("ledger", type=Path)
+    native_step = commands.add_parser(
+        "native-step", help="Perform one native generation or judgment"
+    )
+    native_step.add_argument("ledger", type=Path)
+    native_step.add_argument("run_id")
+    native_step.add_argument("cache", type=Path)
+    native_step.add_argument("--docker", default="docker")
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
@@ -308,6 +344,104 @@ def main():
             try:
                 result = UpstreamCampaign(
                     ledger, args.run_id, tasks, setup.judge(args.docker), transport
+                ).step()
+                result["summary"] = ledger.summary(args.run_id)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "native-plan":
+        if args.population == "offline_143" and args.task:
+            parser.error("The offline_143 population cannot have a custom task selection")
+        if args.population == "custom_development" and not args.task:
+            parser.error("Custom native cohorts require at least one --task")
+        all_tasks = load_suite(args.suite, args.cache)
+        selected = set(args.task or ())
+        valid = {task_key(task) for task in all_tasks}
+        if len(selected) != len(args.task or ()) or selected - valid:
+            parser.error("Native task selection must contain unique keys from one pinned suite")
+        if args.population == "offline_143":
+            selected = {
+                task_key(task)
+                for task in all_tasks
+                if int(task.public.task_id.rsplit("/", 1)[1]) not in EXTERNAL_IDS
+            }
+        tasks = tuple(task for task in all_tasks if task_key(task) in selected)
+        excluded = {
+            task_key(task): (
+                "external_service"
+                if args.population == "offline_143"
+                else "out_of_scope_development"
+            )
+            for task in all_tasks
+            if task_key(task) not in selected
+        }
+        cohort = freeze_native_cohort(
+            tasks,
+            cache=args.cache,
+            suite=args.suite,
+            population=args.population,
+            image=args.image,
+            extraction=args.extraction,
+            label=args.label,
+            excluded=excluded,
+        )
+        model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        setup = build_native_setup(
+            args.name,
+            model,
+            cohort,
+            tasks,
+            cache=args.cache,
+            repeats=args.repeats,
+            system_prompt=args.system_prompt.read_text(encoding="utf-8")
+            if args.system_prompt
+            else None,
+        )
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(setup.model_dump_json(indent=2) + "\n")
+        result = {
+            "setup_digest": setup.digest,
+            "track": setup.protocol.track,
+            "suite": cohort.suite,
+            "population": cohort.population,
+            "planned_samples": len(tasks) * args.repeats,
+            "publication_eligible": False,
+            "output": str(args.output),
+        }
+    elif args.command == "native-create":
+        setup = NativeCampaignSetup.model_validate_json(args.setup.read_bytes())
+        setup.validate_for_run(args.cache, setup.protocol)
+        context = execution_context(setup)
+        ledger = Ledger(args.ledger)
+        try:
+            result = {
+                "run_id": ledger.create_run(setup.protocol, context),
+                "track": setup.protocol.track,
+                "suite": setup.cohort.suite,
+                "population": setup.cohort.population,
+                "publication_eligible": False,
+            }
+        finally:
+            ledger.close()
+    elif args.command == "native-step":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            context = ledger.context(args.run_id)
+            setup = NativeCampaignSetup.model_validate(context["setup"])
+            validate_host(context)
+            setup.validate_for_run(args.cache, ledger.protocol(args.run_id), docker=args.docker)
+            transport = Transport(
+                setup.protocol.model,
+                timeout_seconds=setup.http_timeout,
+                max_response_bytes=setup.response_limit,
+            )
+            try:
+                result = NativeCampaign(
+                    ledger, args.run_id, setup, args.cache, transport, docker=args.docker
                 ).step()
                 result["summary"] = ledger.summary(args.run_id)
             finally:
