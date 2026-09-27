@@ -42,7 +42,8 @@ def task():
         ("q.h(0); q.cx(0,1); q.x(0)", "fail"),
     ],
 )
-def test_file_judge_semantics_and_ignored_return(operations, outcome):
+@pytest.mark.parametrize("track", ["task82-file-semantic-v1", "task82-file-semantic-v2"])
+def test_file_judge_semantics_and_ignored_return(operations, outcome, track):
     code = f"""from qiskit import QuantumCircuit, qpy
 def create_binary_serialization():
     q=QuantumCircuit(2)
@@ -50,11 +51,12 @@ def create_binary_serialization():
     with open('bell.qpy','wb') as stream: qpy.dump(q,stream)
     return object()
 """
-    result = QpyFileJudge(image=IMAGE, docker=DOCKER).evaluate(task(), code)
+    result = QpyFileJudge(image=IMAGE, docker=DOCKER, track=track).evaluate(task(), code)
     assert result.outcome == outcome, result
     assert result.evidence["artifact"]["size"] > 0
     assert "wire_response" in result.evidence["parser"]
     assert result.evidence["manifest"]["release_eligible"] is False
+    assert result.evidence["manifest"]["track"] == track
 
 
 @pytest.mark.parametrize(
@@ -71,6 +73,31 @@ def test_missing_invalid_link_and_exception_stay_distinct(body, outcome):
         task(), "def create_binary_serialization():\n    " + body
     )
     assert result.outcome == outcome, result
+
+
+@pytest.mark.parametrize("payload", [b"", b"not QPY", b"QISKI"])
+def test_non_qpy_output_is_a_scored_failure(payload):
+    code = (
+        "def create_binary_serialization():\n    open('bell.qpy', 'wb').write("
+        + repr(payload)
+        + ")"
+    )
+    result = QpyFileJudge(image=IMAGE, docker=DOCKER, track="task82-file-semantic-v2").evaluate(
+        task(), code
+    )
+    assert result.outcome == "fail", result
+    assert result.evidence["phase"] == "artifact_header"
+    assert result.evidence["artifact"]["size"] == len(payload)
+    assert "parser" not in result.evidence
+
+
+def test_corrupt_qpy_header_remains_unscored():
+    result = QpyFileJudge(image=IMAGE, docker=DOCKER, track="task82-file-semantic-v2").evaluate(
+        task(),
+        "def create_binary_serialization():\n    open('bell.qpy', 'wb').write(b'QISKITjunk')",
+    )
+    assert result.outcome == "unsupported", result
+    assert result.evidence["phase"] == "parser"
 
 
 def test_ignored_return_is_released_before_output_capture():
@@ -130,9 +157,12 @@ def create_binary_serialization():
 
 
 @pytest.mark.skipif(not PARSER_IMAGE, reason="Requires separate immutable parser image")
-def test_patched_parser_keeps_malformed_file_unscored():
-    result = QpyFileJudge(image=IMAGE, parser_image=PARSER_IMAGE, docker=DOCKER).evaluate(
+def test_patched_parser_scores_non_qpy_file_as_wrong_answer():
+    result = QpyFileJudge(
+        image=IMAGE, parser_image=PARSER_IMAGE, docker=DOCKER, track="task82-file-semantic-v2"
+    ).evaluate(
         task(), "def create_binary_serialization():\n    open('bell.qpy', 'wb').write(b'not QPY')"
     )
-    assert result.outcome == "unsupported", result
-    assert result.evidence["phase"] == "parser"
+    assert result.outcome == "fail", result
+    assert result.evidence["phase"] == "artifact_header"
+    assert "parser" not in result.evidence

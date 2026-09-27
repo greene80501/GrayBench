@@ -9,6 +9,7 @@ the default. These selections are development evaluations, not certified scores.
 | `upstream` | Existing supported upstream boundaries | Original pinned prompt |
 | `qhe0-size-domain-v1` | Task 0 | Original pinned prompt |
 | `task82-file-semantic-v1` | Task 82 | Original pinned prompt |
+| `task82-file-semantic-v2` | Task 82 | Original pinned prompt; reject files without the required QPY magic |
 | `qhe141-pauli-group-anticommutator-v1` | Task 141 | Explicit Pauli contract appended before request freezing |
 | `qhe113-barrier-metrics-v1` | Task 113 | Explicit observable metrics and no-mutation contract appended before request freezing |
 | `qhe116-evolution-semantics-v1` | Task 116 | Explicit evolution matrix, phase and behavioral scoring contract |
@@ -35,7 +36,7 @@ bound. A real Docker regression verifies that an oversized parser response stops
 at the parser boundary. A parser rejection remains unscored, not an automatic
 incorrect answer.
 
-For `task82-file-semantic-v1`, `campaign-plan --parser-image sha256:...` freezes
+For either task 82 file recipe, `campaign-plan --parser-image sha256:...` freezes
 a separate QPY decoder image. The candidate and oracle keep `--image`.
 The parser digest is stored in the setup and judge identity; changing it after
 planning fails cohort validation. The option is rejected for other recipes.

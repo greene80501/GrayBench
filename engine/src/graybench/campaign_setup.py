@@ -29,8 +29,11 @@ class CampaignSetup(Contract):
 
     @model_validator(mode="after")
     def parser_image_requires_file_recipe(self):
-        if self.parser_image is not None and self.evaluation_recipe != "task82-file-semantic-v1":
-            raise ValueError("parser_image is only valid for task82-file-semantic-v1")
+        if self.parser_image is not None and self.evaluation_recipe not in (
+            "task82-file-semantic-v1",
+            "task82-file-semantic-v2",
+        ):
+            raise ValueError("parser_image is only valid for task 82 file recipes")
         return self
 
     def judge(self, docker="docker"):

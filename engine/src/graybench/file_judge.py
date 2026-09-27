@@ -24,6 +24,7 @@ class QpyFileJudge:
         self,
         *,
         image,
+        track="task82-file-semantic-v1",
         parser_image=None,
         docker="docker",
         candidate_timeout=120,
@@ -31,10 +32,13 @@ class QpyFileJudge:
         timeout=30,
         output_limit=1048576,
     ):
+        if track not in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
+            raise ValueError("Unknown task 82 file semantic track")
         parser_image = image if parser_image is None else parser_image
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", parser_image):
             raise ValueError("QPY parser requires an immutable runtime image")
         self.image, self.docker = image, docker
+        self.track = track
         self.parser_image = parser_image
         self.candidate_timeout, self.parser_timeout = (
             float(candidate_timeout),
@@ -52,7 +56,7 @@ class QpyFileJudge:
         ):
             raise ValueError("This explicit semantic track requires task 82")
         manifest = {
-            "track": "task82-file-semantic-v1",
+            "track": self.track,
             "source": source_manifest(),
             "task_digest": task.digest,
             "image": self.image,
@@ -65,6 +69,8 @@ class QpyFileJudge:
             "return_value": "ignored as in upstream check",
             "release_eligible": False,
         }
+        if self.track == "task82-file-semantic-v2":
+            manifest["artifact_header_policy"] = "qpy-six-byte-magic-v1"
         return {}, manifest
 
     def evaluate(self, task, completion):
@@ -100,6 +106,8 @@ class QpyFileJudge:
                 evidence["candidate_bootstrap_seconds"] = candidate.bootstrap_seconds
                 evidence["artifact"] = artifact.manifest
                 evidence["artifact_bytes_base64"] = base64.b64encode(artifact.data).decode()
+            if self.track == "task82-file-semantic-v2" and not artifact.data.startswith(b"QISKIT"):
+                return finish("fail", phase="artifact_header", detail="missing QPY magic")
             phase = "parser"
             wire, parser_evidence = decode_qpy(
                 artifact.data,

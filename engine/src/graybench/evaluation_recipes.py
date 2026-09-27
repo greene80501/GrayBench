@@ -14,6 +14,7 @@ EvaluationRecipe = Literal[
     "upstream-graph-delta-v1",
     "qhe0-size-domain-v1",
     "task82-file-semantic-v1",
+    "task82-file-semantic-v2",
     "qhe141-pauli-group-anticommutator-v1",
     "qhe113-barrier-metrics-v1",
     "qhe116-evolution-semantics-v1",
@@ -50,8 +51,11 @@ class RevisionJudge:
 
 def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
     kwargs.setdefault("timeout", 120.0)
-    if parser_image is not None and recipe != "task82-file-semantic-v1":
-        raise ValueError("parser_image is only valid for task82-file-semantic-v1")
+    if parser_image is not None and recipe not in (
+        "task82-file-semantic-v1",
+        "task82-file-semantic-v2",
+    ):
+        raise ValueError("parser_image is only valid for task 82 file recipes")
     if recipe in ("upstream-graph-v4", "upstream-graph-delta-v1"):
         if kwargs.pop("protocol", 4) != 4:
             raise ValueError("Graph recipe cannot select another protocol")
@@ -71,8 +75,10 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = GateSemanticsJudge(recipe, **kwargs)
     elif recipe == "qhe63-explicit-bases-v1":
         inner = BB84Judge(**kwargs)
-    elif recipe == "task82-file-semantic-v1":
-        inner = QpyFileJudge(parser_timeout=parser_timeout, parser_image=parser_image, **kwargs)
+    elif recipe in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
+        inner = QpyFileJudge(
+            track=recipe, parser_timeout=parser_timeout, parser_image=parser_image, **kwargs
+        )
     else:
         raise ValueError("Unknown evaluation recipe")
     return RevisionJudge(recipe, inner, kwargs["image"])

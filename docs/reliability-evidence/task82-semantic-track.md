@@ -17,11 +17,28 @@ projection, not proof of arbitrary QPY round-trip fidelity or the algorithm used
 Multiple-circuit policy and numeric tolerance still require formal task review.
 
 Missing required output is a failure. Candidate execution errors remain candidate
-errors. Invalid QPY, unsupported circuit codecs, parser crashes/timeouts and
+errors. In v1, invalid QPY, unsupported circuit codecs, parser crashes/timeouts and
 unrepresentable artifacts remain unscored pending adjudication; they are not
 automatically attributed to an incorrect model answer. Infrastructure failures
 stay distinct. Artifact bytes/hashes, parser wire response, oracle evidence,
 source/task/runtime identity and execution limits are preserved in the judgment.
+
+`task82-file-semantic-v2` preserves v1 and changes only a definite file-format
+case: an existing file that does not start with the six-byte `QISKIT` magic
+specified by the [QPY format](https://quantum.cloud.ibm.com/docs/en/api/qiskit/2.2/qpy)
+fails before parsing. Empty files and truncated prefixes also fail. A file with that
+prefix that the parser rejects remains unscored because parser failure alone
+does not prove the candidate file invalid. The recipe and manifest record the
+changed policy. V2 is development-only and requires explicit campaign selection.
+The exact pinned normal and hard references both passed v2 with the patched
+parser image. The append-only [v2 reference scan](GrayBench-v4-task82-header-v2-reference.jsonl)
+has SHA-256 `d30a85b190dded3cfe1ffe5e25f72a4358aa1d57105c30c5237e7ea93f4365ab`.
+It records protected judgments and source identities, not model scores.
+The pinned-image Python 3.12 Docker regression for this increment passed
+1,053 tests, skipped one experimental case, and had zero failures or errors
+in 618.64 seconds. The JUnit record is preserved outside the repository at
+`work/outputs/GrayBench-v4-task82-header-v2-tests.xml`, SHA-256
+`8533399bd0945a827560460227c5dbba49c502698e018e15ca0578b40e2db203`.
 
 Normal and hard pinned reference solutions pass this track in the exclusive
 append-only `GrayBench-v3-task82-semantic-reference.jsonl` artifact, SHA-256
@@ -78,8 +95,7 @@ Two valid Phi-plus QPY constructions written by the Qiskit 2.4.2 candidate
 passed under this parser and historical oracle. An empty circuit failed, and
 malformed bytes remained unscored. The focused protected suite passed 18 tests.
 The parser image and its route are frozen in the judgment manifest and campaign
-setup; only this
-recipe accepts `--parser-image`. The patched-build focused suite passed all
+setup; both file recipes accept `--parser-image`. The patched-build focused suite passed all
 18 tests again. The pinned normal and hard reference solutions both passed;
 their exact source-bound judgment evidence is preserved in
 [`GrayBench-v4-task82-pinned-parser-reference.json`](GrayBench-v4-task82-pinned-parser-reference.json),

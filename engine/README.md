@@ -70,7 +70,8 @@ it may make a billable request. `campaign-observe` records provider metadata.
 Use each command's `--help` for required arguments. See
 [model discovery](../docs/reliability-evidence/model-discovery.md) and
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md).
-For task 82's explicit file-semantic recipe, `campaign-plan --parser-image sha256:...`
+For task 82's explicit `task82-file-semantic-v1` or `task82-file-semantic-v2`
+recipe, `campaign-plan --parser-image sha256:...`
 freezes a separate patched QPY parser runtime while candidate and oracle use
 `--image`. This remains a development-only recipe; see the
 [task 82 evidence](../docs/reliability-evidence/task82-semantic-track.md).

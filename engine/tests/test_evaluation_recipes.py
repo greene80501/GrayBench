@@ -52,19 +52,21 @@ def file_task(task):
     )
 
 
-def test_patched_parser_image_is_frozen_across_campaign_reconstruction(model, task):
+@pytest.mark.parametrize("recipe", ["task82-file-semantic-v1", "task82-file-semantic-v2"])
+def test_patched_parser_image_is_frozen_across_campaign_reconstruction(model, task, recipe):
     selected = file_task(task)
     setup = build_setup(
         "patched-parser",
         model,
         (selected,),
         IMAGE,
-        evaluation_recipe="task82-file-semantic-v1",
+        evaluation_recipe=recipe,
         parser_image=PARSER_IMAGE,
     )
     assert setup.parser_image == PARSER_IMAGE
     restored = CampaignSetup.model_validate_json(setup.model_dump_json())
     assert restored.judge().inner.parser_image == PARSER_IMAGE
+    assert restored.judge().inner.track == recipe
     validate_cohort(restored.protocol, (selected,), restored.judge())
     changed = setup.model_copy(update={"parser_image": IMAGE})
     with pytest.raises(StateError, match="judge_digest"):
@@ -104,7 +106,13 @@ def test_recipe_plan_freezes_revised_public_request_and_reconstructs(model, task
 
 @pytest.mark.parametrize(
     "recipe",
-    ["qhe0-size-domain-v1", "task82-file-semantic-v1", "qhe113-barrier-metrics-v1", "unknown"],
+    [
+        "qhe0-size-domain-v1",
+        "task82-file-semantic-v1",
+        "task82-file-semantic-v2",
+        "qhe113-barrier-metrics-v1",
+        "unknown",
+    ],
 )
 def test_recipe_rejects_wrong_family_or_unknown_name(model, task, recipe):
     with pytest.raises(ValueError):
@@ -116,6 +124,7 @@ def test_recipe_rejects_wrong_family_or_unknown_name(model, task, recipe):
     [
         ("qhe0-size-domain-v1", "qhe/0", "create_quantum_circuit"),
         ("task82-file-semantic-v1", "qhe/82", "create_binary_serialization"),
+        ("task82-file-semantic-v2", "qhe/82", "create_binary_serialization"),
     ],
 )
 def test_other_recipes_bind_limits_and_keep_public_prompt(model, task, recipe, family, entry):
@@ -176,7 +185,8 @@ def test_cli_freezes_explicit_recipe_without_network(model, task, tmp_path, monk
     assert json.loads(capsys.readouterr().out)["evaluation_recipe"] == RECIPE
 
 
-def test_cli_freezes_separate_task82_parser_image(model, task, tmp_path, monkeypatch):
+@pytest.mark.parametrize("recipe", ["task82-file-semantic-v1", "task82-file-semantic-v2"])
+def test_cli_freezes_separate_task82_parser_image(model, task, tmp_path, monkeypatch, recipe):
     selected = file_task(task)
     monkeypatch.setattr(
         "graybench.cli.load_suite", lambda suite, _: (selected,) if suite == "hard" else ()
@@ -201,13 +211,15 @@ def test_cli_freezes_separate_task82_parser_image(model, task, tmp_path, monkeyp
             "--suite",
             "hard",
             "--evaluation-recipe",
-            "task82-file-semantic-v1",
+            recipe,
         ],
     )
     main()
     saved = CampaignSetup.model_validate_json(output.read_bytes())
     assert saved.parser_image == PARSER_IMAGE
     assert saved.judge().inner.parser_image == PARSER_IMAGE
+    assert saved.evaluation_recipe == recipe
+    assert saved.judge().inner.track == recipe
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Requires immutable image")
