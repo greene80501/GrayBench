@@ -1,0 +1,118 @@
+{
+  "kind": "graybench_task108_native_oracle_probe_v1",
+  "scope": "Authored exact pinned-test diagnostic, not protected judging or a model score",
+  "script_sha256": "b9ec9c72336d4817b13b23e73b68e8788bfda56cc1a57be0f06c33c048b51b24",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "37f0d8dab549f91ee6960add0bfba01135fd36cd05f60f31fc62d738e47c5f9d",
+      "case": "reference",
+      "candidate_sha256": "6a8e87c9850f28ac199af7d3283242172a5b1cfa53353d30af2cca9efb0a2408",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "first_matches_data1": true,
+        "adjoint_matches_data1_adjoint": true,
+        "composed_matches_data1_data2_composition": true
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "37f0d8dab549f91ee6960add0bfba01135fd36cd05f60f31fc62d738e47c5f9d",
+      "case": "ignore_data2",
+      "candidate_sha256": "8524d1d422c9c7041b7a09847f27c6c67cdfd6492717b9ed9b2ec2cb51e51157",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "first_matches_data1": true,
+        "adjoint_matches_data1_adjoint": true,
+        "composed_matches_data1_data2_composition": false
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "37f0d8dab549f91ee6960add0bfba01135fd36cd05f60f31fc62d738e47c5f9d",
+      "case": "wrong_first",
+      "candidate_sha256": "36990920ef2cdca359958b8694de3b9e307409e301d1fffd291d036870b6ae6c",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "first_matches_data1": false,
+        "adjoint_matches_data1_adjoint": true,
+        "composed_matches_data1_data2_composition": true
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "37f0d8dab549f91ee6960add0bfba01135fd36cd05f60f31fc62d738e47c5f9d",
+      "case": "wrong_adjoint_control",
+      "candidate_sha256": "f4861723ff45b8f6a03e241d6b2429cc340380f26f8d5598fe092985e3c7d758",
+      "pinned_test_outcome": "fail",
+      "witness": {
+        "first_matches_data1": true,
+        "adjoint_matches_data1_adjoint": false,
+        "composed_matches_data1_data2_composition": true
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4c80e1d2943add5b96a5ef85f32dda48d4ebddd9738b58d4bb4e2e64e5168e07",
+      "case": "reference",
+      "candidate_sha256": "6f45468cd56dd353538a052b0f20690d0705ef9f50b8e92752c404c139bae825",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "first_matches_data1": true,
+        "adjoint_matches_data1_adjoint": true,
+        "composed_matches_data1_data2_composition": true
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4c80e1d2943add5b96a5ef85f32dda48d4ebddd9738b58d4bb4e2e64e5168e07",
+      "case": "ignore_data2",
+      "candidate_sha256": "425d2d9bb7394cf27bc5d9f5fdd98c9c151e9214169e0a2f012b11aa90ab0cee",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "first_matches_data1": true,
+        "adjoint_matches_data1_adjoint": true,
+        "composed_matches_data1_data2_composition": false
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4c80e1d2943add5b96a5ef85f32dda48d4ebddd9738b58d4bb4e2e64e5168e07",
+      "case": "wrong_first",
+      "candidate_sha256": "def050cbb0af5fd2dd3c06942d5cbe899847f1d08c70f1591cf8b73ef51fedfb",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "first_matches_data1": false,
+        "adjoint_matches_data1_adjoint": true,
+        "composed_matches_data1_data2_composition": true
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4c80e1d2943add5b96a5ef85f32dda48d4ebddd9738b58d4bb4e2e64e5168e07",
+      "case": "wrong_adjoint_control",
+      "candidate_sha256": "3c2fc87dae9726ab92e64d6e4e8a71165b4a7ce2ee06381586cb3fd98c85100f",
+      "pinned_test_outcome": "fail",
+      "witness": {
+        "first_matches_data1": true,
+        "adjoint_matches_data1_adjoint": false,
+        "composed_matches_data1_data2_composition": true
+      }
+    }
+  ]
+}
