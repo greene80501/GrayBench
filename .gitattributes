@@ -61,3 +61,5 @@ docs/reliability-evidence/task50_110_oracle_probe.py -text whitespace=trailing-s
 docs/reliability-evidence/GrayBench-task50-110-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task144_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-task144-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task136_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-task136-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol

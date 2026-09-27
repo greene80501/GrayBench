@@ -1,0 +1,109 @@
+{
+  "kind": "graybench_task136_oracle_probe_v1",
+  "scope": "Pinned protected-bridge diagnostic, not a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "9341749b285bca017a0811a6ba2231f8d2b36a4b60724f0ac935e3c11040e360",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "be21b640694fe380d397454386ceb4cf283614dc48154d0e68b006a0cb22f470",
+      "case": "reference",
+      "completion_sha256": "7521d6099f7d11060f8906eaa17b82a2419a886595f34b400ff4d1720b793483",
+      "outcome": "pass",
+      "judge_digest": "c52e1fcb013ad7baa591c191cf8924279bb1c58e2bd9bc03139d07d91c9fc892"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "be21b640694fe380d397454386ceb4cf283614dc48154d0e68b006a0cb22f470",
+      "case": "pure_control",
+      "completion_sha256": "53649184faf95a3125a2357bad7e21e4f6f4d3af40c48e4a932a9cf5a70dd62a",
+      "outcome": "pass",
+      "judge_digest": "c52e1fcb013ad7baa591c191cf8924279bb1c58e2bd9bc03139d07d91c9fc892"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "be21b640694fe380d397454386ceb4cf283614dc48154d0e68b006a0cb22f470",
+      "case": "fixed_near_pure",
+      "completion_sha256": "f4ac712e2b2b131167a8aacb2a5967fc27f5131e45e99bed255bc69aedf36d19",
+      "outcome": "pass",
+      "judge_digest": "c52e1fcb013ad7baa591c191cf8924279bb1c58e2bd9bc03139d07d91c9fc892"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "be21b640694fe380d397454386ceb4cf283614dc48154d0e68b006a0cb22f470",
+      "case": "mixed_control",
+      "completion_sha256": "6e5e81d389e37f252fd968443c420c47ca4165034be16c36f2b95284b3b1a23b",
+      "outcome": "fail",
+      "judge_digest": "c52e1fcb013ad7baa591c191cf8924279bb1c58e2bd9bc03139d07d91c9fc892"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "be21b640694fe380d397454386ceb4cf283614dc48154d0e68b006a0cb22f470",
+      "case": "short_control",
+      "completion_sha256": "d83fd02aa5294fe7d785da480704d3bd3f270ef641f6b9568f91d4e944fe6b79",
+      "outcome": "fail",
+      "judge_digest": "c52e1fcb013ad7baa591c191cf8924279bb1c58e2bd9bc03139d07d91c9fc892"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "1d3d04df6fe42bdab336d3e4d6640056ed4c21d7bb9e7d4e2ffb842189e368c0",
+      "case": "reference",
+      "completion_sha256": "680002d2167330b2e86c85885cd29251812686a2a3f5b1cedc7a8281e779c56b",
+      "outcome": "pass",
+      "judge_digest": "5ea09879b2504bde419c6fec97541af416134137d227496760e5da25dfa3877e"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "1d3d04df6fe42bdab336d3e4d6640056ed4c21d7bb9e7d4e2ffb842189e368c0",
+      "case": "pure_control",
+      "completion_sha256": "59a7f0cd430cc99cd476de8d3e410e73f971209c47813c2b46abb4c31ae0775d",
+      "outcome": "pass",
+      "judge_digest": "5ea09879b2504bde419c6fec97541af416134137d227496760e5da25dfa3877e"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "1d3d04df6fe42bdab336d3e4d6640056ed4c21d7bb9e7d4e2ffb842189e368c0",
+      "case": "fixed_near_pure",
+      "completion_sha256": "8eed61cd78f92734bb39f5b036eea45f1da72e3052e5fe2280946552159d23ec",
+      "outcome": "pass",
+      "judge_digest": "5ea09879b2504bde419c6fec97541af416134137d227496760e5da25dfa3877e"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "1d3d04df6fe42bdab336d3e4d6640056ed4c21d7bb9e7d4e2ffb842189e368c0",
+      "case": "mixed_control",
+      "completion_sha256": "1d1e46da742b2373c173b1e22e72a6b1603eded9f2f1f62f603535bfe97cd4c7",
+      "outcome": "fail",
+      "judge_digest": "5ea09879b2504bde419c6fec97541af416134137d227496760e5da25dfa3877e"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "1d3d04df6fe42bdab336d3e4d6640056ed4c21d7bb9e7d4e2ffb842189e368c0",
+      "case": "short_control",
+      "completion_sha256": "ae15c4cce2cc1f090c57842c96d974ea896743978cea1a1643b6d968d1490705",
+      "outcome": "fail",
+      "judge_digest": "5ea09879b2504bde419c6fec97541af416134137d227496760e5da25dfa3877e"
+    }
+  ],
+  "counterexample": {
+    "candidate": "fixed_near_pure",
+    "state_entropy": 0.005092047537180205,
+    "pinned_test_epsilon": 0.01,
+    "valid_unchecked_epsilon": 0.001,
+    "fails_valid_unchecked_epsilon": true
+  }
+}
