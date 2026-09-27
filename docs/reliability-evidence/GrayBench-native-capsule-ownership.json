@@ -1,0 +1,203 @@
+{
+  "probe_sha256": "6bbe3a93696c41818265cde9c4551b5b8d113331b66ea24fba2c1d5b25208d33",
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.2.4",
+    "scipy": "1.18.1"
+  },
+  "observations": [
+    {
+      "dtype": "<f4",
+      "dimension": 1,
+      "base_type": "NoneType",
+      "owns_data": true,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": true,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f4",
+      "dimension": 2,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f4",
+      "dimension": 3,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f4",
+      "dimension": 4,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f8",
+      "dimension": 1,
+      "base_type": "NoneType",
+      "owns_data": true,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": true,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f8",
+      "dimension": 2,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f8",
+      "dimension": 3,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<f8",
+      "dimension": 4,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c8",
+      "dimension": 1,
+      "base_type": "NoneType",
+      "owns_data": true,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": true,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c8",
+      "dimension": 2,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c8",
+      "dimension": 3,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c8",
+      "dimension": 4,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c16",
+      "dimension": 1,
+      "base_type": "NoneType",
+      "owns_data": true,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": true,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c16",
+      "dimension": 2,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c16",
+      "dimension": 3,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    },
+    {
+      "dtype": "<c16",
+      "dimension": 4,
+      "base_type": "PyCapsule",
+      "owns_data": false,
+      "slice_base_is_root": true,
+      "buffer_view_base_is_root": true,
+      "root_can_reenable_writeable": false,
+      "owning_copy_can_reenable_writeable": true,
+      "preexisting_alias_can_modify_root": true,
+      "initial_identity_matrix": true
+    }
+  ],
+  "scope": "Pinned native expm outputs only. No general PyCapsule provenance or allocation-size inference. No arbitrary pointer access. Not protected benchmark scoring."
+}
