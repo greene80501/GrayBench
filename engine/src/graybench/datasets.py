@@ -49,6 +49,7 @@ KNOWN_FINDINGS = {
     119: ["Upstream never tests half adders or a state-qubit width other than three"],
     120: ["Upstream accepts a fixed circuit that ignores diagonal-phase inputs"],
     121: ["Upstream accepts unconditional reset and a circuit without the first measurement"],
+    122: ["Upstream only asserts circuit type; the IBM transpiler result is never compared"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
