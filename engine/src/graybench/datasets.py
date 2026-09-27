@@ -61,6 +61,7 @@ KNOWN_FINDINGS = {
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
     142: ["Upstream accepts two-qubit density matrices and the excluded purity boundary"],
     143: ["Upstream accepts two-qubit statevector pairs for a one-qubit task"],
+    150: ["Upstream accepts a missing break, wrong condition, and fixed iteration count"],
 }
 
 

@@ -1,0 +1,216 @@
+{
+  "kind": "graybench_task150_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "fb5f6989b16a322c10dd914081b0e26fe28a28d067e0a26a1351795588af9e71",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "bb9547b6f324989f3b9a50cc98a2c014fe3f868dd67e4e7f6a8c61857d950d7e",
+      "case": "reference",
+      "candidate_sha256": "da992adf6197148b684901c631f894e2bfd8149b7fe1086e299665f2cb11674a",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1,
+          2
+        ],
+        "if_condition_value": true,
+        "if_body_operations": [
+          "break_loop"
+        ]
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "bb9547b6f324989f3b9a50cc98a2c014fe3f868dd67e4e7f6a8c61857d950d7e",
+      "case": "no_break",
+      "candidate_sha256": "7f2e72b35b2303f99e76e50d4acd55c633f9d9d4c6618771e2ff5c364accbfc1",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1,
+          2
+        ],
+        "if_condition_value": true,
+        "if_body_operations": [
+          "cx"
+        ]
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "bb9547b6f324989f3b9a50cc98a2c014fe3f868dd67e4e7f6a8c61857d950d7e",
+      "case": "wrong_condition",
+      "candidate_sha256": "9cfe27a8e8e427fcf09008ef9c1f98f9317fa43bf9f9892774a7dc5ef1800cb9",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1,
+          2
+        ],
+        "if_condition_value": false,
+        "if_body_operations": [
+          "break_loop"
+        ]
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "bb9547b6f324989f3b9a50cc98a2c014fe3f868dd67e4e7f6a8c61857d950d7e",
+      "case": "fixed_two_iterations",
+      "candidate_sha256": "5b6d3c1f197c051c5ba5a7f55f52a4531b2f482a2c1e4b3772f03a98da8e63e1",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1
+        ],
+        "if_condition_value": true,
+        "if_body_operations": [
+          "break_loop"
+        ]
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "bb9547b6f324989f3b9a50cc98a2c014fe3f868dd67e4e7f6a8c61857d950d7e",
+      "case": "wrong_rotation_control",
+      "candidate_sha256": "460ed8489d89bd7bd8194beb22fd1ecc822db8d6742dee10cd35cf0b9c1b0bc5",
+      "outcome": "fail",
+      "detail": "Unexpected result value",
+      "n3_witness": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "bb9547b6f324989f3b9a50cc98a2c014fe3f868dd67e4e7f6a8c61857d950d7e",
+      "case": "wrong_range_control",
+      "candidate_sha256": "74cfac9bdf75a7b5b67016c1a9e870db67d9bc05b0781e9ffd21f3e7c5d6979b",
+      "outcome": "fail",
+      "detail": "Expected range(0, 2), got range(0, 3)",
+      "n3_witness": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "d252f22c4627e820789be38f586df71d6fd5486b3c1d9bbd4de0f57a62ef5a53",
+      "case": "reference",
+      "candidate_sha256": "1d6bba7557524ed85473d9c4ff76c7231b797ff4727f707782285da08bdd5eb7",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1,
+          2
+        ],
+        "if_condition_value": true,
+        "if_body_operations": [
+          "break_loop"
+        ]
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "d252f22c4627e820789be38f586df71d6fd5486b3c1d9bbd4de0f57a62ef5a53",
+      "case": "no_break",
+      "candidate_sha256": "1232bc645501133e65df660dce1ef203d71adc45a96603f81e38baf4169424bd",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1,
+          2
+        ],
+        "if_condition_value": true,
+        "if_body_operations": [
+          "cx"
+        ]
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "d252f22c4627e820789be38f586df71d6fd5486b3c1d9bbd4de0f57a62ef5a53",
+      "case": "wrong_condition",
+      "candidate_sha256": "8cb90c1a9b37899792372b7827674a2bc49435956b1e21ad47f16ca8a39693cf",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1,
+          2
+        ],
+        "if_condition_value": false,
+        "if_body_operations": [
+          "break_loop"
+        ]
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "d252f22c4627e820789be38f586df71d6fd5486b3c1d9bbd4de0f57a62ef5a53",
+      "case": "fixed_two_iterations",
+      "candidate_sha256": "99410437276458bb2108d1aa05ecc0a82fb9a3ad974b74520bdf77f47bd89398",
+      "outcome": "pass",
+      "detail": null,
+      "n3_witness": {
+        "requested_iterations": 3,
+        "loop_indexset": [
+          0,
+          1
+        ],
+        "if_condition_value": true,
+        "if_body_operations": [
+          "break_loop"
+        ]
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "d252f22c4627e820789be38f586df71d6fd5486b3c1d9bbd4de0f57a62ef5a53",
+      "case": "wrong_rotation_control",
+      "candidate_sha256": "941f64a47bc2e54e1b43bb40c89c8aa318a892f4d8d565710ce5e3dc3d4d71f7",
+      "outcome": "fail",
+      "detail": "Unexpected result value",
+      "n3_witness": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "d252f22c4627e820789be38f586df71d6fd5486b3c1d9bbd4de0f57a62ef5a53",
+      "case": "wrong_range_control",
+      "candidate_sha256": "f9ea35502b69191fea9de88adef2f3d17d0c15c4146b9aae8fefadc324a5dd15",
+      "outcome": "fail",
+      "detail": "Expected range(0, 2), got range(0, 3)",
+      "n3_witness": null
+    }
+  ]
+}
