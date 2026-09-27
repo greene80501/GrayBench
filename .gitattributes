@@ -75,3 +75,5 @@ docs/reliability-evidence/earliest_public_qhe_artifacts.py -text whitespace=trai
 docs/reliability-evidence/GrayBench-earliest-public-qhe-artifacts.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task108_native_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-task108-native-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task111_native_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-task111-native-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
