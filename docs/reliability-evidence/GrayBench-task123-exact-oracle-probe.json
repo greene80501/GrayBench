@@ -1,0 +1,111 @@
+{
+  "kind": "graybench_task123_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "matplotlib": "3.10.1",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "5b644629b7cf1068bdc917d643e216bee5c025e4382aae85249c2151b64e3a19",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "0bed914b1dfcc935f9cdee682c1f870bacaec61f14ddbae6c2d286529408dd26",
+      "case": "reference",
+      "candidate_sha256": "31a7be78c3ff55f74480997469057ac1230971b3693ba2f3a5d70878fd8abc76",
+      "outcome": "pass",
+      "assertion": null,
+      "axis_count": 5,
+      "axes_with_data": 4,
+      "suptitle": "fake_belem Error Map"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "0bed914b1dfcc935f9cdee682c1f870bacaec61f14ddbae6c2d286529408dd26",
+      "case": "blank_five_axes",
+      "candidate_sha256": "6e2b609665ee88d2b633bd6599f45c2ce3e7247f1a0f050b148b27ab7f010b91",
+      "outcome": "pass",
+      "assertion": null,
+      "axis_count": 5,
+      "axes_with_data": 0,
+      "suptitle": "fake_belem Error Map"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "0bed914b1dfcc935f9cdee682c1f870bacaec61f14ddbae6c2d286529408dd26",
+      "case": "wrong_title_control",
+      "candidate_sha256": "54ae98c8972ced23dafd857040c378b95734cb82b30fed37bbec42b03d29530c",
+      "outcome": "fail",
+      "assertion": "Unexpected result value",
+      "axis_count": 5,
+      "axes_with_data": 0,
+      "suptitle": "wrong title"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "0bed914b1dfcc935f9cdee682c1f870bacaec61f14ddbae6c2d286529408dd26",
+      "case": "wrong_axis_count_control",
+      "candidate_sha256": "2185e95b56da5cff929516c5c083b7c1cd528299556c6391b11633abbbf3bc2e",
+      "outcome": "fail",
+      "assertion": "Expected length 5, got 4",
+      "axis_count": 4,
+      "axes_with_data": 0,
+      "suptitle": "fake_belem Error Map"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f1e339226397e996b95d6502c9905bc879bc8aab101a0500390a51d7b1098b73",
+      "case": "reference",
+      "candidate_sha256": "7acb95555ff2e2f554225c20f0608b361b3b23a27a22b9dc40e6d91c602d5e4f",
+      "outcome": "pass",
+      "assertion": null,
+      "axis_count": 5,
+      "axes_with_data": 4,
+      "suptitle": "fake_belem Error Map"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f1e339226397e996b95d6502c9905bc879bc8aab101a0500390a51d7b1098b73",
+      "case": "blank_five_axes",
+      "candidate_sha256": "65e9934fc29017217826b134b45046b2e530f0f5875db3bd7f8995e919a6b42e",
+      "outcome": "pass",
+      "assertion": null,
+      "axis_count": 5,
+      "axes_with_data": 0,
+      "suptitle": "fake_belem Error Map"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f1e339226397e996b95d6502c9905bc879bc8aab101a0500390a51d7b1098b73",
+      "case": "wrong_title_control",
+      "candidate_sha256": "6c5302a18acfa56898a83b314842d855316b5460040143b5e681c56a7ae89148",
+      "outcome": "fail",
+      "assertion": "Unexpected result value",
+      "axis_count": 5,
+      "axes_with_data": 0,
+      "suptitle": "wrong title"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "f1e339226397e996b95d6502c9905bc879bc8aab101a0500390a51d7b1098b73",
+      "case": "wrong_axis_count_control",
+      "candidate_sha256": "4470e87ec092bb212f1fcd5803fdfe6de3c4b3d160f47d0b9c11334f0d32c7f1",
+      "outcome": "fail",
+      "assertion": "Expected length 5, got 4",
+      "axis_count": 4,
+      "axes_with_data": 0,
+      "suptitle": "fake_belem Error Map"
+    }
+  ]
+}
