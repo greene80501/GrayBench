@@ -55,6 +55,13 @@ declared entry point. This supports a shape-guarded native runner for these
 revisions without rewriting hard tests. It does not establish oracle fairness
 or same-process test integrity.
 
+The [prompt-format audit](prompt-format-condition-audit.md) confirmed exact
+public-prompt rendering in all 1,510 default built-in adapter preparations,
+with no system prompt configured. It also showed that the current normal
+extraction policy accepts both a literal suffix and a complete function for
+pinned task 0. That broader development condition must be named separately
+from a literal-continuation-only reproduction claim.
+
 ## Saved provider ledgers under the current engine
 
 The three preserved hosted ledgers have the SHA-256 digests recorded in

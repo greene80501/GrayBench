@@ -1,0 +1,78 @@
+{
+  "kind": "graybench_prompt_format_probe_v1",
+  "scope": "Local adapter rendering and pinned protected-bridge diagnostic",
+  "script_sha256": "66e6a078daa9df0d20b5fb3b3961f3b0e4a14593786ca59990f9ffac7c88f52e",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "suite_task_counts": {
+    "normal": 151,
+    "hard": 151
+  },
+  "rendering": {
+    "openai-chat": {
+      "request_count": 302,
+      "request_manifest_digest": "861923df787d524394c0815066c26a7789182ed3c39838ba7e21a2e52ba64d43",
+      "system_prompt": null,
+      "all_public_prompts_exact": true
+    },
+    "openai-compatible-chat": {
+      "request_count": 302,
+      "request_manifest_digest": "e54cec4533a933b016cd635c324fe612b1e0d5a56b007f8523bdaab74abddcdf",
+      "system_prompt": null,
+      "all_public_prompts_exact": true
+    },
+    "openai-responses": {
+      "request_count": 302,
+      "request_manifest_digest": "ad51f92bc0be1a6f5692034bc869c0bbb37194564ecab7f55113e8795c0270fd",
+      "system_prompt": null,
+      "all_public_prompts_exact": true
+    },
+    "ollama": {
+      "request_count": 302,
+      "request_manifest_digest": "a9a7d1e0fae9f324492b9f8544583e612bb5cf31a7bcbfafef3568b273c75f2f",
+      "system_prompt": null,
+      "all_public_prompts_exact": true
+    },
+    "gemini": {
+      "request_count": 302,
+      "request_manifest_digest": "769fb8da21c493e8a0462d398c33612ef5397daab572b9f9ad753d6cb67dafb4",
+      "system_prompt": null,
+      "all_public_prompts_exact": true
+    }
+  },
+  "task0_digest": "5b5befd4d9e52efe2547e30e331f8be79e785df9431298306cbf697441d765c6",
+  "current_extraction_policy": "raw_or_single_python_fence_v1",
+  "answer_formats": [
+    {
+      "name": "literal_suffix",
+      "completion_sha256": "aae579f15c48c69c575f3e0ab06e49af70951e755f1483d500130c5e5872d258",
+      "extraction_method": "raw+prompt",
+      "public_prefix_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "assembled_code_sha256": "d4ca2409b8aef9e7d3ea2f9c49e8677a5b058d23beebb25ce474ffc95524b6a3",
+      "outcome": "pass",
+      "judge_digest": "894fc785ded525f9ce759229614b5524bcf5d04a53c382a2532e1480b73828bb"
+    },
+    {
+      "name": "complete_function",
+      "completion_sha256": "4f4ad025d6558384e18f54213e94dde5c0d86ab9c00704506b429524aa3c1fbb",
+      "extraction_method": "raw",
+      "public_prefix_sha256": "af5bb5dba43d166b754e928d23d267236e7f01599156b02b596af171be0edbe5",
+      "assembled_code_sha256": "4f4ad025d6558384e18f54213e94dde5c0d86ab9c00704506b429524aa3c1fbb",
+      "outcome": "pass",
+      "judge_digest": "894fc785ded525f9ce759229614b5524bcf5d04a53c382a2532e1480b73828bb"
+    }
+  ]
+}
