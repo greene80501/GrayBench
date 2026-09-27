@@ -39,7 +39,9 @@ The [probe](task63_explicit_bases_probe.py) reserves an output before execution
 and does not overwrite existing evidence. The [verifier](verify_task63_explicit_bases.py)
 checks the complete hash chain, each expected outcome, original and revised task
 identities, public request identity, image, graph protocol, engine source and
-probe hash. The pinned normal and hard source task digests are
+probe hash. A verifier regression test rewrites one declared case digest and
+recomputes a valid chain; the verifier rejects the altered case identity. The
+pinned normal and hard source task digests are
 `2ba17e13c1e97e2ad2b96ed3de9589a31f28f3a75553d1b2651e34abb5715ce1`
 and `c456c4772f149f8f88a28f473c4b3b7278490b820847a5dc4327246ec5d8c4af`.
 The final raw file SHA-256 is

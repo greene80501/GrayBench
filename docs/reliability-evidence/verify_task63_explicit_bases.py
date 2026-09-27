@@ -29,6 +29,8 @@ def main(path: Path):
     cases = selection["cases"]
     if len(cases) != 14 or set(cases) != set(summary["results"]):
         raise ValueError("BB84 case roster differs from the result roster")
+    if any(header["tasks"][key] != identity(record) for key, record in cases.items()):
+        raise ValueError("BB84 declared case identity differs from selection metadata")
     for event in rows:
         if event["kind"] != "result":
             continue
