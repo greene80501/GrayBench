@@ -73,11 +73,11 @@
 - Consumes: `NativeCohort`, `native_payload`, the pinned image digest and `Judgment`.
 - Produces: `NativeJudge.evaluate(task, completion) -> Judgment` and a manifest with per-task digest, extraction, worker hash, image, limits, and track ID.
 
-- [ ] **Step 1: Write failing tests** for exact Docker flags, read-only filesystem and bounded tmpfs, no network, no mounted host user files or socket, timeout, memory/process/CPU cap, output cap, missing completion evidence, forged stdout, and a pinned normal/hard reference and negative control.
-- [ ] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_judge.py -q`; expect failure before implementation.
-- [ ] **Step 3: Implement** the supervisor, separating a candidate/test container from host evidence collection. Require an immutable image digest; never treat process exit zero or stdout text alone as a pass. Record image and worker identities and return `infrastructure_error` for supervisor failures.
-- [ ] **Step 4: Run** focused tests in the pinned image and Ruff; expect both pass.
-- [ ] **Step 5: Commit** the supervisor and tests.
+- [x] **Step 1: Write failing tests** for exact Docker flags, read-only filesystem and bounded tmpfs, no network, no mounted host user files or socket, timeout, memory/process/CPU cap, output cap, missing completion evidence, forged stdout, and a pinned normal/hard reference and negative control.
+- [x] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_judge.py -q`; expect failure before implementation.
+- [x] **Step 3: Implement** the supervisor, separating a candidate/test container from host evidence collection. Require an immutable image digest; never treat process exit zero or stdout text alone as a pass. Use a fresh empty host temporary directory mounted only at `/result` for the completion file because Docker discards `/tmp` tmpfs on exit; keep the worker source on a distinct read-only mount, validate the stopped-container result as one bounded regular file, and delete the temporary directory. Record image and worker identities and return `infrastructure_error` for supervisor failures.
+- [x] **Step 4: Run** focused tests in the pinned image and Ruff; expect both pass.
+- [x] **Step 5: Commit** the supervisor and tests.
 
 ### Task 4: Ledger-bound native judgments and separate development reports
 
