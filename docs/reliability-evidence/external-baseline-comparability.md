@@ -108,6 +108,22 @@ contains 151 records with IDs 0–150. The Git blob is
 The exact decoded file is retained locally outside the PR as
 `outputs/upstream-qhe-0.1.0.json`.
 
+The [GitHub initial commit](https://github.com/qiskit-community/qiskit-human-eval/commit/c5a7d309a3561f12461ee56fd258887a9fff01e9)
+on 2024-11-08 had no dataset file. The linked first public release commit on
+2024-11-12 introduced the 151-record file. The
+[Hugging Face dataset history](https://huggingface.co/datasets/Qiskit/qiskit_humaneval/commits/main)
+starts on 2024-11-13 with only a card and attributes; its
+[first parquet commit](https://huggingface.co/datasets/Qiskit/qiskit_humaneval/commit/025a2fb7e8192d12eba7951786929b7e73020749)
+on 2024-11-15 has 151 records (parquet SHA-256
+`e6ef2b6e576cc66a77ddd4ac6b9bb39bd3cfb5f50baad1bcd414931e2b28d64d`).
+The [reproducible comparison](earliest_public_qhe_artifacts.py) found zero
+decoded differences across all 151 task IDs and five non-ID fields between
+that parquet and the first GitHub release. Its
+[saved result](GrayBench-earliest-public-qhe-artifacts.json) has SHA-256
+`831f89c07e752763694ab982b17aede54785ea584f1688941dd3ecf8ac421aea`.
+These two official public histories do not supply the paper's 101-task file;
+this does not prove that no private or separately archived copy exists.
+
 We compared those 151 records by `task_id` against GrayBench's content-pinned
 normal parquet (`a0066805f7a15cb48e9d0cface2210056185be6d`, SHA-256
 `1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6`).

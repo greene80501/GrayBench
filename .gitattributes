@@ -71,3 +71,5 @@ docs/reliability-evidence/qhe_test_shape_inventory.py -text whitespace=trailing-
 docs/reliability-evidence/GrayBench-qhe-test-shape-inventory.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/prompt_format_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-prompt-format-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/earliest_public_qhe_artifacts.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-earliest-public-qhe-artifacts.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
