@@ -27,12 +27,12 @@ families per suite, leaving 143 tasks each. See the
 | Selection | Behavior | Current limitation |
 |---|---|---|
 | `upstream` (default) | Historical protocol-3 value transport and exact pinned tests | Known object-identity verdict defects; retained for explicit historical conditions |
-| `upstream-graph-v4` | Protected protocol-4 judge with complete graph snapshots | Incomplete SDK coverage and resource calibration |
-| `upstream-graph-delta-v1` | Same graph validation with changed-record transport | Reduces wire traffic; still captures and reconstructs retained object history |
+| `upstream-graph-v4` | Protected protocol-4 judge with complete graph snapshots | Incomplete SDK coverage and resource calibration; candidate snapshot substitution is not attested |
+| `upstream-graph-delta-v1` | Same graph validation with changed-record transport | Reduces wire traffic; still cannot attest a candidate's native return object |
 | Named semantic revision | Explicitly revised task contract/test, frozen before generation | Development-only; not an upstream score or complete task certification |
 
 There is no automatic fallback between these conditions. Semantic revisions
-currently cover tasks 0, 63, 82, 113, 116, 120 and 141. See
+currently cover tasks 0, 2, 63, 82, 113, 116, 120 and 141. See
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md),
 [gate revisions](../docs/reliability-evidence/gate-semantics-revisions.md), and
 [the registry](src/graybench/evaluation_recipes.py) for exact names and family checks.
@@ -41,8 +41,12 @@ The graph bridge is implemented and opt-in. It uses separate persistent arenas i
 candidate and trusted judge containers; the host relays bounded data without
 constructing candidate-supplied Qiskit objects. Its retained references, cycles,
 mutation and selected SDK cache/owner semantics repair the six preserved identity
-fixtures from the value-only bridge. That does not establish arbitrary Python or
-Qiskit equivalence. See [protected graph scope](../docs/reliability-evidence/protected-graph-development.md),
+fixtures from the value-only bridge. Candidate code still shares a process with
+its graph snapshot encoder and can substitute the serialized value; the
+[protected task-2 probe](../docs/reliability-evidence/protected-worker-encoder-integrity.md)
+reproduces that false pass. Thus graph transport does not establish arbitrary
+Python or Qiskit equivalence or native-object integrity. See
+[protected graph scope](../docs/reliability-evidence/protected-graph-development.md),
 [delta transport](../docs/reliability-evidence/graph-delta-transport-development.md),
 and [live capture validation](../docs/reliability-evidence/graph-live-capture-development.md).
 
@@ -124,10 +128,15 @@ adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
 
 For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
 Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
-Without the image setting, Docker tests skip. At source commit `124e43f`, the
-pinned Python 3.12 runtime passed 1,083 tests with one experimental skip and
-zero failures or errors; see the [extraction-policy development record](../docs/reliability-evidence/extraction-protocol-v2-development.md).
-That result covers the regression suite, not every benchmark requirement.
+Without the image setting, Docker tests skip. On source-manifest digest
+`ea0f22f9f5b30d12fe8f6cb8fa5b23dc1fa174c230489604e8580c302390655d`,
+the complete pinned-image regression before adding four graph-integrity controls
+had 1,130 passed, one experimental skip and two expected failures. The current
+focused task-2 protected suite has 18 passed and six expected failures; the
+current offline suite has 912 passed and 225 protected skips. These expected
+failures preserve [known encoder integrity defects](../docs/reliability-evidence/protected-worker-encoder-integrity.md),
+not a release-ready score. Green controls do not establish every benchmark
+requirement.
 
 The latest complete graph reference scan, at `77f29ff`, records **122 pass,
 19 unsupported, one fail and one infrastructure error in normal**, and **123

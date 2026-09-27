@@ -21,6 +21,10 @@ class KnownEncoderFalsePassError(AssertionError):
     """Distinguish the reproduced false pass from any other judge outcome."""
 
 
+class KnownGraphEncoderFalsePassError(AssertionError):
+    """Distinguish graph snapshot substitution from infrastructure outcomes."""
+
+
 def task2_fixture(public, suite):
     return JudgeTask(
         public=public.model_copy(
@@ -233,4 +237,46 @@ def test_revised_task2_rejects_candidate_encoder_substitution(task, suite):
     result = judge.evaluate(revised, completion)
     if result.outcome == "pass":
         raise KnownEncoderFalsePassError("Candidate replaced its encoder and obtained a false pass")
+    assert result.outcome == "fail", result
+
+
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Requires immutable image")
+@pytest.mark.xfail(
+    reason="Candidate can replace its graph snapshot before the trusted judge receives a value",
+    raises=KnownGraphEncoderFalsePassError,
+    strict=True,
+)
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+@pytest.mark.parametrize("transport", ["snapshot-v1", "delta-v1"])
+def test_revised_task2_rejects_candidate_graph_snapshot_substitution(task, suite, transport):
+    wrong = (
+        "from qiskit.quantum_info import Statevector\n"
+        "def create_bell_statevector():\n"
+        "    return Statevector.from_label('01')\n"
+    )
+    substituted = (
+        "import sys\n"
+        "from qiskit.quantum_info import Statevector\n"
+        "def create_bell_statevector():\n"
+        "    arena = sys._getframe().f_back.f_locals['arena']\n"
+        "    original_snapshot = arena.snapshot\n"
+        "    def forged_snapshot(roots, *, sequence):\n"
+        "        if type(roots.get('result')) is Statevector:\n"
+        "            roots = {**roots, 'result': Statevector([2**-0.5, 0, 0, 2**-0.5])}\n"
+        "        return original_snapshot(roots, sequence=sequence)\n"
+        "    arena.snapshot = forged_snapshot\n"
+        "    return Statevector.from_label('01')\n"
+    )
+    judge = recipe_judge(
+        RECIPE,
+        image=os.environ["GRAYBENCH_TEST_IMAGE"],
+        protocol=4,
+        graph_transport=transport,
+    )
+    revised = judge.revise(task2_fixture(task, suite))
+    assert judge.evaluate(revised, wrong).outcome == "fail"
+    result = judge.evaluate(revised, substituted)
+    assert result.evidence["manifest"]["release_eligible"] is False
+    if result.outcome == "pass":
+        raise KnownGraphEncoderFalsePassError("Graph snapshot substituted a correct state")
     assert result.outcome == "fail", result

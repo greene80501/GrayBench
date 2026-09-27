@@ -47,6 +47,9 @@ the encoder itself; the
 return value, and the [protected pinned-task probe](protected-worker-encoder-integrity.md)
 reproduces the false pass in both normal and hard. Raw-field reads do not establish
 tamper-proof serialization.
+The same protected probe also covers both protocol-4 graph transports; their
+candidate-side snapshot method can be replaced before the trusted judge sees
+the return value.
 This recipe checks the reconstructed returned value, not how it was built.
 Independent domain review, worker-boundary
 hardening, resource calibration and full task-card admission remain open. No
