@@ -64,3 +64,7 @@ errors in 677.85 seconds. Its JUnit record is preserved at
 `work/outputs/GrayBench-v4-compatible-provider-tests.xml`, SHA-256
 `34fb49741cbd68af36bf7ffb9d66510e478a2db7799f9e15a42eeba9c5433ea5`.
 No live provider generation was used for this route in that regression.
+An independent two-slot local Ollama development pilot is recorded in
+[`compatible-provider-local-pilot.md`](compatible-provider-local-pilot.md).
+It exercised the real route and exposed a multi-block answer rejected by the
+frozen extractor; it is not a release score or compatibility certification.
