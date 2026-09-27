@@ -1,0 +1,62 @@
+# Current release gates, 2026-09-27
+
+This is a read-only release-path audit of the development engine at analysis
+source digest `d96ac495f8844b417f1059611229ad213d79cb1095fa0163fd4348a22cff674d`.
+It does not admit tasks, certify a model, or alter a saved attempt. No provider
+request was made.
+
+## What the current code permits
+
+`Ledger.summary` verifies blob hashes, the event chain and row bindings before
+reading a run in one SQLite snapshot. It binds the denominator to frozen
+task/replicate slots and sets `pass_at_1` only when generations and judgments
+are complete, outcomes are scorable, model observations are acceptable, and
+the current analysis-source digest equals the frozen digest. Even then it
+labels the score `development_only`, sets `certification: not_certified` and
+`publication_eligible: false`. `compare_runs` likewise returns either
+`unscored` or `development_only` and always sets `publication_eligible: false`.
+The current CLI exposes development `summary` and `compare` commands; it has
+no publication-admission command. These are observed code gates, not proof
+that the underlying oracles are correct.
+
+Importing both pinned suites through `inventory` returned 302 cards. All 302
+have pending specification, oracle and wire-interface reviews; none is
+release-eligible and `release_ready` is false. Seventy-eight cards currently
+carry at least one known-finding tag, because a task number appears separately
+in normal and hard. Sixteen cards are marked external-service dependent.
+The card counts describe the provisional inventory, not completed reviews.
+
+## Saved provider ledgers under the current engine
+
+The three preserved hosted ledgers have the SHA-256 digests recorded in
+[hosted generation conformance](hosted-generation-conformance-2026-09-27.md).
+Re-reading them with the current source verified each ledger's internal
+integrity. The output was restricted to release fields, without printing
+responses or host metadata:
+
+| Run | Current score status | Current score blockers | Publication |
+| --- | --- | --- | --- |
+| OpenAI `5c4c4af464114a79af683ef55258799e` | `unscored`; `pass_at_1: null` | `analysis_source_mismatch` | Ineligible |
+| Gemini 2.5 `85c948d4be03482fade29ff556c09a20` | `unscored`; `pass_at_1: null` | `analysis_source_mismatch`, `missing_generations`, `unjudged_samples` | Ineligible |
+| Gemini 3.8 `ed150de3110b434a8ba7fef2886d93ac` | `unscored`; `pass_at_1: null` | `analysis_source_mismatch` | Ineligible |
+
+The analysis mismatch is expected: these attempts froze an earlier engine
+source. It is not evidence of ledger corruption. The earlier development
+summaries remain historical observations; they cannot be silently recomputed
+as current-source scores. Reproduction must use the matching preserved source
+and evaluator identities. `ledger_integrity: verified` is internal hash/chain
+verification, while the summary still reports `external_anchor: not_checked`.
+Provider-returned model names and metadata do not independently attest model
+weights or effective sampling settings.
+
+## Release work still required
+
+The safe default also means this branch has no route to a certified result.
+The separately disclosed native and protected tracks need explicit task and
+protocol admission, reproducible source/image execution, independent oracle
+review, model/settings identity standards, and a release decision that consumes
+that evidence. A complete development ledger is not a substitute for those
+gates. The current `Adapter.settings` accepts settings marked `documented` or
+`verified` for request construction; that is not by itself proof that a provider
+honored a setting. Any eventual publication gate must distinguish requested,
+documented-supported, observed-effective and unknown controls.
