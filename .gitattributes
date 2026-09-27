@@ -65,3 +65,5 @@ docs/reliability-evidence/task136_oracle_probe.py -text whitespace=trailing-spac
 docs/reliability-evidence/GrayBench-task136-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/request_scope_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-request-scope-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/http503_retry_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-http503-retry-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol

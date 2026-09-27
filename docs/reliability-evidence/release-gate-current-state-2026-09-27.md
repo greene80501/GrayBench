@@ -79,6 +79,13 @@ prepared-request and model-spec digests. This does not invalidate a saved
 response by itself; it limits what the present ledger can prove about account
 scope and exact cross-track request reuse.
 
+The [HTTP-503 retry audit](http503-retry-ambiguity-audit.md) shows a separate
+first-answer risk: the transport marks a 503 as `rejected`, and the frozen
+default policy permits replay without evidence that the provider did no
+generation. A local mock demonstrates the classification and retry-eligible
+status; it is not an observed provider failure. Release-grade retry admission
+needs non-acceptance or idempotency evidence beyond the status code.
+
 ## Release work still required
 
 The safe default also means this branch has no route to a certified result.
