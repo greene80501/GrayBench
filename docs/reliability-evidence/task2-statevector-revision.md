@@ -41,7 +41,9 @@ regression now reads validated raw instance data and subsystem fields for exact
 and a global-phase positive, but have not run. The codec still excludes
 subclasses, which can therefore be `unsupported` rather than graded failures.
 More broadly, candidate code shares a process with its encoder and could patch
-the encoder itself; raw-field reads do not establish tamper-proof serialization.
+the encoder itself; the
+[local worker integrity probe](worker-encoder-integrity.md) demonstrates that
+remaining false pass. Raw-field reads do not establish tamper-proof serialization.
 This recipe checks the reconstructed returned value, not how it was built.
 Independent domain review, protected normal/hard controls, worker-boundary
 hardening, resource calibration and full task-card admission remain open. No

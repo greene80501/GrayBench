@@ -95,7 +95,10 @@ candidate code could still patch the encoder itself. A trusted oracle can
 verify the reconstructed wire value; it cannot infer an unmodified candidate
 object or construction procedure from a candidate-controlled serialization.
 Keep affected recipes release-ineligible until this boundary is adjudicated
-with adversarial protected controls.
+with adversarial protected controls. The
+[local worker encoder probe](reliability-evidence/worker-encoder-integrity.md)
+reproduces a false pass for a returned task-2 object without Docker; it is a
+boundary finding, not a model score or proof of protected execution.
 
 Use a trusted orchestrator and oracle outside the candidate sandbox. The candidate receives the task and individual input values, never expected answers or future checks. Its stdout is diagnostic data, not a verdict channel. It returns bounded data; the trusted side validates that data, computes correctness and records completion itself.
 
