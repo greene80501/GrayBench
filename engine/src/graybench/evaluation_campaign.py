@@ -60,13 +60,16 @@ class JudgmentRunner:
         protocol = self.ledger.protocol(self.run_id)
         binding = validate_cohort(protocol, self.tasks, self.judge)
         self.ledger.verify()
+        if protocol.schema_version in {"3.2", "3.3"}:
+            observation_status = self.ledger.attempt_observation_status(self.run_id)["status"]
+            if observation_status == "timing_violation":
+                return {"state": "stopped", "reason": "model_observation_timing_violation"}
+            if observation_status == "missing_post_check":
+                return {"state": "stopped", "reason": "model_post_observation_check_missing"}
+            if observation_status != "complete":
+                return {"state": "stopped", "reason": "model_post_observation_missing"}
         if (
-            protocol.schema_version == "3.2"
-            and self.ledger.attempt_observation_status(self.run_id)["status"] != "complete"
-        ):
-            return {"state": "stopped", "reason": "model_post_observation_missing"}
-        if (
-            protocol.schema_version == "3.2"
+            protocol.schema_version in {"3.2", "3.3"}
             and self.ledger.discovery_status(self.run_id)["status"] == "unresolved"
         ):
             return {"state": "stopped", "reason": "model_discovery_unresolved"}

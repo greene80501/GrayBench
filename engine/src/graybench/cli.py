@@ -6,7 +6,7 @@ from pathlib import Path
 
 from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
 from graybench.comparison import ComparisonPlan, compare_runs, make_plan
-from graybench.contracts import ModelSpec, Protocol
+from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol
 from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
 from graybench.evaluation_recipes import RECIPES
@@ -98,7 +98,9 @@ def main():
         default="raw_or_single_python_fence_v1",
     )
     plan.add_argument("--repeats", type=int, default=1)
-    plan.add_argument("--protocol-version", choices=("3.1", "3.2"), default="3.1")
+    plan.add_argument("--protocol-version", choices=("3.1", "3.2", "3.3"), default="3.1")
+    plan.add_argument("--max-pre-observation-age", type=float)
+    plan.add_argument("--max-post-observation-delay", type=float)
     plan.add_argument("--system-prompt", type=Path)
     selection = plan.add_mutually_exclusive_group(required=True)
     selection.add_argument(
@@ -212,6 +214,10 @@ def main():
         finally:
             ledger.close()
     elif args.command == "campaign-plan":
+        if args.protocol_version != "3.3" and (
+            args.max_pre_observation_age is not None or args.max_post_observation_delay is not None
+        ):
+            parser.error("Model-observation timing bounds require protocol 3.3")
         model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
         all_tasks = tuple(
             task for suite in ("normal", "hard") for task in load_suite(suite, args.cache)
@@ -236,6 +242,18 @@ def main():
             evaluation_recipe=args.evaluation_recipe,
             extraction=args.extraction,
             protocol_version=args.protocol_version,
+            model_observation_timing=(
+                ModelObservationTiming(
+                    max_pre_age_seconds=args.max_pre_observation_age
+                    if args.max_pre_observation_age is not None
+                    else 30.0,
+                    max_post_delay_seconds=args.max_post_observation_delay
+                    if args.max_post_observation_delay is not None
+                    else 120.0,
+                )
+                if args.protocol_version == "3.3"
+                else None
+            ),
             parser_image=args.parser_image,
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt

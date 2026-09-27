@@ -5,7 +5,13 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from graybench.contracts import Contract, ExtractionPolicy, ModelSpec, Protocol
+from graybench.contracts import (
+    Contract,
+    ExtractionPolicy,
+    ModelObservationTiming,
+    ModelSpec,
+    Protocol,
+)
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
 from graybench.evaluation_recipes import EvaluationRecipe, recipe_judge, revised_tasks
@@ -98,7 +104,8 @@ def build_setup(
     evaluation_recipe: EvaluationRecipe = "upstream",
     parser_image: str | None = None,
     extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
-    protocol_version: Literal["3.1", "3.2"] = "3.1",
+    protocol_version: Literal["3.1", "3.2", "3.3"] = "3.1",
+    model_observation_timing: ModelObservationTiming | None = None,
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
     judge = recipe_judge(
@@ -116,6 +123,11 @@ def build_setup(
     }
     protocol = Protocol(
         schema_version=protocol_version,
+        model_observation_timing=(
+            model_observation_timing or ModelObservationTiming()
+            if protocol_version == "3.3"
+            else model_observation_timing
+        ),
         name=name,
         track=getattr(judge, "track", "upstream"),
         model=model,

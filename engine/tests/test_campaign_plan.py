@@ -99,6 +99,43 @@ def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch
     assert frozen.extraction == ("unique_entrypoint_fence_v2")
 
 
+def test_cli_plan_freezes_model_observation_timing(tmp_path, model, task, monkeypatch):
+    private = private_task(task)
+    monkeypatch.setattr(
+        "graybench.cli.load_suite", lambda suite, _: (private,) if suite == "hard" else ()
+    )
+    spec = tmp_path / "model.json"
+    spec.write_text(model.model_dump_json())
+    output = tmp_path / "setup.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "graybench",
+            "campaign-plan",
+            str(spec),
+            str(tmp_path),
+            str(output),
+            "--image",
+            "sha256:" + "0" * 64,
+            "--name",
+            "timed",
+            "--suite",
+            "hard",
+            "--protocol-version",
+            "3.3",
+            "--max-pre-observation-age",
+            "45",
+            "--max-post-observation-delay",
+            "240",
+        ],
+    )
+    main()
+    frozen = CampaignSetup.model_validate_json(output.read_bytes()).protocol
+    assert frozen.model_observation_timing.max_pre_age_seconds == 45
+    assert frozen.model_observation_timing.max_post_delay_seconds == 240
+
+
 def test_cli_plan_is_offline_explicit_and_does_not_overwrite(
     tmp_path, model, task, monkeypatch, capsys
 ):

@@ -1,5 +1,9 @@
 # Protocol 3.2: attempt-bound model observations
 
+The opt-in [protocol 3.3 timing revision](model-observation-timing-v33.md)
+bounds how old an attempt's pre-observation may be and how long after delivery
+the post-observation may be recorded.
+
 Protocol 3.1 records a provider metadata observation before each generation request,
 but cannot show which metadata was observed after a particular response. Protocol
 3.2 is an opt-in development revision. It binds a pre-observation to an attempt

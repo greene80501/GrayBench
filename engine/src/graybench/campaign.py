@@ -41,11 +41,14 @@ class GenerationRunner:
         states = [(sample, self.ledger.dispatch_state(sample["id"])) for sample in samples]
         if any(state["state"] == "unresolved_delivery" for _, state in states):
             return {"state": "stopped", "reason": "unresolved_delivery"}
-        if (
-            protocol.schema_version == "3.2"
-            and self.ledger.attempt_observation_status(self.run_id)["status"] != "complete"
-        ):
-            return {"state": "stopped", "reason": "model_post_observation_missing"}
+        if protocol.schema_version in {"3.2", "3.3"}:
+            observation_status = self.ledger.attempt_observation_status(self.run_id)["status"]
+            if observation_status == "timing_violation":
+                return {"state": "stopped", "reason": "model_observation_timing_violation"}
+            if observation_status == "missing_post_check":
+                return {"state": "stopped", "reason": "model_post_observation_check_missing"}
+            if observation_status != "complete":
+                return {"state": "stopped", "reason": "model_post_observation_missing"}
         for sample, state in states:
             if state["state"] != "ready":
                 continue
@@ -58,7 +61,7 @@ class GenerationRunner:
                 sample["id"],
                 request,
                 pre_observation_id=pre_observation.get("observation_id")
-                if protocol.schema_version == "3.2"
+                if protocol.schema_version in {"3.2", "3.3"}
                 else None,
             )
             try:
@@ -70,7 +73,7 @@ class GenerationRunner:
             post_token = self.ledger.finish_attempt(
                 attempt, delivery.kind, delivery.evidence, delivery.status, delivery.generation
             )
-            if protocol.schema_version == "3.2":
+            if protocol.schema_version in {"3.2", "3.3"}:
                 if (
                     observe_run(
                         self.ledger,
@@ -87,6 +90,11 @@ class GenerationRunner:
                         "attempt_id": attempt,
                         "delivery": delivery.kind,
                     }
+                if (
+                    self.ledger.attempt_observation_status(self.run_id)["status"]
+                    == "timing_violation"
+                ):
+                    return {"state": "stopped", "reason": "model_observation_timing_violation"}
             return {"state": "dispatched", "attempt_id": attempt, "delivery": delivery.kind}
         deferred = [state["not_before"] for _, state in states if state["state"] == "deferred"]
         if deferred:

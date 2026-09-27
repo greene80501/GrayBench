@@ -49,6 +49,10 @@ CREATE TABLE IF NOT EXISTS attempts (
  ordinal INTEGER NOT NULL CHECK(ordinal>=1), request TEXT NOT NULL REFERENCES blobs(digest),
  started_at TEXT NOT NULL, UNIQUE(sample_id, ordinal), UNIQUE(id, sample_id)
 );
+CREATE TABLE IF NOT EXISTS attempt_dispatch_aborts (
+ attempt_id TEXT PRIMARY KEY REFERENCES attempts(id),
+ recorded_at TEXT NOT NULL, pre_age_seconds REAL NOT NULL
+);
 CREATE TABLE IF NOT EXISTS attempt_observations (
  attempt_id TEXT NOT NULL REFERENCES attempts(id),
  phase TEXT NOT NULL CHECK(phase IN ('pre','post')),
@@ -63,6 +67,10 @@ CREATE TABLE IF NOT EXISTS deliveries (
 CREATE TABLE IF NOT EXISTS post_observation_claims (
  attempt_id TEXT PRIMARY KEY REFERENCES deliveries(attempt_id),
  token_digest TEXT NOT NULL CHECK(length(token_digest)=64)
+);
+CREATE TABLE IF NOT EXISTS post_observation_checks (
+ attempt_id TEXT PRIMARY KEY REFERENCES deliveries(attempt_id),
+ checked_at TEXT NOT NULL, gap_seconds REAL NOT NULL
 );
 CREATE TABLE IF NOT EXISTS generations (
  sample_id TEXT PRIMARY KEY REFERENCES samples(id), attempt_id TEXT NOT NULL UNIQUE,
@@ -106,9 +114,11 @@ class Ledger:
             "model_observations",
             "samples",
             "attempts",
+            "attempt_dispatch_aborts",
             "attempt_observations",
             "deliveries",
             "post_observation_claims",
+            "post_observation_checks",
             "generations",
             "judgments",
             "judgment_claims",
@@ -203,8 +213,11 @@ class Ledger:
                 ).fetchone()
                 if attempt is None or attempt["run_id"] != run_id:
                     raise StateError("Post observation belongs to a different run or attempt")
-                if self.protocol(run_id).schema_version != "3.2" or not attempt["delivered"]:
-                    raise StateError("Post observation requires a delivered protocol 3.2 attempt")
+                if (
+                    self.protocol(run_id).schema_version not in {"3.2", "3.3"}
+                    or not attempt["delivered"]
+                ):
+                    raise StateError("Post observation requires a delivered protocol 3.2+ attempt")
                 claim = self.db.execute(
                     "SELECT token_digest FROM post_observation_claims WHERE attempt_id=?",
                     (attempt_id,),
@@ -241,30 +254,142 @@ class Ledger:
                 observation_id=inserted.lastrowid,
                 **({"attempt_id": attempt_id} if attempt_id is not None else {}),
             )
+        if attempt_id is not None and self.protocol(run_id).schema_version == "3.3":
+            finished_at = self.db.execute(
+                "SELECT finished_at FROM deliveries WHERE attempt_id=?", (attempt_id,)
+            ).fetchone()[0]
+            checked_at = now()
+            gap = (
+                datetime.fromisoformat(checked_at) - datetime.fromisoformat(finished_at)
+            ).total_seconds()
+            with self.transaction():
+                self.db.execute(
+                    "INSERT INTO post_observation_checks VALUES (?,?,?)",
+                    (attempt_id, checked_at, gap),
+                )
+                self._event("post_observation_checked", attempt_id=attempt_id)
         return {**self.discovery_status(run_id), "observation_id": inserted.lastrowid}
 
     def attempt_observation_status(self, run_id: str) -> dict:
-        if self.protocol(run_id).schema_version != "3.2":
+        protocol = self.protocol(run_id)
+        if protocol.schema_version not in {"3.2", "3.3"}:
             return {"status": "not_required"}
         rows = self.db.execute(
-            "SELECT a.id, pre.observation_id AS pre_id, post.observation_id AS post_id "
+            "SELECT a.id, a.started_at, d.finished_at, "
+            "abort.recorded_at AS abort_at, abort.pre_age_seconds AS abort_age, "
+            "post_check.checked_at AS post_check_at, "
+            "pre.observation_id AS pre_id, pre_obs.recorded_at AS pre_at, "
+            "post.observation_id AS post_id, post_obs.recorded_at AS post_at "
             "FROM attempts a JOIN samples s ON s.id=a.sample_id "
+            "LEFT JOIN attempt_dispatch_aborts abort ON abort.attempt_id=a.id "
+            "LEFT JOIN deliveries d ON d.attempt_id=a.id "
+            "LEFT JOIN post_observation_checks post_check ON post_check.attempt_id=a.id "
             "LEFT JOIN attempt_observations pre ON pre.attempt_id=a.id AND pre.phase='pre' "
+            "LEFT JOIN model_observations pre_obs ON pre_obs.id=pre.observation_id "
             "LEFT JOIN attempt_observations post ON post.attempt_id=a.id AND post.phase='post' "
+            "LEFT JOIN model_observations post_obs ON post_obs.id=post.observation_id "
             "WHERE s.run_id=? ORDER BY a.started_at,a.id",
             (run_id,),
         ).fetchall()
         missing_pre = [row["id"] for row in rows if row["pre_id"] is None]
         missing_post = [row["id"] for row in rows if row["post_id"] is None]
+        missing_post_check = [
+            row["id"] for row in rows if row["post_id"] is not None and row["post_check_at"] is None
+        ]
+        violations = []
+        gaps = []
+        if protocol.schema_version == "3.3":
+            timing = protocol.model_observation_timing
+            assert timing is not None
+            for row in rows:
+                if row["abort_at"] is not None:
+                    measurement = {
+                        "attempt_id": row["id"],
+                        "phase": "pre_dispatch",
+                        "gap_seconds": row["abort_age"],
+                        "limit_seconds": timing.max_pre_age_seconds,
+                    }
+                    gaps.append(measurement)
+                    violations.append(measurement)
+                for phase, start, end, limit in (
+                    (
+                        "pre",
+                        row["pre_at"],
+                        row["started_at"],
+                        timing.max_pre_age_seconds,
+                    ),
+                    ("delivery", row["started_at"], row["finished_at"], None),
+                    (
+                        "post",
+                        row["finished_at"],
+                        row["post_at"],
+                        timing.max_post_delay_seconds,
+                    ),
+                ):
+                    if start is None or end is None:
+                        continue
+                    gap = (
+                        datetime.fromisoformat(end) - datetime.fromisoformat(start)
+                    ).total_seconds()
+                    measurement = {
+                        "attempt_id": row["id"],
+                        "phase": phase,
+                        "gap_seconds": gap,
+                        "limit_seconds": limit,
+                    }
+                    gaps.append(measurement)
+                    if gap < 0 or (limit is not None and gap > limit):
+                        violations.append(measurement)
+                if row["post_check_at"] is not None:
+                    committed_gap = (
+                        datetime.fromisoformat(row["post_check_at"])
+                        - datetime.fromisoformat(row["finished_at"])
+                    ).total_seconds()
+                    measurement = {
+                        "attempt_id": row["id"],
+                        "phase": "post_commit",
+                        "gap_seconds": committed_gap,
+                        "limit_seconds": timing.max_post_delay_seconds,
+                    }
+                    gaps.append(measurement)
+                    if committed_gap < 0 or committed_gap > timing.max_post_delay_seconds:
+                        violations.append(measurement)
+                    if row["post_at"] is not None:
+                        confirmation_gap = (
+                            datetime.fromisoformat(row["post_check_at"])
+                            - datetime.fromisoformat(row["post_at"])
+                        ).total_seconds()
+                        confirmation = {
+                            "attempt_id": row["id"],
+                            "phase": "post_confirmation",
+                            "gap_seconds": confirmation_gap,
+                            "limit_seconds": None,
+                        }
+                        gaps.append(confirmation)
+                        if confirmation_gap < 0:
+                            violations.append(confirmation)
         return {
-            "status": "missing_pre"
+            "status": "timing_violation"
+            if violations
+            else "missing_pre"
             if missing_pre
             else "missing_post"
             if missing_post
+            else "missing_post_check"
+            if protocol.schema_version == "3.3" and missing_post_check
             else "complete",
             "attempts": len(rows),
             "missing_pre": missing_pre,
             "missing_post": missing_post,
+            **(
+                {
+                    "missing_post_check": missing_post_check,
+                    "timing_gaps": gaps,
+                    "timing_violations": violations,
+                }
+                if protocol.schema_version == "3.3"
+                else {}
+            ),
         }
 
     def discovery_status(self, run_id: str) -> dict:
@@ -339,20 +464,21 @@ class Ledger:
                 raise StateError("Returned model identity requires adjudication")
             if self.discovery_status(sample["run_id"])["status"] == "unresolved":
                 raise StateError("Model discovery requires adjudication")
-            if protocol.schema_version == "3.2":
+            if protocol.schema_version in {"3.2", "3.3"}:
                 if self.attempt_observation_status(sample["run_id"])["status"] != "complete":
                     raise StateError("Prior attempt lacks model observation evidence")
                 if self.discovery_status(sample["run_id"])["status"] not in {
                     "stable_observed",
                     "unverified_development",
                 }:
-                    raise StateError("Protocol 3.2 requires pre-dispatch model observation")
+                    raise StateError("Protocol 3.2+ requires pre-dispatch model observation")
                 row = self.db.execute(
-                    "SELECT id FROM model_observations WHERE run_id=? ORDER BY id DESC LIMIT 1",
+                    "SELECT id,recorded_at FROM model_observations "
+                    "WHERE run_id=? ORDER BY id DESC LIMIT 1",
                     (sample["run_id"],),
                 ).fetchone()
                 if pre_observation_id is None:
-                    raise StateError("Protocol 3.2 requires an explicit pre-observation ID")
+                    raise StateError("Protocol 3.2+ requires an explicit pre-observation ID")
                 if row is None or pre_observation_id != row["id"]:
                     raise StateError("A newer observation intervened before dispatch")
             elif pre_observation_id is not None:
@@ -389,11 +515,20 @@ class Ledger:
                     raise StateError("Frozen retry backoff has not elapsed")
             if request.digest != protocol.request_digests[sample["task_key"]]:
                 raise StateError("Request differs from the frozen experiment")
+            started_at = now()
+            if protocol.schema_version == "3.3":
+                timing = protocol.model_observation_timing
+                assert timing is not None
+                pre_age = (
+                    datetime.fromisoformat(started_at) - datetime.fromisoformat(row["recorded_at"])
+                ).total_seconds()
+                if pre_age < 0 or pre_age > timing.max_pre_age_seconds:
+                    raise StateError("Protocol 3.3 pre-observation timing is outside frozen bounds")
             attempt_id = uuid.uuid4().hex
             request_id = self._blob(request.model_dump(mode="json"))
             self.db.execute(
                 "INSERT INTO attempts VALUES (?,?,?,?,?)",
-                (attempt_id, sample_id, ordinal, request_id, now()),
+                (attempt_id, sample_id, ordinal, request_id, started_at),
             )
             if pre_observation_id is not None:
                 self.db.execute(
@@ -407,6 +542,21 @@ class Ledger:
                 request=request_id,
                 **({"pre_observation_id": pre_observation_id} if pre_observation_id else {}),
             )
+        if protocol.schema_version == "3.3":
+            timing = protocol.model_observation_timing
+            assert timing is not None
+            checked_at = now()
+            committed_age = (
+                datetime.fromisoformat(checked_at) - datetime.fromisoformat(row["recorded_at"])
+            ).total_seconds()
+            if committed_age < 0 or committed_age > timing.max_pre_age_seconds:
+                with self.transaction():
+                    self.db.execute(
+                        "INSERT INTO attempt_dispatch_aborts VALUES (?,?,?)",
+                        (attempt_id, checked_at, committed_age),
+                    )
+                    self._event("attempt_dispatch_aborted", attempt_id=attempt_id)
+                raise StateError("Protocol 3.3 pre-observation timing expired before dispatch")
         return attempt_id
 
     def dispatch_state(self, sample_id: str) -> dict:
@@ -423,6 +573,12 @@ class Ledger:
         ).fetchone()
         if prior is None:
             return {"state": "ready"}
+        if self.db.execute(
+            "SELECT 1 FROM attempt_dispatch_aborts b JOIN attempts a ON a.id=b.attempt_id "
+            "WHERE a.sample_id=? AND a.ordinal=?",
+            (sample_id, prior["ordinal"]),
+        ).fetchone():
+            return {"state": "timing_violation"}
         if prior["kind"] is None or prior["kind"] == "ambiguous":
             return {"state": "unresolved_delivery"}
         policy = self.protocol(sample["run_id"]).retry
@@ -454,16 +610,22 @@ class Ledger:
             attempt = self.db.execute("SELECT * FROM attempts WHERE id=?", (attempt_id,)).fetchone()
             if not attempt:
                 raise StateError("Unknown attempt")
+            if self.db.execute(
+                "SELECT 1 FROM attempt_dispatch_aborts WHERE attempt_id=?", (attempt_id,)
+            ).fetchone():
+                raise StateError("Aborted dispatch cannot be finished")
             run_id = self.db.execute(
                 "SELECT run_id FROM samples WHERE id=?", (attempt["sample_id"],)
             ).fetchone()["run_id"]
+            protocol = self.protocol(run_id)
+            received_at = now() if protocol.schema_version == "3.3" else None
             post_token = (
-                secrets.token_urlsafe(32) if self.protocol(run_id).schema_version == "3.2" else None
+                secrets.token_urlsafe(32) if protocol.schema_version in {"3.2", "3.3"} else None
             )
             artifact = self._blob(evidence)
             self.db.execute(
                 "INSERT INTO deliveries VALUES (?,?,?,?,?)",
-                (attempt_id, kind, http_status, artifact, now()),
+                (attempt_id, kind, http_status, artifact, received_at or now()),
             )
             if post_token is not None:
                 self.db.execute(
@@ -518,15 +680,15 @@ class Ledger:
         if sample is None:
             raise StateError("Unscheduled sample")
         run_id = sample["run_id"]
-        if self.protocol(run_id).schema_version != "3.2":
+        if self.protocol(run_id).schema_version not in {"3.2", "3.3"}:
             return
         if self.attempt_observation_status(run_id)["status"] != "complete":
-            raise StateError("Protocol 3.2 judgment requires complete model observations")
+            raise StateError("Protocol 3.2+ judgment requires complete model observations")
         if self.discovery_status(run_id)["status"] not in {
             "stable_observed",
             "unverified_development",
         }:
-            raise StateError("Protocol 3.2 judgment requires stable model observation")
+            raise StateError("Protocol 3.2+ judgment requires stable model observation")
 
     def verify(self) -> dict:
         if self.db.in_transaction:
@@ -627,13 +789,17 @@ class Ledger:
             blockers.append("unresolved_returned_model_identity")
         if discovery["status"] == "unresolved":
             blockers.append("unresolved_model_discovery")
-        if protocol.schema_version == "3.2":
+        if protocol.schema_version in {"3.2", "3.3"}:
             if discovery["status"] not in {"stable_observed", "unverified_development"}:
                 blockers.append("model_discovery_not_observed")
             if attempt_observations["missing_pre"]:
                 blockers.append("model_pre_observation_missing")
             if attempt_observations["missing_post"]:
                 blockers.append("model_post_observation_missing")
+            if protocol.schema_version == "3.3" and attempt_observations["missing_post_check"]:
+                blockers.append("model_post_observation_check_missing")
+            if protocol.schema_version == "3.3" and attempt_observations["timing_violations"]:
+                blockers.append("model_observation_timing_violation")
         complete = not blockers and all(o in scored for o in outcomes)
         per_task = []
         for key in protocol.task_keys:

@@ -103,8 +103,13 @@ class RetryPolicy(Contract):
 ExtractionPolicy = Literal["raw_or_single_python_fence_v1", "unique_entrypoint_fence_v2"]
 
 
+class ModelObservationTiming(Contract):
+    max_pre_age_seconds: float = Field(default=30.0, gt=0, le=3600, allow_inf_nan=False)
+    max_post_delay_seconds: float = Field(default=120.0, gt=0, le=3600, allow_inf_nan=False)
+
+
 class Protocol(Contract):
-    schema_version: Literal["3.1", "3.2"] = "3.1"
+    schema_version: Literal["3.1", "3.2", "3.3"] = "3.1"
     name: str = Field(min_length=1)
     track: Literal["upstream", "strengthened", "robustness"]
     dataset_digest: str = Field(pattern="^[0-9a-f]{64}$")
@@ -114,6 +119,10 @@ class Protocol(Contract):
     system_prompt: str | None = None
     extraction: ExtractionPolicy = "raw_or_single_python_fence_v1"
     retry: RetryPolicy = RetryPolicy()
+    # Omit the absent extension so historical 3.1/3.2 manifest digests stay stable.
+    model_observation_timing: ModelObservationTiming | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
     model: ModelSpec
     generation_code_digest: str = Field(pattern="^[0-9a-f]{64}$")
     runtime_digest: str = Field(pattern="^[0-9a-f]{64}$")
@@ -122,6 +131,10 @@ class Protocol(Contract):
 
     @model_validator(mode="after")
     def nonempty_unique_tasks(self) -> "Protocol":
+        if self.schema_version == "3.3" and self.model_observation_timing is None:
+            raise ValueError("Protocol 3.3 requires model_observation_timing")
+        if self.schema_version != "3.3" and self.model_observation_timing is not None:
+            raise ValueError("model_observation_timing requires protocol 3.3")
         if not self.task_keys or len(set(self.task_keys)) != len(self.task_keys):
             raise ValueError("Schedule must contain nonempty, unique task keys")
         if set(self.request_digests) != set(self.task_keys):

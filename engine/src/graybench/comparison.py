@@ -40,6 +40,7 @@ def validate_plan(plan):
         "system_prompt",
         "extraction",
         "retry",
+        "model_observation_timing",
     ):
         if getattr(plan.left, field) != getattr(plan.right, field):
             raise StateError("Comparison protocols differ in " + field)
