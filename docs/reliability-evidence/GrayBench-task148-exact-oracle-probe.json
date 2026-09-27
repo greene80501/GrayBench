@@ -1,0 +1,98 @@
+{
+  "kind": "graybench_task148_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "7fcac5f2246cec648c77d191d2a14495278db630f6351633227912b49d35aec0",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "91c6e0051a2df0df3af2e6ab86dc3279ddcefbf6aa996235e710c2fc5263bbba",
+      "case": "reference",
+      "candidate_sha256": "fefdc9f02a11b8d9125d6352f9d977b04f45d3a14d938b44d6aed0eefb78093c",
+      "outcome": "pass",
+      "detail": null,
+      "mutated_random_calls": null,
+      "fixed_input_witness": {
+        "input_gate": "x on qubit 4",
+        "operator_preserved": true,
+        "output_gate_qubit": 4
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "91c6e0051a2df0df3af2e6ab86dc3279ddcefbf6aa996235e710c2fc5263bbba",
+      "case": "moved_single_qubit_gate",
+      "candidate_sha256": "21de1870fc3db8636ed24bbd62321fc4cb45c52b85afc9bae22f455f405addc6",
+      "outcome": "pass",
+      "detail": null,
+      "mutated_random_calls": 3,
+      "fixed_input_witness": {
+        "input_gate": "x on qubit 4",
+        "operator_preserved": false,
+        "output_gate_qubit": 0
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "91c6e0051a2df0df3af2e6ab86dc3279ddcefbf6aa996235e710c2fc5263bbba",
+      "case": "extra_gate_control",
+      "candidate_sha256": "cbd5e0caac05894d4321876d539e4ad81cddc2246658696016c0a2788472d0a0",
+      "outcome": "fail",
+      "detail": "Sets do not match",
+      "mutated_random_calls": null,
+      "fixed_input_witness": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4db2a07702a22cfbe5c399e2d30605688021589b314379c27a9dddee1772c41c",
+      "case": "reference",
+      "candidate_sha256": "bb12771f72133b4f8134565eb8d92935e84a47c757772d561028db9a4f6ed7be",
+      "outcome": "pass",
+      "detail": null,
+      "mutated_random_calls": null,
+      "fixed_input_witness": {
+        "input_gate": "x on qubit 4",
+        "operator_preserved": true,
+        "output_gate_qubit": 4
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4db2a07702a22cfbe5c399e2d30605688021589b314379c27a9dddee1772c41c",
+      "case": "moved_single_qubit_gate",
+      "candidate_sha256": "fc33686acc89b893e97d223ea0bba34ccced601ebea54e2bd420158ccee4fc86",
+      "outcome": "pass",
+      "detail": null,
+      "mutated_random_calls": 3,
+      "fixed_input_witness": {
+        "input_gate": "x on qubit 4",
+        "operator_preserved": false,
+        "output_gate_qubit": 0
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4db2a07702a22cfbe5c399e2d30605688021589b314379c27a9dddee1772c41c",
+      "case": "extra_gate_control",
+      "candidate_sha256": "3e4c72edafad056cfc9b93d371d18b5d662334bdfae0484d3630872db4a3081f",
+      "outcome": "fail",
+      "detail": "Sets do not match",
+      "mutated_random_calls": null,
+      "fixed_input_witness": null
+    }
+  ]
+}

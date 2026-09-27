@@ -62,6 +62,7 @@ KNOWN_FINDINGS = {
     142: ["Upstream accepts two-qubit density matrices and the excluded purity boundary"],
     143: ["Upstream accepts two-qubit statevector pairs for a one-qubit task"],
     147: ["Upstream accepts a fixed circuit that discards the supplied input circuit"],
+    148: ["Upstream accepts routed circuits with unchanged gate counts but wrong gate wires"],
     150: ["Upstream accepts a missing break, wrong condition, and fixed iteration count"],
 }
 
