@@ -71,6 +71,14 @@ verification, while the summary still reports `external_anchor: not_checked`.
 Provider-returned model names and metadata do not independently attest model
 weights or effective sampling settings.
 
+The [request-scope audit](request-scope-provenance-audit.md) additionally
+shows that the current transport records the prepared JSON body but not an
+observed sent-body digest or non-secret credential/account scope. Two fake
+credentials sent different Authorization headers while retaining the same
+prepared-request and model-spec digests. This does not invalidate a saved
+response by itself; it limits what the present ledger can prove about account
+scope and exact cross-track request reuse.
+
 ## Release work still required
 
 The safe default also means this branch has no route to a certified result.

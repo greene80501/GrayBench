@@ -1,0 +1,24 @@
+{
+  "kind": "graybench_request_scope_probe_v1",
+  "scope": "Local mock HTTP transport; fake tokens only",
+  "script_sha256": "71a5fec7164da69d8c68bc7b1291ce7b690214ec0650b95b18727f5cb007f735",
+  "credential_changed": true,
+  "prepared_request_digest_unchanged": true,
+  "model_spec_digest_unchanged": true,
+  "wire_body_digest_unchanged": true,
+  "wire_authorization_changed": true,
+  "request_body_reconstructable_from_prepared_request": true,
+  "evidence_keys": [
+    "base_url",
+    "billing",
+    "latency_seconds",
+    "method",
+    "path",
+    "request_body",
+    "response_body",
+    "response_bytes",
+    "response_headers",
+    "wire_sha256"
+  ],
+  "credential_scope_recorded": false
+}
