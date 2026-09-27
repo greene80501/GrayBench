@@ -49,18 +49,19 @@
 ### Task 2: Exact native test assembly and worker
 
 **Files:**
+- Create: `engine/src/graybench/native_assembly.py`
 - Create: `engine/src/graybench/native_worker.py`
 - Create: `engine/tests/test_native_worker.py`
 
 **Interfaces:**
 - Consumes: `JudgeTask`, `extract(completion, task.public, policy)` and one `NativeCohort` task binding from Task 1.
-- Produces: `check_test_shape(task) -> None`, `native_payload(task, completion, extraction) -> dict`, and a worker entry point that writes a bounded structured result only after the pinned test returns.
+- Produces: `check_test_shape(task) -> None` and `native_payload(task, completion, extraction) -> dict` in the host-side assembly module; a standard-library-only worker entry point that writes a bounded structured result only after the pinned test returns. The worker file can be copied into the pinned image without installing the host engine or its credentials.
 
-- [ ] **Step 1: Write failing tests** for original normal public-prefix assembly, one hard top-level `check` call, reference pass, incorrect answer fail, a task with two check calls rejected, candidate `os._exit(0)` nonpass, candidate stdout forgery nonpass, and preserved input mutation/aliasing in one interpreter.
-- [ ] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_worker.py -q`; expect the new interfaces to be absent or the new cases to fail.
-- [ ] **Step 3: Implement** AST shape validation and the worker. Execute the extracted answer and original test bytes in one namespace; append exactly one trusted `check` invocation only for normal tests with no top-level call. Distinguish assertion failure, candidate exception, worker infrastructure failure and missing completion evidence. Keep candidate stdout separate from the trusted result channel and bound serialized evidence.
-- [ ] **Step 4: Run** focused tests and Ruff; expect both pass.
-- [ ] **Step 5: Commit** the worker and tests.
+- [x] **Step 1: Write failing tests** for original normal public-prefix assembly, one hard top-level `check` call, reference pass, incorrect answer fail, a task with two check calls rejected, candidate `os._exit(0)` nonpass, candidate stdout forgery nonpass, and preserved input mutation/aliasing in one interpreter.
+- [x] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_worker.py -q`; expect the new interfaces to be absent or the new cases to fail.
+- [x] **Step 3: Implement** AST shape validation in `native_assembly.py` and the standard-library-only worker in `native_worker.py`. Execute the extracted answer and original test bytes in one namespace; append exactly one trusted `check` invocation only for normal tests with no top-level call. Distinguish assertion failure, candidate exception, worker infrastructure failure and missing completion evidence. Keep candidate stdout separate from the trusted result file and bound serialized evidence.
+- [x] **Step 4: Run** focused tests and Ruff; expect both pass.
+- [x] **Step 5: Commit** the worker and tests.
 
 ### Task 3: Isolated native Docker supervisor
 
