@@ -76,7 +76,10 @@ artifacts and event history. Source, environment, image and configuration
 identities are recorded. Ambiguous dispatch or interrupted judgment blocks
 automatic replay. Provider name and discovery checks detect specified metadata
 changes; they cannot verify proprietary model weights. Development discovery is
-optional; live capability calibration remains required for release.
+required before campaign dispatch for adapters with metadata endpoints. An
+adapter without one may use a frozen, reasoned `unverified_development` exception;
+those runs retain a publication blocker. Live capability calibration remains
+required for release.
 
 `verify-ledger` validates retained evidence. `summary` reports completeness and
 score blockers before accuracy. `comparison-plan` and `compare` require matched,

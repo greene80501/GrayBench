@@ -1,11 +1,12 @@
 import httpx
 import pytest
+from pydantic import ValidationError
 
 from graybench.campaign import GenerationRunner
-from graybench.contracts import Observation
+from graybench.contracts import Generation, ModelSpec, Observation
 from graybench.model_discovery import discovery_identity, observe_run
 from graybench.provenance import source_manifest
-from graybench.providers import Ollama
+from graybench.providers import Adapter, Ollama
 from graybench.transport import Transport
 
 
@@ -120,3 +121,132 @@ def test_first_dispatch_stops_if_discovery_unavailable(ledger, protocol, task):
     assert ledger.discovery_status(run)["status"] == "unresolved"
     assert not ledger.db.execute("SELECT 1 FROM attempts").fetchone()
     assert ledger.verify()["integrity"] == "verified"
+
+
+class NoMetadataAdapter(Adapter):
+    name = "no-metadata-fixture"
+
+    def prepare(self, spec, task, system):
+        return self.request(spec, "/generate", {"model": spec.model, "prompt": task.prompt})
+
+    def parse(self, response):
+        return Generation(
+            text=response["text"],
+            returned_model=response["model"],
+            response_id=None,
+            finish_reason="complete",
+            usage={},
+        )
+
+
+def test_no_metadata_adapter_stops_without_exception(ledger, protocol, task, monkeypatch):
+    model = ModelSpec(
+        adapter="no-metadata-fixture", model="test-model", base_url="https://provider.example"
+    )
+    provider = NoMetadataAdapter()
+    monkeypatch.setattr("graybench.model_discovery.adapter", lambda _: provider)
+    request = provider.prepare(model, task, None)
+    protocol = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {protocol.task_keys[0]: request.digest},
+            "generation_code_digest": source_manifest()["digest"],
+        }
+    )
+    run = ledger.create_run(protocol)
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: pytest.fail("generation must not run"))
+    ) as client:
+        runner = GenerationRunner(
+            ledger, run, {protocol.task_keys[0]: request}, Transport(model, client=client)
+        )
+        assert runner.step() == {"state": "stopped", "reason": "model_discovery_unresolved"}
+    assert ledger.discovery_status(run)["status"] == "unresolved"
+    assert not ledger.db.execute("SELECT 1 FROM attempts").fetchone()
+
+
+def test_no_metadata_adapter_requires_declared_development_exception(
+    ledger, protocol, task, monkeypatch
+):
+    with pytest.raises(ValidationError, match="discovery_exception_reason"):
+        ModelSpec(
+            adapter="no-metadata-fixture",
+            model="test-model",
+            base_url="https://provider.example",
+            discovery_policy="unverified_development",
+        )
+    model = ModelSpec(
+        adapter="no-metadata-fixture",
+        model="test-model",
+        base_url="https://provider.example",
+        discovery_policy="unverified_development",
+        discovery_exception_reason="Provider exposes no model metadata endpoint",
+    )
+    provider = NoMetadataAdapter()
+    monkeypatch.setattr("graybench.campaign.adapter", lambda _: provider)
+    monkeypatch.setattr("graybench.model_discovery.adapter", lambda _: provider)
+    monkeypatch.setattr("graybench.transport.adapter", lambda _: provider)
+    request = provider.prepare(model, task, None)
+    protocol = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {protocol.task_keys[0]: request.digest},
+            "generation_code_digest": source_manifest()["digest"],
+        }
+    )
+    run = ledger.create_run(protocol)
+    calls = []
+
+    def handler(http_request):
+        calls.append(http_request.url.path)
+        return httpx.Response(200, json={"model": "test-model", "text": "answer"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        runner = GenerationRunner(
+            ledger, run, {protocol.task_keys[0]: request}, Transport(model, client=client)
+        )
+        assert runner.step()["delivery"] == "returned"
+    assert calls == ["/generate"]
+    status = ledger.discovery_status(run)
+    assert status["status"] == "unverified_development"
+    assert status["observations"] == 1
+    sample_id = ledger.samples(run)[0]["id"]
+    ledger.judge(sample_id, protocol.judge_digest, "pass", {})
+    report = ledger.summary(run)
+    assert report["pass_at_1"] == 1.0
+    assert report["score_status"] == "development_only"
+    assert report["publication_eligible"] is False
+    assert "model_discovery_unverified" in report["publication_blockers"]
+    assert ledger.verify()["integrity"] == "verified"
+
+
+def test_declared_exception_cannot_bypass_available_discovery(ledger, protocol, task):
+    model = protocol.model.model_copy(
+        update={
+            "discovery_policy": "unverified_development",
+            "discovery_exception_reason": "Cannot inspect model",
+        }
+    )
+    request = Ollama().prepare(model, task, None)
+    protocol = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {protocol.task_keys[0]: request.digest},
+            "generation_code_digest": source_manifest()["digest"],
+        }
+    )
+    run = ledger.create_run(protocol)
+    calls = []
+
+    def handler(http_request):
+        calls.append(http_request.url.path)
+        assert http_request.url.path != "/api/chat"
+        return httpx.Response(503)
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        runner = GenerationRunner(
+            ledger, run, {protocol.task_keys[0]: request}, Transport(model, client=client)
+        )
+        assert runner.step() == {"state": "stopped", "reason": "model_discovery_unresolved"}
+    assert len(calls) == 4
+    assert not ledger.db.execute("SELECT 1 FROM attempts").fetchone()

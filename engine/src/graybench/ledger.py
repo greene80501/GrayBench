@@ -196,6 +196,19 @@ class Ledger:
         if not records:
             return {"status": "not_observed"}
         identities = [record["identity"] for record in records]
+        if all(i["status"] == "unverified_development" for i in identities):
+            if len({i["digest"] for i in identities}) != 1:
+                return {
+                    "status": "unresolved",
+                    "reason": "declared identity changed",
+                    "observations": len(records),
+                }
+            return {
+                "status": "unverified_development",
+                "observations": len(records),
+                "digest": identities[0]["digest"],
+                "reason": identities[0]["identity"]["reason"],
+            }
         if any(i["status"] != "observed" for i in identities):
             return {
                 "status": "unresolved",
@@ -517,6 +530,11 @@ class Ledger:
             "publication_blockers": [
                 "reviewed_task_and_protocol_admission_required",
                 "independent_reproducibility_required",
+                *(
+                    ["model_discovery_unverified"]
+                    if discovery["status"] != "stable_observed"
+                    else []
+                ),
             ],
             "ledger_integrity": integrity,
             "analysis_identity": {

@@ -17,6 +17,16 @@ erase an earlier discrepancy. Mock endpoint tests verify the metadata-before-gen
 order for Ollama, OpenAI Chat/Responses and Gemini; unavailable first discovery creates no
 generation attempt. Digest drift, invalid digests and irrelevant volatile changes are tested too.
 
+An adapter with **no discovery endpoint** can run an explicitly unverified development campaign.
+The frozen `ModelSpec` must set `discovery_policy: "unverified_development"` and a nonblank
+`discovery_exception_reason`. Its synthetic unavailable observation and operator reason remain
+in the append-only ledger; `discovery_status` reports `unverified_development`, and the summary
+adds `model_discovery_unverified` to publication blockers. Without that declaration, the first
+dispatch stops. A declared exception cannot bypass an adapter that advertises discovery:
+metadata errors, mismatches and drift still stop before a generation attempt. This allows
+development testing of APIs without metadata endpoints while preventing the resulting score
+from being presented as an observed-model benchmark result.
+
 Lower-level ledger APIs can still create development attempts without discovery; such runs remain
 explicitly not_observed and uncertified. The campaign runner's pre-dispatch observation does not
 make metadata and generation atomic: a provider or local server could change between requests,
@@ -54,7 +64,8 @@ stored. Duplicate observations cannot silently overwrite an identity input.
 
 Campaign dispatch now requires its first discovery observation as well as later refreshes.
 An unchanged observed baseline allows dispatch; any discrepancy or unavailable observation
-remains unresolved. Direct ledger attempts without a baseline are still development-only.
+remains unresolved except for the frozen no-endpoint development exception above. Direct ledger
+attempts without a baseline are still development-only.
 Older source-frozen runs should continue to be inspected and executed using their original
 engine, not retroactively relabelled with these new metadata semantics.
 
@@ -75,3 +86,12 @@ failures/errors in 525.03 seconds. The JUnit record has 1,029 tests, zero failur
 and one skip. The skipped experimental Hamiltonian definition check is unavailable in the
 original runtime. This validates the implementation path, not provider weight identity or
 whole-cohort benchmark admission.
+
+The explicit no-endpoint development policy was verified against a synthetic native adapter:
+without the frozen exception, discovery stops before HTTP generation; with a reasoned exception,
+the ledger records `unverified_development`, dispatches one answer and keeps
+`model_discovery_unverified` in publication blockers. A failed Ollama metadata endpoint remains
+unresolved even if a model spec declares that exception. The complete original-image Docker
+suite passed 1,031 tests with one skip and zero failures/errors in 581.60 seconds; its JUnit
+record contains 1,032 tests, zero failures/errors and one skip. These are implementation and
+interface checks, not certification of the synthetic provider's model identity.

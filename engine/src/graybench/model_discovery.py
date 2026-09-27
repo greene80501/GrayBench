@@ -24,6 +24,30 @@ def observe_run(ledger, run_id, transport):
 def discovery_identity(spec, observations):
     if len({o.name for o in observations}) != len(observations):
         return {"status": "unavailable", "reason": "duplicate discovery observations"}
+    if spec.discovery_policy == "unverified_development":
+        if adapter(spec.adapter).discovery_requests(spec):
+            return {
+                "status": "unavailable",
+                "reason": "discovery exception is invalid when an endpoint exists",
+            }
+        if (
+            len(observations) != 1
+            or observations[0].name != "model_metadata"
+            or observations[0].status != "unavailable"
+        ):
+            return {"status": "unavailable", "reason": "invalid no-endpoint observation"}
+        declared = {
+            "adapter": spec.adapter,
+            "model": spec.model,
+            "base_url": spec.base_url,
+            "reason": spec.discovery_exception_reason,
+        }
+        return {
+            "status": "unverified_development",
+            "digest": identity(declared),
+            "identity": declared,
+            "verification": "operator-declared; model identity not observed",
+        }
     if spec.adapter in {"openai-chat", "openai-responses", "gemini"}:
         return hosted_identity(spec, observations)
     if spec.adapter != "ollama":

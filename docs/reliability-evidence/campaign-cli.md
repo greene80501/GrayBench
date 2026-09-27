@@ -17,9 +17,11 @@ Execution and HTTP limits are frozen with the setup. Timeout values are normaliz
 before hashing judge manifests, so numerically equivalent JSON integers do not create drift.
 
 CLI tests create a run without any HTTP calls, remove the original setup file, then resume a
-mock generation from stored context. A changed package environment blocks dispatch. Existing
+mock metadata observation followed by generation from stored context. A changed package
+environment blocks both discovery and dispatch. Existing
 Docker integration verifies the underlying generation/judgment pipeline separately.
 
 These are development commands: task adequacy admission and model drift/capability evidence
-are still incomplete. A user-friendly setup builder, workflow documentation, provider metadata
-capture and verified reporting remain required. No scores are certified by creating a context.
+are still incomplete. A user-friendly setup builder, workflow documentation, broader provider
+metadata coverage and verified reporting remain required. No scores are certified by creating
+a context.

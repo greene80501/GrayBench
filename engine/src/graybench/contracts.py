@@ -42,6 +42,8 @@ class ModelSpec(Contract):
     settings: tuple[Setting, ...] = ()
     accepted_returned_models: tuple[str, ...] = ()
     model_identity_evidence: str | None = None
+    discovery_policy: Literal["required", "unverified_development"] = "required"
+    discovery_exception_reason: str | None = Field(default=None, max_length=512)
 
     @field_validator("base_url")
     @classmethod
@@ -71,6 +73,13 @@ class ModelSpec(Contract):
             raise ValueError("Returned model identities must be nonempty and unique")
         if self.accepted_returned_models and not (self.model_identity_evidence or "").strip():
             raise ValueError("Declared returned-model identities require supporting evidence")
+        if self.discovery_policy == "unverified_development":
+            if not (self.discovery_exception_reason or "").strip():
+                raise ValueError(
+                    "discovery_exception_reason is required for unverified development"
+                )
+        elif self.discovery_exception_reason is not None:
+            raise ValueError("discovery_exception_reason requires unverified development policy")
         return self
 
 
