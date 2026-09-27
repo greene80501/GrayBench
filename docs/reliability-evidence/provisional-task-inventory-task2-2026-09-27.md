@@ -19,3 +19,9 @@ a benchmark denominator. The task-2 probe was native and does not establish
 how the protected bridge would handle the forged returns. Its release gate
 requires a separate, predeclared oracle revision, positive and negative
 protected controls, and independent review.
+
+Subsequent protected task-2 controls are recorded in the
+[worker and graph integrity review](protected-worker-encoder-integrity.md).
+They reproduce false passes after candidate-side serialization substitution
+in both suites. This does not alter the byte-preserved inventory snapshot or
+admit either task-2 card.

@@ -93,5 +93,7 @@ predeclared controls, but the finite task remains release-ineligible.
 
 The [task 2 Bell-state revision](task2-statevector-revision.md) replaces the
 upstream call to candidate-controlled `equiv` with a trusted amplitude check.
-Its native controls pass, but protected execution and task admission remain
-pending.
+Its native and protected positive/negative controls run, but
+[candidate-side encoder and graph snapshot substitution](protected-worker-encoder-integrity.md)
+still produce authored protected false passes. Task admission remains pending;
+the recipe is release-ineligible.
