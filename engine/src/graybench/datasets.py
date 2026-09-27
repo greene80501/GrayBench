@@ -27,6 +27,7 @@ EXTERNAL_IDS = frozenset({43, 97, 98, 122, 129, 133, 134, 146})
 KNOWN_FINDINGS = {
     0: ["Upstream accepts a constant three-qubit circuit that ignores the requested size"],
     1: ["Upstream accepts fabricated balanced counts, negative counts and fractional counts"],
+    2: ["Upstream trusts the returned object's equiv method and accepts wrong state amplitudes"],
     3: ["Upstream accepts a blank figure and leaves measurement coverage ambiguous"],
     9: ["Upstream accepts an RX-only non-entangling ansatz"],
     14: ["Upstream accepts two shots instead of the explicitly requested 100"],

@@ -124,9 +124,9 @@ adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
 
 For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
 Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
-Without the image setting, Docker tests skip. The latest verified Python 3.12
-runtime passed 1,062 tests with one experimental skip and zero failures or
-errors; see the [compatible-provider development record](../docs/reliability-evidence/openai-compatible-development.md).
+Without the image setting, Docker tests skip. At source commit `124e43f`, the
+pinned Python 3.12 runtime passed 1,083 tests with one experimental skip and
+zero failures or errors; see the [extraction-policy development record](../docs/reliability-evidence/extraction-protocol-v2-development.md).
 That result covers the regression suite, not every benchmark requirement.
 
 The latest complete graph reference scan, at `77f29ff`, records **122 pass,

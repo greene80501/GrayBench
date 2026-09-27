@@ -1,0 +1,159 @@
+{
+  "kind": "qhe_task2_native_oracle_probe_v1",
+  "purpose": "Oracle review, not protected-judge validation or model scoring",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "script_sha256": "63e8b2a14f3f15ced2fdbd0e4bda89408f5b7029b24cce8635cc65e0f2815227",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "tasks": {
+    "normal": {
+      "public_digest": "8538941824d5a8eccd8995756aa3f86bf4e1947981d51cb27f792911e1ad15d1",
+      "judge_record_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "upstream_test_sha256": "02e9c4488cf0c8cd3b96e02b4549270daec1d35c612ba23fc5ef790345242737"
+    },
+    "hard": {
+      "public_digest": "3143378303990f5ac8aef53f4dd220b20919ba5552704012157777baef12266d",
+      "judge_record_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "upstream_test_sha256": "984957096198c9e2cb3e1baecb3d1fe69bb06fe9da61da0393433481aed0f54d"
+    }
+  },
+  "cases": [
+    {
+      "suite": "normal",
+      "case": "canonical-vector",
+      "returned_type": "Statevector",
+      "expected_valid": true,
+      "physical_equiv_after_trusted_rewrap": true,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "normal",
+      "case": "circuit-derived-vector",
+      "returned_type": "Statevector",
+      "expected_valid": true,
+      "physical_equiv_after_trusted_rewrap": true,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "normal",
+      "case": "global-phase-vector",
+      "returned_type": "Statevector",
+      "expected_valid": true,
+      "physical_equiv_after_trusted_rewrap": true,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "normal",
+      "case": "phi-minus-vector",
+      "returned_type": "Statevector",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": false,
+      "exception_type": "AssertionError"
+    },
+    {
+      "suite": "normal",
+      "case": "product-vector",
+      "returned_type": "Statevector",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": false,
+      "exception_type": "AssertionError"
+    },
+    {
+      "suite": "normal",
+      "case": "claimed-equiv-object",
+      "returned_type": "ClaimedState",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "normal",
+      "case": "forged-equiv-subclass",
+      "returned_type": "ForgedStatevector",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "hard",
+      "case": "canonical-vector",
+      "returned_type": "Statevector",
+      "expected_valid": true,
+      "physical_equiv_after_trusted_rewrap": true,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "hard",
+      "case": "circuit-derived-vector",
+      "returned_type": "Statevector",
+      "expected_valid": true,
+      "physical_equiv_after_trusted_rewrap": true,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "hard",
+      "case": "global-phase-vector",
+      "returned_type": "Statevector",
+      "expected_valid": true,
+      "physical_equiv_after_trusted_rewrap": true,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "hard",
+      "case": "phi-minus-vector",
+      "returned_type": "Statevector",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": false,
+      "exception_type": "AssertionError"
+    },
+    {
+      "suite": "hard",
+      "case": "product-vector",
+      "returned_type": "Statevector",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": false,
+      "exception_type": "AssertionError"
+    },
+    {
+      "suite": "hard",
+      "case": "claimed-equiv-object",
+      "returned_type": "ClaimedState",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": true,
+      "exception_type": null
+    },
+    {
+      "suite": "hard",
+      "case": "forged-equiv-subclass",
+      "returned_type": "ForgedStatevector",
+      "expected_valid": false,
+      "physical_equiv_after_trusted_rewrap": false,
+      "native_upstream_accept": true,
+      "exception_type": null
+    }
+  ]
+}

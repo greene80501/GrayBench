@@ -24,6 +24,9 @@ contain canonical code, private test bodies or model responses. The source of th
 known findings and open review obligation is [the oracle audit](../ORACLE_REVIEW_FINDINGS.md)
 and [the reliability plan](../RELIABILITY_PLAN.md).
 
+A later [task-2 review update](provisional-task-inventory-task2-2026-09-27.md)
+preserves this original artifact and adds one fact-backed family finding.
+
 An audited card must still state the input domain, output and side-effect
 contract, semantic requirements, randomness, resources, external dependencies,
 valid alternative implementations, deliberately wrong controls, evidence and
