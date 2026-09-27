@@ -57,6 +57,7 @@ KNOWN_FINDINGS = {
     131: ["Upstream accepts fixed FakeCairoV2 information that ignores the backend name"],
     132: ["Upstream accepts fabricated fixed counts without circuit generation or Batch execution"],
     139: ["Upstream accepts empty and input-independent Schmidt decompositions"],
+    140: ["Upstream accepts vectors whose entries sum to more than one as probabilities"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
