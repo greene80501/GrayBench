@@ -100,6 +100,14 @@ generation. A local mock demonstrates the classification and retry-eligible
 status; it is not an observed provider failure. Release-grade retry admission
 needs non-acceptance or idempotency evidence beyond the status code.
 
+The [attempt-recovery state audit](attempt-recovery-state-audit.md) confirms
+the local engine's conservative pending-delivery and interrupted-judgment
+behavior with focused tests. It also identifies saved answers missing their
+post-attempt observation, and saved observations missing the protocol-3.3
+timing check, as explicit unscored recovery cases. The replacement needs
+durable terminal/adjudication records for these states without replaying a
+possibly accepted request or silently rerunning a claimed judgment.
+
 ## Release work still required
 
 The safe default also means this branch has no route to a certified result.
