@@ -56,6 +56,10 @@ KNOWN_FINDINGS = {
     130: ["Upstream accepts a five-qubit circuit that ignores the requested qubit count"],
     131: ["Upstream accepts fixed FakeCairoV2 information that ignores the backend name"],
     132: ["Upstream accepts fabricated fixed counts without circuit generation or Batch execution"],
+    137: ["Upstream requires an undisclosed list length of ten for entanglement data"],
+    138: [
+        "Upstream requires ten undisclosed outputs and accepts a non-strict MI threshold"
+    ],
     139: ["Upstream accepts empty and input-independent Schmidt decompositions"],
     140: ["Upstream accepts vectors whose entries sum to more than one as probabilities"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],

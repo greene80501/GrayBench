@@ -1,0 +1,124 @@
+{
+  "kind": "graybench_task137_138_oracle_probe_v1",
+  "scope": "Pinned protected-bridge diagnostic, not a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "6dbe003887769995e394528889d244bf74450fd59c88668d49fb5f6818102093",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "2be3079df3b7cedb1cdcf70b6a309dae101ab20b6068b275904c2abeb1cc8bf0",
+      "case": "bell_ten",
+      "completion_sha256": "7152766d3d676fd5dc93bc2df54e4d972c8e28cc788192ce4b5556bed976c991",
+      "outcome": "pass",
+      "judge_digest": "4cbbb3ab9710ccd63ba89d74bc5943da69a8f8714d0f88af2215a9b828d5ad59"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "2be3079df3b7cedb1cdcf70b6a309dae101ab20b6068b275904c2abeb1cc8bf0",
+      "case": "bell_three",
+      "completion_sha256": "b6b09e5b9e1f4d10e376c3c0ce53b26a8b9c5854bc447945a5cd3e92a642d601",
+      "outcome": "fail",
+      "judge_digest": "4cbbb3ab9710ccd63ba89d74bc5943da69a8f8714d0f88af2215a9b828d5ad59"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "de351c035f26e2f43f7becf57f4bdc75e68811b66290e7428c4b5a5ea53e02af",
+      "case": "bell_ten",
+      "completion_sha256": "7152766d3d676fd5dc93bc2df54e4d972c8e28cc788192ce4b5556bed976c991",
+      "outcome": "pass",
+      "judge_digest": "629fbf2062fb928abbd325d24f7932ed61a2a67307a94622c3cb0aac833e6064"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "de351c035f26e2f43f7becf57f4bdc75e68811b66290e7428c4b5a5ea53e02af",
+      "case": "bell_three",
+      "completion_sha256": "b6b09e5b9e1f4d10e376c3c0ce53b26a8b9c5854bc447945a5cd3e92a642d601",
+      "outcome": "fail",
+      "judge_digest": "629fbf2062fb928abbd325d24f7932ed61a2a67307a94622c3cb0aac833e6064"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "de351c035f26e2f43f7becf57f4bdc75e68811b66290e7428c4b5a5ea53e02af",
+      "case": "boundary_ten",
+      "completion_sha256": "dadf4787acb71fb1912ea09d65aec2bdb761e5f42edab9124010a7d8d0c52eb5",
+      "outcome": "pass",
+      "judge_digest": "629fbf2062fb928abbd325d24f7932ed61a2a67307a94622c3cb0aac833e6064"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "de351c035f26e2f43f7becf57f4bdc75e68811b66290e7428c4b5a5ea53e02af",
+      "case": "mixed_ten",
+      "completion_sha256": "348e861183a8d523479460442ebfc81f455a5359ed5783b79faaf9c9079d7d57",
+      "outcome": "fail",
+      "judge_digest": "629fbf2062fb928abbd325d24f7932ed61a2a67307a94622c3cb0aac833e6064"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "66800733fd2f48f077d41aa36722b47493c5880a489ba95438242900b7930914",
+      "case": "bell_ten",
+      "completion_sha256": "ddf97f92de96d79a05374040b64e6642d728933ff676355a6961d5213a191d83",
+      "outcome": "pass",
+      "judge_digest": "3cf86528400dffbbb69521cc5fb3558f02b971702ba0235a24bc882f1fa29ed8"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "66800733fd2f48f077d41aa36722b47493c5880a489ba95438242900b7930914",
+      "case": "bell_three",
+      "completion_sha256": "7f5964d706f2d5b34bbb6e402c9c4a810f20cd9aa71cc404c4855709f1308ebd",
+      "outcome": "fail",
+      "judge_digest": "3cf86528400dffbbb69521cc5fb3558f02b971702ba0235a24bc882f1fa29ed8"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "bf21119abb70c50409fb31b82f75e2011fe72d677231e1877a60e0199811fafa",
+      "case": "bell_ten",
+      "completion_sha256": "35868a2f1d6ed602745a2ea871873f4d99e3d0febf34869a1e932bc4e6e452ca",
+      "outcome": "pass",
+      "judge_digest": "b1b7982587ed5335ed55f88c057e75ed55cc169ac8df02bab580ff1cea30bd98"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "bf21119abb70c50409fb31b82f75e2011fe72d677231e1877a60e0199811fafa",
+      "case": "bell_three",
+      "completion_sha256": "73817121ba5a0754abffe382534b6d9d8f1aaac26766f5735ca2c915f3c297a3",
+      "outcome": "fail",
+      "judge_digest": "b1b7982587ed5335ed55f88c057e75ed55cc169ac8df02bab580ff1cea30bd98"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "bf21119abb70c50409fb31b82f75e2011fe72d677231e1877a60e0199811fafa",
+      "case": "boundary_ten",
+      "completion_sha256": "4e0159a64810a56dda78ee568127e17c0d7aaec0347fb91df1c54a8df22138af",
+      "outcome": "pass",
+      "judge_digest": "b1b7982587ed5335ed55f88c057e75ed55cc169ac8df02bab580ff1cea30bd98"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "bf21119abb70c50409fb31b82f75e2011fe72d677231e1877a60e0199811fafa",
+      "case": "mixed_ten",
+      "completion_sha256": "e8f8c96fb5d31ace70a37067a6e7e385b559ae2d98677bae256396e99ffd9e04",
+      "outcome": "fail",
+      "judge_digest": "b1b7982587ed5335ed55f88c057e75ed55cc169ac8df02bab580ff1cea30bd98"
+    }
+  ],
+  "witness": {
+    "bell_entanglement_of_formation": 0.9999999999999999,
+    "bell_mutual_information": 2.0,
+    "boundary_mutual_information": 1.0,
+    "boundary_test_tolerance": 1.0
+  }
+}
