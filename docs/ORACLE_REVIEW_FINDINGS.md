@@ -46,6 +46,12 @@ hard task-63 pass is unstable: 20 fresh canonical replays per suite passed once
 in normal and never in hard. Both task-63 variants remain release-ineligible;
 the new aggregate is interface evidence, not a fair model score.
 
+A separately named [explicit receiver-bases revision](reliability-evidence/task63-explicit-bases-revision.md)
+now supplies the missing basis input in the public contract and uses a new
+protected checker. Its 14 authored control runs matched their predeclared
+outcomes across normal and hard, but it remains a development recipe; the
+upstream task and its historical results are unchanged.
+
 Tasks 116 and 120 now have separately selected [behavioral revisions](reliability-evidence/gate-semantics-revisions.md).
 They retain historical upstream results and make the changed scoring contract
 public before generation. Finite semantic checks do not certify internal methods.

@@ -2,6 +2,7 @@
 
 from typing import Literal, get_args
 
+from graybench.bb84_revision import BB84Judge
 from graybench.file_judge import QpyFileJudge
 from graybench.gate_semantics import GateSemanticsJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
@@ -17,6 +18,7 @@ EvaluationRecipe = Literal[
     "qhe113-barrier-metrics-v1",
     "qhe116-evolution-semantics-v1",
     "qhe120-diagonal-semantics-v1",
+    "qhe63-explicit-bases-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -33,6 +35,7 @@ class RevisionJudge:
             "qhe113-barrier-metrics-v1",
             "qhe116-evolution-semantics-v1",
             "qhe120-diagonal-semantics-v1",
+            "qhe63-explicit-bases-v1",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -64,6 +67,8 @@ def recipe_judge(recipe, *, parser_timeout=30, **kwargs):
         inner = BarrierMetricsJudge(**kwargs)
     elif recipe in ("qhe116-evolution-semantics-v1", "qhe120-diagonal-semantics-v1"):
         inner = GateSemanticsJudge(recipe, **kwargs)
+    elif recipe == "qhe63-explicit-bases-v1":
+        inner = BB84Judge(**kwargs)
     elif recipe == "task82-file-semantic-v1":
         inner = QpyFileJudge(parser_timeout=parser_timeout, **kwargs)
     else:

@@ -56,3 +56,12 @@ unsupported until an openly specified, validated semantic revision is chosen.
 Silently copying the matrix would change observable base/alias behavior and is
 not an admissible fix. This experimental image has unpinned build dependencies
 and has not been admitted for scoring.
+
+The Docker-enabled regression suite on the original pinned image exposed an
+overstated expectation in the synthetic Hamiltonian test: two valid-path
+variants expected `pass` even though this image correctly returns
+`unsupported` at the external-array buffer boundary. The test now checks that
+exact unsupported detail on the baseline image, retains the wrong-time
+`fail` expectation, and expects a valid-path pass only when run on another
+explicitly selected image. This changes no runtime codec and does not admit
+the experimental image or family 116.

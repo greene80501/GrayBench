@@ -6,6 +6,8 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import HamiltonianGate
 from test_graph_converted_instructions import arenas, transfer
 
+BASELINE_IMAGE = "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd"
+
 
 @pytest.mark.parametrize("cached", [False, True])
 def test_hamiltonian_raw_matrix_alias_and_definition_are_preserved(cached):
@@ -77,4 +79,8 @@ def answer(gate=None):
         protocol=4,
         graph_transport=transport,
     ).evaluate(task(check), code)
-    assert result.outcome == ("fail" if wrong_time else "pass"), result.evidence.get("stderr")
+    image = os.environ["GRAYBENCH_TEST_IMAGE"]
+    expected = "fail" if wrong_time else "unsupported" if image == BASELINE_IMAGE else "pass"
+    assert result.outcome == expected, result.evidence.get("detail")
+    if expected == "unsupported":
+        assert result.evidence["detail"] == "External array buffer requires a graph codec"

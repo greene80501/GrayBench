@@ -13,6 +13,7 @@ the default. These selections are development evaluations, not certified scores.
 | `qhe113-barrier-metrics-v1` | Task 113 | Explicit observable metrics and no-mutation contract appended before request freezing |
 | `qhe116-evolution-semantics-v1` | Task 116 | Explicit evolution matrix, phase and behavioral scoring contract |
 | `qhe120-diagonal-semantics-v1` | Task 120 | Explicit diagonal, global-phase allowance and no-mutation contract |
+| `qhe63-explicit-bases-v1` | Task 63 | New three-argument BB84 task with receiver bases supplied publicly |
 
 Select exact tasks; a revision rejects other families rather than filtering or
 falling back. From `engine/`, with a model specification and an inspected immutable
@@ -75,3 +76,8 @@ no failures, errors or skips; Ruff lint and formatting passed.
 The [task 116/120 gate revisions](gate-semantics-revisions.md) use independent
 expected matrices over varied inputs. They score returned behavior and explicitly
 do not certify the named synthesis/construction procedure.
+
+The [task 63 explicit-bases revision](task63-explicit-bases-revision.md) replaces
+hidden receiver-basis randomness with a public third argument in a separate
+development recipe. Protected positive implementations and mutants pass their
+predeclared controls, but the finite task remains release-ineligible.
