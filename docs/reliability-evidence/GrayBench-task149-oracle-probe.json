@@ -1,0 +1,78 @@
+{
+  "kind": "graybench_task149_oracle_probe_v1",
+  "scope": "Pinned protected-bridge diagnostic, not a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "6d5ebaedf190b16cc61c2e74b05ff02bf77bd19d4e1407aa4cb2e561202b56b6",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "363fe9e4032fcc9e3f16d0b38d41a9a7233dcee7c31728efc1f566cafc2bd013",
+      "case": "reference",
+      "completion_sha256": "23577d0e2ae2c0137feb9f9ffa5cb1270b83a2c82631dba743d5f8f092e803c7",
+      "outcome": "pass",
+      "judge_digest": "f32540dbabc2d41da490e391ab551075b7bc8cc8a3c0086272445d5a6d9cf91b"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "363fe9e4032fcc9e3f16d0b38d41a9a7233dcee7c31728efc1f566cafc2bd013",
+      "case": "first_string",
+      "completion_sha256": "2bf943ada045e3508bdf3e3ab7e7f11523d5ddd8e8639071acf5a9b2befeec36",
+      "outcome": "pass",
+      "judge_digest": "f32540dbabc2d41da490e391ab551075b7bc8cc8a3c0086272445d5a6d9cf91b"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "363fe9e4032fcc9e3f16d0b38d41a9a7233dcee7c31728efc1f566cafc2bd013",
+      "case": "last_string_control",
+      "completion_sha256": "428528d5150282a9ac4b86b0c3369a2b9408d49d6b2c2d547e179180cad0a27a",
+      "outcome": "fail",
+      "judge_digest": "f32540dbabc2d41da490e391ab551075b7bc8cc8a3c0086272445d5a6d9cf91b"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8071f037bf801abf0d2f16851d538e5656baadd6cda5a19fa69cd6eba17096bf",
+      "case": "reference",
+      "completion_sha256": "8302e305522df59f4b013feaf763ba249ad766f7ecd421933a021092e4cfa422",
+      "outcome": "pass",
+      "judge_digest": "5d76f04c4e5a661793dbf2c44b5700e3561db0ac7dfe2a5eec8e3a51827871be"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8071f037bf801abf0d2f16851d538e5656baadd6cda5a19fa69cd6eba17096bf",
+      "case": "first_string",
+      "completion_sha256": "eed94df57e1723ea9ca04aaaf17f1d829e257ba51ef4dcf6e402fb6af46bd5e6",
+      "outcome": "pass",
+      "judge_digest": "5d76f04c4e5a661793dbf2c44b5700e3561db0ac7dfe2a5eec8e3a51827871be"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8071f037bf801abf0d2f16851d538e5656baadd6cda5a19fa69cd6eba17096bf",
+      "case": "last_string_control",
+      "completion_sha256": "4964b643f5955eacc59505fc6df97069146f56b1d1db99ca382fe6b3caa053e2",
+      "outcome": "fail",
+      "judge_digest": "5d76f04c4e5a661793dbf2c44b5700e3561db0ac7dfe2a5eec8e3a51827871be"
+    }
+  ],
+  "counterexample": {
+    "counts": {
+      "101": 3,
+      "001": 50
+    },
+    "first_string": "101",
+    "majority_string": "001"
+  }
+}

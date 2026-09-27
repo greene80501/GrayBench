@@ -49,3 +49,5 @@ docs/reliability-evidence/GrayBench-protected-graph-encoder-probe.json -text whi
 docs/reliability-evidence/GrayBench-v4-task82-pinned-parser-reference.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task109_full_delta_normal.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task82_header_v2_reference.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task149_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-task149-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol

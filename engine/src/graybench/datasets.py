@@ -63,6 +63,9 @@ KNOWN_FINDINGS = {
     143: ["Upstream accepts two-qubit statevector pairs for a one-qubit task"],
     147: ["Upstream accepts a fixed circuit that discards the supplied input circuit"],
     148: ["Upstream accepts routed circuits with unchanged gate counts but wrong gate wires"],
+    149: [
+        "Upstream accepts the first BitArray string without checking which result is most common"
+    ],
     150: ["Upstream accepts a missing break, wrong condition, and fixed iteration count"],
 }
 
