@@ -97,7 +97,7 @@
 - [x] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_native_campaign.py -q`; expect failure before implementation.
 - [x] **Step 3: Implement** an additive versioned binding and CLI commands for freezing and stepping a native campaign, retaining old schema semantics. Use the existing append-only claim/event path for the new judgment identity. Report the explicit suite and population without a combined headline score.
 - [x] **Step 4: Run** the focused tests, the complete engine suite, Ruff, and a pinned-image reference/control replay; expect all to pass, with any unsupported tasks reported explicitly.
-- [ ] **Step 5: Commit** the integration and verification evidence, then update the draft PR description around the final behavior.
+- [x] **Step 5: Commit** the integration and verification evidence, then update the draft PR description around the final behavior.
 
 ## Follow-on plans
 
