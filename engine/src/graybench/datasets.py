@@ -51,6 +51,7 @@ KNOWN_FINDINGS = {
     121: ["Upstream accepts unconditional reset and a circuit without the first measurement"],
     122: ["Upstream only asserts circuit type; the IBM transpiler result is never compared"],
     123: ["Upstream accepts a five-axis figure with no plotted error-map data"],
+    125: ["Upstream checks only gate shape for its three-qubit input, accepting a wrong action"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
