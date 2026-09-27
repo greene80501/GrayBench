@@ -160,6 +160,33 @@ def test_transport_redacts_echoed_key(monkeypatch, task):
     assert "secret-for-unit-test" not in str(result.evidence)
 
 
+def test_successful_response_echoing_credential_cannot_be_judged_as_changed_code(monkeypatch, task):
+    secret = "secret-for-unit-test"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+    )
+    answer = f"def answer(): return {secret!r}"
+    response = {
+        "model": "test",
+        "choices": [{"message": {"role": "assistant", "content": answer}, "finish_reason": "stop"}],
+    }
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json=response))
+    ) as client:
+        result = Transport(model, client).generate(
+            OpenAIChat().prepare(model, task, None), OpenAIChat()
+        )
+    assert result.kind == "ambiguous"
+    assert result.generation is None
+    assert result.evidence["error_type"] == "CredentialEcho"
+    assert secret not in str(result.evidence)
+    assert "[REDACTED]" in result.evidence["response_body"]
+
+
 def test_malformed_success_is_not_retried(model, task):
     with httpx.Client(
         transport=httpx.MockTransport(lambda _: httpx.Response(200, text="oops"))

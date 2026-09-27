@@ -99,7 +99,13 @@ class Transport:
                         raise ValueError("Response exceeded frozen byte limit")
                     received.extend(chunk)
                 evidence["wire_sha256"] = hashlib.sha256(received).hexdigest()
-                evidence["response_body"] = self._redact(received.decode("utf-8", errors="strict"))
+                decoded = received.decode("utf-8", errors="strict")
+                evidence["response_body"] = self._redact(decoded)
+                if self.secret and self.secret in decoded and 200 <= status < 300:
+                    # Parsing the redacted text would change the model's answer. Persist
+                    # redacted evidence, but leave delivery and discovery unresolved.
+                    evidence["error_type"] = "CredentialEcho"
+                    evidence["error"] = "Successful provider response contained the credential"
         except (httpx.HTTPError, ValueError) as exc:
             # Never replay a timeout: the server may already have generated and charged an answer.
             evidence["error_type"] = type(exc).__name__

@@ -119,6 +119,25 @@ def test_discovery_keeps_error_evidence_without_leaking_credentials(monkeypatch)
     assert "fake-secret-for-test" not in observations[0].model_dump_json()
 
 
+def test_successful_discovery_echoing_credential_is_not_recorded_as_changed_metadata(
+    monkeypatch,
+):
+    secret = "fake-secret-for-test"
+    monkeypatch.setenv("TEST_DISCOVERY_KEY", secret)
+    model = hosted_spec("gemini").model_copy(update={"credential_env": "TEST_DISCOVERY_KEY"})
+    body = metadata("gemini")
+    body["extra"]["future_field"] = secret
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json=body))
+    ) as client:
+        observations = Transport(model, client=client).discover(adapter("gemini"))
+    assert len(observations) == 1
+    assert observations[0].status == "error"
+    assert observations[0].value is None
+    assert observations[0].evidence["error_type"] == "CredentialEcho"
+    assert secret not in observations[0].model_dump_json()
+
+
 @pytest.mark.parametrize(
     "payload", ['{"id":"test-model","extra":NaN}', "[" * 1100 + "0" + "]" * 1100]
 )
