@@ -1,0 +1,220 @@
+{
+  "kind": "graybench_tasks142_143_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "9c787548981c4f81c4005cc810b3bac1ca45637459f383060f9604c2434e0565",
+  "cases": [
+    {
+      "task": 142,
+      "suite": "normal",
+      "task_digest": "47aac9f1b72f36d2cad0d4f638d9f59d577b6f0f5066a229099d9e15e8a82ffa",
+      "case": "reference",
+      "candidate_sha256": "325ded53a15b8a2948dec10c2ac3097c268d7bdbd108bd6350629624f0c91d52",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "normal",
+      "task_digest": "47aac9f1b72f36d2cad0d4f638d9f59d577b6f0f5066a229099d9e15e8a82ffa",
+      "case": "valid_one_qubit",
+      "candidate_sha256": "253222461c972b7875d2c71dba1716a6694430392e22a62c09a88deaf8aff102",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "normal",
+      "task_digest": "47aac9f1b72f36d2cad0d4f638d9f59d577b6f0f5066a229099d9e15e8a82ffa",
+      "case": "wrong_two_qubit",
+      "candidate_sha256": "747aa272236cb0237ade1bba40dc5c15f247beeb75e6c5acb2e5e9d7cfb2e97f",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "normal",
+      "task_digest": "47aac9f1b72f36d2cad0d4f638d9f59d577b6f0f5066a229099d9e15e8a82ffa",
+      "case": "boundary_mixed",
+      "candidate_sha256": "de2b3e85249204b967d16cd608129fc2d16174c8be20a9fb38ddc667d81e69e6",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "normal",
+      "task_digest": "47aac9f1b72f36d2cad0d4f638d9f59d577b6f0f5066a229099d9e15e8a82ffa",
+      "case": "low_purity_control",
+      "candidate_sha256": "1e5871dc7d2f2a64714e7016b512bf68eb76af237b4a81f609c7d682dca2a9c7",
+      "outcome": "fail",
+      "detail": "Purity of the density matrices is less than 0.5"
+    },
+    {
+      "task": 142,
+      "suite": "normal",
+      "task_digest": "47aac9f1b72f36d2cad0d4f638d9f59d577b6f0f5066a229099d9e15e8a82ffa",
+      "case": "wrong_length_control",
+      "candidate_sha256": "375c78caa6ac7b33a2b162a85b8881f78044443edb6d2afff1ee34c64c12792d",
+      "outcome": "fail",
+      "detail": "Number of density matrices is not 10"
+    },
+    {
+      "task": 142,
+      "suite": "hard",
+      "task_digest": "017bf0641cbad2f924d226b33f634ed6474a44020ff037d816cb2c884db1d7b2",
+      "case": "reference",
+      "candidate_sha256": "15067a59541a7af797c8f6b94b7aa98d86feb318e159d86d75270147b360edc4",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "hard",
+      "task_digest": "017bf0641cbad2f924d226b33f634ed6474a44020ff037d816cb2c884db1d7b2",
+      "case": "valid_one_qubit",
+      "candidate_sha256": "c4e75421444d1cefd5b1954394c0f1a392a2463333e1b242d65b6bb043b77776",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "hard",
+      "task_digest": "017bf0641cbad2f924d226b33f634ed6474a44020ff037d816cb2c884db1d7b2",
+      "case": "wrong_two_qubit",
+      "candidate_sha256": "e38e2c5806b8a45e1ad03cba1e8f12a0965fd31f9a4dcb2f34c0d4c2e65469d3",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "hard",
+      "task_digest": "017bf0641cbad2f924d226b33f634ed6474a44020ff037d816cb2c884db1d7b2",
+      "case": "boundary_mixed",
+      "candidate_sha256": "ae4e8df7c6dd8c9b846740166067762981cf61e9e28d62acbba8c56273da9384",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 142,
+      "suite": "hard",
+      "task_digest": "017bf0641cbad2f924d226b33f634ed6474a44020ff037d816cb2c884db1d7b2",
+      "case": "low_purity_control",
+      "candidate_sha256": "0de1079a0d14e499ca610e332b1dd4bd12346344abc9bd7a53b82ca4531cdb7c",
+      "outcome": "fail",
+      "detail": "Purity of the density matrices is less than 0.5"
+    },
+    {
+      "task": 142,
+      "suite": "hard",
+      "task_digest": "017bf0641cbad2f924d226b33f634ed6474a44020ff037d816cb2c884db1d7b2",
+      "case": "wrong_length_control",
+      "candidate_sha256": "ee2b3607ac80d3a08fdb70f3e5a9a1faaae7c41f7f5e3de67190a80a6045bef7",
+      "outcome": "fail",
+      "detail": "Number of density matrices is not 10"
+    },
+    {
+      "task": 143,
+      "suite": "normal",
+      "task_digest": "510a01c027c49c979d47061f57011cf6e237250605d0edacfb09a7d3cb921197",
+      "case": "reference",
+      "candidate_sha256": "e61e6ca19a2f304c37d14df1ac9875dffc91406c209267214be08a67329d9bf2",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 143,
+      "suite": "normal",
+      "task_digest": "510a01c027c49c979d47061f57011cf6e237250605d0edacfb09a7d3cb921197",
+      "case": "valid_one_qubit",
+      "candidate_sha256": "4a531c9e3e15aaeefbf986acd5c378b815f240fd788e871a875659bab73c95eb",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 143,
+      "suite": "normal",
+      "task_digest": "510a01c027c49c979d47061f57011cf6e237250605d0edacfb09a7d3cb921197",
+      "case": "wrong_two_qubit",
+      "candidate_sha256": "bdd6b2f8461e4e13aa4a956c42d42bdce751c46a672d4b330c9f73d26d26b2a2",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 143,
+      "suite": "normal",
+      "task_digest": "510a01c027c49c979d47061f57011cf6e237250605d0edacfb09a7d3cb921197",
+      "case": "orthogonal_control",
+      "candidate_sha256": "1e78e191d3170141745326a7be7cfe6d4d97417b90cc0c9cd2842de9be2654f4",
+      "outcome": "fail",
+      "detail": "State fidelity of the returned pairs is less than 0.9"
+    },
+    {
+      "task": 143,
+      "suite": "normal",
+      "task_digest": "510a01c027c49c979d47061f57011cf6e237250605d0edacfb09a7d3cb921197",
+      "case": "wrong_length_control",
+      "candidate_sha256": "0fb5c2ede898affa816559fc76ed8b6800bba8669b4f1ed1a6d22a18f1e0d859",
+      "outcome": "fail",
+      "detail": "Length of returned list is not 10"
+    },
+    {
+      "task": 143,
+      "suite": "hard",
+      "task_digest": "280b7f6198b39b1a65961f258ca2f2f08c8a27bbb332e1827a72ceba03d4a873",
+      "case": "reference",
+      "candidate_sha256": "147036ad1e189fb49813a895e1efede9c56f8665bb0179ffb8dc5460a296c5fc",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 143,
+      "suite": "hard",
+      "task_digest": "280b7f6198b39b1a65961f258ca2f2f08c8a27bbb332e1827a72ceba03d4a873",
+      "case": "valid_one_qubit",
+      "candidate_sha256": "7a2eed96e8833bbb813266ec47d87cfeeaf4fdffc5299c9884e33b69987c42fc",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 143,
+      "suite": "hard",
+      "task_digest": "280b7f6198b39b1a65961f258ca2f2f08c8a27bbb332e1827a72ceba03d4a873",
+      "case": "wrong_two_qubit",
+      "candidate_sha256": "dd2c8ab989d3265b1fdb77aa8d737606d219cbe9db7d99d5e58c5bcc308e3735",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "task": 143,
+      "suite": "hard",
+      "task_digest": "280b7f6198b39b1a65961f258ca2f2f08c8a27bbb332e1827a72ceba03d4a873",
+      "case": "orthogonal_control",
+      "candidate_sha256": "29566bc4331decb90860cd8767db981c53501c3d81ae35ee0218fd6aa754fd1c",
+      "outcome": "fail",
+      "detail": "State fidelity of the returned pairs is less than 0.9"
+    },
+    {
+      "task": 143,
+      "suite": "hard",
+      "task_digest": "280b7f6198b39b1a65961f258ca2f2f08c8a27bbb332e1827a72ceba03d4a873",
+      "case": "wrong_length_control",
+      "candidate_sha256": "fe9b48ab11fab522ff8098c09e91b1aa3311888bded96ee3d0971cf2dbab1d0f",
+      "outcome": "fail",
+      "detail": "Length of returned list is not 10"
+    }
+  ]
+}

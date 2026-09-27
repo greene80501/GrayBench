@@ -59,6 +59,8 @@ KNOWN_FINDINGS = {
     139: ["Upstream accepts empty and input-independent Schmidt decompositions"],
     140: ["Upstream accepts vectors whose entries sum to more than one as probabilities"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
+    142: ["Upstream accepts two-qubit density matrices and the excluded purity boundary"],
+    143: ["Upstream accepts two-qubit statevector pairs for a one-qubit task"],
 }
 
 
