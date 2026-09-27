@@ -98,6 +98,7 @@ def main():
         default="raw_or_single_python_fence_v1",
     )
     plan.add_argument("--repeats", type=int, default=1)
+    plan.add_argument("--protocol-version", choices=("3.1", "3.2"), default="3.1")
     plan.add_argument("--system-prompt", type=Path)
     selection = plan.add_mutually_exclusive_group(required=True)
     selection.add_argument(
@@ -234,6 +235,7 @@ def main():
             repeats=args.repeats,
             evaluation_recipe=args.evaluation_recipe,
             extraction=args.extraction,
+            protocol_version=args.protocol_version,
             parser_image=args.parser_image,
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt

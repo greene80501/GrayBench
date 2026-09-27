@@ -104,7 +104,7 @@ ExtractionPolicy = Literal["raw_or_single_python_fence_v1", "unique_entrypoint_f
 
 
 class Protocol(Contract):
-    schema_version: Literal["3.1"] = "3.1"
+    schema_version: Literal["3.1", "3.2"] = "3.1"
     name: str = Field(min_length=1)
     track: Literal["upstream", "strengthened", "robustness"]
     dataset_digest: str = Field(pattern="^[0-9a-f]{64}$")

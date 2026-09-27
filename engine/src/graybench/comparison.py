@@ -29,6 +29,7 @@ def validate_plan(plan):
     if plan.analysis_source != source_manifest()["digest"]:
         raise StateError("Comparison analysis source differs from the frozen plan")
     for field in (
+        "schema_version",
         "track",
         "dataset_digest",
         "judge_digest",

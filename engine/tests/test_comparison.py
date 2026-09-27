@@ -135,7 +135,13 @@ def test_unsupported_sample_blocks_the_whole_comparison(tmp_path, protocol, task
 
 
 @pytest.mark.parametrize(
-    "field,value", [("runtime_digest", "f" * 64), ("system_prompt", "extra help"), ("repeats", 2)]
+    "field,value",
+    [
+        ("runtime_digest", "f" * 64),
+        ("system_prompt", "extra help"),
+        ("repeats", 2),
+        ("schema_version", "3.2"),
+    ],
 )
 def test_incompatible_protocols_cannot_be_compared(protocol, task, field, value):
     plan, _ = setup(protocol, task)

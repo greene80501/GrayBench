@@ -5,7 +5,9 @@ Exported chain heads must be anchored outside the execution worker for release p
 """
 
 import contextlib
+import hashlib
 import json
+import secrets
 import sqlite3
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -47,10 +49,20 @@ CREATE TABLE IF NOT EXISTS attempts (
  ordinal INTEGER NOT NULL CHECK(ordinal>=1), request TEXT NOT NULL REFERENCES blobs(digest),
  started_at TEXT NOT NULL, UNIQUE(sample_id, ordinal), UNIQUE(id, sample_id)
 );
+CREATE TABLE IF NOT EXISTS attempt_observations (
+ attempt_id TEXT NOT NULL REFERENCES attempts(id),
+ phase TEXT NOT NULL CHECK(phase IN ('pre','post')),
+ observation_id INTEGER NOT NULL UNIQUE REFERENCES model_observations(id),
+ PRIMARY KEY(attempt_id, phase)
+);
 CREATE TABLE IF NOT EXISTS deliveries (
  attempt_id TEXT PRIMARY KEY REFERENCES attempts(id),
  kind TEXT NOT NULL CHECK(kind IN ('returned','rejected','ambiguous')),
  http_status INTEGER, evidence TEXT NOT NULL REFERENCES blobs(digest), finished_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS post_observation_claims (
+ attempt_id TEXT PRIMARY KEY REFERENCES deliveries(attempt_id),
+ token_digest TEXT NOT NULL CHECK(length(token_digest)=64)
 );
 CREATE TABLE IF NOT EXISTS generations (
  sample_id TEXT PRIMARY KEY REFERENCES samples(id), attempt_id TEXT NOT NULL UNIQUE,
@@ -94,7 +106,9 @@ class Ledger:
             "model_observations",
             "samples",
             "attempts",
+            "attempt_observations",
             "deliveries",
+            "post_observation_claims",
             "generations",
             "judgments",
             "judgment_claims",
@@ -169,22 +183,89 @@ class Ledger:
             raise StateError("Run has no frozen execution context")
         return self.blob(row[0])
 
-    def record_model_observation(self, run_id: str, observation: dict) -> dict:
+    def record_model_observation(
+        self,
+        run_id: str,
+        observation: dict,
+        *,
+        attempt_id: str | None = None,
+        post_token: str | None = None,
+    ) -> dict:
         if observation.get("model_spec_digest") != self.protocol(run_id).model.digest:
             raise StateError("Discovery observation belongs to a different model specification")
         with self.transaction():
+            if attempt_id is not None:
+                attempt = self.db.execute(
+                    "SELECT s.run_id,d.attempt_id AS delivered FROM attempts a "
+                    "JOIN samples s ON s.id=a.sample_id "
+                    "LEFT JOIN deliveries d ON d.attempt_id=a.id WHERE a.id=?",
+                    (attempt_id,),
+                ).fetchone()
+                if attempt is None or attempt["run_id"] != run_id:
+                    raise StateError("Post observation belongs to a different run or attempt")
+                if self.protocol(run_id).schema_version != "3.2" or not attempt["delivered"]:
+                    raise StateError("Post observation requires a delivered protocol 3.2 attempt")
+                claim = self.db.execute(
+                    "SELECT token_digest FROM post_observation_claims WHERE attempt_id=?",
+                    (attempt_id,),
+                ).fetchone()
+                if (
+                    not isinstance(post_token, str)
+                    or claim is None
+                    or not secrets.compare_digest(
+                        hashlib.sha256(post_token.encode()).hexdigest(), claim["token_digest"]
+                    )
+                ):
+                    raise StateError("Missing or invalid live post-observation token")
+                if self.db.execute(
+                    "SELECT 1 FROM attempt_observations WHERE attempt_id=? AND phase='post'",
+                    (attempt_id,),
+                ).fetchone():
+                    raise StateError("Post observation already bound")
+            elif post_token is not None:
+                raise StateError("Post-observation token requires an attempt")
             artifact = self._blob(observation)
             inserted = self.db.execute(
                 "INSERT INTO model_observations(run_id,content,recorded_at) VALUES (?,?,?)",
                 (run_id, artifact, now()),
             )
+            if attempt_id is not None:
+                self.db.execute(
+                    "INSERT INTO attempt_observations VALUES (?,'post',?)",
+                    (attempt_id, inserted.lastrowid),
+                )
             self._event(
                 "model_observed",
                 run_id=run_id,
                 observation=artifact,
                 observation_id=inserted.lastrowid,
+                **({"attempt_id": attempt_id} if attempt_id is not None else {}),
             )
-        return self.discovery_status(run_id)
+        return {**self.discovery_status(run_id), "observation_id": inserted.lastrowid}
+
+    def attempt_observation_status(self, run_id: str) -> dict:
+        if self.protocol(run_id).schema_version != "3.2":
+            return {"status": "not_required"}
+        rows = self.db.execute(
+            "SELECT a.id, pre.observation_id AS pre_id, post.observation_id AS post_id "
+            "FROM attempts a JOIN samples s ON s.id=a.sample_id "
+            "LEFT JOIN attempt_observations pre ON pre.attempt_id=a.id AND pre.phase='pre' "
+            "LEFT JOIN attempt_observations post ON post.attempt_id=a.id AND post.phase='post' "
+            "WHERE s.run_id=? ORDER BY a.started_at,a.id",
+            (run_id,),
+        ).fetchall()
+        missing_pre = [row["id"] for row in rows if row["pre_id"] is None]
+        missing_post = [row["id"] for row in rows if row["post_id"] is None]
+        return {
+            "status": "missing_pre"
+            if missing_pre
+            else "missing_post"
+            if missing_post
+            else "complete",
+            "attempts": len(rows),
+            "missing_pre": missing_pre,
+            "missing_post": missing_post,
+        }
 
     def discovery_status(self, run_id: str) -> dict:
         records = [
@@ -241,7 +322,13 @@ class Ledger:
             )
         ]
 
-    def begin_attempt(self, sample_id: str, request: PreparedRequest) -> str:
+    def begin_attempt(
+        self,
+        sample_id: str,
+        request: PreparedRequest,
+        *,
+        pre_observation_id: int | None = None,
+    ) -> str:
         """Commit dispatch intent before touching the network. Pending delivery stops resume."""
         with self.transaction():
             sample = self.db.execute("SELECT * FROM samples WHERE id=?", (sample_id,)).fetchone()
@@ -252,6 +339,24 @@ class Ledger:
                 raise StateError("Returned model identity requires adjudication")
             if self.discovery_status(sample["run_id"])["status"] == "unresolved":
                 raise StateError("Model discovery requires adjudication")
+            if protocol.schema_version == "3.2":
+                if self.attempt_observation_status(sample["run_id"])["status"] != "complete":
+                    raise StateError("Prior attempt lacks model observation evidence")
+                if self.discovery_status(sample["run_id"])["status"] not in {
+                    "stable_observed",
+                    "unverified_development",
+                }:
+                    raise StateError("Protocol 3.2 requires pre-dispatch model observation")
+                row = self.db.execute(
+                    "SELECT id FROM model_observations WHERE run_id=? ORDER BY id DESC LIMIT 1",
+                    (sample["run_id"],),
+                ).fetchone()
+                if pre_observation_id is None:
+                    raise StateError("Protocol 3.2 requires an explicit pre-observation ID")
+                if row is None or pre_observation_id != row["id"]:
+                    raise StateError("A newer observation intervened before dispatch")
+            elif pre_observation_id is not None:
+                raise StateError("Protocol 3.1 cannot bind a 3.2 pre-observation")
             if request.model != protocol.model.model or request.adapter != protocol.model.adapter:
                 raise StateError("Request does not match frozen model identity")
             if self.db.execute(
@@ -290,8 +395,17 @@ class Ledger:
                 "INSERT INTO attempts VALUES (?,?,?,?,?)",
                 (attempt_id, sample_id, ordinal, request_id, now()),
             )
+            if pre_observation_id is not None:
+                self.db.execute(
+                    "INSERT INTO attempt_observations VALUES (?,'pre',?)",
+                    (attempt_id, pre_observation_id),
+                )
             self._event(
-                "attempt_started", attempt_id=attempt_id, sample_id=sample_id, request=request_id
+                "attempt_started",
+                attempt_id=attempt_id,
+                sample_id=sample_id,
+                request=request_id,
+                **({"pre_observation_id": pre_observation_id} if pre_observation_id else {}),
             )
         return attempt_id
 
@@ -329,7 +443,7 @@ class Ledger:
         evidence: dict,
         http_status: int | None = None,
         generation: Generation | None = None,
-    ) -> None:
+    ) -> str | None:
         if (kind == "returned") != (generation is not None):
             raise StateError("Returned delivery requires exactly one normalized generation")
         if kind == "returned" and (http_status is None or not 200 <= http_status < 300):
@@ -340,11 +454,22 @@ class Ledger:
             attempt = self.db.execute("SELECT * FROM attempts WHERE id=?", (attempt_id,)).fetchone()
             if not attempt:
                 raise StateError("Unknown attempt")
+            run_id = self.db.execute(
+                "SELECT run_id FROM samples WHERE id=?", (attempt["sample_id"],)
+            ).fetchone()["run_id"]
+            post_token = (
+                secrets.token_urlsafe(32) if self.protocol(run_id).schema_version == "3.2" else None
+            )
             artifact = self._blob(evidence)
             self.db.execute(
                 "INSERT INTO deliveries VALUES (?,?,?,?,?)",
                 (attempt_id, kind, http_status, artifact, now()),
             )
+            if post_token is not None:
+                self.db.execute(
+                    "INSERT INTO post_observation_claims VALUES (?,?)",
+                    (attempt_id, hashlib.sha256(post_token.encode()).hexdigest()),
+                )
             if generation is not None:
                 content = self._blob(generation.model_dump(mode="json"))
                 self.db.execute(
@@ -352,11 +477,13 @@ class Ledger:
                     (attempt["sample_id"], attempt_id, content),
                 )
             self._event("attempt_finished", attempt_id=attempt_id, delivery=kind, evidence=artifact)
+        return post_token
 
     def judge(self, sample_id: str, judge_digest: str, outcome: str, evidence: dict) -> None:
         if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
             raise StateError("Judge must have a content identity")
         with self.transaction():
+            self._require_model_observation_for_judgment(sample_id)
             artifact = self._blob(evidence)
             self.db.execute(
                 "INSERT INTO judgments VALUES (?,?,?,?)",
@@ -375,6 +502,7 @@ class Ledger:
         if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
             raise StateError("Judge must have a content identity")
         with self.transaction():
+            self._require_model_observation_for_judgment(sample_id)
             if self.db.execute(
                 "SELECT 1 FROM judgments WHERE sample_id=? AND judge_digest=?",
                 (sample_id, judge_digest),
@@ -384,6 +512,21 @@ class Ledger:
                 "INSERT INTO judgment_claims VALUES (?,?,?)", (sample_id, judge_digest, now())
             )
             self._event("judgment_started", sample_id=sample_id, judge_digest=judge_digest)
+
+    def _require_model_observation_for_judgment(self, sample_id: str) -> None:
+        sample = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
+        if sample is None:
+            raise StateError("Unscheduled sample")
+        run_id = sample["run_id"]
+        if self.protocol(run_id).schema_version != "3.2":
+            return
+        if self.attempt_observation_status(run_id)["status"] != "complete":
+            raise StateError("Protocol 3.2 judgment requires complete model observations")
+        if self.discovery_status(run_id)["status"] not in {
+            "stable_observed",
+            "unverified_development",
+        }:
+            raise StateError("Protocol 3.2 judgment requires stable model observation")
 
     def verify(self) -> dict:
         if self.db.in_transaction:
@@ -466,6 +609,7 @@ class Ledger:
         counts["unjudged"] = outcomes.count(None)
         model_identity = self.model_identity(run_id)
         discovery = self.discovery_status(run_id)
+        attempt_observations = self.attempt_observation_status(run_id)
         analysis_source = source_manifest()["digest"]
         blockers = []
         if analysis_source != protocol.analysis_digest:
@@ -483,6 +627,13 @@ class Ledger:
             blockers.append("unresolved_returned_model_identity")
         if discovery["status"] == "unresolved":
             blockers.append("unresolved_model_discovery")
+        if protocol.schema_version == "3.2":
+            if discovery["status"] not in {"stable_observed", "unverified_development"}:
+                blockers.append("model_discovery_not_observed")
+            if attempt_observations["missing_pre"]:
+                blockers.append("model_pre_observation_missing")
+            if attempt_observations["missing_post"]:
+                blockers.append("model_post_observation_missing")
         complete = not blockers and all(o in scored for o in outcomes)
         per_task = []
         for key in protocol.task_keys:
@@ -544,6 +695,7 @@ class Ledger:
             },
             "model_identity": model_identity,
             "model_discovery": discovery,
+            "attempt_model_observations": attempt_observations,
         }
 
     def model_identity(self, run_id: str) -> dict:

@@ -1,6 +1,9 @@
 # Persistent model discovery evidence
 
 campaign-observe appends provider discovery observations and a derived identity to the run ledger.
+The opt-in [protocol 3.2 development revision](attempt-model-observation-v32.md)
+also binds fresh pre-request and post-response observations to each transport
+attempt; protocol 3.1's earlier evidence retains its original meaning.
 For Ollama, required records are server version, model catalog and show details. Exactly one
 catalog entry must match the requested model name; aliases are not guessed. The identity binds
 its SHA-256 model digest, server version and show configuration, excluding modified_at. Running
@@ -35,9 +38,11 @@ not turn a failed strict OpenAI metadata request into verified discovery.
 Lower-level ledger APIs can still create development attempts without discovery; such runs remain
 explicitly not_observed and uncertified. The campaign runner's pre-dispatch observation does not
 make metadata and generation atomic: a provider or local server could change between requests,
-and the final generation has no post-dispatch observation yet. Required release work includes
-snapshot pinning, pre/post observations with attempt binding and a time-of-check policy, strict
-admission rules, broader provider coverage and effective-setting conformance tests.
+and protocol 3.1's final generation has no post-dispatch observation. Protocol 3.2
+records a post observation after the delivery is durable, but even matching pre/post
+metadata cannot prove an unchanged model during the request. Required release work
+includes snapshot pinning, a provider-specific time-of-check policy, strict admission
+rules, broader provider coverage and effective-setting conformance tests.
 
 
 ## Hosted metadata observations

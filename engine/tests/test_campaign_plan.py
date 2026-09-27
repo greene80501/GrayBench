@@ -30,6 +30,18 @@ def test_builder_binds_requests_without_including_private_source(model, task):
         build_setup("duplicate", model, (private, private), setup.image)
 
 
+def test_builder_can_freeze_attempt_bound_observation_protocol(model, task):
+    setup = build_setup(
+        "pre-post",
+        model,
+        (private_task(task),),
+        "sha256:" + "0" * 64,
+        protocol_version="3.2",
+    )
+    assert setup.protocol.schema_version == "3.2"
+    assert CampaignSetup.model_validate_json(setup.model_dump_json()).protocol == setup.protocol
+
+
 def test_extraction_policy_is_frozen_in_judge_and_cohort(model, task):
     private = private_task(task)
     image = "sha256:" + "0" * 64
@@ -77,12 +89,14 @@ def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch
             "hard",
             "--extraction",
             "unique_entrypoint_fence_v2",
+            "--protocol-version",
+            "3.2",
         ],
     )
     main()
-    assert CampaignSetup.model_validate_json(output.read_bytes()).protocol.extraction == (
-        "unique_entrypoint_fence_v2"
-    )
+    frozen = CampaignSetup.model_validate_json(output.read_bytes()).protocol
+    assert frozen.schema_version == "3.2"
+    assert frozen.extraction == ("unique_entrypoint_fence_v2")
 
 
 def test_cli_plan_is_offline_explicit_and_does_not_overwrite(

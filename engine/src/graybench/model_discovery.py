@@ -6,7 +6,7 @@ from graybench.identity import identity
 from graybench.providers import adapter, model_metadata_path
 
 
-def observe_run(ledger, run_id, transport):
+def observe_run(ledger, run_id, transport, *, attempt_id=None, post_token=None):
     spec = ledger.protocol(run_id).model
     if transport.spec != spec:
         raise ValueError("Discovery transport differs from frozen model")
@@ -18,6 +18,8 @@ def observe_run(ledger, run_id, transport):
             "observations": [o.model_dump(mode="json") for o in observations],
             "identity": discovery_identity(spec, observations),
         },
+        attempt_id=attempt_id,
+        post_token=post_token,
     )
 
 

@@ -41,23 +41,52 @@ class GenerationRunner:
         states = [(sample, self.ledger.dispatch_state(sample["id"])) for sample in samples]
         if any(state["state"] == "unresolved_delivery" for _, state in states):
             return {"state": "stopped", "reason": "unresolved_delivery"}
+        if (
+            protocol.schema_version == "3.2"
+            and self.ledger.attempt_observation_status(self.run_id)["status"] != "complete"
+        ):
+            return {"state": "stopped", "reason": "model_post_observation_missing"}
         for sample, state in states:
             if state["state"] != "ready":
                 continue
             request = self.requests[sample["task_key"]]
-            if observe_run(self.ledger, self.run_id, self.transport)["status"] == "unresolved":
+            pre_observation = observe_run(self.ledger, self.run_id, self.transport)
+            if pre_observation["status"] == "unresolved":
                 return {"state": "stopped", "reason": "model_discovery_unresolved"}
             # Concurrent dispatch claims and the clock are rechecked inside the transaction.
-            attempt = self.ledger.begin_attempt(sample["id"], request)
+            attempt = self.ledger.begin_attempt(
+                sample["id"],
+                request,
+                pre_observation_id=pre_observation.get("observation_id")
+                if protocol.schema_version == "3.2"
+                else None,
+            )
             try:
                 delivery = self.transport.generate(request, adapter(protocol.model.adapter))
             except Exception as exc:
                 # Unknown transport exceptions may occur after remote execution. Keep the
                 # diagnostic type only, since arbitrary exception strings can contain secrets.
                 delivery = Delivery("ambiguous", None, {"error_type": type(exc).__name__})
-            self.ledger.finish_attempt(
+            post_token = self.ledger.finish_attempt(
                 attempt, delivery.kind, delivery.evidence, delivery.status, delivery.generation
             )
+            if protocol.schema_version == "3.2":
+                if (
+                    observe_run(
+                        self.ledger,
+                        self.run_id,
+                        self.transport,
+                        attempt_id=attempt,
+                        post_token=post_token,
+                    )["status"]
+                    == "unresolved"
+                ):
+                    return {
+                        "state": "stopped",
+                        "reason": "model_discovery_unresolved",
+                        "attempt_id": attempt,
+                        "delivery": delivery.kind,
+                    }
             return {"state": "dispatched", "attempt_id": attempt, "delivery": delivery.kind}
         deferred = [state["not_before"] for _, state in states if state["state"] == "deferred"]
         if deferred:

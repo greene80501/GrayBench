@@ -11,7 +11,9 @@ TABLES = (
     "run_contexts",
     "model_observations",
     "attempts",
+    "attempt_observations",
     "deliveries",
+    "post_observation_claims",
     "generations",
     "judgments",
     "judgment_claims",
@@ -35,19 +37,39 @@ def event_records(db, event):
     if kind == "run_context_recorded":
         return one("run_contexts", run_id=event["run_id"], content=event["context"])
     if kind == "model_observed":
-        return one(
+        result = one(
             "model_observations",
             id=event["observation_id"],
             run_id=event["run_id"],
             content=event["observation"],
         )
+        if "attempt_id" in event:
+            result.update(
+                one(
+                    "attempt_observations",
+                    attempt_id=event["attempt_id"],
+                    phase="post",
+                    observation_id=event["observation_id"],
+                )
+            )
+        return result
     if kind == "attempt_started":
-        return one(
+        result = one(
             "attempts",
             id=event["attempt_id"],
             sample_id=event["sample_id"],
             request=event["request"],
         )
+        if "pre_observation_id" in event:
+            result.update(
+                one(
+                    "attempt_observations",
+                    attempt_id=event["attempt_id"],
+                    phase="pre",
+                    observation_id=event["pre_observation_id"],
+                )
+            )
+        return result
     if kind == "attempt_finished":
         result = one(
             "deliveries",
@@ -55,6 +77,12 @@ def event_records(db, event):
             kind=event["delivery"],
             evidence=event["evidence"],
         )
+        claim = db.execute(
+            "SELECT * FROM post_observation_claims WHERE attempt_id=?",
+            (event["attempt_id"],),
+        ).fetchone()
+        if claim is not None:
+            result["post_observation_claims"] = [dict(claim)]
         generations = [
             dict(r)
             for r in db.execute(
@@ -83,7 +111,7 @@ def event_records(db, event):
 def verify_records(db, events):
     observed = {table: Counter() for table in TABLES}
     runs, attempts, returned, claimed = set(), set(), set(), set()
-    finished, latest = {}, {}
+    finished, latest, latest_observation = {}, {}, {}
     ordinals = Counter()
     samples = {row["id"]: dict(row) for row in db.execute("SELECT * FROM samples")}
     protocols = {
@@ -105,14 +133,36 @@ def verify_records(db, events):
         kind = event["kind"]
         if kind == "run_created":
             runs.add(event["run_id"])
-        elif kind == "model_observed" and event["run_id"] not in runs:
-            raise ValueError("Model observation precedes run creation")
+        elif kind == "model_observed":
+            if event["run_id"] not in runs:
+                raise ValueError("Model observation precedes run creation")
+            if "attempt_id" in event:
+                attempt_id = event["attempt_id"]
+                if attempt_id not in finished:
+                    raise ValueError("Post observation precedes delivery")
+                attempt = db.execute(
+                    "SELECT s.run_id FROM attempts a JOIN samples s ON s.id=a.sample_id "
+                    "WHERE a.id=?",
+                    (attempt_id,),
+                ).fetchone()
+                if attempt is None or attempt["run_id"] != event["run_id"]:
+                    raise ValueError("Post observation belongs to another run")
+                if protocols[event["run_id"]].schema_version != "3.2":
+                    raise ValueError("Post binding requires protocol 3.2")
+            latest_observation[event["run_id"]] = event["observation_id"]
         elif kind == "attempt_started":
             row = records["attempts"][0]
             sample = samples[row["sample_id"]]
             protocol = protocols[sample["run_id"]]
             if sample["run_id"] not in runs:
                 raise ValueError("Attempt precedes run creation")
+            if protocol.schema_version == "3.2":
+                if event.get("pre_observation_id") != latest_observation.get(sample["run_id"]):
+                    raise ValueError("Attempt pre-observation is not the latest observed identity")
+                if "attempt_observations" not in records:
+                    raise ValueError("Protocol 3.2 attempt lacks a pre-observation binding")
+            elif "pre_observation_id" in event:
+                raise ValueError("Protocol 3.1 attempt cannot bind a 3.2 pre-observation")
             if (
                 sample["task_key"] not in protocol.task_keys
                 or sample["replicate"] >= protocol.repeats
@@ -146,6 +196,13 @@ def verify_records(db, events):
         elif kind == "attempt_finished":
             if event["attempt_id"] not in attempts:
                 raise ValueError("Delivery precedes dispatch intent")
+            attempt = db.execute(
+                "SELECT s.run_id FROM attempts a JOIN samples s ON s.id=a.sample_id WHERE a.id=?",
+                (event["attempt_id"],),
+            ).fetchone()
+            expects_claim = protocols[attempt["run_id"]].schema_version == "3.2"
+            if ("post_observation_claims" in records) != expects_claim:
+                raise ValueError("Post-observation claim disagrees with protocol version")
             finished[event["attempt_id"]] = records["deliveries"][0]
             returned.update(row["sample_id"] for row in records["generations"])
         elif kind in ("judgment_started", "judgment_recorded"):

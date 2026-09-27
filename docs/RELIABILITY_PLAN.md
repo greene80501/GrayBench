@@ -116,6 +116,12 @@ Introduce a versioned capability record for each exact model and endpoint: suppo
 
 The ledger must distinguish intent, serialized request, provider response and effective settings where verifiable. Ignored controls must be recorded as ignored; unexposed behavior remains unknown. Mock adapter tests cannot prove a hosted service honored an option. Use small non-benchmark contract probes and official documentation. Model-list membership alone does not prove generation access.
 
+The opt-in [protocol 3.2 attempt-observation revision](reliability-evidence/attempt-model-observation-v32.md)
+binds provider-reported metadata before and after each transport attempt and
+retains returned answers when the post-check fails. This closes a ledger gap,
+not the stronger release requirement to attest the model and effective settings
+throughout an opaque hosted request.
+
 Native templates and required defaults can vary, but semantic information and assistance cannot. Prohibit hidden few-shot examples, task-specific system prompts, answer repair and content-dependent endpoint switching. Models available only through agents or Responses-style interfaces need proper adapters and declared profiles, not forced use of an incompatible endpoint followed by a poor score.
 
 The lm-evaluation-harness interface makes chat templates, generation configuration and sample logging explicit. Borrow those accounting principles; adopting a framework does not automatically establish fairness. [EleutherAI documentation](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md).

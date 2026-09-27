@@ -98,6 +98,7 @@ def build_setup(
     evaluation_recipe: EvaluationRecipe = "upstream",
     parser_image: str | None = None,
     extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
+    protocol_version: Literal["3.1", "3.2"] = "3.1",
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
     judge = recipe_judge(
@@ -114,6 +115,7 @@ def build_setup(
         for task in tasks
     }
     protocol = Protocol(
+        schema_version=protocol_version,
         name=name,
         track=getattr(judge, "track", "upstream"),
         model=model,
