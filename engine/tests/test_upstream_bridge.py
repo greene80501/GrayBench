@@ -89,6 +89,33 @@ def test_v2_hard_still_requires_its_own_imports():
     assert result.evidence["extraction_method"] == "unique_entrypoint_fence_v2"
 
 
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+def test_v3_protected_judge_accepts_unique_function_with_indented_example(suite):
+    private = task(
+        "def check(candidate):\n    assert candidate(3)==4\ncheck(answer)",
+        suite=suite,
+        prompt=(
+            'from math import sqrt\ndef answer(x):\n    """Add one."""\n'
+            if suite == "normal"
+            else "Implement answer(x) adding one."
+        ),
+    )
+    response = (
+        "```python\ndef answer(x): return x+1\n```\n"
+        "Example:\n   ```bash\n   python example.py\n   ```\n"
+    )
+    old = UpstreamJudge(
+        image=IMAGE, docker=DOCKER, extraction="unique_entrypoint_fence_v2"
+    ).evaluate(private, response)
+    assert old.outcome == "candidate_error"
+    revised = UpstreamJudge(
+        image=IMAGE, docker=DOCKER, extraction="unique_entrypoint_fence_v3"
+    ).evaluate(private, response)
+    assert revised.outcome == "pass", revised
+    assert revised.evidence["extraction_method"] == "unique_entrypoint_fence_v3"
+    assert revised.judge_digest != old.judge_digest
+
+
 @pytest.mark.parametrize(
     "code,outcome",
     [

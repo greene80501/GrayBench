@@ -80,6 +80,15 @@ answer; duplicate alternatives and malformed fences reject. The selected
 method and exact judge policy are retained in judgment evidence and cohort
 identity. This is a labeled formatting-sensitivity condition, not an
 automatic retry or repair. See the [extraction policy evidence](../docs/reliability-evidence/extraction-protocol-v2-development.md).
+The separately versioned `unique_entrypoint_fence_v3` also recognizes
+zero-to-three-space-indented backtick fences; its ambiguity controls and
+[development evidence](../docs/reliability-evidence/extraction-protocol-v3-development.md)
+remain distinct from both earlier policies. A small
+[hosted provider check](../docs/reliability-evidence/hosted-generation-conformance-2026-09-27.md)
+records real OpenAI and Google attempts without a certified score.
+Published 101-task Qiskit HumanEval results and why they cannot yet be compared
+to this 151-task condition are recorded in the
+[external baseline review](../docs/reliability-evidence/external-baseline-comparability.md).
 `campaign-create` saves the validated setup without generating answers.
 `campaign-step` performs at most one scheduled generation or protected judgment;
 it may make a billable request. `campaign-observe` records provider metadata.

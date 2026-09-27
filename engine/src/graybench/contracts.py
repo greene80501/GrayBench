@@ -100,7 +100,11 @@ class RetryPolicy(Contract):
         return self
 
 
-ExtractionPolicy = Literal["raw_or_single_python_fence_v1", "unique_entrypoint_fence_v2"]
+ExtractionPolicy = Literal[
+    "raw_or_single_python_fence_v1",
+    "unique_entrypoint_fence_v2",
+    "unique_entrypoint_fence_v3",
+]
 
 
 class ModelObservationTiming(Contract):

@@ -10,6 +10,7 @@ from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol
 from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
 from graybench.evaluation_recipes import RECIPES
+from graybench.extraction import EXTRACTION_POLICIES
 from graybench.identity import canonical
 from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
@@ -94,7 +95,7 @@ def main():
     plan.add_argument("--evaluation-recipe", choices=RECIPES, default="upstream")
     plan.add_argument(
         "--extraction",
-        choices=("raw_or_single_python_fence_v1", "unique_entrypoint_fence_v2"),
+        choices=EXTRACTION_POLICIES,
         default="raw_or_single_python_fence_v1",
     )
     plan.add_argument("--repeats", type=int, default=1)

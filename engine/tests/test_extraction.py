@@ -204,3 +204,63 @@ def test_v2_keeps_raw_and_single_fence_behavior():
             old.public_prefix,
             old.error,
         )
+
+
+def test_v3_accepts_unique_function_with_indented_non_python_example(task):
+    response = (
+        "Here is the implementation.\n"
+        "```python\ndef answer(x): return x + 1\n```\n"
+        "Run it with:\n   ```bash\n   python example.py\n   ```\n"
+    )
+    assert extract(response, task, policy="unique_entrypoint_fence_v2").error is not None
+    result = extract(response, task, policy="unique_entrypoint_fence_v3")
+    assert result.error is None
+    assert result.method == "unique_entrypoint_fence_v3"
+    assert result.code == "def answer(x): return x + 1\n"
+
+
+def test_v3_removes_only_opening_fence_indentation(task):
+    response = (
+        "  ```python\r\n"
+        "  def answer(x):\r\n"
+        "      return x + 1\r\n"
+        " ```\r\n"
+        "```bash\r\npython example.py\r\n```\r\n"
+    )
+    result = extract(response, task, policy="unique_entrypoint_fence_v3")
+    assert result.error is None
+    assert result.code == "def answer(x):\r\n    return x + 1\r\n"
+    assert result.public_prefix == ""
+
+
+def test_v3_deindent_preserves_vertical_tab_inside_source_line(task):
+    source = 'def answer(x): return "a\x0b  b"\n'
+    response = f"  ```python\n  {source}  ```"
+    result = extract(response, task, policy="unique_entrypoint_fence_v3")
+    assert result.error is None
+    assert result.code == source
+
+
+def test_v3_rejects_indented_competing_definition(task):
+    response = (
+        "```python\ndef answer(x): return x + 1\n```\n"
+        "  ```python\n  def answer(x): return x + 2\n  ```\n"
+    )
+    result = extract(response, task, policy="unique_entrypoint_fence_v3")
+    assert result.error == "Expected one unambiguous entry-point Python code block"
+
+
+def test_v3_rejects_mislabeled_competing_entrypoint(task):
+    for alternative in ("def answer(x): return 2", "answer = lambda x: 2"):
+        response = f"```python\ndef answer(x): return 1\n```\n```bash\n{alternative}\n```\n"
+        assert extract(response, task, policy="unique_entrypoint_fence_v2").error is None
+        result = extract(response, task, policy="unique_entrypoint_fence_v3")
+        assert result.error == "Expected one unambiguous entry-point Python code block"
+
+
+def test_v3_rejects_unrecognized_four_space_fence(task):
+    response = (
+        "```python\ndef answer(x): return x + 1\n```\n    ```bash\n    python example.py\n    ```\n"
+    )
+    result = extract(response, task, policy="unique_entrypoint_fence_v3")
+    assert result.error == "Ambiguous fence delimiters"

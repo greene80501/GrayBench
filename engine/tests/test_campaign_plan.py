@@ -64,7 +64,20 @@ def test_extraction_policy_is_frozen_in_judge_and_cohort(model, task):
         validate_cohort(forged, (private,), original.judge())
 
 
-def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch):
+def test_indented_fence_policy_has_a_distinct_frozen_judge(model, task):
+    private = private_task(task)
+    image = "sha256:" + "0" * 64
+    v2 = build_setup("v2", model, (private,), image, extraction="unique_entrypoint_fence_v2")
+    v3 = build_setup("v3", model, (private,), image, extraction="unique_entrypoint_fence_v3")
+    assert v3.protocol.judge_digest != v2.protocol.judge_digest
+    assert v3.protocol.request_digests == v2.protocol.request_digests
+    validate_cohort(v3.protocol, (private,), v3.judge())
+    with pytest.raises(StateError, match="extraction|judge_digest"):
+        validate_cohort(v3.protocol, (private,), v2.judge())
+
+
+@pytest.mark.parametrize("extraction", ("unique_entrypoint_fence_v2", "unique_entrypoint_fence_v3"))
+def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch, extraction):
     private = private_task(task)
     monkeypatch.setattr(
         "graybench.cli.load_suite", lambda suite, _: (private,) if suite == "hard" else ()
@@ -84,11 +97,11 @@ def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch
             "--image",
             "sha256:" + "0" * 64,
             "--name",
-            "extraction-v2",
+            "extraction-condition",
             "--suite",
             "hard",
             "--extraction",
-            "unique_entrypoint_fence_v2",
+            extraction,
             "--protocol-version",
             "3.2",
         ],
@@ -96,7 +109,7 @@ def test_cli_plan_freezes_explicit_extraction(tmp_path, model, task, monkeypatch
     main()
     frozen = CampaignSetup.model_validate_json(output.read_bytes()).protocol
     assert frozen.schema_version == "3.2"
-    assert frozen.extraction == ("unique_entrypoint_fence_v2")
+    assert frozen.extraction == extraction
 
 
 def test_cli_plan_freezes_model_observation_timing(tmp_path, model, task, monkeypatch):

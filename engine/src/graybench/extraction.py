@@ -12,6 +12,10 @@ FENCE = re.compile(r"^```([^\n`]*)\r?\n(.*?)^```[ \t]*$", flags=re.MULTILINE | r
 FENCE_V2_MULTIBLOCK = re.compile(
     r"^```([^\n`]*)\r?\n(.*?)^```[ \t]*\r?$", flags=re.MULTILINE | re.DOTALL
 )
+FENCE_V3 = re.compile(
+    r"^( {0,3})```([^\n`]*)\r?\n(.*?)^ {0,3}```[ \t]*\r?$",
+    flags=re.MULTILINE | re.DOTALL,
+)
 
 
 @dataclass(frozen=True)
@@ -20,6 +24,30 @@ class Extracted:
     method: str
     error: str | None = None
     public_prefix: str = ""
+
+
+@dataclass(frozen=True)
+class FenceBlock:
+    info: str
+    code: str
+    start: int
+    end: int
+
+
+def _fence_blocks(text: str, pattern: re.Pattern, *, indented: bool) -> list[FenceBlock]:
+    blocks = []
+    for match in pattern.finditer(text):
+        if indented:
+            spaces = len(match[1])
+            code = "\n".join(
+                line[min(spaces, len(line) - len(line.lstrip(" "))) :]
+                for line in match[3].split("\n")
+            )
+            info = match[2]
+        else:
+            code, info = match[2], match[1]
+        blocks.append(FenceBlock(info, code, match.start(), match.end()))
+    return blocks
 
 
 def _class_declares_global(body: list[ast.stmt], name: str) -> bool:
@@ -91,7 +119,9 @@ def _entrypoint_bindings(node: ast.AST, name: str, *, active: bool = True) -> in
     )
 
 
-def _v2_multifence(text: str, task: PublicTask, fences: list[re.Match]) -> Extracted:
+def _v2_multifence(
+    text: str, task: PublicTask, fences: list[FenceBlock], policy: ExtractionPolicy
+) -> Extracted:
     definition = re.compile(
         rf"(?m)^[ \t]*(?:(?:async[ \t]+)?def|class)[ \t]+{re.escape(task.entry_point)}\b"
     )
@@ -101,8 +131,8 @@ def _v2_multifence(text: str, task: PublicTask, fences: list[re.Match]) -> Extra
     outside = "".join(
         text[end:start]
         for end, start in zip(
-            (0, *(match.end() for match in fences)),
-            (*(match.start() for match in fences), len(text)),
+            (0, *(fence.end for fence in fences)),
+            (*(fence.start for fence in fences), len(text)),
             strict=True,
         )
     )
@@ -110,9 +140,20 @@ def _v2_multifence(text: str, task: PublicTask, fences: list[re.Match]) -> Extra
         return Extracted("", "rejected", "Expected one unambiguous entry-point Python code block")
     matches = []
     for fence in fences:
-        if fence[1].strip().lower() not in {"", "python", "py"}:
+        if fence.info.strip().lower() not in {"", "python", "py"}:
+            if policy == "unique_entrypoint_fence_v3":
+                try:
+                    mislabeled_tree = ast.parse(fence.code)
+                except (SyntaxError, ValueError, UnicodeError, RecursionError):
+                    ambiguous = bool(definition.search(fence.code) or assignment.search(fence.code))
+                else:
+                    ambiguous = bool(_entrypoint_bindings(mislabeled_tree, task.entry_point))
+                if ambiguous:
+                    return Extracted(
+                        "", "rejected", "Expected one unambiguous entry-point Python code block"
+                    )
             continue
-        code = fence[2]
+        code = fence.code
         try:
             tree = ast.parse(code)
         except (SyntaxError, ValueError, UnicodeError, RecursionError):
@@ -135,7 +176,7 @@ def _v2_multifence(text: str, task: PublicTask, fences: list[re.Match]) -> Extra
             matches.append(code)
     if len(matches) != 1:
         return Extracted("", "rejected", "Expected one unambiguous entry-point Python code block")
-    return Extracted(matches[0], "unique_entrypoint_fence_v2")
+    return Extracted(matches[0], policy)
 
 
 def extract(
@@ -145,30 +186,35 @@ def extract(
 ) -> Extracted:
     if policy not in EXTRACTION_POLICIES:
         raise ValueError("Unknown extraction policy")
-    if policy == "unique_entrypoint_fence_v2":
+    if policy in {"unique_entrypoint_fence_v2", "unique_entrypoint_fence_v3"}:
         try:
             text.encode("utf-8")
         except UnicodeEncodeError:
             return Extracted("", "rejected", "Response is not UTF-8 encodable")
     if "```" in text:
         fence_pattern = (
-            FENCE_V2_MULTIBLOCK
+            FENCE_V3
+            if policy == "unique_entrypoint_fence_v3"
+            else FENCE_V2_MULTIBLOCK
             if policy == "unique_entrypoint_fence_v2" and text.count("```") > 2
             else FENCE
         )
-        fences = list(fence_pattern.finditer(text))
+        fences = _fence_blocks(text, fence_pattern, indented=policy == "unique_entrypoint_fence_v3")
         if policy == "raw_or_single_python_fence_v1" and (
-            len(fences) != 1 or fences[0][1].strip().lower() not in {"", "python", "py"}
+            len(fences) != 1 or fences[0].info.strip().lower() not in {"", "python", "py"}
         ):
             return Extracted("", "rejected", "Expected one unambiguous Python code block")
         if text.count("```") != 2 * len(fences):
             return Extracted("", "rejected", "Ambiguous fence delimiters")
         if len(fences) == 1:
-            if fences[0][1].strip().lower() not in {"", "python", "py"}:
+            if fences[0].info.strip().lower() not in {"", "python", "py"}:
                 return Extracted("", "rejected", "Expected one unambiguous Python code block")
-            code, method = fences[0][2], "single_fence"
-        elif policy == "unique_entrypoint_fence_v2" and len(fences) > 1:
-            selected = _v2_multifence(text, task, fences)
+            code, method = fences[0].code, "single_fence"
+        elif (
+            policy in {"unique_entrypoint_fence_v2", "unique_entrypoint_fence_v3"}
+            and len(fences) > 1
+        ):
+            selected = _v2_multifence(text, task, fences, policy)
             if selected.error:
                 return selected
             code, method = selected.code, selected.method
@@ -190,7 +236,7 @@ def extract(
         except SyntaxError:
             full = False
         except (ValueError, UnicodeError, RecursionError):
-            if policy == "unique_entrypoint_fence_v2":
+            if policy in {"unique_entrypoint_fence_v2", "unique_entrypoint_fence_v3"}:
                 return Extracted("", "rejected", "Invalid Python source")
             raise
         if not full:

@@ -90,6 +90,11 @@ Six real read-only requests (two per adapter) against GPT-4o mini's dated model 
 Gemini 2.5 Flash returned stable observations. The saved live SQLite ledger verified,
 and contained zero generation attempts. These observations demonstrate metadata
 integration, not generation billing readiness, live decoding conformance or model scores.
+The later [hosted generation check](hosted-generation-conformance-2026-09-27.md)
+made that distinction concrete: Gemini 2.5 metadata was observed, but its
+generation endpoint rejected this project's first request with HTTP 404. A
+successful model-listing GET must not be reported as proof that generation is
+available to the account.
 
 The first-dispatch preflight change has a red/green regression for missing initial metadata:
 before the fix, the runner sent `/api/chat` without discovery and made an attempt after a
