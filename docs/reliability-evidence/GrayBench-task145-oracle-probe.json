@@ -1,0 +1,75 @@
+{
+  "kind": "graybench_task145_zero_width_probe_v1",
+  "scope": "Pinned protected-bridge diagnostic, not a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "c4318a3cbe4de1e46eb8ffab6c775f5648893db81c2b189762ad2c80b0d8c175",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "b27bf15d386365113ae9183d68753559f1355d9055df6b41dbb8d0defbf3cb6c",
+      "case": "reference",
+      "completion_sha256": "f7c57c1ec44f09093eecb2d727b050e1ea4c1c9abbfc958b860e9b6062936f9a",
+      "outcome": "pass",
+      "judge_digest": "c67c25e332a5c7afe98184ea85cea7156fdfc59a2b244fb1a7ea77f8b4eaefc2"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "b27bf15d386365113ae9183d68753559f1355d9055df6b41dbb8d0defbf3cb6c",
+      "case": "one_qubit_for_zero",
+      "completion_sha256": "123016d3eb001883162880d2d1d880dc21faf5cf4ec15f74ead4f5ac11d462f6",
+      "outcome": "pass",
+      "judge_digest": "c67c25e332a5c7afe98184ea85cea7156fdfc59a2b244fb1a7ea77f8b4eaefc2"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "b27bf15d386365113ae9183d68753559f1355d9055df6b41dbb8d0defbf3cb6c",
+      "case": "identity_control",
+      "completion_sha256": "5d29582784b12ce1a3b2aae6f6ef1c4cdd9407993570d3e4108c973848a5b9c0",
+      "outcome": "fail",
+      "judge_digest": "c67c25e332a5c7afe98184ea85cea7156fdfc59a2b244fb1a7ea77f8b4eaefc2"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4686264b9fcfb9f485454ada4ff69bc3b8a9c82ba2f00393aabc9ce3f5386f56",
+      "case": "reference",
+      "completion_sha256": "205cfbf82988870f5089934d270541966353c0466a7c3b04a19e4d591ab7822f",
+      "outcome": "pass",
+      "judge_digest": "573e2c844748285a0fc8804797edf26d7c3d7a2ad7d9d25397d24f0514e7167b"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4686264b9fcfb9f485454ada4ff69bc3b8a9c82ba2f00393aabc9ce3f5386f56",
+      "case": "one_qubit_for_zero",
+      "completion_sha256": "2459a3c7632c4fb1b0120496438991f24721ac3f22f0db309e9fb4054ddb75ad",
+      "outcome": "pass",
+      "judge_digest": "573e2c844748285a0fc8804797edf26d7c3d7a2ad7d9d25397d24f0514e7167b"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "4686264b9fcfb9f485454ada4ff69bc3b8a9c82ba2f00393aabc9ce3f5386f56",
+      "case": "identity_control",
+      "completion_sha256": "eaefa38501d7fe7b331bce837348bee9655b065fe296a2566684ab3dfaf1144d",
+      "outcome": "fail",
+      "judge_digest": "573e2c844748285a0fc8804797edf26d7c3d7a2ad7d9d25397d24f0514e7167b"
+    }
+  ],
+  "counterexample": {
+    "requested_qubits": 0,
+    "returned_qubits": 1,
+    "test_assertion_caught_by": "except Exception"
+  }
+}
