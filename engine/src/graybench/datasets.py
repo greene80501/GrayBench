@@ -56,6 +56,7 @@ KNOWN_FINDINGS = {
     130: ["Upstream accepts a five-qubit circuit that ignores the requested qubit count"],
     131: ["Upstream accepts fixed FakeCairoV2 information that ignores the backend name"],
     132: ["Upstream accepts fabricated fixed counts without circuit generation or Batch execution"],
+    139: ["Upstream accepts empty and input-independent Schmidt decompositions"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
