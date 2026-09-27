@@ -46,6 +46,7 @@ KNOWN_FINDINGS = {
     115: ["Upstream accepts zero errors and UGate parameters with wrong names or constant values"],
     116: ["Upstream accepts a fixed circuit that ignores Hamiltonian and time inputs"],
     117: ["Upstream accepts input-independent and nonunitary circuits for unitary decomposition"],
+    119: ["Upstream never tests half adders or a state-qubit width other than three"],
     120: ["Upstream accepts a fixed circuit that ignores diagonal-phase inputs"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
