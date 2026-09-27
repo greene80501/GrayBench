@@ -2,7 +2,15 @@ import httpx
 import pytest
 
 from graybench.contracts import ModelSpec, Setting
-from graybench.providers import CapabilityError, Gemini, Ollama, OpenAIChat, OpenAIResponses
+from graybench.providers import (
+    CapabilityError,
+    Gemini,
+    Ollama,
+    OpenAIChat,
+    OpenAIResponses,
+    ResponseError,
+    adapter,
+)
 from graybench.transport import Transport
 
 
@@ -22,6 +30,79 @@ def test_uncertain_settings_rejected_before_network(model, task, support):
     model = ModelSpec(**{**model.model_dump(), "settings": (setting,)})
     with pytest.raises(CapabilityError):
         Ollama().prepare(model, task, None)
+
+
+def test_openai_compatible_chat_requires_endpoint_verified_settings(task):
+    provider = adapter("openai-compatible-chat")
+    spec = ModelSpec(
+        adapter=provider.name,
+        model="local-model",
+        base_url="http://localhost:8000/v1",
+        settings=(
+            Setting(name="temperature", value=0, support="documented", evidence="API shape only"),
+        ),
+    )
+    with pytest.raises(CapabilityError, match="verified"):
+        provider.prepare(spec, task, None)
+    verified = spec.model_copy(
+        update={
+            "settings": (
+                Setting(
+                    name="temperature",
+                    value=0,
+                    support="verified",
+                    evidence="Endpoint-specific conformance probe",
+                ),
+            )
+        }
+    )
+    request = provider.prepare(verified, task, None)
+    assert request.path == "/chat/completions"
+    assert request.body["temperature"] == 0
+    assert request.body["messages"] == [{"role": "user", "content": task.prompt}]
+    assert provider.discovery_requests(verified) == ()
+
+
+@pytest.mark.parametrize("name", ["openai-chat", "openai-compatible-chat"])
+@pytest.mark.parametrize("role", [None, "user"])
+def test_chat_response_requires_assistant_role(name, role):
+    message = {"content": "def answer(x): return x + 1"}
+    if role is not None:
+        message["role"] = role
+    with pytest.raises(ResponseError, match="assistant"):
+        adapter(name).parse({"choices": [{"message": message, "finish_reason": "stop"}]})
+
+
+def test_gemini_text_response_requires_model_role():
+    with pytest.raises(ResponseError, match="model role"):
+        Gemini().parse(
+            {
+                "candidates": [
+                    {
+                        "finishReason": "STOP",
+                        "content": {"role": "user", "parts": [{"text": "answer"}]},
+                    }
+                ]
+            }
+        )
+
+
+def test_gemini_terminal_safety_block_without_content_consumes_answer():
+    result = Gemini().parse(
+        {
+            "modelVersion": "gemini-fixture",
+            "candidates": [
+                {
+                    "finishReason": "SAFETY",
+                    "content": None,
+                    "safetyRatings": [{"category": "HARM_CATEGORY_DANGEROUS_CONTENT"}],
+                }
+            ],
+        }
+    )
+    assert result.text == ""
+    assert result.finish_reason == "SAFETY"
+    assert result.metadata["safetyRatings"] == [{"category": "HARM_CATEGORY_DANGEROUS_CONTENT"}]
 
 
 def test_ollama_keeps_thinking_out_of_answer():

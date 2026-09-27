@@ -6,7 +6,7 @@ from graybench.campaign import GenerationRunner
 from graybench.contracts import Generation, ModelSpec, Observation
 from graybench.model_discovery import discovery_identity, observe_run
 from graybench.provenance import source_manifest
-from graybench.providers import Adapter, Ollama
+from graybench.providers import Adapter, Ollama, adapter
 from graybench.transport import Transport
 
 
@@ -217,6 +217,67 @@ def test_no_metadata_adapter_requires_declared_development_exception(
     assert report["score_status"] == "development_only"
     assert report["publication_eligible"] is False
     assert "model_discovery_unverified" in report["publication_blockers"]
+    assert ledger.verify()["integrity"] == "verified"
+
+
+@pytest.mark.parametrize("declared_exception", [False, True])
+def test_openai_compatible_chat_campaign_never_claims_verified_discovery(
+    ledger, protocol, task, declared_exception
+):
+    model = ModelSpec(
+        adapter="openai-compatible-chat",
+        model="local-model",
+        base_url="http://localhost:8000/v1",
+        discovery_policy="unverified_development" if declared_exception else "required",
+        discovery_exception_reason="No metadata route was calibrated"
+        if declared_exception
+        else None,
+    )
+    request = adapter(model.adapter).prepare(model, task, None)
+    frozen = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {protocol.task_keys[0]: request.digest},
+            "generation_code_digest": source_manifest()["digest"],
+        }
+    )
+    run = ledger.create_run(frozen)
+    calls = []
+
+    def handler(http_request):
+        calls.append(http_request.url.path)
+        assert http_request.url.path == "/v1/chat/completions"
+        return httpx.Response(
+            200,
+            json={
+                "model": "local-model",
+                "choices": [
+                    {
+                        "message": {"role": "assistant", "content": "def answer(x): return x + 1"},
+                        "finish_reason": "stop",
+                    }
+                ],
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        runner = GenerationRunner(
+            ledger, run, {frozen.task_keys[0]: request}, Transport(model, client=client)
+        )
+        result = runner.step()
+    if declared_exception:
+        assert result["delivery"] == "returned"
+        assert calls == ["/v1/chat/completions"]
+        assert ledger.discovery_status(run)["status"] == "unverified_development"
+        sample_id = ledger.samples(run)[0]["id"]
+        ledger.judge(sample_id, frozen.judge_digest, "pass", {})
+        report = ledger.summary(run)
+        assert report["publication_eligible"] is False
+        assert "model_discovery_unverified" in report["publication_blockers"]
+    else:
+        assert result == {"state": "stopped", "reason": "model_discovery_unresolved"}
+        assert calls == []
+        assert not ledger.db.execute("SELECT 1 FROM attempts").fetchone()
     assert ledger.verify()["integrity"] == "verified"
 
 

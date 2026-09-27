@@ -27,6 +27,11 @@ metadata errors, mismatches and drift still stop before a generation attempt. Th
 development testing of APIs without metadata endpoints while preventing the resulting score
 from being presented as an observed-model benchmark result.
 
+The built-in [OpenAI-compatible Chat development route](openai-compatible-development.md)
+uses this policy for services whose Chat Completions wire interface is usable but
+whose model metadata route has not been established. Selecting that route does
+not turn a failed strict OpenAI metadata request into verified discovery.
+
 Lower-level ledger APIs can still create development attempts without discovery; such runs remain
 explicitly not_observed and uncertified. The campaign runner's pre-dispatch observation does not
 make metadata and generation atomic: a provider or local server could change between requests,

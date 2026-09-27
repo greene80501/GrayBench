@@ -112,6 +112,8 @@ class OpenAIChat(Adapter):
             raise ResponseError("Expected exactly one response choice")
         choice = choices[0]
         message = choice.get("message", {})
+        if message.get("role") != "assistant":
+            raise ResponseError("Expected an assistant response message")
         text = message.get("content")
         if text is None and (message.get("refusal") or message.get("tool_calls")):
             text = ""
@@ -130,6 +132,20 @@ class OpenAIChat(Adapter):
                 "reasoning_content": message.get("reasoning_content"),
             },
         )
+
+
+class OpenAICompatibleChat(OpenAIChat):
+    """Chat-shaped endpoint with no assumed model-discovery or setting conformance."""
+
+    name = "openai-compatible-chat"
+
+    def discovery_requests(self, spec):
+        return ()
+
+    def settings(self, spec):
+        if any(setting.support != "verified" for setting in spec.settings):
+            raise CapabilityError("Compatible endpoint settings require verified support")
+        return super().settings(spec)
 
 
 class OpenAIResponses(Adapter):
@@ -295,7 +311,17 @@ class Gemini(Adapter):
             raise ResponseError("Expected exactly one Gemini candidate")
         candidate = candidates[0]
         text, thoughts = [], []
-        for part in candidate.get("content", {}).get("parts", []):
+        content = candidate.get("content")
+        if content is None:
+            content = {}
+        if not isinstance(content, dict):
+            raise ResponseError("Malformed Gemini candidate content")
+        parts = content.get("parts", [])
+        if not isinstance(parts, list):
+            raise ResponseError("Malformed Gemini candidate parts")
+        if any("text" in part for part in parts) and content.get("role") != "model":
+            raise ResponseError("Expected a model role for Gemini text content")
+        for part in parts:
             if "text" in part:
                 if not isinstance(part["text"], str):
                     raise ResponseError("Malformed text part")
@@ -316,7 +342,9 @@ class Gemini(Adapter):
         )
 
 
-BUILTINS = {cls.name: cls for cls in (OpenAIChat, OpenAIResponses, Ollama, Gemini)}
+BUILTINS = {
+    cls.name: cls for cls in (OpenAIChat, OpenAICompatibleChat, OpenAIResponses, Ollama, Gemini)
+}
 
 
 def adapter(name: str) -> Adapter:

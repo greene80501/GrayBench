@@ -154,7 +154,10 @@ def test_stable_hosted_baseline_allows_one_generation(ledger, protocol, task):
             json={
                 "model": "test-model",
                 "choices": [
-                    {"message": {"content": "def answer(x): return x + 1"}, "finish_reason": "stop"}
+                    {
+                        "message": {"role": "assistant", "content": "def answer(x): return x + 1"},
+                        "finish_reason": "stop",
+                    }
                 ],
             },
         )
@@ -186,7 +189,9 @@ def test_first_hosted_dispatch_observes_before_generation(ledger, protocol, task
     generated = {
         "openai-chat": {
             "model": "test-model",
-            "choices": [{"message": {"content": "answer"}, "finish_reason": "stop"}],
+            "choices": [
+                {"message": {"role": "assistant", "content": "answer"}, "finish_reason": "stop"}
+            ],
         },
         "openai-responses": {
             "model": "test-model",
@@ -201,7 +206,12 @@ def test_first_hosted_dispatch_observes_before_generation(ledger, protocol, task
         },
         "gemini": {
             "modelVersion": "test-model",
-            "candidates": [{"finishReason": "STOP", "content": {"parts": [{"text": "answer"}]}}],
+            "candidates": [
+                {
+                    "finishReason": "STOP",
+                    "content": {"role": "model", "parts": [{"text": "answer"}]},
+                }
+            ],
         },
     }
 

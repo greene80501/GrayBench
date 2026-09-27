@@ -32,7 +32,7 @@ families per suite, leaving 143 tasks each. See the
 | Named semantic revision | Explicitly revised task contract/test, frozen before generation | Development-only; not an upstream score or complete task certification |
 
 There is no automatic fallback between these conditions. Semantic revisions
-currently cover tasks 0, 82, 113, 116, 120 and 141. See
+currently cover tasks 0, 63, 82, 113, 116, 120 and 141. See
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md),
 [gate revisions](../docs/reliability-evidence/gate-semantics-revisions.md), and
 [the registry](src/graybench/evaluation_recipes.py) for exact names and family checks.
@@ -56,7 +56,12 @@ arbitrary exception metadata is not supported.
 
 ## Campaigns and provenance
 
-Adapters cover Ollama, OpenAI Chat Completions, OpenAI Responses and Gemini.
+Adapters cover Ollama, OpenAI Chat Completions, OpenAI Responses, Gemini and a
+development-only OpenAI-compatible Chat route. The latter has no assumed
+metadata endpoint, requires an explicit unverified-discovery exception and
+endpoint verification for any requested settings, and remains
+publication-ineligible; see the
+[compatibility route](../docs/reliability-evidence/openai-compatible-development.md).
 OpenAI-compatible endpoints have explicit base URLs and model IDs; additional
 native adapters use the `graybench.adapters` entry-point group. This is an
 extension mechanism, not verified support for every model. Exact endpoint/model
@@ -112,15 +117,17 @@ adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
 
 For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
 Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
-Without the image setting, Docker tests skip. The latest verified runtime passed
-998 tests with zero failures, errors or skips; see the
-[circuit-subclass increment](../docs/reliability-evidence/graph-circuit-subclasses-development.md).
+Without the image setting, Docker tests skip. The latest verified Python 3.12
+runtime passed 1,062 tests with one experimental skip and zero failures or
+errors; see the [compatible-provider development record](../docs/reliability-evidence/openai-compatible-development.md).
 That result covers the regression suite, not every benchmark requirement.
 
-The latest complete graph reference scan, at `38db7fa`, records **113 pass,
-28 unsupported, one fail and one infrastructure error per offline suite**.
-Subsequent targeted evidence does not replace that aggregate. Full scan source,
-task identities, exclusions, raw outcomes and unresolved cases are linked above.
+The latest complete graph reference scan, at `77f29ff`, records **122 pass,
+19 unsupported, one fail and one infrastructure error in normal**, and **123
+pass, 19 unsupported and one infrastructure error in hard**. The extra hard
+pass is task 63's unstable canonical answer, not a compatibility gain. See the
+[complete comparison](../docs/reliability-evidence/reference-scan-77f29ff.md)
+for source, task identities, exclusions, raw outcomes and unresolved cases.
 
 ## Remaining admission work
 
