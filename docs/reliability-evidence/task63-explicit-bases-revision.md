@@ -45,9 +45,16 @@ pinned normal and hard source task digests are
 `2ba17e13c1e97e2ad2b96ed3de9589a31f28f3a75553d1b2651e34abb5715ce1`
 and `c456c4772f149f8f88a28f473c4b3b7278490b820847a5dc4327246ec5d8c4af`.
 The final raw file SHA-256 is
-`db1755520cabf8d6283d9d7cd2189add8fa6060c2f4bbe0ca6d74e0c39e69d4c`;
+`b1c47a1e99d331833e9d331b66b36db1e4ea6fad812d8c77740df116bfb4c56a`;
 its chain head is
-`10f21c26bf0acbe7a9ce9ca9890aa0d1d13df6aa87573e6b16a59c5d77605d27`.
+`641a441140dad8437c9b1c41c194a4d81bff1850f85ef815bbe0d8cd93974b55`.
+The earlier e92ad14 artifact was valid only in the isolated checkout: its
+`graph_limits.py` working bytes had CRLF line endings, while the same Git blob
+checked out with LF in the PR worktree. The source guard correctly rejected
+cross-checkout verification. All 14 controls were rerun from the LF checkout,
+with the same predeclared outcomes, and this final artifact verifies there.
+The prior artifact remains recoverable in Git history; its results are not
+combined with the new ledger.
 
 From `engine/`, after obtaining the pinned dataset and immutable image:
 
