@@ -10,17 +10,19 @@ The API fields follow the [Ollama API specification](https://github.com/ollama/o
 and [show-model documentation](https://docs.ollama.com/api-reference/show-model-details).
 This remains server-reported metadata, not independent verification of model weights.
 
-Once a run has an observation baseline, GenerationRunner refreshes discovery before each new
-dispatch. Changed or unavailable identity leaves all evidence intact, stops generation and
-suppresses aggregate accuracy. Later observations do not erase an earlier discrepancy. Tests
-change the mock model digest after establishing a baseline and verify that no generation request
-or attempt record is created. Invalid digests and irrelevant volatile changes are tested too.
+GenerationRunner now records a discovery baseline immediately before the first ready dispatch,
+then refreshes discovery before every later dispatch. Changed or unavailable identity leaves all
+evidence intact, stops generation and suppresses aggregate accuracy. Later observations do not
+erase an earlier discrepancy. Mock endpoint tests verify the metadata-before-generation request
+order for Ollama, OpenAI Chat/Responses and Gemini; unavailable first discovery creates no
+generation attempt. Digest drift, invalid digests and irrelevant volatile changes are tested too.
 
-Development runs without a baseline remain explicitly not_observed and uncertified. The current
-implementation does not enforce pre-first-generation discovery admission; collecting a baseline later does not prove earlier model identity. Observation
-and generation are separate requests, so a server could change between them. Required release work
-includes snapshot pinning, pre/post observations and time-of-check policy, strict admission rules,
-broader provider coverage and effective-setting conformance tests.
+Lower-level ledger APIs can still create development attempts without discovery; such runs remain
+explicitly not_observed and uncertified. The campaign runner's pre-dispatch observation does not
+make metadata and generation atomic: a provider or local server could change between requests,
+and the final generation has no post-dispatch observation yet. Required release work includes
+snapshot pinning, pre/post observations with attempt binding and a time-of-check policy, strict
+admission rules, broader provider coverage and effective-setting conformance tests.
 
 
 ## Hosted metadata observations
@@ -50,14 +52,13 @@ available, describes bytes received before credential redaction; stored bodies a
 explicitly redacted. Authentication headers and environment-variable values are not
 stored. Duplicate observations cannot silently overwrite an identity input.
 
-The existing optional-baseline policy applies unchanged: once observed, every dispatch
-refreshes metadata and any discrepancy or unavailable observation remains unresolved.
-An unchanged baseline allows dispatch. No baseline is still development-only; it is
-not automatically accepted for a certified release. Older source-frozen runs should
-continue to be inspected and executed using their original engine, not retroactively
-relabelled with these new metadata semantics.
+Campaign dispatch now requires its first discovery observation as well as later refreshes.
+An unchanged observed baseline allows dispatch; any discrepancy or unavailable observation
+remains unresolved. Direct ledger attempts without a baseline are still development-only.
+Older source-frozen runs should continue to be inspected and executed using their original
+engine, not retroactively relabelled with these new metadata semantics.
 
-Validation: 313 tests passed with Docker enabled (zero failures/errors/skips),
+Previous metadata-transport validation: 313 tests passed with Docker enabled (zero failures/errors/skips),
 including native endpoint requests, persisted raw/error evidence, credential redaction,
 wrong model identities, duplicate observations, stable dispatch, drift/unavailability
 blocking before an attempt, and malformed numeric/deep JSON. Ruff checks passed.
@@ -65,3 +66,12 @@ Six real read-only requests (two per adapter) against GPT-4o mini's dated model 
 Gemini 2.5 Flash returned stable observations. The saved live SQLite ledger verified,
 and contained zero generation attempts. These observations demonstrate metadata
 integration, not generation billing readiness, live decoding conformance or model scores.
+
+The first-dispatch preflight change has a red/green regression for missing initial metadata:
+before the fix, the runner sent `/api/chat` without discovery and made an attempt after a
+simulated metadata outage; after the fix, it records the outage and creates no attempt.
+The complete pinned-image Docker suite then passed 1,028 tests with one skip and zero
+failures/errors in 525.03 seconds. The JUnit record has 1,029 tests, zero failures/errors
+and one skip. The skipped experimental Hamiltonian definition check is unavailable in the
+original runtime. This validates the implementation path, not provider weight identity or
+whole-cohort benchmark admission.

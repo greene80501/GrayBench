@@ -113,6 +113,14 @@ def test_saved_generations_flow_through_protected_judge_without_replacement(ledg
     calls = []
 
     def handler(request):
+        discovery = {
+            "/api/version": {"version": "fixture"},
+            "/api/tags": {"models": [{"name": "test-model", "digest": "a" * 64}]},
+            "/api/show": {"model_info": {"architecture": "fixture"}},
+            "/api/ps": {"models": []},
+        }
+        if request.url.path in discovery:
+            return httpx.Response(200, json=discovery[request.url.path])
         calls.append(request)
         code = "def answer(x): return x+1" if len(calls) == 1 else "def answer(x): return 0"
         return httpx.Response(

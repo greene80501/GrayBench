@@ -42,6 +42,14 @@ independent oracle review remain required before publishing scores. The unchange
 upstream bridge still lacks general file sharing; this track does not claim to fix
 that interface or to establish universal file support.
 
+A 2026-09-03 [Qiskit security advisory](https://github.com/Qiskit/qiskit/security/advisories/GHSA-65ww-qhxg-c6h6)
+reports that malicious parameterized QPY payloads can segfault `qpy.load` in Qiskit
+versions from 2.1.0 before the 2.5.2 fix. The pinned development image uses Qiskit
+2.4.2 and therefore falls in that affected range. The parser's separate restricted
+container limits the impact on the trusted judge but does not make the parser safe or
+turn a parser crash into a scored wrong answer. A patched, independently pinned parser
+runtime and renewed compatibility/adversarial controls are explicit release gates.
+
 Validation:246 tests passed in the full Docker-enabled run. After refining ignored
 return-value release timing, all38 targeted file-judge, upstream-bridge and sandbox
 tests passed, including the added finalization regression. Ruff lint/format pass.

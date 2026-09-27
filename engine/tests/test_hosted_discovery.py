@@ -168,3 +168,56 @@ def test_stable_hosted_baseline_allows_one_generation(ledger, protocol, task):
     assert ledger.db.execute("SELECT count(*) FROM attempts").fetchone()[0] == 1
     assert ledger.discovery_status(run)["observations"] == 2
     assert ledger.verify()["integrity"] == "verified"
+
+
+@pytest.mark.parametrize("name", ["openai-chat", "openai-responses", "gemini"])
+def test_first_hosted_dispatch_observes_before_generation(ledger, protocol, task, name):
+    model = hosted_spec(name)
+    request = adapter(name).prepare(model, task, None)
+    protocol = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {protocol.task_keys[0]: request.digest},
+            "generation_code_digest": source_manifest()["digest"],
+        }
+    )
+    run = ledger.create_run(protocol)
+    calls = []
+    generated = {
+        "openai-chat": {
+            "model": "test-model",
+            "choices": [{"message": {"content": "answer"}, "finish_reason": "stop"}],
+        },
+        "openai-responses": {
+            "model": "test-model",
+            "status": "completed",
+            "output": [
+                {
+                    "type": "message",
+                    "role": "assistant",
+                    "content": [{"type": "output_text", "text": "answer"}],
+                }
+            ],
+        },
+        "gemini": {
+            "modelVersion": "test-model",
+            "candidates": [{"finishReason": "STOP", "content": {"parts": [{"text": "answer"}]}}],
+        },
+    }
+
+    def handler(http_request):
+        calls.append((http_request.method, http_request.url.path))
+        return httpx.Response(
+            200,
+            json=metadata(name) if http_request.method == "GET" else generated[name],
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        runner = GenerationRunner(
+            ledger, run, {protocol.task_keys[0]: request}, Transport(model, client=client)
+        )
+        assert runner.step()["delivery"] == "returned"
+    assert calls == [("GET", "/v1/models/test-model"), ("POST", "/v1" + request.path)]
+    assert ledger.discovery_status(run)["status"] == "stable_observed"
+    assert ledger.discovery_status(run)["observations"] == 1
+    assert ledger.verify()["integrity"] == "verified"

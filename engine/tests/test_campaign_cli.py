@@ -53,6 +53,14 @@ def test_create_is_offline_and_step_uses_stored_context(
 
     def handler(request):
         calls.append(request)
+        discovery = {
+            "/api/version": {"version": "fixture"},
+            "/api/tags": {"models": [{"name": "test-model", "digest": "a" * 64}]},
+            "/api/show": {"model_info": {"architecture": "fixture"}},
+            "/api/ps": {"models": []},
+        }
+        if request.url.path in discovery:
+            return httpx.Response(200, json=discovery[request.url.path])
         return httpx.Response(
             200,
             json={
@@ -90,7 +98,13 @@ def test_create_is_offline_and_step_uses_stored_context(
             assert result["state"] == "dispatched"
             assert result["summary"]["returned_samples"] == 1
             assert result["summary"]["certification"] == "not_certified"
-            assert len(calls) == 1
+            assert [request.url.path for request in calls] == [
+                "/api/version",
+                "/api/tags",
+                "/api/show",
+                "/api/ps",
+                "/api/chat",
+            ]
         ledger = Ledger(ledger_file)
         try:
             assert ledger.context(run)["setup"]["http_timeout"] == 600.0

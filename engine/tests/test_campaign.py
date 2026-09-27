@@ -13,8 +13,20 @@ def setup(ledger, protocol, task, handler):
     protocol = protocol.model_copy(update={"generation_code_digest": source_manifest()["digest"]})
     run = ledger.create_run(protocol)
     requests = {protocol.task_keys[0]: Ollama().prepare(protocol.model, task, None)}
+    discovery = {
+        "/api/version": {"version": "fixture"},
+        "/api/tags": {"models": [{"name": "test-model", "digest": "a" * 64}]},
+        "/api/show": {"model_info": {"architecture": "fixture"}},
+        "/api/ps": {"models": []},
+    }
+
+    def routed(request):
+        if request.url.path in discovery:
+            return httpx.Response(200, json=discovery[request.url.path])
+        return handler(request)
+
     transport = Transport(
-        protocol.model, client=httpx.Client(transport=httpx.MockTransport(handler))
+        protocol.model, client=httpx.Client(transport=httpx.MockTransport(routed))
     )
     return GenerationRunner(ledger, run, requests, transport)
 

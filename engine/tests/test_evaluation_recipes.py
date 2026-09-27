@@ -147,6 +147,14 @@ def test_revised_campaign_binds_real_protected_judgment_to_public_request(
     requests = []
 
     def handler(request):
+        discovery = {
+            "/api/version": {"version": "fixture"},
+            "/api/tags": {"models": [{"name": model.model, "digest": "a" * 64}]},
+            "/api/show": {"model_info": {"architecture": "fixture"}},
+            "/api/ps": {"models": []},
+        }
+        if request.url.path in discovery:
+            return httpx.Response(200, json=discovery[request.url.path])
         requests.append(request.content.decode())
         return httpx.Response(
             200,
