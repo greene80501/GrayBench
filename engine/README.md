@@ -21,6 +21,12 @@ cards. Loading records or passing their reference tests does not admit them for
 publication. The offline cohort excludes eight explicit service-dependent
 families per suite, leaving 143 tasks each. See the
 [complete graph reference scan](../docs/reliability-evidence/reference-scan-38db7fa.md).
+`admission-inventory CACHE OUTPUT` writes a separate, content-addressed
+protected-track review artifact with all 302 records pending. It keeps pinned
+task ancestry, known findings, external-service status, and slots for revised
+public contracts, positive and wrong-answer controls, and two independent
+reviews. An empty structural checklist is not external verification;
+`publication_eligible` remains false.
 
 ## Execution conditions
 

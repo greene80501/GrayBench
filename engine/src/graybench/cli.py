@@ -19,6 +19,7 @@ from graybench.native_cohort import freeze_native_cohort, task_key
 from graybench.provenance import environment
 from graybench.providers import adapter
 from graybench.reference_scan import inspect_reference_scan, run_reference_scan
+from graybench.task_admission import admission_blockers, build_pending_inventory
 from graybench.transport import Transport
 from graybench.upstream import UpstreamJudge
 
@@ -85,6 +86,11 @@ def main():
     )
     catalog.add_argument("cache", type=Path)
     catalog.add_argument("--download", action="store_true")
+    admission = commands.add_parser(
+        "admission-inventory", help="Write all 302 pinned task cards as pending review"
+    )
+    admission.add_argument("cache", type=Path)
+    admission.add_argument("output", type=Path)
     plan = commands.add_parser(
         "campaign-plan", help="Freeze selected tasks and requests offline; no generations"
     )
@@ -448,6 +454,22 @@ def main():
                 transport.close()
         finally:
             ledger.close()
+    elif args.command == "admission-inventory":
+        admission_inventory = build_pending_inventory(args.cache)
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(admission_inventory.model_dump_json(indent=2) + "\n")
+        result = {
+            "inventory_digest": admission_inventory.digest,
+            "task_count": len(admission_inventory.cards),
+            "pending_cards": sum(
+                bool(admission_blockers(card)) for card in admission_inventory.cards
+            ),
+            "external_service_cards": sum(
+                card.external_service for card in admission_inventory.cards
+            ),
+            "publication_eligible": admission_inventory.publication_eligible,
+            "output": str(args.output),
+        }
     elif args.command == "validate-protocol":
         protocol = Protocol.model_validate_json(args.path.read_bytes())
         result = {
