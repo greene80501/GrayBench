@@ -86,6 +86,9 @@ zero-to-three-space-indented backtick fences; its ambiguity controls and
 remain distinct from both earlier policies. A small
 [hosted provider check](../docs/reliability-evidence/hosted-generation-conformance-2026-09-27.md)
 records real OpenAI and Google attempts without a certified score.
+The [Ollama provider check](../docs/reliability-evidence/ollama-generation-conformance-2026-09-27.md)
+records a separately frozen local run with the same task family and release
+limitations.
 Published 101-task Qiskit HumanEval results and why they cannot yet be compared
 to this 151-task condition are recorded in the
 [external baseline review](../docs/reliability-evidence/external-baseline-comparability.md).
