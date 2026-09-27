@@ -48,6 +48,7 @@ KNOWN_FINDINGS = {
     117: ["Upstream accepts input-independent and nonunitary circuits for unitary decomposition"],
     119: ["Upstream never tests half adders or a state-qubit width other than three"],
     120: ["Upstream accepts a fixed circuit that ignores diagonal-phase inputs"],
+    121: ["Upstream accepts unconditional reset and a circuit without the first measurement"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
