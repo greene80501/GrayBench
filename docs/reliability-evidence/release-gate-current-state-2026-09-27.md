@@ -26,6 +26,28 @@ carry at least one known-finding tag, because a task number appears separately
 in normal and hard. Sixteen cards are marked external-service dependent.
 The card counts describe the provisional inventory, not completed reviews.
 
+## The current `upstream` recipe is a protected proxy
+
+`recipe_judge("upstream")` constructs `UpstreamJudge`, which starts a trusted
+test container and a separate candidate container. `upstream_process.py`
+replaces the candidate function with a data-only proxy, removes a pinned
+test's top-level `check(...)` invocation and calls `check(proxy)` itself.
+Arguments and returns cross the value or graph transport. This is an
+intentional trust-boundary design, but it is **not** native same-process Python
+execution of the pinned candidate and test. The
+[identity-boundary probe](alias-boundary.md) records verdict differences under
+value transport, and the
+[encoder-integrity probe](protected-worker-encoder-integrity.md) records a
+separate false pass under both value and graph transports. Protocol 4's graph
+support does not turn this recipe into a native runner.
+
+Consequently the existing `upstream` recipe cannot be promoted into an exact
+upstream-native score by renaming it. A native reproduction needs its own
+versioned runner and clear disclosure that candidate code can inspect or alter
+same-process tests. The protected semantic track needs independently admitted
+value contracts and an integrity boundary appropriate to its claims. These
+tracks require separate result identities, denominators and release gates.
+
 ## Saved provider ledgers under the current engine
 
 The three preserved hosted ledgers have the SHA-256 digests recorded in
