@@ -80,6 +80,12 @@ Tasks 116 and 120 now have separately selected [behavioral revisions](reliabilit
 They retain historical upstream results and make the changed scoring contract
 public before generation. Finite semantic checks do not certify internal methods.
 
+Task 144 has [paired positive and negative concurrence controls](reliability-evidence/task144-concurrence-oracle-review.md)
+for both pinned variants. The 12 protected-bridge outcomes match the public
+count, type, and zero-concurrence requirements on those fixtures. This is a
+promising oracle boundary, not completed task admission or proof of numerical
+stability and native parity.
+
 
 ## Object-identity fidelity blocker
 
