@@ -25,4 +25,7 @@ docs/reliability-evidence/verify_circuit_subclass_reference.py -text whitespace=
 docs/reliability-evidence/task63_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/native_capsule_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/hamiltonian_graph_reference.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-native-graph-experiment-v2*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/family116_storage_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/family116-storage-observation.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task109_full_delta_normal.py -text whitespace=trailing-space,space-before-tab,cr-at-eol

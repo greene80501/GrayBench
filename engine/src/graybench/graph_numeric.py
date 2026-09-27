@@ -187,13 +187,22 @@ class ArrayCodec:
             result["bytes"] = base64.b64encode(value.tobytes(order="A")).decode("ascii")
         else:
             base = value.base
-            if type(base) is not np.ndarray or base.base is not None or not base.flags.owndata:
+            from graybench.graph_native import native_module, registered_native_root
+
+            if type(base) is not np.ndarray or not (
+                (base.base is None and base.flags.owndata) or registered_native_root(base)
+            ):
                 raise WireError("External array buffer requires a graph codec")
             result["base"] = ref(base)
             result["offset"] = (
                 value.__array_interface__["data"][0] - base.__array_interface__["data"][0]
             )
-            bounds(result, base.nbytes, result["offset"])
+            capacity = (
+                native_module()._graybench_storage_info(base.base)[1]
+                if registered_native_root(base)
+                else base.nbytes
+            )
+            bounds(result, capacity, result["offset"])
         return result
 
     def validate(self, state, shape_index):
@@ -211,11 +220,26 @@ class ArrayCodec:
             if type(token) is not dict or set(token) != {"ref"} or type(token["ref"]) is not str:
                 raise WireError("Invalid graph array base reference")
             base = shape_index.get(token["ref"])
-            if base is None or base["kind"] != "ndarray_owner":
+            if base is None or base["kind"] not in ("ndarray_owner", "native_root"):
                 raise WireError("Graph array base must be an owning array")
             # The target may occur later in the message. Validate its structure now.
-            fields(base["state"], expected | {"bytes"})
-            _, capacity = geometry(base["state"])
+            if base["kind"] == "native_root":
+                from graybench.graph_native import native_capacity
+
+                capsule_token = base["state"].get("base")
+                if (
+                    type(capsule_token) is not dict
+                    or set(capsule_token) != {"ref"}
+                    or type(capsule_token["ref"]) is not str
+                ):
+                    raise WireError("Registered view owner has no capsule reference")
+                capsule = shape_index.get(capsule_token["ref"])
+                if capsule is None or capsule["kind"] != "native_capsule":
+                    raise WireError("Registered view owner has no native capsule")
+                capacity = native_capacity(capsule["state"])
+            else:
+                fields(base["state"], expected | {"bytes"})
+                _, capacity = geometry(base["state"])
             bounds(state, capacity, state["offset"])
 
     def validate_update(self, previous, state):
@@ -245,10 +269,21 @@ class ArrayCodec:
         import numpy as np
 
         if self.kind == "ndarray_view":
+            root = resolve(state["base"]["ref"])
+            from graybench.graph_native import native_module, registered_native_root
+
+            if registered_native_root(root):
+                return native_module()._graybench_storage_view(
+                    root,
+                    numeric_dtype(state),
+                    tuple(state["shape"]),
+                    tuple(state["strides"]),
+                    state["offset"],
+                )
             return np.ndarray(
                 tuple(state["shape"]),
                 dtype=numeric_dtype(state),
-                buffer=resolve(state["base"]["ref"]),
+                buffer=root,
                 offset=state["offset"],
                 strides=tuple(state["strides"]),
             )

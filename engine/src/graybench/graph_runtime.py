@@ -12,6 +12,7 @@ GRAPH_FILES = (
     "graph_singleton.py",
     "graph_types.py",
     "graph_numeric.py",
+    "graph_native.py",
     "circuit_wire.py",
     "scientific_wire.py",
     "graph_scientific.py",

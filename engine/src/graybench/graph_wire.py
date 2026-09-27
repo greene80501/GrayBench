@@ -261,7 +261,10 @@ class GraphArena:
         total = 0
         for handle, record in records.items():
             codec = REGISTRY[record["kind"]]
-            codec.validate(record["state"], records)
+            if hasattr(codec, "validate_record"):
+                codec.validate_record(handle, record["state"], records)
+            else:
+                codec.validate(record["state"], records)
             total += codec.array_bytes(record["state"])
             if total > self.limits.array_bytes:
                 raise WireLimitError("Graph array storage exceeds byte limit")
@@ -275,7 +278,11 @@ class GraphArena:
                     array = records[array["state"]["base"]["ref"]]
                 matrix_owners.add(array["id"])
         matrix_bytes = sum(
-            REGISTRY[records[handle]["kind"]].array_bytes(records[handle]["state"])
+            (
+                records[records[handle]["state"]["base"]["ref"]]["state"]["capacity"]
+                if records[handle]["kind"] == "native_root"
+                else REGISTRY[records[handle]["kind"]].array_bytes(records[handle]["state"])
+            )
             for handle in matrix_owners
         )
         for record in records.values():

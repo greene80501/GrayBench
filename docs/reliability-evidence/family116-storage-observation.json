@@ -1,0 +1,15 @@
+{
+  "image": "sha256:091248a8a17ce150a97363e66196c58de38893dd21d84a685d10e887e913c812",
+  "probe_sha256": "6f3dac3ae064725f664f1287c4a6c02b91ac4161c47ed4837f4a4fad3537ac11",
+  "observation": {
+    "base_owns_data": false,
+    "base_shape": [4],
+    "matrix_dtype": "<c16",
+    "matrix_owns_data": false,
+    "matrix_shape": [2, 2],
+    "operation": "HamiltonianGate",
+    "owner_buffer_exported": false,
+    "owner_module": "builtins",
+    "owner_type": "PySliceContainer"
+  }
+}

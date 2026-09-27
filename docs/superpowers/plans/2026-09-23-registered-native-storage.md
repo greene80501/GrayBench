@@ -1,15 +1,20 @@
 # Registered native storage implementation refinement
 
-Status: native helper prototype under development; graph integration is not
-implemented and the runtime is not admitted. The original benchmark objective
-and release gates remain unchanged.
+Status: experimental SciPy capsule/root/view graph integration and protected
+synthetic controls are implemented, but the runtime is **not admitted**. Exact
+normal/hard task-116 reference replay is still unsupported because its
+`MatrixExponential` result has a Qiskit Rust `PySliceContainer` owner, not the
+registered SciPy capsule. See
+[the later development evidence](../../reliability-evidence/native-graph-hamiltonian-development.md).
+The original benchmark objective and release gates remain unchanged.
 
-Current experiment: the two-phase registry, bounded read/write helper and native
-array factory passed standalone native checks on a rebuilt SciPy image. An
-AddressSanitizer harness first reproduced, then verified a fix for destructor
-reentry during registry sweeping. Toolchain locking, capsule/root/view graph
-nodes, protected execution, full suite and reference replay are still open.
-These intermediate results are not benchmark scores.
+Current experiment: the two-phase registry, bounded read/write helper, native
+array factory and view constructor passed 11 recorded native/graph diagnostics
+on a rebuilt SciPy image. AddressSanitizer checks cover destructor reentry and
+the native view constructor. Four protected Hamiltonian controls passed and the
+exact reference replay completed as unsupported in both suites. Toolchain
+locking, Qiskit Rust-backed ownership, a fresh uniform cohort and independent
+admission remain open. These intermediate results are not benchmark scores.
 
 ## Evidence and decision
 

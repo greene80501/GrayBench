@@ -60,6 +60,7 @@ def classes():
     from qiskit.circuit.library import (
         DiagonalGate,
         GraphStateGate,
+        HamiltonianGate,
         LinearFunction,
         MCXGate,
         StatePreparation,
@@ -83,6 +84,7 @@ def classes():
         "unitary": UnitaryGate,
         "diagonal": DiagonalGate,
         "graph_state": GraphStateGate,
+        "hamiltonian": HamiltonianGate,
         "uc_pauli_rot": UCPauliRotGate,
         "ucrx": UCRXGate,
         "ucry": UCRYGate,

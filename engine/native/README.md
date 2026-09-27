@@ -24,8 +24,14 @@ the candidate process; the separate container remains the security boundary.
 The experimental `_graybench_storage_new` factory allocates a zeroed 2D array
 with a real registered capsule base for graph reconstruction. It accepts only
 the four matrix-function numeric types and a capacity under the transport
-limit. Its presence does not yet make the graph wire protocol support capsules:
-the capsule/root/view codecs and private transition checks remain pending.
+limit. `_graybench_storage_descriptor` preserves the allocation-time dtype,
+shape and extent even after an array changes shape or is collected.
+`_graybench_storage_view` constructs bounded numeric aliases with their own
+writable flag when the registered root is already readonly. It accepts no raw
+address, checks the exact root identity, logical size and byte span, and rejects
+object dtypes. The graph capsule/root/view codecs and private transition
+rehearsal are experimental; the original pinned runtime does not include these
+helpers and this image is not admitted for benchmark scoring.
 
 Standalone checks run inside the experimental image, with this directory's
 `tests` mounted read-only at `/checks`:

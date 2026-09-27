@@ -32,7 +32,7 @@ assert source.count(cleanup) == 2
 source = source.replace(cleanup, needle + "\n        Py_DECREF(ap_ret);")
 source = source.replace(
     needle,
-    """    if (gb_register(capsule, mem_ret, PyArray_NBYTES(ap_ret)) < 0) {
+    """    if (gb_register(capsule, mem_ret, PyArray_NBYTES(ap_ret), ap_ret) < 0) {
         Py_DECREF(ap_ret);
         Py_DECREF(capsule);
         return NULL;
@@ -43,9 +43,11 @@ source = source.replace(
 source = source.replace(
     "  {NULL, NULL, 0, NULL}",
     """  {"_graybench_storage_info", gb_info, METH_O, "Registered storage metadata."},
+  {"_graybench_storage_descriptor", gb_descriptor, METH_O, "Registered storage origin."},
   {"_graybench_storage_read", gb_read, METH_O, "Read bounded registered storage."},
   {"_graybench_storage_write", gb_write, METH_VARARGS, "Write exact registered storage."},
   {"_graybench_storage_new", gb_new, METH_VARARGS, "Allocate bounded registered storage."},
+  {"_graybench_storage_view", gb_view, METH_VARARGS, "Construct bounded registered alias."},
   {NULL, NULL, 0, NULL}""",
     1,
 )

@@ -13,7 +13,7 @@ static PyObject *allocate(PyObject *self, PyObject *unused) {
     if (buffer == NULL) { return PyErr_NoMemory(); }
     PyObject *capsule = PyCapsule_New(buffer, NULL, capsule_destructor);
     if (capsule == NULL) { free(buffer); return NULL; }
-    if (gb_register(capsule, buffer, 32) < 0) {
+    if (gb_register(capsule, buffer, 32, NULL) < 0) {
         Py_DECREF(capsule);
         return NULL;
     }
@@ -23,6 +23,8 @@ static PyObject *allocate(PyObject *self, PyObject *unused) {
 static PyMethodDef methods[] = {
     {"allocate", allocate, METH_NOARGS, NULL},
     {"read", gb_read, METH_O, NULL},
+    {"new", gb_new, METH_VARARGS, NULL},
+    {"view", gb_view, METH_VARARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
 static struct PyModuleDef module = {
