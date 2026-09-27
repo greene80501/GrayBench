@@ -67,3 +67,5 @@ docs/reliability-evidence/request_scope_probe.py -text whitespace=trailing-space
 docs/reliability-evidence/GrayBench-request-scope-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/http503_retry_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-http503-retry-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/qhe_test_shape_inventory.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-qhe-test-shape-inventory.json -text whitespace=trailing-space,space-before-tab,cr-at-eol

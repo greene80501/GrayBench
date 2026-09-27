@@ -48,6 +48,13 @@ same-process tests. The protected semantic track needs independently admitted
 value contracts and an integrity boundary appropriate to its claims. These
 tracks require separate result identities, denominators and release gates.
 
+The [pinned test-shape audit](qhe-test-execution-shape-audit.md) found a
+uniform execution shape in all 302 records: normal tests define but do not
+call `check(candidate)`; hard tests define it and call it once with the
+declared entry point. This supports a shape-guarded native runner for these
+revisions without rewriting hard tests. It does not establish oracle fairness
+or same-process test integrity.
+
 ## Saved provider ledgers under the current engine
 
 The three preserved hosted ledgers have the SHA-256 digests recorded in
