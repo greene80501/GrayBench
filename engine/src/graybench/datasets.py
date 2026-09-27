@@ -53,6 +53,8 @@ KNOWN_FINDINGS = {
     123: ["Upstream accepts a five-axis figure with no plotted error-map data"],
     125: ["Upstream checks only gate shape for its three-qubit input, accepting a wrong action"],
     128: ["Upstream accepts a conditional circuit without the three required Hadamard gates"],
+    130: ["Upstream accepts a five-qubit circuit that ignores the requested qubit count"],
+    131: ["Upstream accepts fixed FakeCairoV2 information that ignores the backend name"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 

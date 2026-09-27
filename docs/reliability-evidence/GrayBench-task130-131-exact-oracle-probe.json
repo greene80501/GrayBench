@@ -1,0 +1,238 @@
+{
+  "kind": "graybench_task130_131_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "75f1442aafe15b27877a63379763eca6f428fa4a191280b5007ad3c932811e46",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "569ac8ebbc37bf89b02d8c2ebc9ce9a1aa33d14ba64e0e2a3b27cba0798453c3",
+      "case": "reference",
+      "candidate_sha256": "986a1b82fa3fb162979f9367fe7a826bc074be85969de5a9b0ef689f4a7c4e97",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 6
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "569ac8ebbc37bf89b02d8c2ebc9ce9a1aa33d14ba64e0e2a3b27cba0798453c3",
+      "case": "independent_explicit_circuit",
+      "candidate_sha256": "c004dc7b4fd597c35430c09b4b2008369fcc38ade50372327054afd51d6db4a8",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 6
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "569ac8ebbc37bf89b02d8c2ebc9ce9a1aa33d14ba64e0e2a3b27cba0798453c3",
+      "case": "fixed_five_qubits",
+      "candidate_sha256": "0f2c7fd6ddc325183b52d03c109769dd86a8292232b6ea1fc208cb4534d27eeb",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 5
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "569ac8ebbc37bf89b02d8c2ebc9ce9a1aa33d14ba64e0e2a3b27cba0798453c3",
+      "case": "wrong_gate_control",
+      "candidate_sha256": "796836bd18f0565f1a14df925ae583165f8679e604f6459f76a28805e813a640",
+      "outcome": "fail",
+      "assertion": "Expected                     \nq_0: ───────────────\n               ┌───┐\nq_1: ───────■──┤ H ├\n            │  ├───┤\nq_2: ──■────┼──┤ H ├\n       │  ┌─┴─┐└───┘\nq_3: ──┼──┤ X ├─────\n     ┌─┴─┐└───┘     \nq_4: ┤ X ├──────────\n     └───┘          , got                     \nq_0: ───────────────\n               ┌───┐\nq_1: ───────■──┤ X ├\n            │  ├───┤\nq_2: ──■────┼──┤ H ├\n       │  ┌─┴─┐└───┘\nq_3: ──┼──┤ X ├─────\n     ┌─┴─┐└───┘     \nq_4: ┤ X ├──────────\n     └───┘          ",
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 6
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "a812e300a422d205586d16d58893767c5141f19f2598156887badb44577e8939",
+      "case": "reference",
+      "candidate_sha256": "d7ca41bba303a73c78c4e396e3f967f6859bf7616a944449529302b9905eebc9",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 5
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "a812e300a422d205586d16d58893767c5141f19f2598156887badb44577e8939",
+      "case": "independent_module_lookup",
+      "candidate_sha256": "712db088e54ac407925ece26e82ff8178303e3419b902f9d98eb8ed8041e550d",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 5
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "a812e300a422d205586d16d58893767c5141f19f2598156887badb44577e8939",
+      "case": "fixed_cairo_backend",
+      "candidate_sha256": "4b7d10a186e6128c4ab325f0b22d1eb423082834e3259276badc6ecc37767ec3",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 27
+      }
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "a812e300a422d205586d16d58893767c5141f19f2598156887badb44577e8939",
+      "case": "wrong_width_control",
+      "candidate_sha256": "f97591920d3d52aa46ed993845648e129e729ee1f37bb8ad75899ee4301e9b18",
+      "outcome": "fail",
+      "assertion": "Expected 27, got 28",
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 28
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "b1c4ef6f6cfd9566e2ea201fdf7c42f5b4e59e888d968fe89b39ed1ee80e017e",
+      "case": "reference",
+      "candidate_sha256": "90c59f33df5b5b84d8924b18734330438f789d2f8e1cbf0732916ccad155c39e",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 6
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "b1c4ef6f6cfd9566e2ea201fdf7c42f5b4e59e888d968fe89b39ed1ee80e017e",
+      "case": "independent_explicit_circuit",
+      "candidate_sha256": "e3bc08d7210ba12d19602a8a47f0ff767e89ebf555f26467fe132f61a1b1b79b",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 6
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "b1c4ef6f6cfd9566e2ea201fdf7c42f5b4e59e888d968fe89b39ed1ee80e017e",
+      "case": "fixed_five_qubits",
+      "candidate_sha256": "290d0caea0a0c2c5265b1ff0cfed21881bcacdffda71a46e265e49682c874ffb",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 5
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/130",
+      "task_digest": "b1c4ef6f6cfd9566e2ea201fdf7c42f5b4e59e888d968fe89b39ed1ee80e017e",
+      "case": "wrong_gate_control",
+      "candidate_sha256": "fa2103107dfa54e8e0c598d6900517cae6ab6f4f5622c194fb6ebaf9127d743d",
+      "outcome": "fail",
+      "assertion": "Expected                     \nq_0: ───────────────\n               ┌───┐\nq_1: ───────■──┤ H ├\n            │  ├───┤\nq_2: ──■────┼──┤ H ├\n       │  ┌─┴─┐└───┘\nq_3: ──┼──┤ X ├─────\n     ┌─┴─┐└───┘     \nq_4: ┤ X ├──────────\n     └───┘          , got                     \nq_0: ───────────────\n               ┌───┐\nq_1: ───────■──┤ X ├\n            │  ├───┤\nq_2: ──■────┼──┤ H ├\n       │  ┌─┴─┐└───┘\nq_3: ──┼──┤ X ├─────\n     ┌─┴─┐└───┘     \nq_4: ┤ X ├──────────\n     └───┘          ",
+      "untested_input": {
+        "requested_qubits": 6,
+        "returned_qubits": 6
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "72553ddb53f4972cc256c45b87fc55e9384255b74e18288f85ca1697e6d83b4c",
+      "case": "reference",
+      "candidate_sha256": "8b57c1856385314981568ef0bd9a649c109337d136558dba0138beff7815ad2c",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 5
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "72553ddb53f4972cc256c45b87fc55e9384255b74e18288f85ca1697e6d83b4c",
+      "case": "independent_module_lookup",
+      "candidate_sha256": "75360fab07ed886d0aa28cf14ded38f82e4e0215117e80043732db3e46a3a1e6",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 5
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "72553ddb53f4972cc256c45b87fc55e9384255b74e18288f85ca1697e6d83b4c",
+      "case": "fixed_cairo_backend",
+      "candidate_sha256": "e1e67096fa11672a07dc62627a53612921492157b86b62b185bb582a7b8e6f0f",
+      "outcome": "pass",
+      "assertion": null,
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 27
+      }
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/131",
+      "task_digest": "72553ddb53f4972cc256c45b87fc55e9384255b74e18288f85ca1697e6d83b4c",
+      "case": "wrong_width_control",
+      "candidate_sha256": "950461c8c3e3d10cb4766f6fd6662886935e22b02a88c49b3d6c1b1baaca9281",
+      "outcome": "fail",
+      "assertion": "Expected 27, got 28",
+      "untested_input": {
+        "requested_backend": "fake_belem",
+        "expected_qubits": 5,
+        "returned_qubits": 28
+      }
+    }
+  ]
+}
