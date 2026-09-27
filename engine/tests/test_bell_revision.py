@@ -17,6 +17,10 @@ IMAGE = "sha256:" + "0" * 64
 RECIPE = "qhe2-bell-statevector-v1"
 
 
+class KnownEncoderFalsePassError(AssertionError):
+    """Distinguish the reproduced false pass from any other judge outcome."""
+
+
 def task2_fixture(public, suite):
     return JudgeTask(
         public=public.model_copy(
@@ -201,3 +205,32 @@ def test_revised_task2_protected_controls(task, suite, name, completion, expecte
     else:
         assert result.outcome == expected, (name, result)
     assert result.evidence["manifest"]["release_eligible"] is False
+
+
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Requires immutable image")
+@pytest.mark.xfail(
+    reason="Candidate can replace its encoder before the trusted judge receives a value",
+    raises=KnownEncoderFalsePassError,
+    strict=True,
+)
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+def test_revised_task2_rejects_candidate_encoder_substitution(task, suite):
+    completion = (
+        "import sys\n"
+        "from qiskit.quantum_info import Statevector\n"
+        "def create_bell_statevector():\n"
+        "    worker_globals = sys._getframe().f_back.f_globals\n"
+        "    original_encode = worker_globals['encode']\n"
+        "    def forged_encode(value):\n"
+        "        if type(value) is Statevector:\n"
+        "            return original_encode(Statevector([2**-0.5, 0, 0, 2**-0.5]))\n"
+        "        return original_encode(value)\n"
+        "    worker_globals['encode'] = forged_encode\n"
+        "    return Statevector.from_label('01')\n"
+    )
+    judge = recipe_judge(RECIPE, image=os.environ["GRAYBENCH_TEST_IMAGE"])
+    revised = judge.revise(task2_fixture(task, suite))
+    result = judge.evaluate(revised, completion)
+    if result.outcome == "pass":
+        raise KnownEncoderFalsePassError("Candidate replaced its encoder and obtained a false pass")
+    assert result.outcome == "fail", result

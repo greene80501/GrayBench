@@ -42,6 +42,8 @@ docs/reliability-evidence/GrayBench-task2-native-oracle-probe.json -text whitesp
 docs/reliability-evidence/task2_native_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/worker-encoder-integrity-probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-worker-encoder-integrity-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/protected-worker-encoder-probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-protected-worker-encoder-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-v4-task82-pinned-parser-reference.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task109_full_delta_normal.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task82_header_v2_reference.py -text whitespace=trailing-space,space-before-tab,cr-at-eol

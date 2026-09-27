@@ -32,19 +32,22 @@ These are **native checks**, not protected-judge outcomes.
 
 Protected positive and adverse controls are retained in
 `engine/tests/test_bell_revision.py` and require `GRAYBENCH_TEST_IMAGE`.
-They are currently skipped because Docker Desktop cannot start. A review found
+They now run against the pinned Python 3.12 image: 18 focused tests pass and
+two encoder-substitution tests are strict, outcome-specific expected failures. A review found
 that the protocol-3 candidate-side codec previously read patchable `data` and
 `dims` accessors; an exact class object storing `|01>` could therefore be
 serialized as Phi+ after a class-level property patch. A red/green local codec
 regression now reads validated raw instance data and subsystem fields for exact
 `Statevector` objects. The Docker-gated cases include these accessor forgeries
-and a global-phase positive, but have not run. The codec still excludes
+and a global-phase positive. The codec still excludes
 subclasses, which can therefore be `unsupported` rather than graded failures.
 More broadly, candidate code shares a process with its encoder and could patch
 the encoder itself; the
-[local worker integrity probe](worker-encoder-integrity.md) demonstrates that
-remaining false pass. Raw-field reads do not establish tamper-proof serialization.
+[local worker integrity probe](worker-encoder-integrity.md) observes the raw
+return value, and the [protected pinned-task probe](protected-worker-encoder-integrity.md)
+reproduces the false pass in both normal and hard. Raw-field reads do not establish
+tamper-proof serialization.
 This recipe checks the reconstructed returned value, not how it was built.
-Independent domain review, protected normal/hard controls, worker-boundary
+Independent domain review, worker-boundary
 hardening, resource calibration and full task-card admission remain open. No
 model generation or score was produced for this recipe.

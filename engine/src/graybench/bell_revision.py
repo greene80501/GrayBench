@@ -85,9 +85,10 @@ class BellStatevectorJudge:
             "inner": inner,
             "release_eligible": False,
             "limitations": [
-                "Protected normal/hard execution and independent domain review remain pending",
+                "Independent domain review and release admission remain pending",
                 "This checks returned amplitudes, not the construction procedure",
-                "Candidate and encoder share a process; arbitrary encoder patching is unresolved",
+                "Candidate and encoder share a process; protected controls reproduce "
+                "encoder substitution",
             ],
         }
 

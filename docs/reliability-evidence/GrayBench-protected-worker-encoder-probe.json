@@ -1,0 +1,55 @@
+{
+  "kind": "graybench_protected_worker_encoder_probe_v1",
+  "scope": "Authored protected task-2 diagnostic; not model behavior or a released score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "script_sha256": "4cd06e7fe80ec8174196d7e0535f17ed82b3aec6441f8e7e8c07f6ed017842c3",
+  "source_manifest_digest": "ea0f22f9f5b30d12fe8f6cb8fa5b23dc1fa174c230489604e8580c302390655d",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "revised_task_digest": "5c39825648bedce73631647080ec48968d886b9e902bd233bbe9085654b7b262",
+      "case": "ordinary_wrong_state",
+      "completion_sha256": "50f60f23e1cf969ae143602fcc8ec9d445e30f1a5305066968a43415d26bd7d5",
+      "outcome": "fail",
+      "judge_digest": "3e26fa6be444d98af5d19407ce55b617e2c7c6c84e7e6ba9233037892275e71b",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "normal",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "revised_task_digest": "5c39825648bedce73631647080ec48968d886b9e902bd233bbe9085654b7b262",
+      "case": "candidate_encoder_substitution",
+      "completion_sha256": "0a0c8cd7ab2ed049c93d2e7e4b38a82a563f44440ac8fb3a8814682075c04942",
+      "outcome": "pass",
+      "judge_digest": "3e26fa6be444d98af5d19407ce55b617e2c7c6c84e7e6ba9233037892275e71b",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "revised_task_digest": "5056e3d0244d20ee18e70620799639ec7ae876f4ed230059bb97d28e22b9c157",
+      "case": "ordinary_wrong_state",
+      "completion_sha256": "50f60f23e1cf969ae143602fcc8ec9d445e30f1a5305066968a43415d26bd7d5",
+      "outcome": "fail",
+      "judge_digest": "ba94c90a6a36c95504b05e603041f8012342f17b5c32a1f1aba93ff64da4d6c8",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "hard",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "revised_task_digest": "5056e3d0244d20ee18e70620799639ec7ae876f4ed230059bb97d28e22b9c157",
+      "case": "candidate_encoder_substitution",
+      "completion_sha256": "0a0c8cd7ab2ed049c93d2e7e4b38a82a563f44440ac8fb3a8814682075c04942",
+      "outcome": "pass",
+      "judge_digest": "ba94c90a6a36c95504b05e603041f8012342f17b5c32a1f1aba93ff64da4d6c8",
+      "manifest_release_eligible": false
+    }
+  ]
+}

@@ -33,8 +33,10 @@ uv run --extra qiskit python ../docs/reliability-evidence/worker-encoder-integri
 ```
 
 Use a fresh output path because the script intentionally refuses to overwrite
-prior evidence. This is an **in-process local diagnostic**, not a protected
-Docker false pass, a model behavior observation or a released score. It proves
+prior evidence. This is an **in-process local diagnostic** with a raw return
+observation. A separate [protected pinned-task probe](protected-worker-encoder-integrity.md)
+now demonstrates the corresponding Docker false pass. Neither probe is a model
+behavior observation or a released score. Together they show
 that the current worker protocol cannot attest that the candidate's native
 returned object matched the reconstructed value under arbitrary Python code.
 Value-only scoring can still make a valid, explicitly revised benchmark if
@@ -42,4 +44,5 @@ the public contract defines the value representation and the comparison
 criteria. It must not be presented as fully faithful execution of every
 original Qiskit HumanEval object contract. Native-object fidelity and the
 task-2 development recipe remain release-ineligible until this threat-model
-decision is resolved and protected adversarial controls run.
+decision is resolved. Protected adversarial controls have run and currently fail
+the desired integrity property.
