@@ -1,0 +1,67 @@
+{
+  "kind": "task63_canonical_repeat_verification_v1",
+  "purpose": "stochastic oracle diagnostic; not model scoring",
+  "evidence": {
+    "complete": true,
+    "pending_task": null,
+    "planned": 40,
+    "results": {
+      "normal/qiskitHumanEval/63/repeat-01": "fail",
+      "normal/qiskitHumanEval/63/repeat-02": "fail",
+      "normal/qiskitHumanEval/63/repeat-03": "fail",
+      "normal/qiskitHumanEval/63/repeat-04": "fail",
+      "normal/qiskitHumanEval/63/repeat-05": "fail",
+      "normal/qiskitHumanEval/63/repeat-06": "fail",
+      "normal/qiskitHumanEval/63/repeat-07": "fail",
+      "normal/qiskitHumanEval/63/repeat-08": "fail",
+      "normal/qiskitHumanEval/63/repeat-09": "fail",
+      "normal/qiskitHumanEval/63/repeat-10": "fail",
+      "normal/qiskitHumanEval/63/repeat-11": "fail",
+      "normal/qiskitHumanEval/63/repeat-12": "fail",
+      "normal/qiskitHumanEval/63/repeat-13": "fail",
+      "normal/qiskitHumanEval/63/repeat-14": "fail",
+      "normal/qiskitHumanEval/63/repeat-15": "fail",
+      "normal/qiskitHumanEval/63/repeat-16": "fail",
+      "normal/qiskitHumanEval/63/repeat-17": "fail",
+      "normal/qiskitHumanEval/63/repeat-18": "fail",
+      "normal/qiskitHumanEval/63/repeat-19": "pass",
+      "normal/qiskitHumanEval/63/repeat-20": "fail",
+      "hard/qiskitHumanEval/63/repeat-01": "fail",
+      "hard/qiskitHumanEval/63/repeat-02": "fail",
+      "hard/qiskitHumanEval/63/repeat-03": "fail",
+      "hard/qiskitHumanEval/63/repeat-04": "fail",
+      "hard/qiskitHumanEval/63/repeat-05": "fail",
+      "hard/qiskitHumanEval/63/repeat-06": "fail",
+      "hard/qiskitHumanEval/63/repeat-07": "fail",
+      "hard/qiskitHumanEval/63/repeat-08": "fail",
+      "hard/qiskitHumanEval/63/repeat-09": "fail",
+      "hard/qiskitHumanEval/63/repeat-10": "fail",
+      "hard/qiskitHumanEval/63/repeat-11": "fail",
+      "hard/qiskitHumanEval/63/repeat-12": "fail",
+      "hard/qiskitHumanEval/63/repeat-13": "fail",
+      "hard/qiskitHumanEval/63/repeat-14": "fail",
+      "hard/qiskitHumanEval/63/repeat-15": "fail",
+      "hard/qiskitHumanEval/63/repeat-16": "fail",
+      "hard/qiskitHumanEval/63/repeat-17": "fail",
+      "hard/qiskitHumanEval/63/repeat-18": "fail",
+      "hard/qiskitHumanEval/63/repeat-19": "fail",
+      "hard/qiskitHumanEval/63/repeat-20": "fail"
+    },
+    "chain_head": "beceff1c1a1884b4c388805ca69e24f257e7746b3162807ca0768f3346adb801",
+    "purpose": "task 63 stochastic canonical-reference diagnostic; not model scoring",
+    "file_sha256": "88f713a80bb266ec5d717388d2f64ef8ece7330ccb96973a76118e13a5b4c546"
+  },
+  "source_matches_checkout": true,
+  "probe_sha256": "6aacf6f8f05d9d2081558554554f171c2f653cf4ff379408e93e7442f87a7a1a",
+  "repeats_per_suite": 20,
+  "same_canonical_completion_within_each_suite": true,
+  "counts": {
+    "normal": {
+      "fail": 19,
+      "pass": 1
+    },
+    "hard": {
+      "fail": 20
+    }
+  }
+}

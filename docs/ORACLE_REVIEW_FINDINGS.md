@@ -40,6 +40,12 @@ results for 14 trusted authored fixtures in a separate diagnostic container. The
 113 passes, 28 unsupported interfaces, one failure and one file-boundary error per suite. Reference
 compatibility is not task admission or proof of oracle adequacy.
 
+A later [complete source-guarded replay](reliability-evidence/reference-scan-77f29ff.md)
+records nine additional unsupported-to-pass references per suite. Its observed
+hard task-63 pass is unstable: 20 fresh canonical replays per suite passed once
+in normal and never in hard. Both task-63 variants remain release-ineligible;
+the new aggregate is interface evidence, not a fair model score.
+
 Tasks 116 and 120 now have separately selected [behavioral revisions](reliability-evidence/gate-semantics-revisions.md).
 They retain historical upstream results and make the changed scoring contract
 public before generation. Finite semantic checks do not certify internal methods.
