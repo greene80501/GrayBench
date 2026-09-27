@@ -52,6 +52,7 @@ KNOWN_FINDINGS = {
     122: ["Upstream only asserts circuit type; the IBM transpiler result is never compared"],
     123: ["Upstream accepts a five-axis figure with no plotted error-map data"],
     125: ["Upstream checks only gate shape for its three-qubit input, accepting a wrong action"],
+    128: ["Upstream accepts a conditional circuit without the three required Hadamard gates"],
     141: ["Upstream accepts zero SparsePauliOp objects as Pauli anticommutators"],
 }
 
