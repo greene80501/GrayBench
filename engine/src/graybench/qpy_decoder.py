@@ -23,6 +23,7 @@ def decode_qpy(data, *, image, docker, timeout=30, output_limit=1024 * 1024):
     ) as decoder:
         result = decoder.call_wire("decode_artifact")
         return result["value"], {
+            "image": image,
             "active_seconds": decoder.active_seconds,
             "wire_response": result,
             "projection": "supported circuit structure and bounded JSON metadata",

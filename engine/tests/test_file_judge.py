@@ -7,6 +7,7 @@ from graybench.datasets import JudgeTask
 from graybench.file_judge import QpyFileJudge
 
 IMAGE = os.environ.get("GRAYBENCH_TEST_IMAGE")
+PARSER_IMAGE = os.environ.get("GRAYBENCH_TEST_PARSER_IMAGE")
 DOCKER = os.environ.get("GRAYBENCH_DOCKER", "docker")
 pytestmark = pytest.mark.skipif(not IMAGE, reason="Requires immutable Docker image")
 
@@ -100,3 +101,38 @@ def create_binary_serialization():
     assert result.outcome == "unsupported", result
     assert result.evidence.get("phase") == "parser", result
     assert "parser" not in result.evidence
+
+
+@pytest.mark.skipif(not PARSER_IMAGE, reason="Requires separate immutable parser image")
+@pytest.mark.parametrize(
+    "body,outcome",
+    [
+        ("q.h(0); q.cx(0, 1)", "pass"),
+        ("q.ry(3.141592653589793 / 2, 1); q.cx(1, 0); q.global_phase = 0.42", "pass"),
+        ("pass", "fail"),
+    ],
+)
+def test_patched_parser_reads_qpy_from_historical_candidate_image(body, outcome):
+    code = f"""from qiskit import QuantumCircuit, qpy
+def create_binary_serialization():
+    q = QuantumCircuit(2)
+    {body}
+    with open('bell.qpy', 'wb') as stream: qpy.dump(q, stream)
+"""
+    result = QpyFileJudge(image=IMAGE, parser_image=PARSER_IMAGE, docker=DOCKER).evaluate(
+        task(), code
+    )
+    assert result.outcome == outcome, result
+    assert result.evidence["manifest"]["image"] == IMAGE
+    assert result.evidence["manifest"]["parser_image"] == PARSER_IMAGE
+    assert result.evidence["manifest"]["oracle"]["image"] == IMAGE
+    assert result.evidence["parser"]["image"] == PARSER_IMAGE
+
+
+@pytest.mark.skipif(not PARSER_IMAGE, reason="Requires separate immutable parser image")
+def test_patched_parser_keeps_malformed_file_unscored():
+    result = QpyFileJudge(image=IMAGE, parser_image=PARSER_IMAGE, docker=DOCKER).evaluate(
+        task(), "def create_binary_serialization():\n    open('bell.qpy', 'wb').write(b'not QPY')"
+    )
+    assert result.outcome == "unsupported", result
+    assert result.evidence["phase"] == "parser"

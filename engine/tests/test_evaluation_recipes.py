@@ -18,6 +18,7 @@ from graybench.transport import Transport
 RECIPE = "qhe141-pauli-group-anticommutator-v1"
 IMAGE = os.environ.get("GRAYBENCH_TEST_IMAGE", "sha256:" + "0" * 64)
 DOCKER = os.environ.get("GRAYBENCH_DOCKER", "docker")
+PARSER_IMAGE = "sha256:" + "3" * 64
 
 
 def pauli_task(task):
@@ -34,6 +35,49 @@ def pauli_task(task):
         upstream_test="PRIVATE_TEST_SENTINEL",
         upstream_difficulty="fixture",
     )
+
+
+def file_task(task):
+    original = pauli_task(task)
+    return original.model_copy(
+        update={
+            "public": original.public.model_copy(
+                update={
+                    "family_id": "qhe/82",
+                    "entry_point": "create_binary_serialization",
+                    "task_id": "qiskitHumanEval/82",
+                }
+            )
+        }
+    )
+
+
+def test_patched_parser_image_is_frozen_across_campaign_reconstruction(model, task):
+    selected = file_task(task)
+    setup = build_setup(
+        "patched-parser",
+        model,
+        (selected,),
+        IMAGE,
+        evaluation_recipe="task82-file-semantic-v1",
+        parser_image=PARSER_IMAGE,
+    )
+    assert setup.parser_image == PARSER_IMAGE
+    restored = CampaignSetup.model_validate_json(setup.model_dump_json())
+    assert restored.judge().inner.parser_image == PARSER_IMAGE
+    validate_cohort(restored.protocol, (selected,), restored.judge())
+    changed = setup.model_copy(update={"parser_image": IMAGE})
+    with pytest.raises(StateError, match="judge_digest"):
+        validate_cohort(setup.protocol, (selected,), changed.judge())
+    with pytest.raises(ValueError, match="parser_image"):
+        build_setup(
+            "wrong-recipe",
+            model,
+            (pauli_task(task),),
+            IMAGE,
+            evaluation_recipe=RECIPE,
+            parser_image=PARSER_IMAGE,
+        )
 
 
 def test_recipe_plan_freezes_revised_public_request_and_reconstructs(model, task, monkeypatch):
@@ -130,6 +174,40 @@ def test_cli_freezes_explicit_recipe_without_network(model, task, tmp_path, monk
     saved = CampaignSetup.model_validate_json(output.read_bytes())
     assert saved.evaluation_recipe == RECIPE
     assert json.loads(capsys.readouterr().out)["evaluation_recipe"] == RECIPE
+
+
+def test_cli_freezes_separate_task82_parser_image(model, task, tmp_path, monkeypatch):
+    selected = file_task(task)
+    monkeypatch.setattr(
+        "graybench.cli.load_suite", lambda suite, _: (selected,) if suite == "hard" else ()
+    )
+    spec, output = tmp_path / "model.json", tmp_path / "setup.json"
+    spec.write_text(model.model_dump_json())
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "graybench",
+            "campaign-plan",
+            str(spec),
+            str(tmp_path),
+            str(output),
+            "--image",
+            IMAGE,
+            "--parser-image",
+            PARSER_IMAGE,
+            "--name",
+            "patched-parser",
+            "--suite",
+            "hard",
+            "--evaluation-recipe",
+            "task82-file-semantic-v1",
+        ],
+    )
+    main()
+    saved = CampaignSetup.model_validate_json(output.read_bytes())
+    assert saved.parser_image == PARSER_IMAGE
+    assert saved.judge().inner.parser_image == PARSER_IMAGE
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Requires immutable image")

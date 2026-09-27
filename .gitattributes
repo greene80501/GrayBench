@@ -37,4 +37,5 @@ docs/reliability-evidence/task63_reference_repeat.py -text whitespace=trailing-s
 docs/reliability-evidence/verify_task63_reference_repeat.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-v4-task63-canonical-repeat-summary-77f29ff.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/GrayBench-v4-provisional-task-inventory-2026-09-27.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/GrayBench-v4-task82-pinned-parser-reference.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task109_full_delta_normal.py -text whitespace=trailing-space,space-before-tab,cr-at-eol

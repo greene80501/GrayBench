@@ -35,6 +35,13 @@ bound. A real Docker regression verifies that an oversized parser response stops
 at the parser boundary. A parser rejection remains unscored, not an automatic
 incorrect answer.
 
+For `task82-file-semantic-v1`, `campaign-plan --parser-image sha256:...` freezes
+a separate QPY decoder image. The candidate and oracle keep `--image`.
+The parser digest is stored in the setup and judge identity; changing it after
+planning fails cohort validation. The option is rejected for other recipes.
+The patched-parser development build and controls are documented in
+[task82-semantic-track.md](task82-semantic-track.md).
+
 Task 141 revisions are reconstructed before cohort validation and provider
 request hashing. Original task records cannot be substituted after planning.
 Private tests and references remain outside provider requests. Saved contexts

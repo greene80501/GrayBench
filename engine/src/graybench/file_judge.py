@@ -2,6 +2,7 @@
 
 import base64
 import hashlib
+import re
 
 from graybench.artifacts import ArtifactUnsupported
 from graybench.extraction import extract
@@ -23,13 +24,18 @@ class QpyFileJudge:
         self,
         *,
         image,
+        parser_image=None,
         docker="docker",
         candidate_timeout=120,
         parser_timeout=30,
         timeout=30,
         output_limit=1048576,
     ):
+        parser_image = image if parser_image is None else parser_image
+        if not re.fullmatch(r"sha256:[0-9a-f]{64}", parser_image):
+            raise ValueError("QPY parser requires an immutable runtime image")
         self.image, self.docker = image, docker
+        self.parser_image = parser_image
         self.candidate_timeout, self.parser_timeout = (
             float(candidate_timeout),
             float(parser_timeout),
@@ -50,6 +56,7 @@ class QpyFileJudge:
             "source": source_manifest(),
             "task_digest": task.digest,
             "image": self.image,
+            "parser_image": self.parser_image,
             "candidate_timeout": self.candidate_timeout,
             "parser_timeout": self.parser_timeout,
             "output_limit": self.output_limit,
@@ -96,7 +103,7 @@ class QpyFileJudge:
             phase = "parser"
             wire, parser_evidence = decode_qpy(
                 artifact.data,
-                image=self.image,
+                image=self.parser_image,
                 docker=self.docker,
                 timeout=self.parser_timeout,
                 output_limit=self.output_limit,

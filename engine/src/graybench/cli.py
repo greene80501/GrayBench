@@ -89,6 +89,7 @@ def main():
     plan.add_argument("cache", type=Path)
     plan.add_argument("output", type=Path)
     plan.add_argument("--image", required=True)
+    plan.add_argument("--parser-image", help="Immutable task82 QPY parser image digest")
     plan.add_argument("--name", required=True)
     plan.add_argument("--evaluation-recipe", choices=RECIPES, default="upstream")
     plan.add_argument("--repeats", type=int, default=1)
@@ -227,6 +228,7 @@ def main():
             args.image,
             repeats=args.repeats,
             evaluation_recipe=args.evaluation_recipe,
+            parser_image=args.parser_image,
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt
             else None,
