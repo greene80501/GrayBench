@@ -3,6 +3,7 @@
 from typing import Literal, get_args
 
 from graybench.bb84_revision import BB84Judge
+from graybench.bell_revision import BellStatevectorJudge
 from graybench.file_judge import QpyFileJudge
 from graybench.gate_semantics import GateSemanticsJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
@@ -13,6 +14,7 @@ EvaluationRecipe = Literal[
     "upstream-graph-v4",
     "upstream-graph-delta-v1",
     "qhe0-size-domain-v1",
+    "qhe2-bell-statevector-v1",
     "task82-file-semantic-v1",
     "task82-file-semantic-v2",
     "qhe141-pauli-group-anticommutator-v1",
@@ -37,6 +39,7 @@ class RevisionJudge:
             "qhe116-evolution-semantics-v1",
             "qhe120-diagonal-semantics-v1",
             "qhe63-explicit-bases-v1",
+            "qhe2-bell-statevector-v1",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -67,6 +70,8 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         return UpstreamJudge(**kwargs)
     if recipe == "qhe0-size-domain-v1":
         inner = CircuitSizeJudge(**kwargs)
+    elif recipe == "qhe2-bell-statevector-v1":
+        inner = BellStatevectorJudge(**kwargs)
     elif recipe == "qhe141-pauli-group-anticommutator-v1":
         inner = PauliAnticommutatorJudge(**kwargs)
     elif recipe == "qhe113-barrier-metrics-v1":

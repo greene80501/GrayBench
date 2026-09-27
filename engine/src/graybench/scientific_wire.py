@@ -169,6 +169,44 @@ def decode_dihedral(value):
     return result
 
 
+def encode_statevector(item):
+    """Read exact Qiskit instance state, not candidate-patchable public accessors."""
+    import numpy as np
+    from qiskit.quantum_info.operators.op_shape import OpShape
+
+    state = object.__getattribute__(item, "__dict__")
+    data, shape = state.get("_data"), state.get("_op_shape")
+    if type(data) is not np.ndarray or type(shape) is not OpShape:
+        raise WireError("Unsupported Statevector instance state")
+    raw = object.__getattribute__(shape, "__dict__")
+    if set(raw) != {"_num_qargs_l", "_num_qargs_r", "_dims_l", "_dims_r"}:
+        raise WireError("Unsupported Statevector subsystem state")
+    count, right, left_dims, right_dims = (
+        raw["_num_qargs_l"],
+        raw["_num_qargs_r"],
+        raw["_dims_l"],
+        raw["_dims_r"],
+    )
+    if (
+        type(count) is not int
+        or not 0 <= count <= 32
+        or type(right) is not int
+        or right != 0
+        or right_dims is not None
+        or (left_dims is not None and type(left_dims) is not tuple)
+    ):
+        raise WireError("Invalid Statevector subsystem state")
+    dims = (2,) * count if left_dims is None else left_dims
+    if (
+        len(dims) != count
+        or any(type(d) is not int or not 1 <= d <= MAX_BYTES for d in dims)
+        or math.prod(dims) > MAX_BYTES
+        or data.shape != (math.prod(dims),)
+    ):
+        raise WireError("Statevector data and subsystem dimensions differ")
+    return {"kind": "statevector_v1", "data": array_record(data), "dims": list(dims)}
+
+
 def encode_scientific(item):
     import numpy as np
     from qiskit.quantum_info import (
@@ -195,9 +233,14 @@ def encode_scientific(item):
         return array_record(item)
     if isinstance(item, np.generic):
         return array_record(np.asarray(item), scalar=True)
-    for tag, cls in (("statevector_v1", Statevector), ("densitymatrix_v1", DensityMatrix)):
-        if type(item) is cls:
-            return {"kind": tag, "data": array_record(item.data), "dims": list(item.dims())}
+    if type(item) is Statevector:
+        return encode_statevector(item)
+    if type(item) is DensityMatrix:
+        return {
+            "kind": "densitymatrix_v1",
+            "data": array_record(item.data),
+            "dims": list(item.dims()),
+        }
     if type(item) in (Clifford, StabilizerState):
         if (
             getattr(item, "qargs", None) is not None

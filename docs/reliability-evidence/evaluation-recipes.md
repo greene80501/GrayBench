@@ -8,6 +8,7 @@ the default. These selections are development evaluations, not certified scores.
 |---|---|---|
 | `upstream` | Existing supported upstream boundaries | Original pinned prompt |
 | `qhe0-size-domain-v1` | Task 0 | Original pinned prompt |
+| `qhe2-bell-statevector-v1` | Task 2 | Explicit Qiskit Statevector, two-qubit and amplitude-tolerance contract |
 | `task82-file-semantic-v1` | Task 82 | Original pinned prompt |
 | `task82-file-semantic-v2` | Task 82 | Original pinned prompt; reject files without the required QPY magic |
 | `qhe141-pauli-group-anticommutator-v1` | Task 141 | Explicit Pauli contract appended before request freezing |
@@ -89,3 +90,8 @@ The [task 63 explicit-bases revision](task63-explicit-bases-revision.md) replace
 hidden receiver-basis randomness with a public third argument in a separate
 development recipe. Protected positive implementations and mutants pass their
 predeclared controls, but the finite task remains release-ineligible.
+
+The [task 2 Bell-state revision](task2-statevector-revision.md) replaces the
+upstream call to candidate-controlled `equiv` with a trusted amplitude check.
+Its native controls pass, but protected execution and task admission remain
+pending.

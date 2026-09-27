@@ -4,6 +4,7 @@ import pytest
 
 from graybench.circuit_wire import WireError
 from graybench.sandbox import Candidate
+from graybench.scientific_wire import decode_array
 from graybench.value_wire import decode, encode
 
 np = pytest.importorskip("numpy")
@@ -89,6 +90,23 @@ def test_dimension_mismatch_is_not_silently_repaired():
     record["dims"] = [3]
     with pytest.raises(WireError):
         decode(record)
+
+
+def test_statevector_encoder_does_not_trust_patched_data_property(monkeypatch):
+    source = qi.Statevector.from_label("01")
+    claimed = np.array([2**-0.5, 0, 0, 2**-0.5])
+    with monkeypatch.context() as patch:
+        patch.setattr(qi.Statevector, "data", property(lambda self: claimed))
+        record = encode(source)
+    assert np.array_equal(decode_array(record["data"]), [0, 1, 0, 0])
+
+
+def test_statevector_encoder_does_not_trust_patched_dims_method(monkeypatch):
+    source = qi.Statevector([1, 0, 0, 0], dims=(4,))
+    with monkeypatch.context() as patch:
+        patch.setattr(qi.Statevector, "dims", lambda self: (2, 2))
+        record = encode(source)
+    assert record["dims"] == [4]
 
 
 def test_object_arrays_cannot_transport_executable_objects():

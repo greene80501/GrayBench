@@ -86,6 +86,17 @@ The mutation catalog should remove entanglement, swap control/target, reverse en
 
 Candidate code and tests currently share a Python process, and the host accepts a recognizable stdout line. Separate dictionaries do not separate privileges or protect Python state. A random marker or hidden filename is inadequate if candidate code can read or modify the judge's state.
 
+The replacement bridge also needs an explicit worker-integrity gate: candidate
+code currently executes in the same process as the candidate-side value encoder.
+In a local task-2 repro, patching `Statevector.data` and `dims` caused the old
+encoder to transmit a different state and subsystem shape than the exact
+object stored. Raw-field validation closes those two accessor paths, but
+candidate code could still patch the encoder itself. A trusted oracle can
+verify the reconstructed wire value; it cannot infer an unmodified candidate
+object or construction procedure from a candidate-controlled serialization.
+Keep affected recipes release-ineligible until this boundary is adjudicated
+with adversarial protected controls.
+
 Use a trusted orchestrator and oracle outside the candidate sandbox. The candidate receives the task and individual input values, never expected answers or future checks. Its stdout is diagnostic data, not a verdict channel. It returns bounded data; the trusted side validates that data, computes correctness and records completion itself.
 
 Qiskit complicates this design. Define typed return schemas for circuits, layouts, operators, arrays and artifacts. Never unpickle candidate-controlled objects in a trusted process, and do not assume arbitrary object serialization or QPY parsing is a safe boundary. Validate sizes, nesting, finiteness, identifiers and formats before constructing trusted objects. Constrain and test parsers separately.
