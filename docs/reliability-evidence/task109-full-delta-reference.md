@@ -1,4 +1,4 @@
-# Task109 hard: complete protected reference diagnostic
+# Task109 normal and hard: complete protected reference diagnostics
 
 The unchanged hard canonical solution and upstream test completed all 1,000 calls
 using protocol4 delta-v1 on runtime0379d13. The isolated checkout remained frozen
@@ -20,7 +20,20 @@ The data-only auditor verifies event/transcript hashes, manifest digest,
 bidirectional delta bases and full reconstructed-state hashes, session/sequence
 and declared node/state/frame bounds. It does not execute SDK objects or prove
 semantic transport equivalence. Its six malformed-evidence controls are preserved
-alongside the auditor. The normal full workload has not been run in this diagnostic.
+alongside the auditor.
+
+The normal counterpart also completed all 1,000 calls and 2,000 frames. Its
+frozen runtime source manifest matches the stored header. Data-only audit found
+4,053,919 graph-frame bytes and a final retained state of 18,021 nodes /
+2,459,290 bytes. Candidate active time was 1,523.940 seconds, judge wait
+1,444.482 seconds, and wall time 2,969.890 seconds, with the same concurrency
+and calibration limitations described above.
+
+Normal raw: GrayBench-v4-task109-full-delta-normal-0379d13.jsonl.
+SHA256: bb9b262c848ce7b59b45c57b369f4ff7d69924c4fe5c363cfc6101109710cef6.
+Chain: 2c20caa4b4da2b9a6b806a6fe90c95a5097767b1efdf392edf49c1f9bd8c706f.
+Summary: GrayBench-v4-task109-full-delta-normal-0379d13-audit.json.
+Reproducer: task109_full_delta_normal.py.
 
 Raw: GrayBench-v4-task109-full-delta-hard-0379d13.jsonl.
 SHA256: 37d91eb19dd00adb4ace7743eba907af748a3f00d2610a2c292cef7bb31750c4.
