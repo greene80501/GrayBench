@@ -1,0 +1,94 @@
+{
+  "kind": "graybench_task132_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "a1700ace47eaa1d1b08bc99759a0133c41220b457019ee432a4886ff2009f87e",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "c12ce68728907f0c8a543ae846c1a678afaf9027455b96e250acde0ea909e479",
+      "case": "reference",
+      "candidate_sha256": "e9b6132ccada43d41aa809f86ed4fe63ae3cd98e76ee0f8e58c03251c42d8ef8",
+      "outcome": "pass",
+      "detail": null,
+      "uses_batch_or_sampler": true
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c12ce68728907f0c8a543ae846c1a678afaf9027455b96e250acde0ea909e479",
+      "case": "fabricated_counts",
+      "candidate_sha256": "4731fc1195e771ad3e3d05d7340de68e15867f3b3fce2d6f5a1e54152d9fa969",
+      "outcome": "pass",
+      "detail": null,
+      "uses_batch_or_sampler": false
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c12ce68728907f0c8a543ae846c1a678afaf9027455b96e250acde0ea909e479",
+      "case": "wrong_count_control",
+      "candidate_sha256": "fd6732cddcb3e9fe4c95d74d31b48b049ad09d3f8a9de18e8d6818928091b025",
+      "outcome": "fail",
+      "detail": "Unexpected result value",
+      "uses_batch_or_sampler": false
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c12ce68728907f0c8a543ae846c1a678afaf9027455b96e250acde0ea909e479",
+      "case": "wrong_container_control",
+      "candidate_sha256": "9e64a3aad391123975f805e9c94d214256e9742774c2e8e13841f841834ffcb0",
+      "outcome": "fail",
+      "detail": "Expected list instance, got tuple",
+      "uses_batch_or_sampler": false
+    },
+    {
+      "suite": "hard",
+      "task_digest": "2a103793860942419aaaf0f91459d6600fbf119744a2658e7e9e71824c956317",
+      "case": "reference",
+      "candidate_sha256": "67052869c651a97b0b9232ccc5e7c298908021fa89cc62f42a6256daf4270b00",
+      "outcome": "pass",
+      "detail": null,
+      "uses_batch_or_sampler": true
+    },
+    {
+      "suite": "hard",
+      "task_digest": "2a103793860942419aaaf0f91459d6600fbf119744a2658e7e9e71824c956317",
+      "case": "fabricated_counts",
+      "candidate_sha256": "2344da94b2ea2cf715a7915afefe56e18dfcdfc5ee584e6e8d43f4ca4f52fb27",
+      "outcome": "pass",
+      "detail": null,
+      "uses_batch_or_sampler": false
+    },
+    {
+      "suite": "hard",
+      "task_digest": "2a103793860942419aaaf0f91459d6600fbf119744a2658e7e9e71824c956317",
+      "case": "wrong_count_control",
+      "candidate_sha256": "3d1796bf4a587178b6dbc8ff73102eb2396eeef9185ff59e3141a525bd7237f0",
+      "outcome": "fail",
+      "detail": "Unexpected result value",
+      "uses_batch_or_sampler": false
+    },
+    {
+      "suite": "hard",
+      "task_digest": "2a103793860942419aaaf0f91459d6600fbf119744a2658e7e9e71824c956317",
+      "case": "wrong_container_control",
+      "candidate_sha256": "d87420797de2666fdfa0b6d431c79665a1bb54fa633cb6c2fc0381af17c1f428",
+      "outcome": "fail",
+      "detail": "Expected list instance, got tuple",
+      "uses_batch_or_sampler": false
+    }
+  ]
+}
