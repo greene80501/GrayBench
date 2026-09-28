@@ -39,9 +39,9 @@
 
 **Files:** Modify `engine/src/graybench/cli.py`, add focused native/protected CLI tests to `engine/tests/test_comparison.py`, update `engine/README.md`.
 
-- [ ] Write failing CLI tests for plan and report on both new tracks, wrong setup kind, altered stored context, and exclusive output.
-- [ ] Run red tests; dispatch by frozen track and call each setup's existing pinned-cohort validator. Reuse `compare_runs` for read-only ledger summaries.
-- [ ] Run focused tests, Ruff and format; commit.
+- [x] Write failing CLI tests for plan and report on both new tracks, wrong setup kind, altered stored context, and exclusive output.
+- [x] Run red tests; dispatch by frozen track and call each setup's existing pinned-cohort validator. Reuse `compare_runs` for read-only ledger summaries.
+- [x] Run focused tests, Ruff and format; commit.
 
 ## Task 3: Assurance and integration
 

@@ -246,10 +246,11 @@ those runs retain a publication blocker. Live capability calibration remains
 required for release.
 
 `verify-ledger` validates retained evidence. `summary` reports completeness and
-score blockers before accuracy. The existing `comparison-plan` and `compare`
-commands handle matched historical evaluation-recipe setups and keep normal/hard
-task families together during paired resampling; they do not yet accept native
-or new protected-semantic setup files. See
+score blockers before accuracy. `comparison-plan` and `compare` accept matched
+historical, native, or protected-semantic setup files and retain paired task
+families during resampling. They reject mixed tracks, suites, populations,
+exclusions, judge conditions and incomplete source/request ancestry. Results
+remain development-only and do not certify equivalent provider settings. See
 [report integrity](../docs/reliability-evidence/summary-integrity.md),
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
 [comparisons](../docs/reliability-evidence/paired-comparisons.md).

@@ -35,6 +35,26 @@ from graybench.transport import Transport
 from graybench.upstream import UpstreamJudge
 
 
+def _comparison_setup(payload: bytes):
+    track = json.loads(payload).get("protocol", {}).get("track")
+    setup_type = {
+        "qhe-pinned-native-v1": NativeCampaignSetup,
+        "graybench-protected-semantic-v1": ProtectedCampaignSetup,
+    }.get(track, CampaignSetup)
+    return setup_type.model_validate_json(payload)
+
+
+def _comparison_tasks(setup, cache: Path):
+    if isinstance(setup, NativeCampaignSetup):
+        tasks = setup.tasks(cache)
+        setup.validate_for_run(cache, setup.protocol, tasks=tasks)
+        return tasks
+    if isinstance(setup, ProtectedCampaignSetup):
+        setup.validate_for_run(cache, setup.protocol)
+        return setup.tasks
+    return setup.tasks(cache)
+
+
 def main():
     parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -226,10 +246,10 @@ def main():
     if args.command == "doctor":
         result = environment()
     elif args.command == "comparison-plan":
-        left = CampaignSetup.model_validate_json(args.left_setup.read_bytes())
-        right = CampaignSetup.model_validate_json(args.right_setup.read_bytes())
-        tasks = left.tasks(args.cache)
-        right.tasks(args.cache)
+        left = _comparison_setup(args.left_setup.read_bytes())
+        right = _comparison_setup(args.right_setup.read_bytes())
+        tasks = _comparison_tasks(left, args.cache)
+        _comparison_tasks(right, args.cache)
         plan = make_plan(
             left.protocol,
             right.protocol,
@@ -248,26 +268,28 @@ def main():
         }
     elif args.command == "compare":
         plan = ComparisonPlan.model_validate_json(args.plan.read_bytes())
-        tasks = tuple(
-            task
-            for suite in ("normal", "hard")
-            for task in load_suite(suite, args.cache)
-            if f"{suite}/{task.public.task_id}" in plan.left.task_keys
-        )
+        tasks = ()
+        if plan.left.track == "upstream":
+            tasks = tuple(
+                task
+                for suite in ("normal", "hard")
+                for task in load_suite(suite, args.cache)
+                if f"{suite}/{task.public.task_id}" in plan.left.task_keys
+            )
         if not args.left_ledger.is_file() or not args.right_ledger.is_file():
             parser.error("Comparison ledgers must already exist")
         left, right = Ledger(args.left_ledger), Ledger(args.right_ledger)
         try:
             if plan.left.track != "upstream":
                 setups = [
-                    CampaignSetup.model_validate_json(canonical(book.context(run)["setup"]))
+                    _comparison_setup(canonical(book.context(run)["setup"]))
                     for book, run in ((left, args.left_run), (right, args.right_run))
                 ]
                 for setup, expected in zip(setups, (plan.left, plan.right), strict=True):
                     if setup.protocol != expected:
                         parser.error("Stored setup differs from comparison protocol")
-                    setup.tasks(args.cache)
-                tasks = setups[0].tasks(args.cache)
+                    _comparison_tasks(setup, args.cache)
+                tasks = _comparison_tasks(setups[0], args.cache)
             report = compare_runs(plan, left, args.left_run, right, args.right_run, tasks=tasks)
         finally:
             left.close()

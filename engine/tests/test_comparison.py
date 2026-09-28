@@ -311,3 +311,187 @@ def test_cli_freezes_plan_and_writes_comparison_without_overwriting(
         cli.main()
     assert output.read_bytes() == original
     capsys.readouterr()
+
+
+def _exercise_track_cli(left_setup, right_setup, cache, tmp_path, monkeypatch, capsys):
+    from graybench import cli
+    from graybench.campaign_setup import execution_context
+    from graybench.comparison import ComparisonPlan
+    from graybench.identity import canonical
+
+    left_path, right_path, plan_path, report_path = (
+        tmp_path / name for name in ("left.json", "right.json", "plan.json", "report.json")
+    )
+    left_path.write_bytes(canonical(left_setup.model_dump(mode="json")))
+    right_path.write_bytes(canonical(right_setup.model_dump(mode="json")))
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "comparison-plan",
+            str(left_path),
+            str(right_path),
+            str(cache),
+            str(plan_path),
+            "--seed",
+            "5",
+            "--resamples",
+            "1000",
+            "--configuration-comparison",
+            "Synthetic local setups; no provider equivalence claim",
+        ],
+    )
+    cli.main()
+    plan = ComparisonPlan.model_validate_json(plan_path.read_bytes())
+    assert plan.left.track == left_setup.protocol.track
+    assert plan.right.track == right_setup.protocol.track
+    capsys.readouterr()
+    left_ledger_path, right_ledger_path = (
+        tmp_path / name for name in ("left.sqlite", "right.sqlite")
+    )
+    books = (Ledger(left_ledger_path), Ledger(right_ledger_path))
+    try:
+        left_run = books[0].create_run(left_setup.protocol, execution_context(left_setup))
+        right_run = books[1].create_run(right_setup.protocol, execution_context(right_setup))
+    finally:
+        for book in books:
+            book.close()
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "compare",
+            str(plan_path),
+            str(left_ledger_path),
+            left_run,
+            str(right_ledger_path),
+            right_run,
+            str(cache),
+            str(report_path),
+        ],
+    )
+    cli.main()
+    report = __import__("json").loads(report_path.read_text(encoding="utf-8"))
+    assert report["status"] == "unscored"
+    assert report["comparison"] is None
+    assert report["publication_eligible"] is False
+    original = report_path.read_bytes()
+    with pytest.raises(FileExistsError):
+        cli.main()
+    assert report_path.read_bytes() == original
+    capsys.readouterr()
+
+
+def test_native_cli_comparison_uses_frozen_setup(tmp_path, monkeypatch, capsys):
+    from test_native_campaign import native_setup
+    from test_native_cohort import cache as synthetic_cache
+
+    cache = synthetic_cache.__wrapped__(tmp_path / "cache", monkeypatch)
+    left = native_setup(cache)
+    right = native_setup(cache)
+    _exercise_track_cli(left, right, cache, tmp_path, monkeypatch, capsys)
+
+
+@pytest.mark.skipif(not PINNED_CACHE, reason="Pinned source cache required")
+def test_protected_cli_comparison_uses_frozen_setup(tmp_path, monkeypatch, capsys):
+    from test_protected_campaign import two_task_setup
+
+    left = two_task_setup()
+    right = two_task_setup()
+    _exercise_track_cli(left, right, Path(PINNED_CACHE), tmp_path, monkeypatch, capsys)
+
+
+def test_comparison_cli_rejects_mixed_setup_kinds(tmp_path, monkeypatch):
+    from test_native_campaign import native_setup
+    from test_native_cohort import IMAGE
+    from test_native_cohort import cache as synthetic_cache
+
+    from graybench import cli
+    from graybench.campaign_setup import build_setup
+    from graybench.identity import canonical
+
+    cache = synthetic_cache.__wrapped__(tmp_path / "cache", monkeypatch)
+    native = native_setup(cache)
+    historical = build_setup("historical", native.protocol.model, native.tasks(cache), IMAGE)
+    left, right, output = (tmp_path / name for name in ("left.json", "right.json", "plan.json"))
+    left.write_bytes(canonical(native.model_dump(mode="json")))
+    right.write_bytes(canonical(historical.model_dump(mode="json")))
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "comparison-plan",
+            str(left),
+            str(right),
+            str(cache),
+            str(output),
+            "--seed",
+            "5",
+            "--configuration-comparison",
+            "Must reject mixed tracks",
+        ],
+    )
+    with pytest.raises(StateError, match="track"):
+        cli.main()
+    assert not output.exists()
+
+
+def test_native_compare_rejects_altered_stored_context(tmp_path, monkeypatch, capsys):
+    from test_native_campaign import native_setup
+    from test_native_cohort import cache as synthetic_cache
+
+    from graybench import cli
+    from graybench.campaign_setup import execution_context
+    from graybench.identity import canonical
+
+    cache = synthetic_cache.__wrapped__(tmp_path / "cache", monkeypatch)
+    frozen = native_setup(cache)
+    setup_paths = [tmp_path / name for name in ("left.json", "right.json")]
+    for path in setup_paths:
+        path.write_bytes(canonical(frozen.model_dump(mode="json")))
+    plan_path = tmp_path / "plan.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "comparison-plan",
+            *(str(path) for path in setup_paths),
+            str(cache),
+            str(plan_path),
+            "--seed",
+            "5",
+            "--configuration-comparison",
+            "Synthetic local setup",
+        ],
+    )
+    cli.main()
+    capsys.readouterr()
+    books = [Ledger(tmp_path / name) for name in ("left.sqlite", "right.sqlite")]
+    try:
+        changed = execution_context(frozen)
+        changed["setup"]["cohort"]["label"] = "altered after plan"
+        runs = (
+            books[0].create_run(frozen.protocol, changed),
+            books[1].create_run(frozen.protocol, execution_context(frozen)),
+        )
+    finally:
+        for book in books:
+            book.close()
+    report_path = tmp_path / "report.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "compare",
+            str(plan_path),
+            str(tmp_path / "left.sqlite"),
+            runs[0],
+            str(tmp_path / "right.sqlite"),
+            runs[1],
+            str(cache),
+            str(report_path),
+        ],
+    )
+    with pytest.raises((StateError, ValueError), match="cohort|setup"):
+        cli.main()
+    assert not report_path.exists()
