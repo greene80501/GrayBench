@@ -10,6 +10,7 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from graybench.adapter_provenance import adapter_code_manifest
+from graybench.capability_probe import CapabilityProbe, verify_probe_bundle
 from graybench.campaign import GenerationRunner
 from graybench.contracts import (
     Contract,
@@ -125,6 +126,9 @@ def freeze_protected_cohort(
 
 class ProtectedCampaignSetup(Contract):
     protocol: Protocol
+    capability_probes: tuple[CapabilityProbe, ...] = Field(
+        default=(), exclude_if=lambda value: not value
+    )
     cohort: ProtectedCohort
     tasks: tuple[ProtectedSemanticTask, ...] = Field(min_length=1)
     purpose: Literal["development"] = "development"
@@ -154,6 +158,11 @@ class ProtectedCampaignSetup(Contract):
     def validate_for_run(
         self, cache: Path, run_protocol: Protocol, *, docker: str = "docker"
     ) -> dict[str, JudgeTask]:
+        verify_probe_bundle(
+            self.protocol.model,
+            self.capability_probes,
+            adapter(self.protocol.model.adapter),
+        )
         if self.protocol != run_protocol:
             raise StateError("Stored protected setup differs from run protocol")
         if (
@@ -225,6 +234,7 @@ def build_protected_setup(
     repeats: int = 1,
     system_prompt: str | None = None,
     model_observation_timing: ModelObservationTiming | None = None,
+    capability_probes: tuple[CapabilityProbe, ...] = (),
 ) -> ProtectedCampaignSetup:
     require_credential_scope_for_new_run(model)
     pinned = validate_protected_cohort(cohort, tasks, cache=cache)
@@ -251,10 +261,12 @@ def build_protected_setup(
         ),
         cohort=cohort,
         tasks=tasks,
+        capability_probes=capability_probes,
     )
     binding = cohort_identities(tasks, pinned, setup_stub.judge())
     source = source_manifest()["digest"]
     provider = adapter(model.adapter)
+    verify_probe_bundle(model, capability_probes, provider)
     adapter_manifest = adapter_code_manifest(provider)
     adapter_digest = identity(adapter_manifest)
     requests = {}

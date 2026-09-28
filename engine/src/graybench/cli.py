@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
+from graybench.capability_probe import CapabilityProbe, capture_probe, verify_accepted_probe
 from graybench.comparison import ComparisonPlan, compare_runs, make_plan
 from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol
 from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
@@ -124,6 +125,11 @@ def main():
     summary.add_argument("run_id")
     discover = commands.add_parser("discover", help="Read model/server metadata without generation")
     discover.add_argument("model_spec", type=Path)
+    probe = commands.add_parser(
+        "capability-probe", help="Make one non-benchmark provider request and save its evidence"
+    )
+    probe.add_argument("model_spec", type=Path)
+    probe.add_argument("output", type=Path)
     observe = commands.add_parser(
         "campaign-observe", help="Save provider metadata and establish a discovery baseline"
     )
@@ -164,6 +170,7 @@ def main():
     plan.add_argument("--max-pre-observation-age", type=float)
     plan.add_argument("--max-post-observation-delay", type=float)
     plan.add_argument("--system-prompt", type=Path)
+    plan.add_argument("--capability-probe", action="append", type=Path, default=[])
     selection = plan.add_mutually_exclusive_group(required=True)
     selection.add_argument(
         "--task", action="append", help="Exact suite/task key; repeat for multiple tasks"
@@ -208,6 +215,7 @@ def main():
     )
     native_plan.add_argument("--repeats", type=int, default=1)
     native_plan.add_argument("--system-prompt", type=Path)
+    native_plan.add_argument("--capability-probe", action="append", type=Path, default=[])
     native_create = commands.add_parser(
         "native-create", help="Create a frozen native development run"
     )
@@ -234,6 +242,7 @@ def main():
     protected_plan.add_argument("--image", required=True)
     protected_plan.add_argument("--repeats", type=int, default=1)
     protected_plan.add_argument("--system-prompt", type=Path)
+    protected_plan.add_argument("--capability-probe", action="append", type=Path, default=[])
     protected_create = commands.add_parser(
         "protected-create", help="Create a frozen protected development run"
     )
@@ -363,6 +372,26 @@ def main():
             result = ledger.recover_post_observation_check(args.attempt_id)
         finally:
             ledger.close()
+    elif args.command == "capability-probe":
+        spec = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        provider = adapter(spec.adapter)
+        # Reserve the evidence path before any billable call. A failed invocation
+        # remains visible and is never silently retried into the same artifact.
+        with args.output.open("x", encoding="utf-8") as output:
+            record = capture_probe(spec, provider)
+            output.write(record.model_dump_json(indent=2) + "\n")
+        qualification_error = None
+        try:
+            verify_accepted_probe(record, spec, provider)
+        except ValueError as exc:
+            qualification_error = str(exc)
+        result = {
+            "probe_digest": record.digest,
+            "delivery_kind": record.delivery_kind,
+            "http_status": record.status,
+            "qualifies_for_probe_accepted": qualification_error is None,
+            "qualification_error": qualification_error,
+        }
     elif args.command == "campaign-plan":
         if args.protocol_version != "3.3" and (
             args.max_pre_observation_age is not None or args.max_post_observation_delay is not None
@@ -408,6 +437,10 @@ def main():
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt
             else None,
+            capability_probes=tuple(
+                CapabilityProbe.model_validate_json(path.read_bytes())
+                for path in args.capability_probe
+            ),
         )
         # Exclusive creation preserves an existing experiment instead of silently rewriting it.
         with args.output.open("x", encoding="utf-8") as output:
@@ -511,6 +544,10 @@ def main():
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt
             else None,
+            capability_probes=tuple(
+                CapabilityProbe.model_validate_json(path.read_bytes())
+                for path in args.capability_probe
+            ),
         )
         with args.output.open("x", encoding="utf-8") as output:
             output.write(setup.model_dump_json(indent=2) + "\n")
@@ -607,6 +644,10 @@ def main():
             system_prompt=args.system_prompt.read_text(encoding="utf-8")
             if args.system_prompt
             else None,
+            capability_probes=tuple(
+                CapabilityProbe.model_validate_json(path.read_bytes())
+                for path in args.capability_probe
+            ),
         )
         with args.output.open("x", encoding="utf-8") as output:
             output.write(setup.model_dump_json(indent=2) + "\n")

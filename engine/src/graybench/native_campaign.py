@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import Field
 
 from graybench.adapter_provenance import adapter_code_manifest
+from graybench.capability_probe import CapabilityProbe, verify_probe_bundle
 from graybench.contracts import (
     Contract,
     ModelObservationTiming,
@@ -26,6 +27,9 @@ from graybench.providers import adapter
 
 class NativeCampaignSetup(Contract):
     protocol: Protocol
+    capability_probes: tuple[CapabilityProbe, ...] = Field(
+        default=(), exclude_if=lambda value: not value
+    )
     cohort: NativeCohort
     purpose: Literal["development"] = "development"
     judge_timeout: float = Field(default=120.0, gt=0, le=3600, allow_inf_nan=False)
@@ -69,6 +73,11 @@ class NativeCampaignSetup(Contract):
         tasks: tuple[JudgeTask, ...] | None = None,
         docker: str = "docker",
     ) -> tuple[JudgeTask, ...]:
+        verify_probe_bundle(
+            self.protocol.model,
+            self.capability_probes,
+            adapter(self.protocol.model.adapter),
+        )
         if self.protocol != run_protocol:
             raise StateError("Stored native setup differs from run protocol")
         if (
@@ -110,6 +119,7 @@ def build_native_setup(
     repeats: int = 1,
     system_prompt: str | None = None,
     model_observation_timing: ModelObservationTiming | None = None,
+    capability_probes: tuple[CapabilityProbe, ...] = (),
     judge_timeout: float = 120.0,
     output_limit: int = 1048576,
     memory_bytes: int = 2 * 1024**3,
@@ -143,6 +153,7 @@ def build_native_setup(
         ),
     )
     provider = adapter(model.adapter)
+    verify_probe_bundle(model, capability_probes, provider)
     adapter_manifest = adapter_code_manifest(provider)
     adapter_digest = identity(adapter_manifest)
     requests = {}
@@ -179,7 +190,9 @@ def build_native_setup(
         judge_digest=binding["judge_digest"],
         analysis_digest=source,
     )
-    setup = NativeCampaignSetup(protocol=protocol, cohort=cohort, **limits)
+    setup = NativeCampaignSetup(
+        protocol=protocol, cohort=cohort, capability_probes=capability_probes, **limits
+    )
     setup.validate_for_run(cache, protocol, tasks=tasks)
     return setup
 

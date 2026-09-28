@@ -125,7 +125,7 @@ def test_profile_path_and_digest_are_bound_to_prepared_request(task):
 
 
 def test_campaign_freezes_profile_in_model_and_request_identity(task):
-    current = profile()
+    current = profile(probe_digests=())
     spec = model(capability=current)
     private = JudgeTask(
         public=task,
@@ -160,6 +160,22 @@ def test_transport_rejects_profile_drift_before_network(task, change):
         transport = Transport(spec, client=client)
         with pytest.raises(ValueError, match="capability"):
             transport.generate(request, OpenAIChat())
+    assert not calls
+
+
+def test_discovery_rejects_copied_profile_drift_before_network():
+    spec = model(capability=profile())
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(200, json={})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        transport = Transport(spec, client=client)
+        transport.spec = spec.model_copy(update={"capability_profile": profile(model="other")})
+        with pytest.raises(ValidationError, match="capability profile"):
+            transport.discover(OpenAIChat())
     assert not calls
 
 

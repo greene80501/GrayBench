@@ -14,6 +14,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from graybench.capability_probe import CapabilityProbe, verify_probe_bundle
 from graybench.contracts import (
     Generation,
     ModelSpec,
@@ -24,10 +25,30 @@ from graybench.contracts import (
 from graybench.identity import canonical, identity
 from graybench.ledger_evidence import event_records, verify_records
 from graybench.provenance import source_manifest
+from graybench.providers import adapter
 
 
 class StateError(ValueError):
     pass
+
+
+def _probe_artifact_status(protocol: Protocol, setup: dict | None) -> str:
+    profile = protocol.model.capability_profile
+    if profile is None or not profile.probe_digests:
+        if type(setup) is dict and setup.get("capability_probes"):
+            return "unexpected_records"
+        return "no_probe_claims"
+    if type(setup) is not dict or setup.get("protocol") != protocol.model_dump(mode="json"):
+        return "missing_or_invalid"
+    try:
+        records = tuple(
+            CapabilityProbe.model_validate_json(canonical(value))
+            for value in setup.get("capability_probes", ())
+        )
+        verify_probe_bundle(protocol.model, records, adapter(protocol.model.adapter))
+    except (ValueError, TypeError, KeyError):
+        return "missing_or_invalid"
+    return "verified_local_records"
 
 
 SCHEMA = """
@@ -176,6 +197,12 @@ class Ledger:
     def create_run(self, protocol: Protocol, context: dict | None = None) -> str:
         if protocol.model.capability_profile is not None:
             ModelSpec.model_validate_json(protocol.model.model_dump_json())
+        probe_status = _probe_artifact_status(
+            protocol,
+            context.get("setup") if type(context) is dict else None,
+        )
+        if probe_status not in {"no_probe_claims", "verified_local_records"}:
+            raise StateError("Capability probe artifacts are missing or invalid")
         require_credential_scope_for_new_run(protocol.model)
         if protocol.track in {"qhe-pinned-native-v1", "graybench-protected-semantic-v1"} and (
             protocol.retry.max_attempts != 1
@@ -906,6 +933,7 @@ class Ledger:
         declared_setup = self.blob(context_row[0]).get("setup") if context_row else None
         recipe = declared_setup.get("evaluation_recipe") if type(declared_setup) is dict else None
         capability = protocol.model.capability_profile
+        probe_status = _probe_artifact_status(protocol, declared_setup)
         return {
             "run_id": run_id,
             "protocol_digest": recorded_protocol_digest,
@@ -958,6 +986,11 @@ class Ledger:
                 "reviewed_task_and_protocol_admission_required",
                 "independent_reproducibility_required",
                 *(["provider_capability_profile_missing"] if capability is None else []),
+                *(
+                    ["provider_probe_artifacts_missing_or_invalid"]
+                    if probe_status not in {"no_probe_claims", "verified_local_records"}
+                    else []
+                ),
                 "provider_effective_settings_not_attested",
                 *(
                     ["model_discovery_unverified"]
@@ -977,6 +1010,8 @@ class Ledger:
                 "status": "operator_evidence_recorded" if capability else "missing",
                 "profile_digest": capability.digest if capability else None,
                 "profile": capability.model_dump(mode="json") if capability else None,
+                "probe_digests": list(capability.probe_digests) if capability else [],
+                "probe_artifacts_status": probe_status,
                 "requested_settings": [
                     setting.model_dump(mode="json") for setting in protocol.model.settings
                 ],

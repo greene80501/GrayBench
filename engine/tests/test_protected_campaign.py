@@ -7,11 +7,12 @@ from pathlib import Path
 
 import httpx
 import pytest
+from test_capability_probe import accepted_probe, matching_profile, spec
 
 from graybench.adapter_provenance import adapter_code_manifest
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
-from graybench.contracts import ModelSpec, Protocol, RetryPolicy
+from graybench.contracts import CapabilityProfile, ModelSpec, Protocol, RetryPolicy
 from graybench.datasets import load_suite
 from graybench.ledger import StateError
 from graybench.protected_campaign import (
@@ -58,6 +59,43 @@ def setup(suite="normal"):
     result = build_protected_setup("fixture", MODEL, cohort, (task,), cache=cache)
     assert result.protocol.adapter_code_manifest == adapter_code_manifest(Ollama())
     return result
+
+
+def test_protected_plan_rejects_missing_capability_probe_artifact():
+    baseline = setup()
+    profile = CapabilityProfile(
+        adapter="ollama",
+        model="fixture",
+        base_url="http://localhost:11434",
+        generation_path="/api/chat",
+        checked_on="2026-09-28",
+        documentation=("https://docs.ollama.com/api/chat",),
+        probe_digests=("a" * 64,),
+    )
+    with pytest.raises(ValueError, match="probe"):
+        build_protected_setup(
+            "missing-probe",
+            MODEL.model_copy(update={"capability_profile": profile}),
+            baseline.cohort,
+            baseline.tasks,
+            cache=Path(CACHE),
+        )
+
+
+def test_protected_plan_freezes_verified_capability_probe():
+    baseline = setup()
+    record = accepted_probe()
+    qualified = build_protected_setup(
+        "with-probe",
+        spec(profile=matching_profile(record)),
+        baseline.cohort,
+        baseline.tasks,
+        cache=Path(CACHE),
+        capability_probes=(record,),
+    )
+    restored = ProtectedCampaignSetup.model_validate_json(qualified.model_dump_json())
+    assert restored.capability_probes[0].digest == record.digest
+    assert restored.validate_for_run(Path(CACHE), restored.protocol)
 
 
 def test_protected_resume_rejects_adapter_code_drift(monkeypatch):

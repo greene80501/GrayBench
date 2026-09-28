@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from graybench.adapter_provenance import adapter_code_manifest
+from graybench.capability_probe import CapabilityProbe, verify_probe_bundle
 from graybench.contracts import (
     Contract,
     ExtractionPolicy,
@@ -26,6 +27,9 @@ from graybench.providers import adapter
 
 class CampaignSetup(Contract):
     protocol: Protocol
+    capability_probes: tuple[CapabilityProbe, ...] = Field(
+        default=(), exclude_if=lambda value: not value
+    )
     purpose: Literal["development"] = "development"
     evaluation_recipe: EvaluationRecipe = "upstream"
     image: str = Field(pattern="^sha256:[0-9a-f]{64}$")
@@ -60,6 +64,11 @@ class CampaignSetup(Contract):
         )
 
     def tasks(self, cache: Path):
+        verify_probe_bundle(
+            self.protocol.model,
+            self.capability_probes,
+            adapter(self.protocol.model.adapter),
+        )
         if (
             self.protocol.adapter_code_manifest is not None
             and adapter_code_manifest(adapter(self.protocol.model.adapter))
@@ -87,6 +96,11 @@ def host_contract(observation):
 
 
 def execution_context(setup: CampaignSetup):
+    verify_probe_bundle(
+        setup.protocol.model,
+        setup.capability_probes,
+        adapter(setup.protocol.model.adapter),
+    )
     observation = environment()
     if observation["source"]["digest"] != setup.protocol.generation_code_digest:
         raise StateError("Setup source does not match this engine")
@@ -122,6 +136,7 @@ def build_setup(
     extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
     protocol_version: Literal["3.1", "3.2", "3.3"] = "3.1",
     model_observation_timing: ModelObservationTiming | None = None,
+    capability_probes: tuple[CapabilityProbe, ...] = (),
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
     require_credential_scope_for_new_run(model)
@@ -132,6 +147,7 @@ def build_setup(
     binding = cohort_identities(tasks, judge)
     source = source_manifest()["digest"]
     provider = adapter(model.adapter)
+    verify_probe_bundle(model, capability_probes, provider)
     adapter_manifest = adapter_code_manifest(provider)
     adapter_digest = identity(adapter_manifest)
     requests = {}
@@ -166,6 +182,7 @@ def build_setup(
     )
     setup = CampaignSetup(
         protocol=protocol,
+        capability_probes=capability_probes,
         image=image,
         parser_image=parser_image,
         evaluation_recipe=evaluation_recipe,

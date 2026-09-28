@@ -251,6 +251,12 @@ limits. Its digest travels with new prepared requests. Reports distinguish
 this operator evidence from effective settings, which remain unattested by a
 successful request alone. See the
 [capability evidence contract](../docs/reliability-evidence/provider-capability-evidence.md).
+`capability-probe MODEL_SPEC OUTPUT` makes one non-benchmark provider request
+and saves a non-secret record. All three plan commands accept repeated
+`--capability-probe PATH` arguments and embed every cited accepted probe in
+their setup. A bare digest cannot qualify a new campaign. The local record
+verifies request acceptance and consistency, not effective decoding or provider
+weight identity.
 
 `verify-ledger` validates retained evidence. `summary` reports completeness and
 score blockers before accuracy. `comparison-plan` and `compare` accept matched

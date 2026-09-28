@@ -7,12 +7,19 @@ import httpx
 import pytest
 from test_native_cohort import IMAGE, selected
 from test_native_cohort import cache as _synthetic_cache
+from test_capability_probe import accepted_probe, matching_profile, spec
 
 from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign_setup import build_setup
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
-from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol, RetryPolicy
+from graybench.contracts import (
+    CapabilityProfile,
+    ModelObservationTiming,
+    ModelSpec,
+    Protocol,
+    RetryPolicy,
+)
 from graybench.ledger import StateError
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import freeze_native_cohort
@@ -64,6 +71,53 @@ def native_setup(cache, suite="normal", exception_policy="conservative_unattribu
         excluded=excluded,
     )
     return build_native_setup("fixture", MODEL, cohort, tasks, cache=cache)
+
+
+def test_native_plan_rejects_missing_capability_probe_artifact(native_cache):
+    tasks, excluded = selected(native_cache, "normal", "custom_development")
+    cohort = freeze_native_cohort(
+        tasks,
+        cache=native_cache,
+        suite="normal",
+        population="custom_development",
+        image=IMAGE,
+        extraction="raw_or_single_python_fence_v1",
+        label="probe requirement",
+        excluded=excluded,
+    )
+    profile = CapabilityProfile(
+        adapter="ollama",
+        model="fixture",
+        base_url="http://localhost:11434",
+        generation_path="/api/chat",
+        checked_on="2026-09-28",
+        documentation=("https://docs.ollama.com/api/chat",),
+        probe_digests=("a" * 64,),
+    )
+    with pytest.raises(ValueError, match="probe"):
+        build_native_setup(
+            "missing-probe",
+            MODEL.model_copy(update={"capability_profile": profile}),
+            cohort,
+            tasks,
+            cache=native_cache,
+        )
+
+
+def test_native_plan_freezes_verified_capability_probe(native_cache):
+    baseline = native_setup(native_cache)
+    record = accepted_probe()
+    qualified = build_native_setup(
+        "with-probe",
+        spec(profile=matching_profile(record)),
+        baseline.cohort,
+        baseline.tasks(native_cache),
+        cache=native_cache,
+        capability_probes=(record,),
+    )
+    restored = NativeCampaignSetup.model_validate_json(qualified.model_dump_json())
+    assert restored.capability_probes[0].digest == record.digest
+    assert restored.validate_for_run(native_cache, restored.protocol)
 
 
 def test_native_resume_rejects_adapter_code_drift(native_cache, monkeypatch):

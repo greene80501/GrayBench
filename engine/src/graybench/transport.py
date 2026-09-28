@@ -339,6 +339,8 @@ class Transport:
     def discover(
         self, adapter: Adapter, *, expected_adapter_code_digest: str | None = None
     ) -> list[Observation]:
+        if self.spec.capability_profile is not None:
+            ModelSpec.model_validate_json(self.spec.model_dump_json())
         if adapter.name != self.spec.adapter:
             raise ValueError("Discovery adapter differs from frozen model identity")
         if (
