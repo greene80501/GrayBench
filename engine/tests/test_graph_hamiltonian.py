@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 import numpy as np
 import pytest
@@ -6,7 +7,36 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import HamiltonianGate
 from test_graph_converted_instructions import arenas, transfer
 
-BASELINE_IMAGE = "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd"
+
+@pytest.fixture(scope="module")
+def has_registered_storage():
+    """Probe the selected runtime's capability rather than assuming it from its digest."""
+    image = os.environ["GRAYBENCH_TEST_IMAGE"]
+    result = subprocess.run(
+        [
+            os.environ.get("GRAYBENCH_DOCKER", "docker"),
+            "run",
+            "--rm",
+            "--platform",
+            "linux/amd64",
+            "--network",
+            "none",
+            "--read-only",
+            "--tmpfs",
+            "/tmp:rw,nosuid,nodev,size=64m",
+            image,
+            "python",
+            "-c",
+            "from scipy.linalg import _internal_matfuncs; "
+            "print(int(hasattr(_internal_matfuncs, '_graybench_storage_view')))",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() in {"0", "1"}
+    return result.stdout.strip() == "1"
 
 
 @pytest.mark.parametrize("cached", [False, True])
@@ -40,7 +70,9 @@ def test_hamiltonian_raw_matrix_alias_and_definition_are_preserved(cached):
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Pinned image required")
 @pytest.mark.parametrize("transport", ["snapshot-v1", "delta-v1"])
 @pytest.mark.parametrize("wrong_time", [False, True])
-def test_protected_hamiltonian_matrix_and_cached_definition(transport, wrong_time):
+def test_protected_hamiltonian_matrix_and_cached_definition(
+    transport, wrong_time, has_registered_storage
+):
     from test_graph_bridge import task
 
     from graybench.upstream import UpstreamJudge
@@ -79,8 +111,12 @@ def answer(gate=None):
         protocol=4,
         graph_transport=transport,
     ).evaluate(task(check), code)
-    image = os.environ["GRAYBENCH_TEST_IMAGE"]
-    expected = "fail" if wrong_time else "unsupported" if image == BASELINE_IMAGE else "pass"
+    if wrong_time:
+        expected = "fail"
+    elif has_registered_storage:
+        expected = "pass"
+    else:
+        expected = "unsupported"
     assert result.outcome == expected, result.evidence.get("detail")
     if expected == "unsupported":
         assert result.evidence["detail"] == "External array buffer requires a graph codec"

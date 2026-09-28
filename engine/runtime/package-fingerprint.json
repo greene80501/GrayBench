@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "platform": "linux/amd64",
+  "python_version": "3.12.14",
+  "qiskit_version": "2.4.2",
+  "numpy_version": "2.2.4",
+  "scipy_version": "1.18.1",
+  "python_package_count": 96,
+  "python_packages_sha256": "2c9f5f54ee73ac8fe950d6607fcbdc8582b1a37f88d1b06bd81006ae10dfaa00",
+  "debian_package_count": 157,
+  "debian_packages_sha256": "073a13e3684c6d875cb0bbbf4eb792e5d64fc887fb315e3d7405361b47c7f572"
+}

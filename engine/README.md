@@ -94,6 +94,9 @@ explicit; resource ceilings remain subject to calibration. Candidate output has
 no verdict authority. Unsupported interfaces and judge infrastructure failures
 remain unscored blockers. Basic exception type/argument transport is bounded;
 arbitrary exception metadata is not supported.
+The [runtime reproduction recipe](runtime/README.md) freezes Debian packages
+and checks a rebuilt image against the historical evaluator's installed-package
+fingerprint. Matching that fingerprint does not certify benchmark scores.
 
 ## Campaigns and provenance
 
