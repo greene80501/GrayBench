@@ -495,3 +495,209 @@ def test_native_compare_rejects_altered_stored_context(tmp_path, monkeypatch, ca
     with pytest.raises((StateError, ValueError), match="cohort|setup"):
         cli.main()
     assert not report_path.exists()
+
+
+@pytest.mark.skipif(
+    not PINNED_CACHE or not os.environ.get("GRAYBENCH_TEST_IMAGE"),
+    reason="Pinned source cache and Docker image required",
+)
+def test_completed_protected_comparison_uses_judged_samples(tmp_path, monkeypatch, capsys):
+    import httpx
+    from test_protected_campaign import MODEL, direct_solution, handler, setup
+
+    from graybench import cli
+    from graybench.campaign_setup import execution_context
+    from graybench.identity import canonical
+    from graybench.protected_campaign import ProtectedCampaign
+    from graybench.transport import Transport
+
+    frozen = setup()
+    setup_paths = [tmp_path / name for name in ("left.json", "right.json")]
+    for path in setup_paths:
+        path.write_bytes(canonical(frozen.model_dump(mode="json")))
+    plan_path = tmp_path / "plan.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "comparison-plan",
+            *(str(path) for path in setup_paths),
+            PINNED_CACHE,
+            str(plan_path),
+            "--seed",
+            "5",
+            "--resamples",
+            "1000",
+            "--configuration-comparison",
+            "Fixture answers through one pinned protected oracle",
+        ],
+    )
+    cli.main()
+    capsys.readouterr()
+    runs = []
+    for label, answer in (
+        ("left", direct_solution()),
+        (
+            "right",
+            "def ghz_amplitudes(layout):\n"
+            "    return [[1.0,0.0]] + [[0.0,0.0] for _ in range(127)]\n",
+        ),
+    ):
+        book = Ledger(tmp_path / f"{label}.sqlite")
+        try:
+            run = book.create_run(frozen.protocol, execution_context(frozen))
+
+            def response(request, answer=answer):
+                if request.url.path != "/api/chat":
+                    return handler(request)
+                return httpx.Response(
+                    200,
+                    json={
+                        "model": "fixture",
+                        "done": True,
+                        "message": {"role": "assistant", "content": answer},
+                    },
+                )
+
+            with httpx.Client(transport=httpx.MockTransport(response)) as client:
+                campaign = ProtectedCampaign(
+                    book, run, frozen, Path(PINNED_CACHE), Transport(MODEL, client=client)
+                )
+                assert campaign.step()["state"] == "dispatched"
+                assert campaign.step()["state"] == "judged"
+            assert book.summary(run)["complete"] is True
+            runs.append(run)
+        finally:
+            book.close()
+    report_path = tmp_path / "report.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "compare",
+            str(plan_path),
+            str(tmp_path / "left.sqlite"),
+            runs[0],
+            str(tmp_path / "right.sqlite"),
+            runs[1],
+            PINNED_CACHE,
+            str(report_path),
+        ],
+    )
+    cli.main()
+    report = __import__("json").loads(report_path.read_text(encoding="utf-8"))
+    assert report["status"] == "development_only"
+    assert report["comparison"]["left_minus_right"] == 1
+    assert report["comparison"]["interval_unavailable_reason"] == "fewer_than_two_families"
+    assert report["publication_eligible"] is False
+    capsys.readouterr()
+
+
+@pytest.mark.skipif(
+    not PINNED_CACHE or not os.environ.get("GRAYBENCH_TEST_IMAGE"),
+    reason="Pinned source cache and Docker image required",
+)
+def test_completed_native_comparison_uses_judged_samples(tmp_path, monkeypatch, capsys):
+    import httpx
+    from test_native_campaign import MODEL
+
+    from graybench import cli
+    from graybench.campaign_setup import execution_context
+    from graybench.datasets import load_suite
+    from graybench.identity import canonical
+    from graybench.native_campaign import NativeCampaign, build_native_setup
+    from graybench.native_cohort import freeze_native_cohort
+    from graybench.transport import Transport
+
+    cache = Path(PINNED_CACHE)
+    task = load_suite("normal", cache)[0]
+    cohort = freeze_native_cohort(
+        (task,),
+        cache=cache,
+        suite="normal",
+        population="custom_development",
+        image=os.environ["GRAYBENCH_TEST_IMAGE"],
+        extraction="raw_or_single_python_fence_v1",
+        label="task zero comparison fixture",
+        excluded={
+            f"normal/qiskitHumanEval/{number}": "out_of_scope_development"
+            for number in range(1, 151)
+        },
+    )
+    frozen = build_native_setup("comparison fixture", MODEL, cohort, (task,), cache=cache)
+    setup_paths = [tmp_path / name for name in ("left.json", "right.json")]
+    for path in setup_paths:
+        path.write_bytes(canonical(frozen.model_dump(mode="json")))
+    plan_path = tmp_path / "plan.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "comparison-plan",
+            *(str(path) for path in setup_paths),
+            str(cache),
+            str(plan_path),
+            "--seed",
+            "5",
+            "--resamples",
+            "1000",
+            "--configuration-comparison",
+            "Fixture answers through one pinned native oracle",
+        ],
+    )
+    cli.main()
+    capsys.readouterr()
+    runs = []
+    for label, answer in (("left", task.canonical_solution), ("right", "\n    return None\n")):
+        book = Ledger(tmp_path / f"{label}.sqlite")
+        try:
+            run = book.create_run(frozen.protocol, execution_context(frozen))
+
+            def response(request, answer=answer):
+                discovery = {
+                    "/api/version": {"version": "fixture"},
+                    "/api/tags": {"models": [{"name": "fixture", "digest": "a" * 64}]},
+                    "/api/show": {"model_info": {"architecture": "fixture"}},
+                    "/api/ps": {"models": []},
+                }
+                if request.url.path in discovery:
+                    return httpx.Response(200, json=discovery[request.url.path])
+                return httpx.Response(
+                    200,
+                    json={
+                        "model": "fixture",
+                        "done": True,
+                        "message": {"role": "assistant", "content": answer},
+                    },
+                )
+
+            with httpx.Client(transport=httpx.MockTransport(response)) as client:
+                campaign = NativeCampaign(book, run, frozen, cache, Transport(MODEL, client=client))
+                assert campaign.step()["state"] == "dispatched"
+                assert campaign.step()["state"] == "judged"
+            assert book.summary(run)["complete"] is True
+            runs.append(run)
+        finally:
+            book.close()
+    report_path = tmp_path / "report.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "graybench",
+            "compare",
+            str(plan_path),
+            str(tmp_path / "left.sqlite"),
+            runs[0],
+            str(tmp_path / "right.sqlite"),
+            runs[1],
+            str(cache),
+            str(report_path),
+        ],
+    )
+    cli.main()
+    report = __import__("json").loads(report_path.read_text(encoding="utf-8"))
+    assert report["status"] == "development_only"
+    assert report["comparison"]["left_minus_right"] == 1
+    assert report["comparison"]["interval_unavailable_reason"] == "fewer_than_two_families"
+    assert report["publication_eligible"] is False
+    capsys.readouterr()

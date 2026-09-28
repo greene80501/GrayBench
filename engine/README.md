@@ -253,7 +253,8 @@ exclusions, judge conditions and incomplete source/request ancestry. Results
 remain development-only and do not certify equivalent provider settings. See
 [report integrity](../docs/reliability-evidence/summary-integrity.md),
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
-[comparisons](../docs/reliability-evidence/paired-comparisons.md).
+[comparisons](../docs/reliability-evidence/paired-comparisons.md) and the
+[dual-track comparison audit](../docs/reliability-evidence/dual-track-comparison.md).
 Hashes and SQLite append rules are not external authenticity guarantees.
 
 ## Reference and regression checks
