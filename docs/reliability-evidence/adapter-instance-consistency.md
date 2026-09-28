@@ -18,7 +18,9 @@ provider request was made.
 This is a per-call consistency rule. Campaign planning and later dispatch can
 run in different processes and reconstruct an adapter from its registered
 name. Frozen prepared-request digests detect changes to the public request,
-but the current source manifest covers GrayBench package files, not installed
-third-party plugin code. Plugin identity, content-affecting headers, and live
-provider setting conformance still need release-level attestation. This check
-alone does not qualify a plugin or certify a benchmark score.
+The later [adapter code provenance change](adapter-code-provenance.md) adds a
+bounded local source manifest for installed third-party plugins. That manifest
+detects covered file drift; it does not attest plugin honesty, external
+dependencies, provider behavior, or effective settings. Independent plugin
+qualification and live provider conformance remain release gates. Neither
+check alone certifies a benchmark score.

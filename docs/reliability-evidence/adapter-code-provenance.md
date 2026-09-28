@@ -44,7 +44,8 @@ These hashes detect edits to covered local files. They do not attest an
 adapter's honesty, imported dependencies or dynamically loaded code outside
 the scanned package, mutable in-memory state, provider receipt, effective
 settings, or model weights. A file can also change in the small interval
-between the final local digest check and the network send. Independent plugin and provider qualification and
-clean-machine reproduction remain release gates. Both Actions workflows are
+between the final local digest check and the network send. Independent plugin
+and provider qualification and clean-machine reproduction remain release gates.
+Both Actions workflows are
 manually disabled while GitHub billing is exhausted; local verification is
 reported separately from CI.
