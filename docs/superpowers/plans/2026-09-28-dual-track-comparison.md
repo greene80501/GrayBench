@@ -48,5 +48,5 @@
 **Files:** Create `docs/reliability-evidence/dual-track-comparison.md` and update this plan.
 
 - [x] Document exact metric and release limitations, including model-setting non-equivalence and unscorable cases.
-- [ ] Run the complete pinned Python 3.12/Qiskit Docker-enabled engine suite, `git diff --check`, and independent read-only review; fix Important findings and rerun if source changes.
+- [x] Run the complete pinned Python 3.12/Qiskit Docker-enabled engine suite, `git diff --check`, and independent read-only review; fix Important findings and rerun if source changes.
 - [ ] Push to draft PR #3 under `greene80501`, update its body with the exact local result, and verify both Actions workflows remain disabled.
