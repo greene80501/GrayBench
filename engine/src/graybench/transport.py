@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import time
+import zlib
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
@@ -20,6 +21,35 @@ class Delivery:
     status: int | None
     evidence: dict
     generation: Generation | None = None
+
+
+def _bounded_zlib(raw: bytes, limit: int, wbits: int) -> bytes:
+    decoder = zlib.decompressobj(wbits)
+    decoded = decoder.decompress(raw, limit + 1)
+    if len(decoded) > limit or decoder.unconsumed_tail:
+        raise ValueError("Response exceeded frozen decoded byte limit")
+    if not decoder.eof:
+        raise ValueError("Compressed response is incomplete")
+    if decoder.unused_data:
+        raise ValueError("Compressed response has trailing data")
+    return decoded
+
+
+def _decode_entity(raw: bytes, encoding: str, limit: int) -> bytes:
+    encoding = encoding.strip().lower()
+    if encoding in {"", "identity"}:
+        return raw
+    try:
+        if encoding == "gzip":
+            return _bounded_zlib(raw, limit, zlib.MAX_WBITS | 16)
+        if encoding == "deflate":
+            try:
+                return _bounded_zlib(raw, limit, zlib.MAX_WBITS)
+            except zlib.error:
+                return _bounded_zlib(raw, limit, -zlib.MAX_WBITS)
+    except zlib.error as error:
+        raise ValueError("Invalid compressed response") from error
+    raise ValueError("Unsupported Content-Encoding: " + encoding)
 
 
 class Transport:
@@ -59,12 +89,21 @@ class Transport:
         started = time.perf_counter()
         content = canonical(body) if body is not None else b""
         auth_headers = adapter(self.spec.adapter).auth_headers(self.secret)
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        headers = httpx.Headers(
+            {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Accept-Encoding": "identity",
+            }
+        )
         headers.update(auth_headers)
+        headers["Accept-Encoding"] = "identity"
         evidence = {
             "request_body": body,
             "request_content_sha256": hashlib.sha256(content).hexdigest(),
             "request_content_bytes": len(content),
+            "request_accept_encoding": "identity",
+            "response_capture_version": "encoded_entity_v2",
             "credential_scope_id": self.spec.credential_scope_id,
             "auth_header_names": sorted(self._redact(name.lower()) for name in auth_headers),
             "base_url": self.spec.base_url,
@@ -76,6 +115,8 @@ class Transport:
         }
         status = None
         received = bytearray()
+        decoded_received = bytearray()
+        wire_available = True
         try:
             with self.client.stream(
                 method,
@@ -97,14 +138,39 @@ class Transport:
                         "date",
                         "openai-processing-ms",
                         "openai-version",
+                        "content-encoding",
                     }
                 }
-                for chunk in response.iter_bytes():
-                    if len(received) + len(chunk) > self.max_response_bytes:
-                        raise ValueError("Response exceeded frozen byte limit")
-                    received.extend(chunk)
-                evidence["wire_sha256"] = hashlib.sha256(received).hexdigest()
-                decoded = received.decode("utf-8", errors="strict")
+                if response.is_stream_consumed:
+                    # Injected clients can supply an already-decoded Response.
+                    # Its encoded entity cannot be recovered or honestly hashed.
+                    wire_available = False
+                    evidence["response_capture_version"] = "preconsumed_decoded_v1"
+                    try:
+                        decoded_chunks = (response.content,)
+                    except httpx.ResponseNotRead as error:
+                        raise ValueError("Preconsumed decoded response is unavailable") from error
+                else:
+                    # iter_bytes() can allocate unbounded decompressed chunks.
+                    # Capture the encoded entity, then decode with a hard output cap.
+                    for chunk in response.iter_raw():
+                        if len(received) + len(chunk) > self.max_response_bytes:
+                            raise ValueError("Response exceeded frozen encoded byte limit")
+                        received.extend(chunk)
+                    evidence["wire_sha256"] = hashlib.sha256(received).hexdigest()
+                    decoded_chunks = (
+                        _decode_entity(
+                            bytes(received),
+                            response.headers.get("content-encoding", ""),
+                            self.max_response_bytes,
+                        ),
+                    )
+                for chunk in decoded_chunks:
+                    if len(decoded_received) + len(chunk) > self.max_response_bytes:
+                        raise ValueError("Response exceeded frozen decoded byte limit")
+                    decoded_received.extend(chunk)
+                evidence["decoded_body_sha256"] = hashlib.sha256(decoded_received).hexdigest()
+                decoded = decoded_received.decode("utf-8", errors="strict")
                 evidence["response_body"] = self._redact(decoded)
                 if self.secret and self.secret in decoded and 200 <= status < 300:
                     # Parsing the redacted text would change the model's answer. Persist
@@ -115,9 +181,11 @@ class Transport:
             # Never replay a timeout: the server may already have generated and charged an answer.
             evidence["error_type"] = type(exc).__name__
             evidence["error"] = self._redact(str(exc))
-            evidence["partial_response_bytes"] = len(received)
+            evidence["partial_response_bytes"] = len(decoded_received)
+            evidence["partial_wire_bytes"] = len(received) if wire_available else None
         evidence["latency_seconds"] = time.perf_counter() - started
-        evidence["response_bytes"] = len(received)
+        evidence["wire_bytes"] = len(received) if wire_available else None
+        evidence["response_bytes"] = len(decoded_received)
         return status, evidence
 
     def generate(self, request: PreparedRequest, adapter: Adapter) -> Delivery:

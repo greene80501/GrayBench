@@ -93,6 +93,11 @@ automatic replay. Historical manifests remain readable with their earlier
 retry policy and without a scope label. New native and protected runs also
 reject hand-edited retry policies at ledger creation. Older development tracks
 retain their frozen retry conditions and cannot be reported as either new track.
+For response evidence, the transport separately hashes bounded encoded HTTP
+entity bytes and decoded JSON bytes. It requests identity encoding and also
+accepts bounded gzip and deflate responses. Already-decoded injected responses
+cannot claim an encoded hash. See the
+[response capture audit](../docs/reliability-evidence/response-entity-capture.md).
 
 `campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
 and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.

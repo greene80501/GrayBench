@@ -1,4 +1,7 @@
+import gzip
 import hashlib
+import json
+import zlib
 
 import httpx
 import pytest
@@ -187,6 +190,207 @@ def test_transport_records_exact_submitted_bytes_and_public_scope(monkeypatch, t
     assert result.evidence["credential_scope_id"] == "openai/project/graybench-evaluation"
     assert result.evidence["auth_header_names"] == ["authorization"]
     assert "secret-for-unit-test" not in str(result.evidence)
+
+
+def test_transport_distinguishes_encoded_entity_from_decoded_response(model, task):
+    decoded = json.dumps(
+        {
+            "model": model.model,
+            "done": True,
+            "message": {"role": "assistant", "content": "return 7"},
+        }
+    ).encode()
+    encoded = gzip.compress(decoded)
+
+    def handler(_request):
+        assert _request.headers["Accept-Encoding"] == "identity"
+        return httpx.Response(
+            200,
+            headers={"Content-Encoding": "gzip", "Content-Type": "application/json"},
+            stream=httpx.ByteStream(encoded),
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "returned"
+    assert result.generation.text == "return 7"
+    assert result.evidence["wire_sha256"] == hashlib.sha256(encoded).hexdigest()
+    assert result.evidence["wire_bytes"] == len(encoded)
+    assert result.evidence["decoded_body_sha256"] == hashlib.sha256(decoded).hexdigest()
+    assert result.evidence["response_bytes"] == len(decoded)
+    assert result.evidence["response_headers"]["content-encoding"] == "gzip"
+    assert result.evidence["response_capture_version"] == "encoded_entity_v2"
+
+
+def test_auth_adapter_cannot_add_a_second_content_encoding_request_header(monkeypatch, model, task):
+    class AuthOnly:
+        def auth_headers(self, _secret):
+            return {"accept-encoding": "gzip"}
+
+    monkeypatch.setattr("graybench.transport.adapter", lambda _: AuthOnly())
+
+    def handler(request):
+        encoding_headers = [
+            value for key, value in request.headers.multi_items() if key == "accept-encoding"
+        ]
+        assert encoding_headers == ["identity"]
+        return httpx.Response(503, json={"error": "unavailable"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "ambiguous"
+
+
+def test_transport_bounds_decoded_gzip_body_after_small_encoded_entity(model, task):
+    decoded = json.dumps({"message": {"content": "x" * 4096}}).encode()
+    encoded = gzip.compress(decoded)
+    assert len(encoded) < 256 < len(decoded)
+
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200,
+                headers={"Content-Encoding": "gzip"},
+                stream=httpx.ByteStream(encoded),
+            )
+        )
+    ) as client:
+        result = Transport(model, client, max_response_bytes=256).generate(
+            Ollama().prepare(model, task, None), Ollama()
+        )
+    assert result.kind == "ambiguous"
+    assert result.evidence["wire_bytes"] == len(encoded)
+    assert result.evidence["wire_sha256"] == hashlib.sha256(encoded).hexdigest()
+    assert "decoded byte limit" in result.evidence["error"]
+
+
+def test_preconsumed_gzip_response_does_not_claim_unavailable_wire_bytes(model, task):
+    decoded = json.dumps(
+        {
+            "model": model.model,
+            "done": True,
+            "message": {"role": "assistant", "content": "return 8"},
+        }
+    ).encode()
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200,
+                headers={"Content-Encoding": "gzip"},
+                content=gzip.compress(decoded),
+            )
+        )
+    ) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "returned"
+    assert result.generation.text == "return 8"
+    assert result.evidence["response_capture_version"] == "preconsumed_decoded_v1"
+    assert result.evidence["wire_bytes"] is None
+    assert "wire_sha256" not in result.evidence
+    assert result.evidence["decoded_body_sha256"] == hashlib.sha256(decoded).hexdigest()
+
+
+def test_malformed_compressed_response_is_ambiguous_with_encoded_digest(model, task):
+    encoded = b"not-a-gzip-entity"
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200,
+                headers={"Content-Encoding": "gzip"},
+                stream=httpx.ByteStream(encoded),
+            )
+        )
+    ) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "ambiguous"
+    assert result.evidence["error_type"] == "ValueError"
+    assert result.evidence["wire_sha256"] == hashlib.sha256(encoded).hexdigest()
+    assert result.evidence["wire_bytes"] == len(encoded)
+    assert result.evidence["response_bytes"] == 0
+
+
+def test_truncated_gzip_trailer_cannot_be_a_returned_generation(model, task):
+    decoded = json.dumps(
+        {
+            "model": model.model,
+            "done": True,
+            "message": {"role": "assistant", "content": "return 9"},
+        }
+    ).encode()
+    encoded = gzip.compress(decoded)[:-8]
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200,
+                headers={"Content-Encoding": "gzip"},
+                stream=httpx.ByteStream(encoded),
+            )
+        )
+    ) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "ambiguous"
+    assert result.generation is None
+    assert result.evidence["wire_sha256"] == hashlib.sha256(encoded).hexdigest()
+    assert "incomplete" in result.evidence["error"]
+
+
+def test_preconsumed_unbuffered_response_is_ambiguous_instead_of_raising(model, task):
+    def handler(_request):
+        response = httpx.Response(200, stream=httpx.ByteStream(b"{}"))
+        assert b"".join(response.iter_raw()) == b"{}"
+        return response
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "ambiguous"
+    assert result.generation is None
+    assert result.evidence["response_capture_version"] == "preconsumed_decoded_v1"
+    assert result.evidence["wire_bytes"] is None
+    assert "unavailable" in result.evidence["error"]
+
+
+@pytest.mark.parametrize("raw_deflate", [False, True])
+def test_transport_accepts_bounded_deflate_entity(model, task, raw_deflate):
+    decoded = json.dumps(
+        {
+            "model": model.model,
+            "done": True,
+            "message": {"role": "assistant", "content": "return 10"},
+        }
+    ).encode()
+    if raw_deflate:
+        compressor = zlib.compressobj(wbits=-zlib.MAX_WBITS)
+        encoded = compressor.compress(decoded) + compressor.flush()
+    else:
+        encoded = zlib.compress(decoded)
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200,
+                headers={"Content-Encoding": "deflate"},
+                stream=httpx.ByteStream(encoded),
+            )
+        )
+    ) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "returned"
+    assert result.generation.text == "return 10"
+    assert result.evidence["wire_sha256"] == hashlib.sha256(encoded).hexdigest()
+
+
+def test_unrequested_content_encoding_is_ambiguous(model, task):
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200,
+                headers={"Content-Encoding": "br"},
+                stream=httpx.ByteStream(b"opaque"),
+            )
+        )
+    ) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "ambiguous"
+    assert "Unsupported Content-Encoding" in result.evidence["error"]
 
 
 def test_declared_account_scope_changes_frozen_model_identity():
