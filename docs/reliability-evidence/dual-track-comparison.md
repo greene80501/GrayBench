@@ -37,6 +37,13 @@ must be reported separately. An older archived comparison fixture omits
 later `ModelSpec` defaults: its raw canonical plan still hashes to its saved
 digest, but parsing it under the current model can add default fields. Its
 historical report must not be silently reissued as a current-source score.
+The ledger summary now uses the stored run-manifest digest as `protocol_digest`,
+reports the current parser's `interpreted_protocol_digest` separately, and
+blocks scoring with `protocol_serialization_drift` if they differ. New
+dispatches on that run are rejected. `validate-protocol` makes the same
+distinction for a standalone JSON file, with `serialization_stable` showing
+whether its parsed representation retains the original canonical identity.
+Neither check changes or rewrites archived evidence.
 
 Both GitHub Actions workflows remain manually disabled while the account has
 exhausted its included Actions minutes. Local tests are reported separately

@@ -11,7 +11,7 @@ from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign
 from graybench.evaluation_recipes import RECIPES
 from graybench.extraction import EXTRACTION_POLICIES
-from graybench.identity import canonical
+from graybench.identity import canonical, identity
 from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
@@ -662,10 +662,15 @@ def main():
             "output": str(args.output),
         }
     elif args.command == "validate-protocol":
-        protocol = Protocol.model_validate_json(args.path.read_bytes())
+        payload = args.path.read_bytes()
+        raw = json.loads(payload)
+        protocol = Protocol.model_validate_json(payload)
+        recorded_digest = identity(raw)
         result = {
             "valid": True,
-            "protocol_digest": protocol.digest,
+            "protocol_digest": recorded_digest,
+            "interpreted_protocol_digest": protocol.digest,
+            "serialization_stable": recorded_digest == protocol.digest,
             "release_validation": "not_performed",
         }
     elif args.command in {"verify-ledger", "summary"}:

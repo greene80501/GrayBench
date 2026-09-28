@@ -451,6 +451,16 @@ class Ledger:
             raise StateError("Unknown run")
         return Protocol.model_validate_json(canonical(self.blob(row[0])))
 
+    def protocol_manifest_digest(self, run_id: str) -> str:
+        row = self.db.execute("SELECT manifest FROM runs WHERE id=?", (run_id,)).fetchone()
+        if row is None:
+            raise StateError("Unknown run")
+        return row["manifest"]
+
+    def require_protocol_serialization_stable(self, run_id: str, protocol: Protocol) -> None:
+        if protocol.digest != self.protocol_manifest_digest(run_id):
+            raise StateError("Archived protocol serialization drift; use its original engine")
+
     def samples(self, run_id: str) -> list[dict]:
         return [
             dict(r)
@@ -472,6 +482,7 @@ class Ledger:
             if not sample:
                 raise StateError("Unscheduled sample")
             protocol = self.protocol(sample["run_id"])
+            self.require_protocol_serialization_stable(sample["run_id"], protocol)
             if self.model_identity(sample["run_id"])["status"] == "unresolved":
                 raise StateError("Returned model identity requires adjudication")
             if self.discovery_status(sample["run_id"])["status"] == "unresolved":
@@ -779,6 +790,7 @@ class Ledger:
     def _summary(self, run_id: str) -> dict:
         integrity = self.verify()
         protocol = self.protocol(run_id)
+        recorded_protocol_digest = self.protocol_manifest_digest(run_id)
         rows = self.db.execute(
             "SELECT s.task_key,s.replicate,g.content,j.outcome FROM samples s "
             "LEFT JOIN generations g ON s.id=g.sample_id "
@@ -809,6 +821,8 @@ class Ledger:
         attempt_observations = self.attempt_observation_status(run_id)
         analysis_source = source_manifest()["digest"]
         blockers = []
+        if recorded_protocol_digest != protocol.digest:
+            blockers.append("protocol_serialization_drift")
         if analysis_source != protocol.analysis_digest:
             blockers.append("analysis_source_mismatch")
         if observed != expected or len(rows) != len(expected):
@@ -858,7 +872,8 @@ class Ledger:
         recipe = declared_setup.get("evaluation_recipe") if type(declared_setup) is dict else None
         return {
             "run_id": run_id,
-            "protocol_digest": protocol.digest,
+            "protocol_digest": recorded_protocol_digest,
+            "interpreted_protocol_digest": protocol.digest,
             "evaluation_recipe": recipe,
             "track": protocol.track,
             "extraction_policy": protocol.extraction,
