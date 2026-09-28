@@ -36,6 +36,10 @@ graybench reference-inspect HARD.jsonl
 A single canonical pass only shows that this answer completed this pinned test
 once in the specified environment. It does not show that another valid answer
 would pass, that wrong answers fail, or that a randomized test is stable.
+The later [randomness-focused repeat bundle](artifacts/native-stochastic-repeat-2026-09-28/README.md)
+records three additional canonical passes per suite for tasks 62, 63, 100 and
+109. This limited spot check does not resolve their oracle adequacy or admit
+them for publication.
 In particular, [prior task-63 analysis](reference-scan-77f29ff.md) found hidden
 randomness coupling. A new [four-case native control](native-task63-control-2026-09-27-final.jsonl)
 through the same image and policies passed both canonical answers **and** a
