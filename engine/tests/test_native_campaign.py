@@ -338,6 +338,44 @@ def test_native_cli_plan_create_and_summary(native_cache, tmp_path, monkeypatch,
     assert report["publication_eligible"] is False
 
 
+def test_native_cli_step_restores_strict_setup_from_persisted_json(
+    native_cache, tmp_path, monkeypatch, capsys
+):
+    frozen = native_setup(native_cache)
+    setup_path = tmp_path / "setup.json"
+    ledger_path = tmp_path / "run.sqlite"
+    setup_path.write_text(frozen.model_dump_json(), encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "native-create", str(setup_path), str(native_cache), str(ledger_path)],
+    )
+    main()
+    run_id = json.loads(capsys.readouterr().out)["run_id"]
+    setup_path.unlink()
+
+    class NoNetwork:
+        def __init__(self, spec, **_kwargs):
+            self.spec = spec
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr("graybench.cli.Transport", NoNetwork)
+    monkeypatch.setattr(
+        "graybench.campaign.observe_run", lambda *_args, **_kwargs: {"status": "unresolved"}
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "native-step", str(ledger_path), run_id, str(native_cache)],
+    )
+    main()
+    result = json.loads(capsys.readouterr().out)
+    assert result["state"] == "stopped"
+    assert result["reason"] == "model_discovery_unresolved"
+
+
 def test_native_plan_freezes_exact_suffix_condition_and_rejects_hard_suite(
     native_cache, tmp_path, monkeypatch, capsys, ledger
 ):

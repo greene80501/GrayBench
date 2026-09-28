@@ -8,6 +8,7 @@ from pathlib import Path
 import httpx
 import pytest
 from test_capability_probe import accepted_probe, matching_profile, spec
+from test_native_cohort import cache as _synthetic_cache
 
 from graybench.adapter_provenance import adapter_code_manifest
 from graybench.cli import main
@@ -23,7 +24,11 @@ from graybench.protected_campaign import (
     validate_protected_cohort,
 )
 from graybench.protected_task2 import task2_value_task
-from graybench.protected_task20 import task20_value_task, task20_value_task_v2
+from graybench.protected_task20 import (
+    TASK20_SOURCE_DIGESTS,
+    task20_value_task,
+    task20_value_task_v2,
+)
 from graybench.provenance import source_manifest
 from graybench.providers import Ollama
 from graybench.transport import Transport
@@ -31,6 +36,11 @@ from graybench.transport import Transport
 IMAGE = os.environ.get("GRAYBENCH_TEST_IMAGE", "sha256:" + "a" * 64)
 CACHE = os.environ.get("GRAYBENCH_TEST_CACHE")
 MODEL = ModelSpec(adapter="ollama", model="fixture", base_url="http://localhost:11434")
+
+
+@pytest.fixture
+def synthetic_cache(tmp_path, monkeypatch):
+    return _synthetic_cache.__wrapped__(tmp_path, monkeypatch)
 
 
 def setup(suite="normal"):
@@ -431,6 +441,98 @@ def test_cli_plan_and_create_are_offline(tmp_path, monkeypatch, capsys):
     run = json.loads(capsys.readouterr().out)
     assert run["suite"] == "normal"
     assert run["publication_eligible"] is False
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_cli_step_restores_strict_setup_from_persisted_json(tmp_path, monkeypatch, capsys):
+    frozen = setup()
+    setup_path = tmp_path / "setup.json"
+    ledger_path = tmp_path / "run.sqlite"
+    setup_path.write_text(frozen.model_dump_json(), encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "protected-create", str(setup_path), CACHE, str(ledger_path)],
+    )
+    main()
+    run_id = json.loads(capsys.readouterr().out)["run_id"]
+    setup_path.unlink()
+
+    class NoNetwork:
+        def __init__(self, spec, **_kwargs):
+            self.spec = spec
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr("graybench.cli.Transport", NoNetwork)
+    monkeypatch.setattr(
+        "graybench.campaign.observe_run", lambda *_args, **_kwargs: {"status": "unresolved"}
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "protected-step", str(ledger_path), run_id, CACHE],
+    )
+    main()
+    result = json.loads(capsys.readouterr().out)
+    assert result["state"] == "stopped"
+    assert result["reason"] == "model_discovery_unresolved"
+
+
+def test_protected_cli_json_resume_is_covered_without_external_cache(
+    synthetic_cache, tmp_path, monkeypatch, capsys
+):
+    source = load_suite("normal", synthetic_cache)[20]
+    monkeypatch.setitem(TASK20_SOURCE_DIGESTS, "normal", source.digest)
+    task = task20_value_task_v2(source)
+    cohort = freeze_protected_cohort(
+        (task,),
+        cache=synthetic_cache,
+        suite="normal",
+        image=IMAGE,
+        label="synthetic resume regression",
+        excluded={
+            f"normal/qiskitHumanEval/{number}": "out_of_scope_development"
+            for number in range(151)
+            if number != 20
+        },
+    )
+    frozen = build_protected_setup(
+        "synthetic resume regression", MODEL, cohort, (task,), cache=synthetic_cache
+    )
+    setup_path = tmp_path / "setup.json"
+    ledger_path = tmp_path / "run.sqlite"
+    setup_path.write_text(frozen.model_dump_json(), encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "protected-create", str(setup_path), str(synthetic_cache), str(ledger_path)],
+    )
+    main()
+    run_id = json.loads(capsys.readouterr().out)["run_id"]
+    setup_path.unlink()
+
+    class NoNetwork:
+        def __init__(self, spec, **_kwargs):
+            self.spec = spec
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr("graybench.cli.Transport", NoNetwork)
+    monkeypatch.setattr(
+        "graybench.campaign.observe_run", lambda *_args, **_kwargs: {"status": "unresolved"}
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "protected-step", str(ledger_path), run_id, str(synthetic_cache)],
+    )
+    main()
+    result = json.loads(capsys.readouterr().out)
+    assert result["state"] == "stopped"
+    assert result["reason"] == "model_discovery_unresolved"
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")

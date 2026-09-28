@@ -634,7 +634,7 @@ def main():
         try:
             ledger.verify()
             context = ledger.context(args.run_id)
-            setup = NativeCampaignSetup.model_validate(context["setup"])
+            setup = NativeCampaignSetup.model_validate_json(canonical(context["setup"]))
             validate_host(context)
             setup.validate_for_run(args.cache, ledger.protocol(args.run_id), docker=args.docker)
             transport = Transport(
@@ -731,7 +731,7 @@ def main():
         try:
             ledger.verify()
             context = ledger.context(args.run_id)
-            setup = ProtectedCampaignSetup.model_validate(context["setup"])
+            setup = ProtectedCampaignSetup.model_validate_json(canonical(context["setup"]))
             validate_host(context)
             setup.validate_for_run(args.cache, ledger.protocol(args.run_id), docker=args.docker)
             transport = Transport(
