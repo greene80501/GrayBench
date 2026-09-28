@@ -54,5 +54,5 @@ Files: `engine/README.md`,
 - [x] Explain the command, bundle, confidence limit, and operator workflow.
 - [x] Run focused tests, changed-file Ruff, historical identity checks, and
   the full pinned Docker-enabled engine suite.
-- [ ] Review the diff, commit as `greene80501`, push draft PR #3, update its
+- [x] Review the diff, commit as `greene80501`, push draft PR #3, update its
   description, and confirm GitHub Actions remain disabled.
