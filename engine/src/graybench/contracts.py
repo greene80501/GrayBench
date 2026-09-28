@@ -8,6 +8,7 @@ from urllib.parse import urlsplit
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, field_validator, model_validator
 
 from graybench.identity import identity, reject_credentials
+from graybench.request_headers import validate_frozen_public_headers
 
 
 class Contract(BaseModel):
@@ -268,6 +269,15 @@ class PreparedRequest(Contract):
     path: str
     body: dict[str, JsonValue]
     setting_evidence: tuple[Setting, ...]
+    # Omitted on historical request artifacts to preserve their exact identity.
+    public_headers: dict[str, str] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
+
+    @field_validator("public_headers")
+    @classmethod
+    def canonical_headers(cls, value: dict[str, str] | None) -> dict[str, str] | None:
+        return validate_frozen_public_headers(value) if value is not None else None
 
 
 class Generation(Contract):

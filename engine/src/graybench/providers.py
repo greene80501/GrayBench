@@ -9,6 +9,7 @@ from typing import Any
 from urllib.parse import quote
 
 from graybench.contracts import Generation, ModelSpec, PreparedRequest, PublicTask
+from graybench.request_headers import freeze_public_headers
 
 
 class CapabilityError(ValueError):
@@ -22,10 +23,15 @@ class ResponseError(ValueError):
 class Adapter(ABC):
     name: str
     supported_settings: frozenset[str] = frozenset()
+    credential_header_names: frozenset[str] = frozenset({"authorization"})
 
     def auth_headers(self, secret: str) -> dict[str, str]:
         """Trusted native plugins may implement their endpoint's authentication scheme."""
         return {"Authorization": f"Bearer {secret}"} if secret else {}
+
+    def public_headers(self, spec: ModelSpec) -> dict[str, str]:
+        """Non-secret provider headers that can affect the request or response."""
+        return {}
 
     def settings(self, spec: ModelSpec) -> dict:
         result = {}
@@ -54,6 +60,7 @@ class Adapter(ABC):
             path=path,
             body=body,
             setting_evidence=spec.settings,
+            public_headers=freeze_public_headers(self.public_headers(spec)),
         )
 
     def discovery_requests(self, spec: ModelSpec) -> tuple[tuple[str, str, dict | None], ...]:
@@ -268,6 +275,7 @@ class Ollama(Adapter):
 
 class Gemini(Adapter):
     name = "gemini"
+    credential_header_names = frozenset({"x-goog-api-key"})
     supported_settings = frozenset(
         {
             "temperature",
