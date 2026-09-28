@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from graybench.admission_bundle import verify_admission_bundle
 from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
 from graybench.capability_probe import CapabilityProbe, capture_probe, verify_accepted_probe
 from graybench.comparison import ComparisonPlan, compare_runs, make_plan
@@ -181,6 +182,12 @@ def main():
     admission_controls.add_argument("cache", type=Path)
     admission_controls.add_argument("output", type=Path)
     admission_controls.add_argument("review_logs", type=Path, nargs="+")
+    admission_bundle = commands.add_parser(
+        "admission-bundle-verify",
+        help="Verify exact committed local-control evidence and recompute its audit",
+    )
+    admission_bundle.add_argument("bundle", type=Path)
+    admission_bundle.add_argument("cache", type=Path)
     plan = commands.add_parser(
         "campaign-plan", help="Freeze selected tasks and requests offline; no generations"
     )
@@ -791,6 +798,8 @@ def main():
             "publication_eligible": False,
             "output": str(args.output),
         }
+    elif args.command == "admission-bundle-verify":
+        result = verify_admission_bundle(args.bundle, args.cache)
     elif args.command == "validate-protocol":
         payload = args.path.read_bytes()
         raw = json.loads(payload)

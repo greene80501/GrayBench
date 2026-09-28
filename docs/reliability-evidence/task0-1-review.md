@@ -60,7 +60,8 @@ saved case identities and judgments. Applied to the two saved authored-control
 artifacts, it reports 8 unexpected passes among 12 upstream controls and 0
 unexpected outcomes among 6 strengthened task-0 controls. This is local
 consistency checking, not authenticated authorship or independent semantic
-review. The artifacts remain outside the PR and are not release evidence.
+review. The two control logs are now in the [admission evidence bundle](artifacts/admission-2026-09-28/README.md);
+the separate reference log remains local. None is release certification.
 
 The inventory now surfaces these findings alongside previously reproduced issues
 for tasks9,14,20,32 and35. Every task remains release-ineligible pending the complete

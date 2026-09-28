@@ -34,8 +34,9 @@ report contains 18 controls across 4 cards. The other 298 cards have no controls
 from those two files. Eight authored wrong-answer controls unexpectedly pass the
 upstream tests; there are no authored correct-control failures or other
 mismatches. All six strengthened task-0 controls match expectation. These
-artifacts are local outputs outside the PR, so a reader needs the files to
-repeat inspection. The inventory and report identities are:
+original artifacts were local outputs. The exact inventory and control-log
+bytes are now in the [admission evidence bundle](artifacts/admission-2026-09-28/README.md)
+for repeat inspection. The inventory and report identities are:
 
 - Schema-2 inventory: `3c924f9a4a09e8fb083a4913df21b1f9dbcab0ae0fd48bcbe76c1efe1ed613ce` (model identity).
 - Control audit: `13693c8b931b105e85fb171de3b9207d4ae32eb6ec498afacffad74b01185b5e` (file SHA-256).
@@ -45,7 +46,8 @@ The schema-2 audit of the same local logs is
 `6bb133cbaad2d43acfdf36ea6868b507b99a4b7468820b37ae319fbb782834d7`.
 It again reports 18 controls, 4 covered cards, 298 uncovered cards and 8
 false passes. The pending inventory contains no requirement evidence claims yet,
-so its new `evidence_links` lists are empty. These outputs are outside the PR.
+so its new `evidence_links` lists are empty. That historical report remains
+outside the PR; the saved inventory and control logs are bundled.
 All artifacts and all 302 cards remain `publication_eligible: false`.
 
 ## Judge-condition binding (report schema 4)
@@ -73,8 +75,8 @@ Twelve controls declare `upstream-proxy-v1`; six declare
 `qhe0-size-domain-v1`. None declares a protected public-contract digest, so
 `declared_frozen_judge_control_count` is zero. The four covered cards, 298
 uncovered cards, and eight upstream false passes remain; there is still no
-protected admission evidence in these logs. This new report is local output
-outside the PR, alongside the preserved older reports.
+protected admission evidence in these logs. That historical report remains
+local output outside the PR; its input logs are bundled.
 The previous report remains preserved. It did not predeclare judge manifests
 before execution, so schema 5 also leaves all 18 controls unqualified.
 
@@ -105,5 +107,8 @@ It records 42 controls across 8 cards, 294 uncovered cards and the same eight
 upstream false passes. All 24 new controls have predeclared judges. The pending
 inventory does not yet bind any card to a protected judge or claim requirement
 coverage, so `declared_frozen_judge_control_count` remains zero. This is the
-correct admission result; no card or score is published. The evidence files
-are local outputs outside the PR and must be provided to reproduce the audit.
+correct admission result; no card or score is published. These evidence files
+are in the [committed evidence bundle](artifacts/admission-2026-09-28/README.md).
+`admission-bundle-verify` checks recorded hashes and recomputes the audit
+against the pinned dataset bytes. The bundle remains unsigned local evidence,
+not independent attestation.

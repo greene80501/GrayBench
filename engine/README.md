@@ -65,6 +65,11 @@ those with no controls, and names each control's artifact, case, task, expected
 and actual outcome, and judge digest. It does not fill requirement evidence or
 review attestations, infer semantic adequacy, or admit tasks. The saved control
 logs must be available separately to reverify the audit.
+The [committed local evidence bundle](../docs/reliability-evidence/artifacts/admission-2026-09-28/README.md)
+includes its inventory, three control logs, and exact schema-5 audit. With a
+pinned dataset cache, `admission-bundle-verify BUNDLE CACHE` checks file hashes,
+re-inspects every log, and recomputes the saved audit byte for byte. A matching
+bundle is reproducible local evidence, not independent attestation.
 The summary separates authored wrong controls that passed, authored correct
 controls that failed, and other mismatches such as timeouts.
 Report schema 5 verifies any recorded judge manifest against its digest and
