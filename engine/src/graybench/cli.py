@@ -22,7 +22,7 @@ from graybench.protected_campaign import (
     build_protected_setup,
     freeze_protected_cohort,
 )
-from graybench.protected_task20 import task20_value_task
+from graybench.protected_task_registry import VALUE_TASKS, revised_value_task
 from graybench.provenance import environment
 from graybench.providers import adapter
 from graybench.reference_scan import inspect_reference_scan, run_reference_scan
@@ -171,7 +171,7 @@ def main():
     native_step.add_argument("cache", type=Path)
     native_step.add_argument("--docker", default="docker")
     protected_plan = commands.add_parser(
-        "protected-plan", help="Freeze one revised value task and all exclusions; development only"
+        "protected-plan", help="Freeze reviewed value tasks and all exclusions; development only"
     )
     protected_plan.add_argument("model_spec", type=Path)
     protected_plan.add_argument("cache", type=Path)
@@ -179,7 +179,7 @@ def main():
     protected_plan.add_argument("--name", required=True)
     protected_plan.add_argument("--label", required=True)
     protected_plan.add_argument("--suite", choices=("normal", "hard"), required=True)
-    protected_plan.add_argument("--task", required=True)
+    protected_plan.add_argument("--task", action="append", required=True)
     protected_plan.add_argument("--image", required=True)
     protected_plan.add_argument("--repeats", type=int, default=1)
     protected_plan.add_argument("--system-prompt", type=Path)
@@ -488,12 +488,18 @@ def main():
         finally:
             ledger.close()
     elif args.command == "protected-plan":
-        key = f"{args.suite}/qiskitHumanEval/20"
-        if args.task != key:
-            parser.error("Only revised task 20 has a protected development interface")
+        requested = set(args.task)
+        reviewed = {f"{args.suite}/{task_id}" for task_id in VALUE_TASKS}
+        if len(requested) != len(args.task) or not requested <= reviewed:
+            parser.error("Each --task must be a distinct reviewed value task in the selected suite")
         pinned = load_suite(args.suite, args.cache)
-        source = next(task for task in pinned if task.public.task_id == "qiskitHumanEval/20")
-        task = task20_value_task(source)
+        tasks = tuple(
+            revised_value_task(source)
+            for source in pinned
+            if f"{args.suite}/{source.public.task_id}" in requested
+        )
+        if len(tasks) != len(requested):
+            parser.error("Requested protected tasks are missing from the pinned suite")
         excluded = {
             f"{args.suite}/qiskitHumanEval/{number}": (
                 "external_service_unqualified"
@@ -501,10 +507,10 @@ def main():
                 else "unreviewed_or_unsupported"
             )
             for number in range(151)
-            if number != 20
+            if f"{args.suite}/qiskitHumanEval/{number}" not in requested
         }
         cohort = freeze_protected_cohort(
-            (task,),
+            tasks,
             cache=args.cache,
             suite=args.suite,
             image=args.image,
@@ -516,7 +522,7 @@ def main():
             args.name,
             model,
             cohort,
-            (task,),
+            tasks,
             cache=args.cache,
             repeats=args.repeats,
             system_prompt=args.system_prompt.read_text(encoding="utf-8")

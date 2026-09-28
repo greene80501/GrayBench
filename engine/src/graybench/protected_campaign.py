@@ -1,7 +1,7 @@
 """Frozen, single-suite development campaigns for reviewed value interfaces.
 
-Only task 20 has a development contract today. Every other pinned suite task
-is explicitly excluded; no run from this module is a publication score.
+Only tasks 2 and 20 have development contracts today. Every other pinned
+suite task is explicitly excluded; no run here is a publication score.
 """
 
 from pathlib import Path
@@ -23,7 +23,7 @@ from graybench.datasets import PINS, JudgeTask, load_suite
 from graybench.identity import canonical, identity
 from graybench.ledger import Ledger, StateError
 from graybench.protected_semantic_judge import ProtectedSemanticJudge, ProtectedSemanticTask
-from graybench.protected_task20 import task20_value_task
+from graybench.protected_task_registry import revised_value_task
 from graybench.protected_value_runner import ValueRunner
 from graybench.provenance import source_manifest
 from graybench.providers import adapter
@@ -93,7 +93,7 @@ def validate_protected_cohort(
             task.digest != cohort.task_digests[key]
             or task.contract.source_task_digest != source.digest
             or task.contract.public.digest == source.public.digest
-            or task != task20_value_task(source)
+            or task != revised_value_task(source)
         ):
             raise StateError("Protected task or its revised contract differs from pinned source")
     return pinned

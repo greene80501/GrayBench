@@ -18,7 +18,9 @@ from graybench.protected_campaign import (
     ProtectedCampaignSetup,
     build_protected_setup,
     freeze_protected_cohort,
+    validate_protected_cohort,
 )
+from graybench.protected_task2 import task2_value_task
 from graybench.protected_task20 import task20_value_task
 from graybench.provenance import source_manifest
 from graybench.transport import Transport
@@ -52,6 +54,35 @@ def setup(suite="normal"):
         excluded=excluded,
     )
     return build_protected_setup("fixture", MODEL, cohort, (task,), cache=cache)
+
+
+def two_task_setup(suite="normal"):
+    if not CACHE:
+        pytest.skip("Pinned source cache required")
+    cache = Path(CACHE)
+    pinned = {
+        task.public.task_id: task
+        for task in load_suite(suite, cache)
+        if task.public.task_id in {"qiskitHumanEval/2", "qiskitHumanEval/20"}
+    }
+    tasks = (
+        task2_value_task(pinned["qiskitHumanEval/2"]),
+        task20_value_task(pinned["qiskitHumanEval/20"]),
+    )
+    excluded = {
+        f"{suite}/qiskitHumanEval/{number}": "unreviewed_or_unsupported"
+        for number in range(151)
+        if number not in {2, 20}
+    }
+    cohort = freeze_protected_cohort(
+        tasks,
+        cache=cache,
+        suite=suite,
+        image=IMAGE,
+        label="two value tasks",
+        excluded=excluded,
+    )
+    return build_protected_setup("two task fixture", MODEL, cohort, tasks, cache=cache)
 
 
 def direct_solution():
@@ -124,6 +155,67 @@ def test_frozen_protected_cohort_has_151_record_inventory_and_development_report
     assert report["publication_eligible"] is False
     assert report["pass_at_1"] is None
     assert setup("hard").protocol.digest != frozen.protocol.digest
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+def test_two_task_cohort_freezes_pinned_order_and_rejects_forged_revision(suite):
+    frozen = two_task_setup(suite)
+    assert frozen.cohort.task_keys == (
+        f"{suite}/qiskitHumanEval/2",
+        f"{suite}/qiskitHumanEval/20",
+    )
+    assert len(frozen.cohort.excluded) == 149
+    assert frozen.protocol.protected_suite == suite
+    assert frozen.protocol.retry.max_attempts == 1
+    assert frozen.protocol.judge_digest != setup(suite).protocol.judge_digest
+    assert frozen.cohort.population == "custom_development"
+    forged = frozen.tasks[0].model_copy(update={"oracle": frozen.tasks[1].oracle})
+    with pytest.raises((StateError, ValueError)):
+        validate_protected_cohort(frozen.cohort, (forged, frozen.tasks[1]), cache=Path(CACHE))
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_cli_plan_supports_both_value_tasks_without_mixing_suites(tmp_path, monkeypatch, capsys):
+    model_path = tmp_path / "model.json"
+    setup_path = tmp_path / "setup.json"
+    model_path.write_text(MODEL.model_dump_json(), encoding="utf-8")
+    argv = [
+        "graybench",
+        "protected-plan",
+        str(model_path),
+        CACHE,
+        str(setup_path),
+        "--name",
+        "both",
+        "--label",
+        "two-value-development",
+        "--suite",
+        "normal",
+        "--task",
+        "normal/qiskitHumanEval/20",
+        "--task",
+        "normal/qiskitHumanEval/2",
+        "--image",
+        IMAGE,
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    main()
+    result = json.loads(capsys.readouterr().out)
+    assert result["planned_samples"] == 2
+    planned = ProtectedCampaignSetup.model_validate_json(setup_path.read_bytes())
+    assert planned.cohort.task_keys == (
+        "normal/qiskitHumanEval/2",
+        "normal/qiskitHumanEval/20",
+    )
+    assert len(planned.cohort.excluded) == 149
+    invalid = argv.copy()
+    invalid[invalid.index("normal/qiskitHumanEval/2")] = "hard/qiskitHumanEval/2"
+    invalid[4] = str(tmp_path / "invalid.json")
+    monkeypatch.setattr(sys, "argv", invalid)
+    with pytest.raises(SystemExit):
+        main()
+    assert not (tmp_path / "invalid.json").exists()
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
@@ -321,6 +413,57 @@ def test_protected_ledger_reference_and_wrong_control(ledger):
     assert report["population"] == "custom_development"
     assert report["denominator"] == 2
     assert report["pass_at_1"] == 0.5
+    assert report["publication_eligible"] is False
+    assert ledger.verify()["integrity"] == "verified"
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Pinned image required")
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+def test_two_task_campaign_generates_and_judges_each_revised_value(ledger, suite):
+    frozen = two_task_setup(suite)
+    answers = iter(
+        (
+            "def bell_amplitudes():\n"
+            "    import math\n"
+            "    a = 1 / math.sqrt(2)\n"
+            "    return [[a,0.0],[0.0,0.0],[0.0,0.0],[a,0.0]]\n",
+            direct_solution(),
+        )
+    )
+
+    def response(request):
+        if request.url.path != "/api/chat":
+            return handler(request)
+        return httpx.Response(
+            200,
+            json={
+                "model": "fixture",
+                "done": True,
+                "message": {"role": "assistant", "content": next(answers)},
+            },
+        )
+
+    run = ledger.create_run(frozen.protocol)
+    with httpx.Client(transport=httpx.MockTransport(response)) as client:
+        campaign = ProtectedCampaign(
+            ledger, run, frozen, Path(CACHE), Transport(MODEL, client=client)
+        )
+        states = [campaign.step() for _ in range(5)]
+    assert [item["state"] for item in states] == [
+        "dispatched",
+        "judged",
+        "dispatched",
+        "judged",
+        "judgments_complete",
+    ]
+    assert [item["outcome"] for item in states if item["state"] == "judged"] == [
+        "pass",
+        "pass",
+    ]
+    report = ledger.summary(run)
+    assert report["denominator"] == 2
+    assert report["pass_at_1"] == 1.0
     assert report["publication_eligible"] is False
     assert ledger.verify()["integrity"] == "verified"
 

@@ -138,27 +138,31 @@ The native report names exactly one suite, population and denominator. It never
 combines normal and hard, and `publication_eligible` remains false until task
 admission and independent reproduction are complete.
 
-`protected-plan` currently supports the separately versioned task-20 GHZ
-amplitude contract as a development example. It freezes one normal or hard
-suite, the revised public contract, private semantic cases, a pinned image,
-exact provider request and all 150 exclusions before any generation. The
-candidate returns bounded numeric values; the trusted host judge checks their
-semantics without treating them as proof of a native `QuantumCircuit` or a
-pass-manager call. `protected-create` records the plan without a model request,
-and `protected-step` performs at most one generation or judgment. A generation
-step may be billable. For example:
+`protected-plan` supports separately versioned value contracts for task 2
+(Bell amplitudes) and task 20 (GHZ amplitudes) as development examples. One or
+both may be selected with repeated `--task` arguments in a single normal or
+hard suite. It freezes the revised public contracts, private semantic cases, a
+pinned image, exact provider requests, and an explicit exclusion for every
+unscheduled task before generation. The candidate returns bounded numeric
+values; the trusted host checks them without treating them as proof of native
+Qiskit objects or construction steps. `protected-create` records the plan
+without a model request, and `protected-step` performs at most one generation
+or judgment. A generation step may be billable. For example:
 
 ```sh
-uv run graybench protected-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'task20 value development' --suite normal --task normal/qiskitHumanEval/20 --image sha256:IMAGE_ID
+uv run graybench protected-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'two value tasks' --suite normal --task normal/qiskitHumanEval/2 --task normal/qiskitHumanEval/20 --image sha256:IMAGE_ID
 uv run graybench protected-create SETUP.json CACHE LEDGER.sqlite
 uv run graybench campaign-observe LEDGER.sqlite RUN_ID
 uv run graybench protected-step LEDGER.sqlite RUN_ID CACHE
 uv run graybench summary LEDGER.sqlite RUN_ID
 ```
 
-This is a revised value task with a one-task `custom_development` denominator,
-not an unchanged QHE or 143/151-task score. All 302 pinned source cards remain
-pending independent admission review; see the [task-20 development evidence](../docs/reliability-evidence/protected-task20-value-development.md).
+This example has a two-task `custom_development` denominator, not an unchanged
+QHE or 143/151-task score. Selecting only one task gives a one-task denominator.
+All 302 pinned source cards remain pending independent admission review; see
+the [task-2](../docs/reliability-evidence/protected-task2-value-development.md)
+and [task-20](../docs/reliability-evidence/protected-task20-value-development.md)
+development evidence.
 Use each command's `--help` for required arguments. See
 [model discovery](../docs/reliability-evidence/model-discovery.md) and
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md).
