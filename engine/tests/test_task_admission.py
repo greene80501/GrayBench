@@ -10,7 +10,7 @@ from test_native_cohort import cache as _synthetic_cache
 from graybench.cli import main
 from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS, load_suite
 from graybench.judge import Judgment
-from graybench.oracle_review import run_review
+from graybench.oracle_review import inspect_oracle_review, run_review
 from graybench.task_admission import (
     AdmissionInventory,
     RequirementEvidence,
@@ -301,6 +301,80 @@ def test_admission_control_audit_separates_wrong_passes_rejections_and_errors(ca
     assert report["false_pass_count"] == 1
     assert report["false_rejection_count"] == 1
     assert report["other_mismatch_count"] == 1
+
+
+def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tmp_path):
+    class ProbeJudge:
+        def evaluate(self, _task, completion):
+            outcome = "fail" if "QuantumCircuit(3)" in completion else "pass"
+            return Judgment(outcome, "0" * 64, {})
+
+    inventory = build_pending_inventory(cache)
+    review = tmp_path / "review.jsonl"
+    run_review((load_suite("normal", cache)[0],), ProbeJudge(), review)
+    controls = inspect_oracle_review(review, cache)["controls"]
+    by_name = {item["case_key"].rsplit("/", 1)[1]: item for item in controls}
+    requirement = RequirementEvidence(
+        requirement_id="size",
+        public_clause="Return a circuit of the requested size.",
+        oracle_case_digests=("a" * 64,),
+        independent_alternative_digests=(by_name["register-alternative"]["case_digest"],),
+        wrong_mutant_digests=(by_name["constant-three"]["case_digest"],),
+    )
+    card = inventory.cards[0].model_copy(update={"requirements": (requirement,)})
+    inventory = inventory.model_copy(update={"cards": (card, *inventory.cards[1:])})
+
+    report = audit_control_coverage(inventory, cache, (review,))
+    assert report["schema_version"] == "2"
+    links = {item["role"]: item for item in report["tasks"][0]["evidence_links"]}
+    assert links["oracle_case"]["status"] == "unverified_fixture"
+    assert links["independent_alternative"]["status"] == "matching_local_observation"
+    assert links["wrong_mutant"]["status"] == "matching_local_observation"
+    assert (
+        links["wrong_mutant"]["observations"][0]["artifact_file_sha256"]
+        == report["artifacts"][0]["file_sha256"]
+    )
+    assert report["publication_eligible"] is False
+
+
+def test_admission_audit_flags_missing_wrong_role_and_conflicting_outcomes(cache, tmp_path):
+    class ExpectedJudge:
+        def evaluate(self, _task, completion):
+            return Judgment("fail" if "QuantumCircuit(3)" in completion else "pass", "0" * 64, {})
+
+    class AlwaysPassJudge:
+        def evaluate(self, _task, _completion):
+            return Judgment("pass", "1" * 64, {})
+
+    inventory = build_pending_inventory(cache)
+    task = load_suite("normal", cache)[0]
+    good = tmp_path / "good.jsonl"
+    bad = tmp_path / "bad.jsonl"
+    run_review((task,), ExpectedJudge(), good)
+    run_review((task,), AlwaysPassJudge(), bad)
+    controls = inspect_oracle_review(good, cache)["controls"]
+    by_name = {item["case_key"].rsplit("/", 1)[1]: item for item in controls}
+    requirement = RequirementEvidence(
+        requirement_id="size",
+        public_clause="Return a circuit of the requested size.",
+        independent_alternative_digests=("b" * 64,),
+        wrong_mutant_digests=(
+            by_name["gated-alternative"]["case_digest"],
+            by_name["constant-three"]["case_digest"],
+        ),
+    )
+    card = inventory.cards[0].model_copy(update={"requirements": (requirement,)})
+    inventory = inventory.model_copy(update={"cards": (card, *inventory.cards[1:])})
+
+    report = audit_control_coverage(inventory, cache, (good, bad))
+    links = {item["digest"]: item for item in report["tasks"][0]["evidence_links"]}
+    assert links["b" * 64]["status"] == "missing_local_observation"
+    assert links[by_name["gated-alternative"]["case_digest"]]["status"] == (
+        "unexpected_local_outcome"
+    )
+    conflicting = links[by_name["constant-three"]["case_digest"]]
+    assert conflicting["status"] == "unexpected_local_outcome"
+    assert {item["actual"] for item in conflicting["observations"]} == {"pass", "fail"}
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Needs pinned parquet")

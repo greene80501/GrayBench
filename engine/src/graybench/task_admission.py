@@ -232,6 +232,54 @@ def build_pending_inventory(cache: Path) -> AdmissionInventory:
     return inventory
 
 
+def _requirement_links(card: TaskCard, controls: list[dict]) -> list[dict]:
+    """Check authored digest references against observed local candidate controls.
+
+    Oracle-case digests identify test fixtures, which these candidate-control
+    logs do not expose. Even a matching candidate case digest cannot verify one.
+    """
+    by_digest: dict[str, list[dict]] = {}
+    for control in controls:
+        by_digest.setdefault(control["case_digest"], []).append(control)
+    links = []
+    for requirement in card.requirements:
+        for role, digests, expected in (
+            ("oracle_case", requirement.oracle_case_digests, None),
+            ("independent_alternative", requirement.independent_alternative_digests, "pass"),
+            ("wrong_mutant", requirement.wrong_mutant_digests, "fail"),
+        ):
+            for digest in digests:
+                observations = (
+                    []
+                    if role == "oracle_case"
+                    else sorted(
+                        by_digest.get(digest, []),
+                        key=lambda item: (item["artifact_file_sha256"], item["case_key"]),
+                    )
+                )
+                if role == "oracle_case":
+                    status = "unverified_fixture"
+                elif not observations:
+                    status = "missing_local_observation"
+                elif any(
+                    item["expected"] != expected or item["actual"] != expected
+                    for item in observations
+                ):
+                    status = "unexpected_local_outcome"
+                else:
+                    status = "matching_local_observation"
+                links.append(
+                    {
+                        "requirement_id": requirement.requirement_id,
+                        "role": role,
+                        "digest": digest,
+                        "status": status,
+                        "observations": observations,
+                    }
+                )
+    return links
+
+
 def audit_control_coverage(
     inventory: AdmissionInventory, cache: Path, review_logs: tuple[Path, ...]
 ) -> dict:
@@ -268,6 +316,7 @@ def audit_control_coverage(
                 by_task[card.source_key],
                 key=lambda control: (control["artifact_file_sha256"], control["case_key"]),
             ),
+            "evidence_links": _requirement_links(card, by_task[card.source_key]),
         }
         for card in inventory.cards
     ]
@@ -284,7 +333,7 @@ def audit_control_coverage(
         control["expected"] == "pass" and control["actual"] == "fail" for control in mismatches
     )
     return {
-        "schema_version": "1",
+        "schema_version": "2",
         "track": TRACK,
         "inventory_digest": inventory.digest,
         "source_pins": inventory.source_pins,
