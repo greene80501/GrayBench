@@ -66,3 +66,15 @@ registered-storage image. The external protected JUnit record is
 Ruff check and format checks passed, and a final independent read-only review
 found no remaining Critical or Important timing issue. These integration tests
 do not substitute for task admission or live provider calibration.
+
+## Subsequent recovery command
+
+`recover-post-check LEDGER.sqlite ATTEMPT_ID` can close the narrow state where
+the post-observation row and event committed but the separate 3.3 timing check
+did not. It verifies the ledger before mutation, requires a delivered attempt
+with one bound post observation and no existing check, then appends the usual
+check event using the actual recovery time. It performs no provider request or
+candidate execution. Recovery after the frozen deadline records a timing
+violation and keeps the run unscored; it never backdates the check. An absent
+post observation, unresolved delivery, or prior check is not repaired by this
+command. The earlier source-specific test counts above remain historical.

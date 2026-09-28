@@ -56,3 +56,8 @@ The event chain, row bindings and append-only SQLite triggers protect against
 accidental edits in this local engine. They do not provide an external chain
 anchor or prove effective model settings. The replacement's publication gate
 must check those separately.
+
+Subsequent work added a narrow `recover-post-check` command for a committed
+protocol-3.3 post observation missing only its timing check. It records the
+actual recovery time and preserves a late violation; the other pending states
+in this audit still need explicit adjudication.

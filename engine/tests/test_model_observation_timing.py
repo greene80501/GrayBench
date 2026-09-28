@@ -1,6 +1,8 @@
 """Protocol 3.3 bounds the age of attempt-bound model metadata evidence."""
 
 import contextlib
+import json
+import sys
 from datetime import datetime, timedelta
 
 import httpx
@@ -8,6 +10,7 @@ import pytest
 from pydantic import ValidationError
 
 import graybench.ledger as ledger_module
+from graybench.cli import main
 from graybench.campaign import GenerationRunner
 from graybench.campaign_setup import build_setup
 from graybench.comparison import ComparisonPlan, validate_plan
@@ -325,6 +328,111 @@ def test_crash_before_post_commit_check_keeps_run_unscored(ledger, protocol, tas
     with pytest.raises(StateError, match="complete model observations"):
         ledger.judge(sample, protocol.judge_digest, "pass", {})
     assert ledger.verify()["integrity"] == "verified"
+
+
+def _committed_post_without_check(ledger, protocol, task, monkeypatch):
+    protocol = _version(protocol)
+    run = ledger.create_run(protocol)
+    request = Ollama().prepare(protocol.model, task, None)
+    with httpx.Client(transport=httpx.MockTransport(_metadata)) as client:
+        transport = Transport(protocol.model, client=client)
+        pre = observe_run(ledger, run, transport)
+        sample = ledger.samples(run)[0]["id"]
+        attempt = ledger.begin_attempt(sample, request, pre_observation_id=pre["observation_id"])
+        token = ledger.finish_attempt(attempt, "rejected", {}, 429)
+        original_transaction = ledger.transaction
+        calls = 0
+
+        @contextlib.contextmanager
+        def crash_before_check():
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise RuntimeError("simulated process crash")
+            with original_transaction():
+                yield
+
+        monkeypatch.setattr(ledger, "transaction", crash_before_check)
+        with pytest.raises(RuntimeError, match="simulated process crash"):
+            observe_run(ledger, run, transport, attempt_id=attempt, post_token=token)
+        monkeypatch.setattr(ledger, "transaction", original_transaction)
+    finished_at = ledger.db.execute(
+        "SELECT finished_at FROM deliveries WHERE attempt_id=?", (attempt,)
+    ).fetchone()[0]
+    assert ledger.attempt_observation_status(run)["status"] == "missing_post_check"
+    return run, attempt, datetime.fromisoformat(finished_at)
+
+
+@pytest.mark.parametrize("offset,expected", [(10, "complete"), (121, "timing_violation")])
+def test_recover_post_check_uses_actual_recovery_time(
+    ledger, protocol, task, monkeypatch, offset, expected
+):
+    run, attempt, finished = _committed_post_without_check(ledger, protocol, task, monkeypatch)
+    recovered_at = finished + timedelta(seconds=offset)
+    monkeypatch.setattr(ledger_module, "now", lambda: recovered_at.isoformat())
+
+    result = ledger.recover_post_observation_check(attempt)
+
+    assert result["status"] == expected
+    assert result["gap_seconds"] == offset
+    assert ledger.attempt_observation_status(run)["status"] == expected
+    if expected == "timing_violation":
+        assert "model_observation_timing_violation" in ledger.summary(run)["score_blockers"]
+    assert ledger.verify()["integrity"] == "verified"
+    with pytest.raises(StateError, match="already recorded"):
+        ledger.recover_post_observation_check(attempt)
+
+
+def test_recover_post_check_requires_saved_post_observation(ledger, protocol, task):
+    with pytest.raises(StateError, match="Unknown attempt"):
+        ledger.recover_post_observation_check("missing")
+    protocol = _version(protocol)
+    run = ledger.create_run(protocol)
+    request = Ollama().prepare(protocol.model, task, None)
+    with httpx.Client(transport=httpx.MockTransport(_metadata)) as client:
+        pre = observe_run(ledger, run, Transport(protocol.model, client=client))
+    sample = ledger.samples(run)[0]["id"]
+    attempt = ledger.begin_attempt(sample, request, pre_observation_id=pre["observation_id"])
+    ledger.finish_attempt(attempt, "rejected", {}, 429)
+    with pytest.raises(StateError, match="post observation is missing"):
+        ledger.recover_post_observation_check(attempt)
+    assert ledger.attempt_observation_status(run)["status"] == "missing_post"
+
+
+def test_recover_post_check_rejects_protocol_32(ledger, protocol, task):
+    protocol = protocol.model_copy(
+        update={
+            "schema_version": "3.2",
+            "generation_code_digest": source_manifest()["digest"],
+        }
+    )
+    run = ledger.create_run(protocol)
+    request = Ollama().prepare(protocol.model, task, None)
+    with httpx.Client(transport=httpx.MockTransport(_metadata)) as client:
+        transport = Transport(protocol.model, client=client)
+        pre = observe_run(ledger, run, transport)
+        sample = ledger.samples(run)[0]["id"]
+        attempt = ledger.begin_attempt(sample, request, pre_observation_id=pre["observation_id"])
+        token = ledger.finish_attempt(attempt, "rejected", {}, 429)
+        observe_run(ledger, run, transport, attempt_id=attempt, post_token=token)
+    with pytest.raises(StateError, match="protocol 3.3"):
+        ledger.recover_post_observation_check(attempt)
+    assert ledger.verify()["integrity"] == "verified"
+
+
+def test_recover_post_check_cli_reopens_ledger(ledger, protocol, task, monkeypatch, capsys):
+    run, attempt, finished = _committed_post_without_check(ledger, protocol, task, monkeypatch)
+    monkeypatch.setattr(
+        ledger_module, "now", lambda: (finished + timedelta(seconds=10)).isoformat()
+    )
+    path = ledger.db.execute("PRAGMA database_list").fetchone()["file"]
+    monkeypatch.setattr(sys, "argv", ["graybench", "recover-post-check", path, attempt])
+
+    main()
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["status"] == "complete"
+    assert ledger.attempt_observation_status(run)["status"] == "complete"
 
 
 def test_retry_gets_a_new_timed_observation_pair(ledger, protocol, task):

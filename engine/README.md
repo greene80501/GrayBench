@@ -257,6 +257,15 @@ remain development-only and do not certify equivalent provider settings. See
 [dual-track comparison audit](../docs/reliability-evidence/dual-track-comparison.md).
 Hashes and SQLite append rules are not external authenticity guarantees.
 
+If a protocol 3.3 attempt has a saved post-request model observation but its
+timing check was interrupted, run
+`graybench recover-post-check LEDGER.sqlite ATTEMPT_ID`. The command verifies
+the ledger, appends one timing check using the current clock, and does not call
+the model or repeat the answer. A late or
+backward-clock check remains a timing violation and cannot yield a score.
+Missing post observations and unresolved deliveries require separate
+adjudication; this command cannot synthesize them.
+
 ## Reference and regression checks
 
 ```sh

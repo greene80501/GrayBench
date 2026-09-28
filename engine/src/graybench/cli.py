@@ -129,6 +129,11 @@ def main():
     )
     observe.add_argument("ledger", type=Path)
     observe.add_argument("run_id")
+    recover_post = commands.add_parser(
+        "recover-post-check", help="Record a missing protocol 3.3 post-observation timing check"
+    )
+    recover_post.add_argument("ledger", type=Path)
+    recover_post.add_argument("attempt_id")
     catalog = commands.add_parser(
         "inventory", help="Import both pinned suites and emit review cards"
     )
@@ -347,6 +352,15 @@ def main():
                 result = observe_run(ledger, args.run_id, transport)
             finally:
                 transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "recover-post-check":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            result = ledger.recover_post_observation_check(args.attempt_id)
         finally:
             ledger.close()
     elif args.command == "campaign-plan":

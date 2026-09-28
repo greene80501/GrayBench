@@ -268,21 +268,49 @@ class Ledger:
                 observation_id=inserted.lastrowid,
                 **({"attempt_id": attempt_id} if attempt_id is not None else {}),
             )
-        if attempt_id is not None and self.protocol(run_id).schema_version == "3.3":
-            finished_at = self.db.execute(
-                "SELECT finished_at FROM deliveries WHERE attempt_id=?", (attempt_id,)
-            ).fetchone()[0]
+        if attempt_id is not None and protocol.schema_version == "3.3":
+            self.recover_post_observation_check(attempt_id)
+        return {**self.discovery_status(run_id), "observation_id": inserted.lastrowid}
+
+    def recover_post_observation_check(self, attempt_id: str) -> dict:
+        """Close a protocol 3.3 post-check gap without repeating provider I/O."""
+        with self.transaction():
+            row = self.db.execute(
+                "SELECT s.run_id,d.finished_at,post.observation_id AS post_id,"
+                "check_row.attempt_id AS checked_id "
+                "FROM attempts a JOIN samples s ON s.id=a.sample_id "
+                "LEFT JOIN deliveries d ON d.attempt_id=a.id "
+                "LEFT JOIN attempt_observations post "
+                "ON post.attempt_id=a.id AND post.phase='post' "
+                "LEFT JOIN post_observation_checks check_row ON check_row.attempt_id=a.id "
+                "WHERE a.id=?",
+                (attempt_id,),
+            ).fetchone()
+            if row is None:
+                raise StateError("Unknown attempt")
+            protocol = self.protocol(row["run_id"])
+            self.require_protocol_serialization_stable(row["run_id"], protocol)
+            if protocol.schema_version != "3.3":
+                raise StateError("Post check recovery requires protocol 3.3")
+            if row["finished_at"] is None or row["post_id"] is None:
+                raise StateError("Delivered post observation is missing")
+            if row["checked_id"] is not None:
+                raise StateError("Post observation check already recorded")
             checked_at = now()
             gap = (
-                datetime.fromisoformat(checked_at) - datetime.fromisoformat(finished_at)
+                datetime.fromisoformat(checked_at) - datetime.fromisoformat(row["finished_at"])
             ).total_seconds()
-            with self.transaction():
-                self.db.execute(
-                    "INSERT INTO post_observation_checks VALUES (?,?,?)",
-                    (attempt_id, checked_at, gap),
-                )
-                self._event("post_observation_checked", attempt_id=attempt_id)
-        return {**self.discovery_status(run_id), "observation_id": inserted.lastrowid}
+            self.db.execute(
+                "INSERT INTO post_observation_checks VALUES (?,?,?)", (attempt_id, checked_at, gap)
+            )
+            self._event("post_observation_checked", attempt_id=attempt_id)
+        return {
+            "attempt_id": attempt_id,
+            "run_id": row["run_id"],
+            "checked_at": checked_at,
+            "gap_seconds": gap,
+            "status": self.attempt_observation_status(row["run_id"])["status"],
+        }
 
     def attempt_observation_status(self, run_id: str) -> dict:
         protocol = self.protocol(run_id)
