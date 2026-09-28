@@ -22,11 +22,11 @@ provided development subclasses hash their defining module only. The manifest
 contains logical names and hashes, no absolute paths or bytes. Limit to 4,096
 files and 64 MiB; reject unstable, missing, symlinked, or unreadable input.
 
-- [ ] Write failing tests for built-in versus subclass classification,
+- [x] Write failing tests for built-in versus subclass classification,
   package-file edit changing the digest, logical-path-only output, and
   rejected missing/symlink/oversize sources.
-- [ ] Run the new tests red. Implement the smallest deterministic manifest.
-- [ ] Run focused tests and changed-file Ruff/format; commit.
+- [x] Run the new tests red. Implement the smallest deterministic manifest.
+- [x] Run focused tests and changed-file Ruff/format; commit.
 
 ## Task 2: Bind new prepared requests and transport
 
