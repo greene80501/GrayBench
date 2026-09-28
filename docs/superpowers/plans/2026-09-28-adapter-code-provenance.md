@@ -70,7 +70,7 @@ claim this new provenance.
 - [x] Obtain independent read-only review of manifest coverage, drift checks,
   secret/path leakage, and historical identity. Fix Important findings with
   failing tests and rerun the suite if source changes.
-- [ ] Push under `greene80501` to draft PR #3, update the PR description with
+- [x] Push under `greene80501` to draft PR #3, update the PR description with
   the exact local result, and verify both workflows remain disabled.
 
 ## Review focus
