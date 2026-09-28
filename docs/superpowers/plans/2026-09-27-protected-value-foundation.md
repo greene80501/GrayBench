@@ -46,7 +46,7 @@
 - [x] **Step 2: Run** `engine/.venv/Scripts/python.exe -m pytest engine/tests/test_task_admission.py -q`; expect missing interface failure.
 - [x] **Step 3: Implement** the contracts and pure validators. Use evidence digests rather than model-generated judgments or free-text claims as proof of a control; reviewer attestations remain explicit evidence records, not cryptographic identity claims. Re-read pinned parquet and require the exact 302 ordered keys on validation. Add the CLI writer with exclusive creation.
 - [x] **Step 4: Run** focused tests against synthetic and real pinned caches, Ruff, and the full admission CLI for 302 pending cards; expect no admitted tasks.
-- [ ] **Step 5: Commit** the inventory foundation and tests.
+- [x] **Step 5: Commit** the inventory foundation and tests.
 
 ### Task 2: Bounded value-only candidate boundary
 
