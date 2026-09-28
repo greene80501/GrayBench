@@ -112,3 +112,24 @@ are in the [committed evidence bundle](artifacts/admission-2026-09-28/README.md)
 `admission-bundle-verify` checks recorded hashes and recomputes the audit
 against the pinned dataset bytes. The bundle remains unsigned local evidence,
 not independent attestation.
+
+## Bound task-2/20 review cards
+
+The [successor bundle](artifacts/admission-bindings-2026-09-28/README.md) keeps
+the three original control logs unchanged and binds each normal/hard task-2 and
+task-20 card to its revised public contract and exact protected judge. Two
+public requirement clauses per card reference authored positive alternatives
+and wrong-answer mutants. The recomputed audit has 42 controls across eight
+cards; all 24 protected task-2/20 controls now match their card's predeclared
+judge and their requirement references have matching local observations.
+Eight upstream false passes and 294 cards without controls remain. The bound
+inventory digest is
+`fe353e883c32319c6816ff084ff69982ccd53646fec83e72dd83e727dac5f57b`;
+the audit file SHA-256 is
+`618d923a7651d87e9f129bec72a41dae70ca940486676283257d82439f4c2c00`.
+
+The requirement links contain no oracle-fixture digests. Their authored
+alternatives do not replace independent reviewers, and the known upstream
+findings are still unresolved on the cards. The original pending bundle remains
+available as a historical snapshot. Neither inventory is eligible for a
+published benchmark score.
