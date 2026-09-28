@@ -4,9 +4,15 @@ The original task asks for a transpiled QuantumCircuit using a pass manager.
 This revision asks only for amplitudes and cannot verify how they were made.
 """
 
+from itertools import permutations
+
 from graybench.contracts import PublicTask
 from graybench.datasets import JudgeTask
-from graybench.protected_semantic_judge import ProtectedSemanticTask, SemanticCase
+from graybench.protected_semantic_judge import (
+    TASK20_ORACLE_V2,
+    ProtectedSemanticTask,
+    SemanticCase,
+)
 from graybench.protected_value_contract import (
     ProtectedValueContract,
     ValueCall,
@@ -30,6 +36,7 @@ REQUIREMENT = (
 
 
 def task20_value_task(source: JudgeTask) -> ProtectedSemanticTask:
+    """Retain the original three-case development identity for old evidence."""
     suite = source.public.suite
     if (
         source.public.task_id != "qiskitHumanEval/20"
@@ -72,5 +79,21 @@ def task20_value_task(source: JudgeTask) -> ProtectedSemanticTask:
             SemanticCase(case_id="source-layout", call=ValueCall(args=([2, 4, 6],))),
             SemanticCase(case_id="adjacent-layout", call=ValueCall(args=([0, 1, 2],))),
             SemanticCase(case_id="sparse-layout", call=ValueCall(args=([1, 3, 5],))),
+        ),
+    )
+
+
+def task20_value_task_v2(source: JudgeTask) -> ProtectedSemanticTask:
+    """Test every ordered layout in the finite public input domain."""
+    original = task20_value_task(source)
+    return ProtectedSemanticTask(
+        contract=original.contract,
+        oracle=TASK20_ORACLE_V2,
+        cases=tuple(
+            SemanticCase(
+                case_id="layout-" + "-".join(map(str, layout)),
+                call=ValueCall(args=(list(layout),)),
+            )
+            for layout in permutations(range(7), 3)
         ),
     )

@@ -23,7 +23,7 @@ from graybench.protected_campaign import (
     validate_protected_cohort,
 )
 from graybench.protected_task2 import task2_value_task
-from graybench.protected_task20 import task20_value_task
+from graybench.protected_task20 import task20_value_task, task20_value_task_v2
 from graybench.provenance import source_manifest
 from graybench.providers import Ollama
 from graybench.transport import Transport
@@ -59,6 +59,36 @@ def setup(suite="normal"):
     result = build_protected_setup("fixture", MODEL, cohort, (task,), cache=cache)
     assert result.protocol.adapter_code_manifest == adapter_code_manifest(Ollama())
     return result
+
+
+def test_new_task20_v1_and_v2_cohorts_are_distinct_but_old_source_cannot_resume():
+    if not CACHE:
+        pytest.skip("Pinned source cache required")
+    cache = Path(CACHE)
+    pinned = next(
+        task for task in load_suite("normal", cache) if task.public.task_id == "qiskitHumanEval/20"
+    )
+    excluded = {
+        f"normal/qiskitHumanEval/{number}": "unreviewed_or_unsupported"
+        for number in range(151)
+        if number != 20
+    }
+    cohorts = []
+    for task in (task20_value_task(pinned), task20_value_task_v2(pinned)):
+        cohort = freeze_protected_cohort(
+            (task,),
+            cache=cache,
+            suite="normal",
+            image=IMAGE,
+            label="task20 version compatibility",
+            excluded=excluded,
+        )
+        assert validate_protected_cohort(cohort, (task,), cache=cache)
+        cohorts.append(cohort)
+    assert cohorts[0].digest != cohorts[1].digest
+    historical = cohorts[0].model_copy(update={"source_digest": "0" * 64})
+    with pytest.raises(StateError, match="source changed"):
+        validate_protected_cohort(historical, (task20_value_task(pinned),), cache=cache)
 
 
 def test_protected_plan_rejects_missing_capability_probe_artifact():

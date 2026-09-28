@@ -1,13 +1,16 @@
 """The revised task-20 value contract must not inherit native-object claims."""
 
 import os
+from itertools import permutations
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from graybench.datasets import load_suite
-from graybench.protected_semantic_judge import ProtectedSemanticJudge
-from graybench.protected_task20 import task20_value_task
+from graybench.protected_semantic_judge import ProtectedSemanticJudge, ProtectedSemanticTask
+from graybench.protected_task20 import task20_value_task, task20_value_task_v2
+from graybench.protected_task_registry import revised_value_task
 from graybench.protected_value_runner import ValueRunner
 
 IMAGE = os.environ.get("GRAYBENCH_TEST_IMAGE", "sha256:" + "a" * 64)
@@ -73,6 +76,55 @@ def test_revised_contract_has_explicit_ancestry_and_separate_normal_hard_prompts
     assert normal.contract.digest != hard.contract.digest
     assert len(normal.cases) >= 3
     assert normal.release_eligible is False
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_task20_v2_exhausts_the_declared_ordered_layout_domain_without_rewriting_v1():
+    pinned = source()
+    old = task20_value_task(pinned)
+    revised = task20_value_task_v2(pinned)
+    assert len(old.cases) == 3
+    assert old.digest == "1794ec084916d55e5a0e6c204b99bf2109f3df44d2bd7a9a7883ad78cf158b0f"
+    assert len(revised.cases) == 210
+    assert revised.oracle != old.oracle
+    assert revised.digest != old.digest
+    assert revised.contract == old.contract
+    assert {tuple(case.call.args[0]) for case in revised.cases} == set(permutations(range(7), 3))
+    assert revised_value_task(pinned) == revised
+    assert revised_value_task(pinned, oracle=old.oracle) == old
+    assert revised_value_task(pinned, oracle=revised.oracle) == revised
+    with pytest.raises(ValidationError, match="all ordered layouts"):
+        ProtectedSemanticTask(contract=old.contract, oracle=revised.oracle, cases=old.cases)
+    hard = task20_value_task_v2(source("hard"))
+    assert len(hard.cases) == 210
+    assert task20_value_task(source("hard")).digest == (
+        "f5ff8a62d8b395b28f10594613f79333beabe503a7f210ba5511bc65e894812c"
+    )
+    assert hard.contract.public.digest != revised.contract.public.digest
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Pinned image required")
+def test_task20_exhaustive_oracle_accepts_two_correct_styles_and_rejects_three_case_shortcut():
+    pinned = source()
+    old = task20_value_task(pinned)
+    revised = task20_value_task_v2(pinned)
+    judge = ProtectedSemanticJudge(ValueRunner(image=IMAGE, timeout=25))
+    for candidate in (direct_solution(), qiskit_solution(), phased_solution()):
+        result = judge.evaluate(revised, pinned, candidate)
+        assert result.outcome == "pass", result.evidence
+        assert len(result.evidence["case_results"]) == 210
+        assert result.evidence["candidate_execution"]["output_bytes"] < 1024 * 1024
+    shortcut = (
+        "def ghz_amplitudes(layout):\n"
+        "    if layout not in ([2,4,6], [0,1,2], [1,3,5]): return []\n"
+        "    import math\n"
+        "    v=[[0.0,0.0] for _ in range(128)]\n"
+        "    v[0][0]=v[sum(1<<w for w in layout)][0]=1/math.sqrt(2)\n"
+        "    return v\n"
+    )
+    assert judge.evaluate(old, pinned, shortcut).outcome == "pass"
+    assert judge.evaluate(revised, pinned, shortcut).outcome == "candidate_error"
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")

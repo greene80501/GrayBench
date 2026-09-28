@@ -245,6 +245,12 @@ Qiskit objects or construction steps. `protected-create` records the plan
 without a model request, and `protected-step` performs at most one generation
 or judgment. A generation step may be billable. For example:
 
+New task-20 plans select the `task20-seven-qubit-ghz-amplitudes-all-layouts-v2`
+oracle. It tests all 210 ordered layouts allowed by the public value contract.
+The earlier three-layout v1 oracle remains separately identifiable for saved
+development evidence; its score is not interchangeable with v2. See the
+[versioned control replay](../docs/reliability-evidence/task20-all-layouts.md).
+
 ```sh
 uv run graybench protected-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'two value tasks' --suite normal --task normal/qiskitHumanEval/2 --task normal/qiskitHumanEval/20 --image sha256:IMAGE_ID
 uv run graybench protected-create SETUP.json CACHE LEDGER.sqlite

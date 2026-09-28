@@ -7,6 +7,7 @@ identity, algorithm use, or any side effect inside the candidate process.
 import hashlib
 import math
 from dataclasses import dataclass
+from itertools import permutations
 from pathlib import Path
 from typing import Literal
 
@@ -19,6 +20,7 @@ from graybench.protected_value_contract import ProtectedValueContract, ValueCall
 from graybench.protected_value_runner import ValueRunner
 
 TASK20_ORACLE = "task20-seven-qubit-ghz-amplitudes-v1"
+TASK20_ORACLE_V2 = "task20-seven-qubit-ghz-amplitudes-all-layouts-v2"
 TASK2_ORACLE = "task2-two-qubit-phi-plus-amplitudes-v1"
 
 
@@ -31,9 +33,11 @@ class ProtectedSemanticTask(Contract):
     schema_version: Literal["1"] = "1"
     contract: ProtectedValueContract
     oracle: Literal[
-        "task20-seven-qubit-ghz-amplitudes-v1", "task2-two-qubit-phi-plus-amplitudes-v1"
+        "task20-seven-qubit-ghz-amplitudes-v1",
+        "task20-seven-qubit-ghz-amplitudes-all-layouts-v2",
+        "task2-two-qubit-phi-plus-amplitudes-v1",
     ] = TASK20_ORACLE
-    cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=64)
+    cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=256)
     release_eligible: Literal[False] = False
 
     @model_validator(mode="after")
@@ -45,6 +49,20 @@ class ProtectedSemanticTask(Contract):
             raise ValueError("Semantic case identities must be unique")
         if len({case.call.digest for case in self.cases}) != len(self.cases):
             raise ValueError("Semantic cases must exercise distinct call inputs")
+        if self.oracle == TASK20_ORACLE_V2:
+            layouts = []
+            for case in self.cases:
+                if (
+                    len(case.call.args) != 1
+                    or case.call.kwargs
+                    or type(case.call.args[0]) is not list
+                    or len(case.call.args[0]) != 3
+                    or any(type(wire) is not int for wire in case.call.args[0])
+                ):
+                    raise ValueError("Task-20 v2 requires all ordered layouts")
+                layouts.append(tuple(case.call.args[0]))
+            if len(layouts) != 210 or set(layouts) != set(permutations(range(7), 3)):
+                raise ValueError("Task-20 v2 requires all ordered layouts")
         return self
 
 

@@ -96,7 +96,7 @@ def validate_protected_cohort(
             task.digest != cohort.task_digests[key]
             or task.contract.source_task_digest != source.digest
             or task.contract.public.digest == source.public.digest
-            or task != revised_value_task(source)
+            or task != revised_value_task(source, oracle=task.oracle)
         ):
             raise StateError("Protected task or its revised contract differs from pinned source")
     return pinned

@@ -249,7 +249,7 @@ def main():
     native_step.add_argument("cache", type=Path)
     native_step.add_argument("--docker", default="docker")
     protected_plan = commands.add_parser(
-        "protected-plan", help="Freeze reviewed value tasks and all exclusions; development only"
+        "protected-plan", help="Freeze development value tasks and all exclusions"
     )
     protected_plan.add_argument("model_spec", type=Path)
     protected_plan.add_argument("cache", type=Path)
@@ -626,9 +626,9 @@ def main():
             ledger.close()
     elif args.command == "protected-plan":
         requested = set(args.task)
-        reviewed = {f"{args.suite}/{task_id}" for task_id in VALUE_TASKS}
-        if len(requested) != len(args.task) or not requested <= reviewed:
-            parser.error("Each --task must be a distinct reviewed value task in the selected suite")
+        available = {f"{args.suite}/{task_id}" for task_id in VALUE_TASKS}
+        if len(requested) != len(args.task) or not requested <= available:
+            parser.error("Each --task must be a distinct available development value task")
         pinned = load_suite(args.suite, args.cache)
         tasks = tuple(
             revised_value_task(source)
