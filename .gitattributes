@@ -3,6 +3,7 @@ engine/** text eol=lf
 docs/reliability-evidence/*.jsonl -text
 docs/reliability-evidence/native_task63_control.py text eol=lf
 docs/reliability-evidence/native_null_return_screen.py text eol=lf
+docs/reliability-evidence/native_scored_null_return_screen.py text eol=lf
 
 docs/reliability-evidence/dag_native_probe.py -text
 docs/reliability-evidence/profile_graph_roundtrips.py -text

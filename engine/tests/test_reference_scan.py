@@ -103,6 +103,8 @@ def test_native_reference_scan_cli_writes_one_source_bound_case(
             "sha256:" + "a" * 64,
             "--extraction",
             "exact_prompt_suffix_v1",
+            "--exception-policy",
+            "test_exception_is_failure_v1",
             "--task",
             "normal/qiskitHumanEval/4",
         ],
@@ -111,7 +113,10 @@ def test_native_reference_scan_cli_writes_one_source_bound_case(
     printed = json.loads(capsys.readouterr().out)
     assert printed["complete"] is True
     assert printed["results"] == {"normal/qiskitHumanEval/4": "pass"}
+    assert printed["exception_policy"] == "test_exception_is_failure_v1"
     assert output.exists()
+    header = json.loads(output.read_text().splitlines()[0])["event"]
+    assert header["selection"]["cohort"]["exception_policy"] == "test_exception_is_failure_v1"
 
 
 def test_native_reference_scan_cli_requires_explicit_answer_format(

@@ -867,6 +867,8 @@ class Ledger:
                     "suite": protocol.native_suite,
                     "population": protocol.native_population,
                     "native_cohort_digest": protocol.native_cohort_digest,
+                    "native_exception_policy": protocol.native_exception_policy
+                    or "conservative_unattributed_v1",
                     "denominator": len(expected),
                 }
                 if protocol.track == "qhe-pinned-native-v1"

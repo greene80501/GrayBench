@@ -76,6 +76,12 @@ class NativeCampaignSetup(Contract):
             or self.protocol.native_population != self.cohort.population
             or self.protocol.task_keys != self.cohort.task_keys
             or self.protocol.extraction != self.cohort.extraction
+            or self.protocol.native_exception_policy
+            != (
+                None
+                if self.cohort.exception_policy == "conservative_unattributed_v1"
+                else self.cohort.exception_policy
+            )
         ):
             raise StateError("Native protocol and cohort identities differ")
         tasks = tasks if tasks is not None else self.tasks(cache)
@@ -140,6 +146,11 @@ def build_native_setup(
         native_cohort_digest=cohort.digest,
         native_suite=cohort.suite,
         native_population=cohort.population,
+        native_exception_policy=(
+            None
+            if cohort.exception_policy == "conservative_unattributed_v1"
+            else cohort.exception_policy
+        ),
         dataset_digest=binding["dataset_digest"],
         task_keys=cohort.task_keys,
         request_digests=requests,

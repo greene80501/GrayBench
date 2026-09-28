@@ -146,12 +146,30 @@ public contract requests a standalone function. Plans and reports expose the
 policy, and comparisons reject different policies; see the
 [answer-format evidence](../docs/reliability-evidence/native-answer-format-conditions.md).
 
+Native plans also freeze an exception policy. The default
+`conservative_unattributed_v1` preserves historical behavior: when a pinned
+test raises a non-assertion exception after the candidate returns, the outcome
+is `infrastructure_error` and the run remains unscored. Add
+`--exception-policy test_exception_is_failure_v1` to count a completed
+test-phase exception as a failed candidate answer. Candidate-code exceptions
+remain `candidate_error`; Docker, timeout, missing-result and result-integrity
+failures retain their separate outcomes. The selected policy is bound in the
+cohort, protocol and judge manifest, shown in summaries, and cannot be mixed
+in paired comparisons. Both conditions remain development-only. The
+[286-case diagnostic](../docs/reliability-evidence/native-null-return-screen.md)
+shows why the distinction matters; task admission must still establish oracle
+adequacy and stability before either condition can support publication. The
+[policy record](../docs/reliability-evidence/native-exception-policy.md)
+defines both outcomes and their limits.
+
 `native-reference-scan` runs pinned canonical answers through the same native
 judge without making model requests or scores. It writes a new append-only,
 source-bound evidence file; an existing path is never overwritten. By default
 it scans the 143 offline tasks in one suite. Use repeated `--task` keys for a
 declared subset, or `--include-external` to deliberately include the eight
 service-dependent tasks. The extraction policy must be supplied explicitly.
+Use `--exception-policy` to calibrate the same exception condition as a native
+plan; omission selects the historical conservative condition.
 Normal exact-suffix and hard standalone conditions
 remain separate:
 

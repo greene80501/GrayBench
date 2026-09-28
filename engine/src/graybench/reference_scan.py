@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 
-from graybench.contracts import ExtractionPolicy
+from graybench.contracts import ExtractionPolicy, NativeExceptionPolicy
 from graybench.datasets import EXTERNAL_IDS, load_suite
 from graybench.identity import canonical, identity
 from graybench.ledger import now
@@ -32,6 +32,7 @@ def run_native_reference_scan(
     suite: Suite,
     image: str,
     extraction: ExtractionPolicy,
+    exception_policy: NativeExceptionPolicy = "conservative_unattributed_v1",
     task_keys: tuple[str, ...] = (),
     include_external: bool = False,
     docker: str = "docker",
@@ -76,11 +77,12 @@ def run_native_reference_scan(
         population=population,
         image=image,
         extraction=extraction,
+        exception_policy=exception_policy,
         label="native reference calibration",
         excluded=excluded,
     )
     judge = NativeJudge(cohort, tasks, cache=cache, docker=docker)
-    return run_reference_scan(
+    result = run_reference_scan(
         tasks,
         judge,
         output,
@@ -91,6 +93,11 @@ def run_native_reference_scan(
             "include_external": include_external,
         },
     )
+    return {
+        **result,
+        "cohort_digest": cohort.digest,
+        "exception_policy": cohort.exception_policy,
+    }
 
 
 def run_evidence_cases(items, evaluate, output: Path, *, purpose, selection=None):

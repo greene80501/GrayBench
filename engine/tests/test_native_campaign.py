@@ -48,7 +48,7 @@ def test_historical_protocol_digest_and_ledger_remain_readable(ledger):
     assert ledger.verify()["integrity"] == "verified"
 
 
-def native_setup(cache, suite="normal"):
+def native_setup(cache, suite="normal", exception_policy="conservative_unattributed_v1"):
     tasks, excluded = selected(cache, suite, "custom_development")
     cohort = freeze_native_cohort(
         tasks,
@@ -57,10 +57,25 @@ def native_setup(cache, suite="normal"):
         population="custom_development",
         image=IMAGE,
         extraction="raw_or_single_python_fence_v1",
+        exception_policy=exception_policy,
         label="fixture two tasks",
         excluded=excluded,
     )
     return build_native_setup("fixture", MODEL, cohort, tasks, cache=cache)
+
+
+def test_explicit_exception_policy_is_visible_in_protocol_and_report(native_cache, ledger):
+    conservative = native_setup(native_cache)
+    scored = native_setup(native_cache, exception_policy="test_exception_is_failure_v1")
+    assert conservative.protocol.native_exception_policy is None
+    assert "native_exception_policy" not in conservative.protocol.model_dump(mode="json")
+    assert scored.protocol.native_exception_policy == "test_exception_is_failure_v1"
+    assert scored.protocol.digest != conservative.protocol.digest
+    run = ledger.create_run(scored.protocol)
+    assert ledger.summary(run)["native_exception_policy"] == "test_exception_is_failure_v1"
+    edited = scored.protocol.model_copy(update={"native_exception_policy": None})
+    with pytest.raises(StateError, match="differs"):
+        scored.validate_for_run(native_cache, edited)
 
 
 def test_native_setup_is_single_suite_and_development_only(native_cache, ledger):
@@ -157,6 +172,7 @@ def test_native_protocol_cannot_mix_suites_or_omit_binding(native_cache):
         ("track", "upstream"),
         ("native_suite", "hard"),
         ("extraction", "exact_prompt_suffix_v1"),
+        ("native_exception_policy", "test_exception_is_failure_v1"),
     ],
 )
 def test_comparison_rejects_mixed_native_tracks_or_suites(native_cache, field, value):
@@ -285,6 +301,45 @@ def test_native_plan_freezes_exact_suffix_condition_and_rejects_hard_suite(
     with pytest.raises(ValueError, match="normal"):
         main()
     assert not (tmp_path / "hard.json").exists()
+
+
+def test_native_plan_exposes_explicit_test_exception_policy(
+    native_cache, tmp_path, monkeypatch, capsys
+):
+    model_path = tmp_path / "model.json"
+    model_path.write_text(MODEL.model_dump_json(), encoding="utf-8")
+    output = tmp_path / "native.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "graybench",
+            "native-plan",
+            str(model_path),
+            str(native_cache),
+            str(output),
+            "--name",
+            "policy fixture",
+            "--label",
+            "policy fixture",
+            "--suite",
+            "hard",
+            "--population",
+            "custom_development",
+            "--task",
+            "hard/qiskitHumanEval/0",
+            "--image",
+            IMAGE,
+            "--exception-policy",
+            "test_exception_is_failure_v1",
+        ],
+    )
+    main()
+    printed = json.loads(capsys.readouterr().out)
+    saved = NativeCampaignSetup.model_validate_json(output.read_bytes())
+    assert printed["exception_policy"] == "test_exception_is_failure_v1"
+    assert saved.cohort.exception_policy == "test_exception_is_failure_v1"
+    assert saved.protocol.native_exception_policy == "test_exception_is_failure_v1"
 
 
 @pytest.mark.parametrize("suite", ["hard", "both"])

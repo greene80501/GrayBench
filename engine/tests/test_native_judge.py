@@ -242,6 +242,42 @@ def test_early_exit_and_forged_stdout_are_not_passing_results():
 
 
 @pytest.mark.skipif(not IMAGE or not CACHE, reason="Pinned native Docker image/cache not supplied")
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+def test_explicit_exception_policy_scores_task4_indirect_bad_return(suite):
+    cache = Path(CACHE)
+    task = load_suite(suite, cache)[4]
+    excluded = {
+        f"{suite}/qiskitHumanEval/{number}": "out_of_scope_development"
+        for number in range(151)
+        if number != 4
+    }
+    cohort = freeze_native_cohort(
+        (task,),
+        cache=cache,
+        suite=suite,
+        population="custom_development",
+        image=IMAGE,
+        extraction=(
+            "exact_prompt_suffix_v1" if suite == "normal" else "raw_or_single_python_fence_v1"
+        ),
+        exception_policy="test_exception_is_failure_v1",
+        label="task4 exception fixture",
+        excluded=excluded,
+    )
+    judge = NativeJudge(cohort, (task,), cache=cache, docker=DOCKER, timeout=30)
+    assert judge.evaluate(task, task.canonical_solution).outcome == "pass"
+    wrong = (
+        "\n    return None\n"
+        if suite == "normal"
+        else "def create_unitary_from_matrix():\n    return None\n"
+    )
+    result = judge.evaluate(task, wrong)
+    assert result.outcome == "fail", result.evidence
+    assert result.evidence["worker_result"]["exception_type"] == "QiskitError"
+    assert result.evidence["manifest"]["exception_policy"] == "test_exception_is_failure_v1"
+
+
+@pytest.mark.skipif(not IMAGE or not CACHE, reason="Pinned native Docker image/cache not supplied")
 def test_candidate_output_limit_blocks_a_passing_test():
     cache = Path(CACHE)
     task = load_suite("hard", cache)[4]

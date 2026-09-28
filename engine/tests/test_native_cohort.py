@@ -109,6 +109,27 @@ def test_normal_and_hard_have_distinct_frozen_identities(cache):
     assert set(normal.task_keys).isdisjoint(hard.task_keys)
 
 
+def test_explicit_exception_policy_has_a_distinct_cohort_identity(cache):
+    conservative, tasks = frozen(cache)
+    _, excluded = selected(cache, "normal")
+    scored = freeze_native_cohort(
+        tasks,
+        cache=cache,
+        suite="normal",
+        population="offline_143",
+        image=IMAGE,
+        extraction="raw_or_single_python_fence_v1",
+        exception_policy="test_exception_is_failure_v1",
+        label="fixture",
+        excluded=excluded,
+    )
+    assert conservative.exception_policy == "conservative_unattributed_v1"
+    assert "exception_policy" not in conservative.model_dump(mode="json")
+    assert scored.exception_policy == "test_exception_is_failure_v1"
+    assert scored.digest != conservative.digest
+    validate_native_cohort(scored, tasks, cache=cache)
+
+
 def test_exact_prompt_suffix_cohort_is_normal_only_and_separately_identified(cache):
     tasks, excluded = selected(cache, "normal")
     literal = freeze_native_cohort(

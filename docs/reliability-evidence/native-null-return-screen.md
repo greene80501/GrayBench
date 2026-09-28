@@ -48,4 +48,8 @@ candidate failures would hide those possibilities. The conservative current
 behavior leaves a run unscored when this happens. A release policy needs
 reviewed task contracts and positive and negative controls, explicit
 candidate-versus-harness exception attribution, and a versioned decision
-about the denominator. This diagnostic changes none of those policies.
+about the denominator. This diagnostic changes none of those policies. A
+subsequent [explicit development condition](native-exception-policy.md)
+scores completed test-phase exceptions as failures and retains separate
+source-bound calibration and control chains; it does not retroactively change
+this chain or admit tasks for publication.

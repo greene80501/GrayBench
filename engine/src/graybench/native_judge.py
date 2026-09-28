@@ -151,6 +151,8 @@ class NativeJudge:
             "release_eligible": False,
             "integrity_limit": "same_process_candidate_can_inspect_or_tamper_with_test",
         }
+        if self.cohort.exception_policy != "conservative_unattributed_v1":
+            manifest["exception_policy"] = self.cohort.exception_policy
         return {}, manifest
 
     def evaluate(self, task: JudgeTask, completion: str) -> Judgment:
@@ -158,6 +160,8 @@ class NativeJudge:
         digest = identity(manifest)
         validate_native_cohort(self.cohort, self.tasks, cache=self.cache)
         payload = native_payload(task, completion, self.cohort.extraction)
+        if self.cohort.exception_policy != "conservative_unattributed_v1":
+            payload["exception_policy"] = self.cohort.exception_policy
         evidence = {
             "manifest": manifest,
             "completion_sha256": payload["completion_sha256"],

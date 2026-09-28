@@ -34,6 +34,7 @@ def validate_plan(plan):
         "native_cohort_digest",
         "native_suite",
         "native_population",
+        "native_exception_policy",
         "protected_cohort_digest",
         "protected_suite",
         "protected_population",

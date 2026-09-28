@@ -15,7 +15,7 @@ from graybench.identity import canonical
 from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
-from graybench.native_cohort import freeze_native_cohort, task_key
+from graybench.native_cohort import NATIVE_EXCEPTION_POLICIES, freeze_native_cohort, task_key
 from graybench.protected_campaign import (
     ProtectedCampaign,
     ProtectedCampaignSetup,
@@ -82,6 +82,11 @@ def main():
     native_reference.add_argument("--image", required=True)
     native_reference.add_argument("--docker", default="docker")
     native_reference.add_argument("--extraction", choices=EXTRACTION_POLICIES, required=True)
+    native_reference.add_argument(
+        "--exception-policy",
+        choices=NATIVE_EXCEPTION_POLICIES,
+        default="conservative_unattributed_v1",
+    )
     native_reference.add_argument("--task", action="append", default=[])
     native_reference.add_argument("--include-external", action="store_true")
     inspect_scan = commands.add_parser(
@@ -170,6 +175,11 @@ def main():
     )
     native_plan.add_argument(
         "--extraction", choices=EXTRACTION_POLICIES, default="raw_or_single_python_fence_v1"
+    )
+    native_plan.add_argument(
+        "--exception-policy",
+        choices=NATIVE_EXCEPTION_POLICIES,
+        default="conservative_unattributed_v1",
     )
     native_plan.add_argument("--repeats", type=int, default=1)
     native_plan.add_argument("--system-prompt", type=Path)
@@ -299,6 +309,7 @@ def main():
             suite=args.suite,
             image=args.image,
             extraction=args.extraction,
+            exception_policy=args.exception_policy,
             task_keys=tuple(args.task),
             include_external=args.include_external,
             docker=args.docker,
@@ -449,6 +460,7 @@ def main():
             population=args.population,
             image=args.image,
             extraction=args.extraction,
+            exception_policy=args.exception_policy,
             label=args.label,
             excluded=excluded,
         )
@@ -472,6 +484,7 @@ def main():
             "suite": cohort.suite,
             "population": cohort.population,
             "extraction_policy": cohort.extraction,
+            "exception_policy": cohort.exception_policy,
             "planned_samples": len(tasks) * args.repeats,
             "publication_eligible": False,
             "output": str(args.output),
@@ -488,6 +501,7 @@ def main():
                 "suite": setup.cohort.suite,
                 "population": setup.cohort.population,
                 "extraction_policy": setup.cohort.extraction,
+                "exception_policy": setup.cohort.exception_policy,
                 "publication_eligible": False,
             }
         finally:

@@ -6,7 +6,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from graybench.contracts import Contract, ExtractionPolicy
+from graybench.contracts import Contract, ExtractionPolicy, NativeExceptionPolicy
 from graybench.datasets import EXTERNAL_IDS, PINS, JudgeTask, load_suite
 from graybench.extraction import EXTRACTION_POLICIES
 from graybench.provenance import source_manifest
@@ -15,6 +15,10 @@ Suite = Literal["normal", "hard"]
 Population = Literal["offline_143", "custom_development"]
 IMAGE_DIGEST = re.compile(r"sha256:[0-9a-f]{64}\Z")
 HEX_DIGEST = re.compile(r"[0-9a-f]{64}\Z")
+NATIVE_EXCEPTION_POLICIES = (
+    "conservative_unattributed_v1",
+    "test_exception_is_failure_v1",
+)
 
 
 def task_key(task: JudgeTask) -> str:
@@ -38,6 +42,10 @@ class NativeCohort(Contract):
     dataset_pin: dict[str, str]
     image: str
     extraction: ExtractionPolicy
+    exception_policy: NativeExceptionPolicy = Field(
+        default="conservative_unattributed_v1",
+        exclude_if=lambda value: value == "conservative_unattributed_v1",
+    )
     source_digest: str
     certification: Literal["development_only"] = "development_only"
 
@@ -114,6 +122,7 @@ def freeze_native_cohort(
     population: Population,
     image: str,
     extraction: ExtractionPolicy,
+    exception_policy: NativeExceptionPolicy = "conservative_unattributed_v1",
     label: str,
     excluded: dict[str, str],
 ) -> NativeCohort:
@@ -128,6 +137,7 @@ def freeze_native_cohort(
         dataset_pin=dict(PINS[suite]),
         image=image,
         extraction=extraction,
+        exception_policy=exception_policy,
         source_digest=source_manifest()["digest"],
     )
     validate_native_cohort(cohort, tasks, cache=cache)

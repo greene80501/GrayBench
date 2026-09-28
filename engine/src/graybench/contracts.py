@@ -143,6 +143,11 @@ ExtractionPolicy = Literal[
     "exact_prompt_suffix_v1",
 ]
 
+NativeExceptionPolicy = Literal[
+    "conservative_unattributed_v1",
+    "test_exception_is_failure_v1",
+]
+
 
 class ModelObservationTiming(Contract):
     max_pre_age_seconds: float = Field(default=30.0, gt=0, le=3600, allow_inf_nan=False)
@@ -167,6 +172,9 @@ class Protocol(Contract):
         default=None, exclude_if=lambda value: value is None
     )
     native_population: Literal["offline_143", "custom_development"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
+    native_exception_policy: Literal["test_exception_is_failure_v1"] | None = Field(
         default=None, exclude_if=lambda value: value is None
     )
     protected_cohort_digest: str | None = Field(
@@ -231,6 +239,8 @@ class Protocol(Contract):
                 raise ValueError("Native protocol cannot mix suites")
         elif any(value is not None for value in native_fields):
             raise ValueError("Native cohort fields require the native track")
+        if self.track != "qhe-pinned-native-v1" and self.native_exception_policy is not None:
+            raise ValueError("Native exception policy requires the native track")
         if self.track == "graybench-protected-semantic-v1":
             if self.schema_version != "3.3" or any(value is None for value in protected_fields):
                 raise ValueError(

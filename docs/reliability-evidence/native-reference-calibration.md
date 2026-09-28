@@ -58,11 +58,14 @@ and did not test the oracle. The corrected chain above uses a new output file;
 the first chain is not counted as evidence of normal oracle rejection.
 
 The native same-process test-integrity limit and pending task admission also
-remain. These scans do not change model denominators, classify non-assertion
-test exceptions as candidate failures, or authorize a published accuracy. The
-[task-4 exception case](native-answer-format-conditions.md) remains unresolved:
-a `None` return can make the pinned Qiskit assertion raise `QiskitError`, which
-the current native worker conservatively treats as an infrastructure error.
-A canonical pass alone is not a sound blanket exception-attribution policy.
-The companion [286-case null-return screen](native-null-return-screen.md)
-quantifies this ambiguity across both offline suites without changing scores.
+remain. These historical scans do not change model denominators, classify
+non-assertion test exceptions as candidate failures, or authorize a published
+accuracy. A `None` return in the
+[task-4 exception case](native-answer-format-conditions.md) can make the
+pinned Qiskit assertion raise `QiskitError`, which the default native policy
+conservatively treats as an infrastructure error. A canonical pass alone is
+not a sound blanket exception-attribution policy. The companion
+[286-case null-return screen](native-null-return-screen.md) quantifies this
+ambiguity across both offline suites. A later
+[explicit development scoring condition](native-exception-policy.md) has its
+own source-bound calibration and control chains.

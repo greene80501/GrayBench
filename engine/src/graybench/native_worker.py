@@ -40,6 +40,12 @@ def run_payload(payload: dict) -> dict:
         raise ValueError("Unknown native worker protocol")
     if payload.get("suite") not in {"normal", "hard"}:
         raise ValueError("Unknown native suite")
+    exception_policy = payload.get("exception_policy", "conservative_unattributed_v1")
+    if exception_policy not in {
+        "conservative_unattributed_v1",
+        "test_exception_is_failure_v1",
+    }:
+        raise ValueError("Unknown native exception policy")
     for key in ("entry_point", "code", "public_prefix", "test"):
         if not isinstance(payload.get(key), str):
             raise ValueError("Malformed native payload field: " + key)
@@ -73,7 +79,7 @@ def run_payload(payload: dict) -> dict:
             "candidate_error"
             if _candidate_frame(exc)
             else "fail"
-            if isinstance(exc, AssertionError)
+            if isinstance(exc, AssertionError) or exception_policy == "test_exception_is_failure_v1"
             else "infrastructure_error"
         )
         return _failure(status, "test", exc)

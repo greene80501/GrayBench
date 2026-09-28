@@ -145,6 +145,31 @@ def test_candidate_exception_is_not_a_test_assertion_failure(tmp_path):
     assert result["exception_type"] == "AssertionError"
 
 
+def test_explicit_test_exception_policy_scores_indirect_candidate_error(tmp_path):
+    original = task(
+        "hard",
+        test="def check(candidate):\n    assert candidate(9) + 1 == 4\ncheck(answer)\n",
+    )
+    payload = native_payload(original, "def answer(x):\n    return None\n", POLICY)
+    _, conservative = invoke(payload, tmp_path)
+    assert conservative["status"] == "infrastructure_error"
+    (tmp_path / "result.json").unlink()
+
+    payload["exception_policy"] = "test_exception_is_failure_v1"
+    _, scored = invoke(payload, tmp_path)
+    assert scored["status"] == "fail"
+    assert scored["phase"] == "test"
+    assert scored["exception_type"] == "TypeError"
+
+
+def test_unknown_native_exception_policy_is_rejected(tmp_path):
+    payload = native_payload(task("hard"), "def answer(x):\n    return 3\n", POLICY)
+    payload["exception_policy"] = "unknown"
+    process, result = invoke(payload, tmp_path)
+    assert process.returncode == 2
+    assert result is None
+
+
 def test_candidate_cannot_skip_pinned_test_by_rebinding_builtin_exec(tmp_path):
     original = task("hard")
     answer = (
