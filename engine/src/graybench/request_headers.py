@@ -22,6 +22,9 @@ _CREDENTIAL_HEADERS = frozenset(
         "anthropic-api-key",
     }
 )
+_SUPPORTED_CREDENTIAL_HEADERS = frozenset(
+    {"authorization", "api-key", "x-api-key", "x-goog-api-key", "anthropic-api-key"}
+)
 _ROUTING_HEADERS = frozenset(
     {
         "host",
@@ -76,12 +79,29 @@ def validate_frozen_public_headers(headers: dict[str, str]) -> dict[str, str]:
     return headers
 
 
+def freeze_credential_header_names(declared_names: frozenset[str]) -> tuple[str, ...]:
+    """Only known credential field names may be omitted from public evidence."""
+    if (
+        not isinstance(declared_names, frozenset)
+        or len(declared_names) > 1
+        or not declared_names <= _SUPPORTED_CREDENTIAL_HEADERS
+    ):
+        raise ValueError("Unsupported credential header declaration")
+    return tuple(sorted(declared_names))
+
+
 def validate_credential_headers(
-    headers: Mapping[str, str], declared_names: frozenset[str], public: Mapping[str, str]
+    headers: Mapping[str, str],
+    declared_names: frozenset[str],
+    public: Mapping[str, str],
+    secret: str,
 ) -> dict[str, str]:
-    """Limit authentication to named fields without persisting their values."""
-    if not isinstance(headers, Mapping) or not isinstance(declared_names, frozenset):
+    """Limit authentication to known fields carrying only the supplied credential."""
+    if not isinstance(headers, Mapping):
         raise ValueError("Invalid credential header declaration")
+    freeze_credential_header_names(declared_names)
+    if bool(secret) != bool(declared_names):
+        raise ValueError("Credential presence differs from the frozen request")
     if any(
         not valid_header_name(name) or name != name.lower() or name in public
         for name in declared_names
@@ -94,5 +114,10 @@ def validate_credential_headers(
         name = original.lower()
         if name not in declared_names or name in public or name in result:
             raise ValueError("Undeclared or overlapping credential header")
+        expected = f"Bearer {secret}" if name == "authorization" else secret
+        if value != expected:
+            raise ValueError("Credential header contains content beyond the supplied secret")
         result[name] = value
+    if set(result) != declared_names:
+        raise ValueError("Credential header names differ from the frozen request")
     return result

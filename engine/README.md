@@ -100,6 +100,10 @@ cannot claim an encoded hash. See the
 [response capture audit](../docs/reliability-evidence/response-entity-capture.md).
 The transport also uses the supplied adapter instance for authentication and
 discovery; see the [adapter consistency audit](../docs/reliability-evidence/adapter-instance-consistency.md).
+New prepared requests freeze the non-secret headers GrayBench sends and the
+names of supported credential fields. The transport checks HTTPX's built
+request before network dispatch and records its non-secret headers; see the
+[request-header audit](../docs/reliability-evidence/public-request-headers.md).
 
 `campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
 and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.

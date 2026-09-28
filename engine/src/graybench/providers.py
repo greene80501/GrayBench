@@ -10,7 +10,7 @@ from typing import Any
 from urllib.parse import quote
 
 from graybench.contracts import Generation, ModelSpec, PreparedRequest, PublicTask
-from graybench.request_headers import freeze_public_headers
+from graybench.request_headers import freeze_credential_header_names, freeze_public_headers
 
 
 class CapabilityError(ValueError):
@@ -66,6 +66,9 @@ class Adapter(ABC):
             body=body,
             setting_evidence=spec.settings,
             public_headers=public_headers,
+            credential_header_names=freeze_credential_header_names(
+                self.credential_header_names if spec.credential_env else frozenset()
+            ),
         )
 
     def discovery_requests(self, spec: ModelSpec) -> tuple[tuple[str, str, dict | None], ...]:

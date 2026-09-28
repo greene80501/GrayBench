@@ -8,7 +8,10 @@ from urllib.parse import urlsplit
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, field_validator, model_validator
 
 from graybench.identity import identity, reject_credentials
-from graybench.request_headers import validate_frozen_public_headers
+from graybench.request_headers import (
+    freeze_credential_header_names,
+    validate_frozen_public_headers,
+)
 
 
 class Contract(BaseModel):
@@ -262,7 +265,7 @@ class Protocol(Contract):
 
 
 class PreparedRequest(Contract):
-    """Exact public wire body. Headers and secrets are intentionally separate."""
+    """Frozen public request body, headers, and credential field names."""
 
     adapter: str
     model: str
@@ -273,11 +276,23 @@ class PreparedRequest(Contract):
     public_headers: dict[str, str] | None = Field(
         default=None, exclude_if=lambda value: value is None
     )
+    credential_header_names: tuple[str, ...] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
 
     @field_validator("public_headers")
     @classmethod
     def canonical_headers(cls, value: dict[str, str] | None) -> dict[str, str] | None:
         return validate_frozen_public_headers(value) if value is not None else None
+
+    @field_validator("credential_header_names")
+    @classmethod
+    def canonical_credential_names(cls, value: tuple[str, ...] | None) -> tuple[str, ...] | None:
+        if value is None:
+            return None
+        if freeze_credential_header_names(frozenset(value)) != value:
+            raise ValueError("Credential header names are not canonical")
+        return value
 
 
 class Generation(Contract):

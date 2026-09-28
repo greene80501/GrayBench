@@ -34,10 +34,10 @@
 
 **Interfaces:** `freeze_public_headers(extra: Mapping[str, str]) -> dict[str, str]` returns lowercase, sorted standard and adapter public headers. `PreparedRequest.public_headers: dict[str, str] | None` is omitted from legacy JSON/digests when absent. `Adapter.public_headers(spec: ModelSpec) -> dict[str, str]` declares public extensions; `Adapter.credential_header_names` declares credential fields. `Adapter.request` populates the frozen full map.
 
-- [ ] Write failing tests for frozen standard headers and changed request digest, legacy digest round-trip, public extension normalization, duplicate names, credential/framing headers, and CR/LF values.
-- [ ] Run those tests and confirm each fails for the intended missing behavior.
-- [ ] Implement the contract, helper, and adapter defaults with no secret values in the request artifact.
-- [ ] Run focused tests and Ruff; commit this independently testable contract.
+- [x] Write failing tests for frozen standard headers and changed request digest, legacy digest round-trip, public extension normalization, duplicate names, credential/framing headers, and CR/LF values.
+- [x] Run those tests and confirm each fails for the intended missing behavior.
+- [x] Implement the contract, helper, and adapter defaults with no secret values in the request artifact.
+- [x] Run focused tests and Ruff; commit this independently testable contract.
 
 ### Task 2: Transport enforcement and evidence
 
@@ -45,16 +45,16 @@
 
 **Interfaces:** `Transport.generate` compares the frozen public map with the supplied adapter's current declaration before I/O. `_exchange` sends that map plus only declared credential headers, records `request_public_headers`, its SHA-256 identity, and credential header names. Discovery uses the same header rules; old requests are read-only.
 
-- [ ] Write failing HTTPX fixture tests for exact sent public headers, changed plugin header before dispatch, undeclared or overlapping auth headers, discovery headers, and no credential value in evidence.
-- [ ] Run red tests; implement one checked merge path for generation and discovery.
-- [ ] Confirm HTTP 5xx ambiguity and single-dispatch/recovery tests still pass; commit the transport step.
+- [x] Write failing HTTPX fixture tests for exact sent public headers, changed plugin header before dispatch, undeclared or overlapping auth headers, discovery headers, and no credential value in evidence.
+- [x] Run red tests; implement one checked merge path for generation and discovery.
+- [x] Confirm HTTP 5xx ambiguity and single-dispatch/recovery tests still pass; commit the transport step.
 
 ### Task 3: Source-bound verification and documentation
 
 **Files:** Modify `engine/README.md`; create `docs/reliability-evidence/public-request-headers.md`.
 
-- [ ] Document the precise assurance boundary: application-supplied headers, no proof of provider receipt, and unchanged historical artifacts.
-- [ ] Run focused tests, changed-file Ruff/format, `git diff --check`, then the complete Docker-enabled test suite.
+- [x] Document the precise assurance boundary: application-supplied headers, no proof of provider receipt, and unchanged historical artifacts.
+- [x] Run focused tests, changed-file Ruff/format, `git diff --check`, then the complete Docker-enabled test suite after review fixes.
 - [ ] Review the diff and tests, commit under `greene80501`, push to draft PR #3, and update its verification count while leaving workflows disabled.
 
 ## Ruling during Task 2
@@ -66,3 +66,20 @@ send that same object with client authentication and redirects disabled. This
 also records the checked non-secret HTTPX headers. The cost if this ruling is
 wrong is rejection of a custom client that relies on implicit defaults; such
 values must instead be declared in the public adapter header contract.
+
+The independent review reproduced a custom adapter hiding `x-model-profile`
+as a credential header, then varying its value without changing the prepared
+digest or public evidence. Freeze credential field names in the prepared
+request, allow only known credential fields, and require their values to be
+the supplied secret (or its Bearer form for `Authorization`). The second
+review found that credential presence and raw-versus-Bearer presentation could
+still vary for one request. Freeze zero or exactly one emitted credential field,
+require it when a credential is configured, and use one public value template
+per field. This closes both reproduced bypasses while leaving provider-side
+account semantics and installed plugin identity as explicit release gates.
+The final review exposed a mutable-request interval after the ledger's digest
+check: an adapter callback could alter the original header map or body, making
+dispatch or evidence diverge. Snapshot the whole prepared request before
+adapter callbacks, and separately copy the exchange body and header map before
+authentication. A fixture asserts the wire and evidence use the original
+values even when the adapter mutates its retained request reference.

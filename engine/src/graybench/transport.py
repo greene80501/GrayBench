@@ -6,6 +6,7 @@ import os
 import time
 import zlib
 from contextlib import closing
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
@@ -15,6 +16,7 @@ from graybench.contracts import Generation, ModelSpec, Observation, PreparedRequ
 from graybench.identity import canonical, identity
 from graybench.providers import Adapter
 from graybench.request_headers import (
+    freeze_credential_header_names,
     freeze_public_headers,
     validate_credential_headers,
     validate_frozen_public_headers,
@@ -138,17 +140,22 @@ class Transport:
         body: dict | None,
         provider: Adapter,
         public_headers: dict[str, str],
+        credential_header_names: tuple[str, ...],
     ) -> tuple[int | None, dict]:
         # Plugins cannot redirect credentials to another origin via a supplied absolute URL.
         if not path.startswith("/") or path.startswith("//") or "?" in path or "#" in path:
             raise ValueError("Request path must be a relative, query-free API path")
         started = time.perf_counter()
+        body = deepcopy(body)
+        public_headers = validate_frozen_public_headers(dict(public_headers))
         content = canonical(body) if body is not None else b""
-        public_headers = validate_frozen_public_headers(public_headers)
         if self.secret and any(self.secret in value for value in public_headers.values()):
             raise ValueError("Credential may not enter public request headers")
         auth_headers = validate_credential_headers(
-            provider.auth_headers(self.secret), provider.credential_header_names, public_headers
+            provider.auth_headers(self.secret),
+            frozenset(credential_header_names),
+            public_headers,
+            self.secret,
         )
         headers = httpx.Headers(public_headers)
         headers.update(auth_headers)
@@ -251,6 +258,10 @@ class Transport:
         return status, evidence
 
     def generate(self, request: PreparedRequest, adapter: Adapter) -> Delivery:
+        prepared_digest = request.digest
+        request = request.model_copy(deep=True)
+        if request.digest != prepared_digest:
+            raise ValueError("Prepared request changed while snapshotting for dispatch")
         if (
             request.adapter != self.spec.adapter
             or request.model != self.spec.model
@@ -259,11 +270,25 @@ class Transport:
             raise ValueError("Transport and prepared request have different model identities")
         if request.public_headers is None:
             raise ValueError("Historical request has no frozen public headers for dispatch")
+        if request.credential_header_names is None:
+            raise ValueError(
+                "Historical request has no frozen credential header names for dispatch"
+            )
         public_headers = validate_frozen_public_headers(request.public_headers)
         if public_headers != freeze_public_headers(adapter.public_headers(self.spec)):
             raise ValueError("Adapter public headers differ from frozen request")
+        expected_credential_names = freeze_credential_header_names(
+            adapter.credential_header_names if self.spec.credential_env else frozenset()
+        )
+        if request.credential_header_names != expected_credential_names:
+            raise ValueError("Adapter credential header names differ from frozen request")
         status, evidence = self._exchange(
-            "POST", request.path, request.body, adapter, public_headers
+            "POST",
+            request.path,
+            request.body,
+            adapter,
+            public_headers,
+            request.credential_header_names,
         )
         if "error" in evidence:
             return Delivery("ambiguous", status, evidence)
@@ -290,9 +315,14 @@ class Transport:
         if adapter.name != self.spec.adapter:
             raise ValueError("Discovery adapter differs from frozen model identity")
         public_headers = freeze_public_headers(adapter.public_headers(self.spec))
+        credential_header_names = freeze_credential_header_names(
+            adapter.credential_header_names if self.spec.credential_env else frozenset()
+        )
         result = []
         for method, path, body in adapter.discovery_requests(self.spec):
-            status, evidence = self._exchange(method, path, body, adapter, public_headers)
+            status, evidence = self._exchange(
+                method, path, body, adapter, public_headers, credential_header_names
+            )
             evidence["http_status"] = status
             evidence["observed_at"] = datetime.now(UTC).isoformat()
             try:

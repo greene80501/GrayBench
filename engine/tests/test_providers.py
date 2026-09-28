@@ -159,14 +159,12 @@ def test_generation_authenticates_with_the_supplied_adapter_instance(monkeypatch
 
         def auth_headers(self, secret):
             self.auth_calls += 1
-            return {"Authorization": f"Bearer {secret}:instance-specific"}
+            return {"Authorization": f"Bearer {secret}"}
 
     provider = StatefulOllama()
 
     def handler(request):
-        assert (
-            request.headers["Authorization"] == "Bearer stateful-fixture-secret:instance-specific"
-        )
+        assert request.headers["Authorization"] == "Bearer stateful-fixture-secret"
         return httpx.Response(
             200,
             json={
@@ -198,14 +196,12 @@ def test_discovery_authenticates_with_the_supplied_adapter_instance(monkeypatch)
 
         def auth_headers(self, secret):
             self.auth_calls += 1
-            return {"Authorization": f"Bearer {secret}:instance-specific"}
+            return {"Authorization": f"Bearer {secret}"}
 
     provider = StatefulOllama()
 
     def handler(request):
-        assert (
-            request.headers["Authorization"] == "Bearer stateful-fixture-secret:instance-specific"
-        )
+        assert request.headers["Authorization"] == "Bearer stateful-fixture-secret"
         return httpx.Response(200, json={"ok": True})
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
