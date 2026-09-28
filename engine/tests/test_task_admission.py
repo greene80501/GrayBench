@@ -9,6 +9,7 @@ from test_native_cohort import cache as _synthetic_cache
 
 from graybench.cli import main
 from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS, load_suite
+from graybench.identity import identity
 from graybench.judge import Judgment
 from graybench.oracle_review import inspect_oracle_review, run_review
 from graybench.task_admission import (
@@ -39,6 +40,7 @@ def test_pending_inventory_contains_exact_pinned_302_and_no_admission(cache):
     assert inventory.source_pins == PINS
     assert sum(card.external_service for card in inventory.cards) == 16
     assert all(card.public_contract_digest is None for card in inventory.cards)
+    assert "protected_judge_digest" not in inventory.cards[0].model_dump()
     assert all(admission_blockers(card) for card in inventory.cards)
     assert inventory.publication_eligible is False
     for suite in ("normal", "hard"):
@@ -120,9 +122,11 @@ def test_card_requires_public_revision_controls_findings_and_two_reviewers(cache
     assert "wrong_mutant_missing" in blockers
     assert "known_findings_unresolved" in blockers
     assert "independent_review_missing" in blockers
+    assert "protected_judge_missing" in blockers
 
     reviewed = incomplete.model_copy(
         update={
+            "protected_judge_digest": "4" * 64,
             "requirements": (
                 RequirementEvidence(
                     requirement_id="size",
@@ -304,10 +308,15 @@ def test_admission_control_audit_separates_wrong_passes_rejections_and_errors(ca
 
 
 def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tmp_path):
+    manifest = {
+        "track": "graybench-protected-semantic-v1",
+        "public_contract_digest": "c" * 64,
+    }
+
     class ProbeJudge:
         def evaluate(self, _task, completion):
             outcome = "fail" if "QuantumCircuit(3)" in completion else "pass"
-            return Judgment(outcome, "0" * 64, {})
+            return Judgment(outcome, identity(manifest), {"manifest": manifest})
 
     inventory = build_pending_inventory(cache)
     review = tmp_path / "review.jsonl"
@@ -321,11 +330,17 @@ def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tm
         independent_alternative_digests=(by_name["register-alternative"]["case_digest"],),
         wrong_mutant_digests=(by_name["constant-three"]["case_digest"],),
     )
-    card = inventory.cards[0].model_copy(update={"requirements": (requirement,)})
+    card = inventory.cards[0].model_copy(
+        update={
+            "public_contract_digest": "c" * 64,
+            "protected_judge_digest": identity(manifest),
+            "requirements": (requirement,),
+        }
+    )
     inventory = inventory.model_copy(update={"cards": (card, *inventory.cards[1:])})
 
     report = audit_control_coverage(inventory, cache, (review,))
-    assert report["schema_version"] == "2"
+    assert report["schema_version"] == "4"
     links = {item["role"]: item for item in report["tasks"][0]["evidence_links"]}
     assert links["oracle_case"]["status"] == "unverified_fixture"
     assert links["independent_alternative"]["status"] == "matching_local_observation"
@@ -337,14 +352,112 @@ def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tm
     assert report["publication_eligible"] is False
 
 
+def test_admission_audit_does_not_credit_upstream_or_unbound_controls(cache, tmp_path):
+    class ConditionJudge:
+        def __init__(self, manifest, *, force_pass=False):
+            self.manifest = manifest
+            self.force_pass = force_pass
+
+        def evaluate(self, _task, completion):
+            outcome = "pass" if self.force_pass or "QuantumCircuit(3)" not in completion else "fail"
+            return Judgment(outcome, identity(self.manifest), {"manifest": self.manifest})
+
+    inventory = build_pending_inventory(cache)
+    task = load_suite("normal", cache)[0]
+    upstream = tmp_path / "upstream.jsonl"
+    wrong_contract = tmp_path / "wrong-contract.jsonl"
+    wrong_oracle = tmp_path / "wrong-oracle.jsonl"
+    matching_manifest = {
+        "track": "graybench-protected-semantic-v1",
+        "public_contract_digest": "c" * 64,
+        "oracle": "all-layouts-v2",
+    }
+    run_review(
+        (task,), ConditionJudge({"protocol": "upstream-proxy-v1"}, force_pass=True), upstream
+    )
+    run_review(
+        (task,),
+        ConditionJudge(
+            {"track": "graybench-protected-semantic-v1", "public_contract_digest": "d" * 64}
+        ),
+        wrong_contract,
+    )
+    run_review(
+        (task,),
+        ConditionJudge({**matching_manifest, "oracle": "three-layouts-v1"}),
+        wrong_oracle,
+    )
+    control = inspect_oracle_review(upstream, cache)["controls"][0]
+    card = inventory.cards[0].model_copy(
+        update={
+            "public_contract_digest": "c" * 64,
+            "protected_judge_digest": identity(matching_manifest),
+            "requirements": (
+                RequirementEvidence(
+                    requirement_id="size",
+                    public_clause="Return the requested size.",
+                    wrong_mutant_digests=(control["case_digest"],),
+                ),
+            ),
+        }
+    )
+    inventory = inventory.model_copy(update={"cards": (card, *inventory.cards[1:])})
+    report = audit_control_coverage(inventory, cache, (upstream, wrong_contract, wrong_oracle))
+    link = report["tasks"][0]["evidence_links"][0]
+    assert link["status"] == "unqualified_judge_condition"
+    assert {item["judge_track"] for item in link["observations"]} == {
+        "upstream-proxy-v1",
+        "graybench-protected-semantic-v1",
+    }
+    assert report["declared_frozen_judge_control_count"] == 0
+    assert report["false_pass_count"] == 1
+
+    matching = tmp_path / "matching.jsonl"
+    run_review(
+        (task,),
+        ConditionJudge(matching_manifest),
+        matching,
+    )
+    combined = audit_control_coverage(
+        inventory, cache, (upstream, wrong_contract, wrong_oracle, matching)
+    )
+    linked = combined["tasks"][0]["evidence_links"][0]
+    assert linked["status"] == "matching_local_observation"
+    assert linked["declared_frozen_judge_observation_count"] == 1
+    assert len(linked["observations"]) == 4
+    assert combined["declared_frozen_judge_control_count"] == 3
+    assert combined["false_pass_count"] == 1
+
+
+def test_admission_audit_rejects_claimed_manifest_with_wrong_judge_digest(cache, tmp_path):
+    class ForgedJudge:
+        def evaluate(self, _task, _completion):
+            return Judgment("pass", "0" * 64, {"manifest": {"track": "fake"}})
+
+    inventory = build_pending_inventory(cache)
+    review = tmp_path / "forged.jsonl"
+    run_review((load_suite("normal", cache)[0],), ForgedJudge(), review)
+    with pytest.raises(ValueError, match="manifest digest"):
+        audit_control_coverage(inventory, cache, (review,))
+
+
 def test_admission_audit_flags_missing_wrong_role_and_conflicting_outcomes(cache, tmp_path):
+    manifest = {
+        "track": "graybench-protected-semantic-v1",
+        "public_contract_digest": "c" * 64,
+    }
+
     class ExpectedJudge:
         def evaluate(self, _task, completion):
-            return Judgment("fail" if "QuantumCircuit(3)" in completion else "pass", "0" * 64, {})
+            return Judgment(
+                "fail" if "QuantumCircuit(3)" in completion else "pass",
+                identity(manifest),
+                {"manifest": manifest},
+            )
 
     class AlwaysPassJudge:
         def evaluate(self, _task, _completion):
-            return Judgment("pass", "1" * 64, {})
+            return Judgment("pass", identity(manifest), {"manifest": manifest})
 
     inventory = build_pending_inventory(cache)
     task = load_suite("normal", cache)[0]
@@ -363,7 +476,13 @@ def test_admission_audit_flags_missing_wrong_role_and_conflicting_outcomes(cache
             by_name["constant-three"]["case_digest"],
         ),
     )
-    card = inventory.cards[0].model_copy(update={"requirements": (requirement,)})
+    card = inventory.cards[0].model_copy(
+        update={
+            "public_contract_digest": "c" * 64,
+            "protected_judge_digest": identity(manifest),
+            "requirements": (requirement,),
+        }
+    )
     inventory = inventory.model_copy(update={"cards": (card, *inventory.cards[1:])})
 
     report = audit_control_coverage(inventory, cache, (good, bad))

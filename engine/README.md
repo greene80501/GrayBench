@@ -55,6 +55,11 @@ review attestations, infer semantic adequacy, or admit tasks. The saved control
 logs must be available separately to reverify the audit.
 The summary separates authored wrong controls that passed, authored correct
 controls that failed, and other mismatches such as timeouts.
+Report schema 4 verifies any recorded judge manifest against its digest and
+requires an exact card-bound protected judge digest before a control can support
+a requirement. The judge identity includes the oracle and private cases, so an
+earlier oracle cannot qualify merely because it shares a public contract. A
+matching declaration is local, unsigned evidence, not independent attestation.
 
 ## Execution conditions
 

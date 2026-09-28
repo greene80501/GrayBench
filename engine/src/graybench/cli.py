@@ -748,6 +748,7 @@ def main():
             "covered_task_count": report["covered_task_count"],
             "uncovered_task_count": report["uncovered_task_count"],
             "control_count": report["control_count"],
+            "declared_frozen_judge_control_count": report["declared_frozen_judge_control_count"],
             "unexpected_outcome_count": report["unexpected_outcome_count"],
             "false_pass_count": report["false_pass_count"],
             "false_rejection_count": report["false_rejection_count"],

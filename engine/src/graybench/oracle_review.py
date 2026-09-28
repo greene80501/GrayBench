@@ -242,6 +242,25 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
             raise ValueError("Oracle-review evidence differs from case expectation")
         if evidence["matches_expectation"] is not (result["outcome"] == expected):
             raise ValueError("Oracle-review declared expectation match differs from outcome")
+        judgment = evidence["judgment"]
+        if not isinstance(judgment, dict):
+            raise ValueError("Oracle-review judgment evidence must be an object")
+        manifest = judgment.get("manifest")
+        manifest_verified = "manifest" in judgment
+        judge_track = None
+        public_contract_digest = None
+        if manifest_verified:
+            if not isinstance(manifest, dict) or identity(manifest) != result["judge_digest"]:
+                raise ValueError("Oracle-review judge manifest digest mismatch")
+            judge_track = manifest.get("track", manifest.get("protocol"))
+            public_contract_digest = manifest.get("public_contract_digest")
+            if judge_track is not None and not isinstance(judge_track, str):
+                raise ValueError("Invalid oracle-review judge track")
+            if public_contract_digest is not None and (
+                not isinstance(public_contract_digest, str)
+                or not re.fullmatch(r"[0-9a-f]{64}", public_contract_digest)
+            ):
+                raise ValueError("Invalid oracle-review public-contract digest")
         if result["outcome"] != expected:
             unexpected_outcomes.append(
                 {"task_key": key, "expected": expected, "actual": result["outcome"]}
@@ -256,6 +275,9 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
                 "expected": expected,
                 "actual": result["outcome"],
                 "judge_digest": result["judge_digest"],
+                "judge_manifest_verified": manifest_verified,
+                "judge_track": judge_track,
+                "public_contract_digest": public_contract_digest,
             }
         )
     return {

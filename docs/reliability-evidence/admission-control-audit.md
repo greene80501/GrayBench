@@ -47,3 +47,34 @@ It again reports 18 controls, 4 covered cards, 298 uncovered cards and 8
 false passes. The pending inventory contains no requirement evidence claims yet,
 so its new `evidence_links` lists are empty. These outputs are outside the PR.
 All artifacts and all 302 cards remain `publication_eligible: false`.
+
+## Judge-condition binding (report schema 4)
+
+The previous audit linked a candidate-control digest to a protected-track
+requirement without checking which judge or public contract produced the
+outcome. That could make an upstream test appear to support a revised protected
+oracle. Merely matching the public contract is also insufficient: task 20's
+three-layout and all-layouts oracles share one contract. Schema 4 checks a
+recorded judge manifest against its judge digest and requires the card to bind
+that exact protected judge digest, as well as the track and public contract.
+The full judge digest covers the oracle, private cases, code hashes and runtime
+configuration. Missing manifests, upstream judges, different contracts and
+different oracle versions remain visible as controls but receive
+`unqualified_judge_condition`. A missing judge binding is an admission blocker.
+Old pending card identities are preserved by omitting the absent optional
+binding when serialized. Matching claims are still local, unsigned evidence; a
+holder can fabricate a consistent manifest and chain. Oracle fixture identities
+remain `unverified_fixture`.
+
+The preserved 18-control logs were reaudited into
+`GrayBench-v3-admission-control-audit-v5-20260928.json`, SHA-256
+`f4f1a8be67e198e4653ba66a5784156c595fecf72b30b3119c82d24fa0bd4e94`.
+Twelve controls declare `upstream-proxy-v1`; six declare
+`qhe0-size-domain-v1`. None declares a protected public-contract digest, so
+`declared_frozen_judge_control_count` is zero. The four covered cards, 298
+uncovered cards, and eight upstream false passes remain; there is still no
+protected admission evidence in these logs. This new report is local output
+outside the PR, alongside the preserved older reports.
+The current `run_review` probe factory covers task families 0 and 1; producing
+real protected task-2/20 controls with this exact judge binding still requires
+a separate authored-control runner. No card is admitted by this audit.

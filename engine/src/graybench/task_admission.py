@@ -79,6 +79,9 @@ class TaskCard(Contract):
     source_key: str
     source_task_digest: str
     public_contract_digest: str | None = None
+    # Omit absent bindings when serializing old pending inventories, preserving
+    # their existing identity while requiring an exact judge for new claims.
+    protected_judge_digest: str | None = Field(default=None, exclude_if=lambda value: value is None)
     requirements: tuple[RequirementEvidence, ...] = ()
     known_findings: tuple[str, ...] = ()
     finding_resolutions: dict[str, str] = Field(default_factory=dict)
@@ -91,10 +94,16 @@ class TaskCard(Contract):
         match = SOURCE_KEY.fullmatch(self.source_key)
         if match is None or match[1] != self.source_suite or int(match[2]) > 150:
             raise ValueError("Task card must identify one pinned suite and task")
-        if not _digest(self.source_task_digest) or (
-            self.public_contract_digest is not None and not _digest(self.public_contract_digest)
+        if (
+            not _digest(self.source_task_digest)
+            or (
+                self.public_contract_digest is not None and not _digest(self.public_contract_digest)
+            )
+            or (
+                self.protected_judge_digest is not None and not _digest(self.protected_judge_digest)
+            )
         ):
-            raise ValueError("Invalid task or revised public-contract identity")
+            raise ValueError("Invalid task, public-contract, or protected-judge identity")
         if self.external_service != (int(match[2]) in EXTERNAL_IDS):
             raise ValueError("External-service classification differs from pinned inventory")
         if self.external_service and self.dependency_status == "offline":
@@ -152,6 +161,8 @@ def admission_blockers(card: TaskCard) -> tuple[str, ...]:
     blockers = []
     if card.public_contract_digest is None:
         blockers.append("public_value_contract_missing")
+    if card.protected_judge_digest is None:
+        blockers.append("protected_judge_missing")
     if not card.requirements:
         blockers.append("requirements_missing")
     else:
@@ -257,13 +268,17 @@ def _requirement_links(card: TaskCard, controls: list[dict]) -> list[dict]:
                         key=lambda item: (item["artifact_file_sha256"], item["case_key"]),
                     )
                 )
+                qualified = [
+                    item for item in observations if item["declared_frozen_judge_matches_card"]
+                ]
                 if role == "oracle_case":
                     status = "unverified_fixture"
                 elif not observations:
                     status = "missing_local_observation"
+                elif not qualified:
+                    status = "unqualified_judge_condition"
                 elif any(
-                    item["expected"] != expected or item["actual"] != expected
-                    for item in observations
+                    item["expected"] != expected or item["actual"] != expected for item in qualified
                 ):
                     status = "unexpected_local_outcome"
                 else:
@@ -275,6 +290,7 @@ def _requirement_links(card: TaskCard, controls: list[dict]) -> list[dict]:
                         "digest": digest,
                         "status": status,
                         "observations": observations,
+                        "declared_frozen_judge_observation_count": len(qualified),
                     }
                 )
     return links
@@ -286,6 +302,7 @@ def audit_control_coverage(
     """Join verified local controls to every task card; never admit a task."""
     validate_inventory(inventory, cache)
     by_task = {card.source_key: [] for card in inventory.cards}
+    cards = {card.source_key: card for card in inventory.cards}
     task_digests = {card.source_key: card.source_task_digest for card in inventory.cards}
     artifacts = []
     seen = set()
@@ -307,7 +324,21 @@ def audit_control_coverage(
             key = control["task_key"]
             if key not in by_task or control["task_digest"] != task_digests[key]:
                 raise ValueError("Oracle control differs from inventory task ancestry")
-            by_task[key].append({**control, "artifact_file_sha256": file_digest})
+            card = cards[key]
+            by_task[key].append(
+                {
+                    **control,
+                    "artifact_file_sha256": file_digest,
+                    "declared_frozen_judge_matches_card": (
+                        control["judge_manifest_verified"]
+                        and control["judge_track"] == TRACK
+                        and card.public_contract_digest is not None
+                        and control["public_contract_digest"] == card.public_contract_digest
+                        and card.protected_judge_digest is not None
+                        and control["judge_digest"] == card.protected_judge_digest
+                    ),
+                }
+            )
     rows = [
         {
             "task_key": card.source_key,
@@ -333,7 +364,7 @@ def audit_control_coverage(
         control["expected"] == "pass" and control["actual"] == "fail" for control in mismatches
     )
     return {
-        "schema_version": "2",
+        "schema_version": "4",
         "track": TRACK,
         "inventory_digest": inventory.digest,
         "source_pins": inventory.source_pins,
@@ -342,6 +373,11 @@ def audit_control_coverage(
         "control_count": sum(len(row["controls"]) for row in rows),
         "covered_task_count": sum(bool(row["controls"]) for row in rows),
         "uncovered_task_count": sum(not row["controls"] for row in rows),
+        "declared_frozen_judge_control_count": sum(
+            control["declared_frozen_judge_matches_card"]
+            for row in rows
+            for control in row["controls"]
+        ),
         "unexpected_outcome_count": len(mismatches),
         "false_pass_count": false_passes,
         "false_rejection_count": false_rejections,
