@@ -270,3 +270,21 @@ def test_no_endpoint_discovery_still_records_adapter_digest(model):
         observations = Transport(model, client).discover(provider)
     assert len(observations) == 1
     assert observations[0].evidence["adapter_code_digest"] == adapter_code_digest(provider)
+
+
+def test_protocol_rejects_malformed_or_absolute_path_adapter_manifest(protocol):
+    from graybench.contracts import Protocol
+    from graybench.identity import canonical
+
+    historical = protocol.model_dump(mode="json")
+    assert "adapter_code_manifest" not in historical
+    assert Protocol.model_validate_json(canonical(historical)).digest == protocol.digest
+    invalid = {
+        "schema": "adapter-code-v1",
+        "adapter": "fixture",
+        "class": "fixture.Adapter",
+        "coverage": "module_only_development",
+        "files": {"C:/Users/private/plugin.py": "a" * 64},
+    }
+    with pytest.raises(ValueError, match="adapter code file"):
+        Protocol.model_validate_json(canonical({**historical, "adapter_code_manifest": invalid}))

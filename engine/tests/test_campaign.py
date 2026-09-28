@@ -1,6 +1,7 @@
 import httpx
 import pytest
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign import GenerationRunner
 from graybench.contracts import RetryPolicy
 from graybench.ledger import Ledger, StateError
@@ -105,6 +106,16 @@ def test_source_drift_prevents_any_network_call(ledger, protocol, task, monkeypa
     runner = setup(ledger, protocol, task, lambda _: pytest.fail("network must not run"))
     monkeypatch.setattr("graybench.campaign.source_manifest", lambda: {"digest": "0" * 64})
     with pytest.raises(StateError, match="source"):
+        runner.step()
+    assert not ledger.db.execute("SELECT 1 FROM attempts").fetchone()
+    runner.transport.client.close()
+
+
+def test_adapter_code_drift_prevents_model_observation_and_dispatch(ledger, protocol, task):
+    forged = {**adapter_code_manifest(Ollama()), "engine_source_digest": "0" * 64}
+    protocol = protocol.model_copy(update={"adapter_code_manifest": forged})
+    runner = setup(ledger, protocol, task, lambda _: pytest.fail("network must not run"))
+    with pytest.raises(StateError, match="(?i)adapter code"):
         runner.step()
     assert not ledger.db.execute("SELECT 1 FROM attempts").fetchone()
     runner.transport.client.close()

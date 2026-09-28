@@ -7,6 +7,7 @@ from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, field_validator, model_validator
 
+from graybench.adapter_provenance import validate_adapter_code_manifest
 from graybench.identity import identity, reject_credentials
 from graybench.request_headers import (
     freeze_credential_header_names,
@@ -206,9 +207,17 @@ class Protocol(Contract):
     )
     model: ModelSpec
     generation_code_digest: str = Field(pattern="^[0-9a-f]{64}$")
+    adapter_code_manifest: dict[str, JsonValue] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
     runtime_digest: str = Field(pattern="^[0-9a-f]{64}$")
     judge_digest: str = Field(pattern="^[0-9a-f]{64}$")
     analysis_digest: str = Field(pattern="^[0-9a-f]{64}$")
+
+    @field_validator("adapter_code_manifest")
+    @classmethod
+    def canonical_adapter_manifest(cls, value: dict | None) -> dict | None:
+        return validate_adapter_code_manifest(value) if value is not None else None
 
     @model_validator(mode="after")
     def nonempty_unique_tasks(self) -> "Protocol":

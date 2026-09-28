@@ -104,6 +104,8 @@ New prepared requests freeze the non-secret headers GrayBench sends and the
 names of supported credential fields. The transport checks HTTPX's built
 request before network dispatch and records its non-secret headers; see the
 [request-header audit](../docs/reliability-evidence/public-request-headers.md).
+New requests and campaign protocols also bind a local adapter-code manifest;
+see the [adapter provenance audit](../docs/reliability-evidence/adapter-code-provenance.md).
 
 `campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
 and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.

@@ -2,6 +2,7 @@ import httpx
 import pytest
 from pydantic import ValidationError
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign import GenerationRunner
 from graybench.contracts import Generation, ModelSpec, Observation
 from graybench.model_discovery import discovery_identity, observe_run
@@ -36,6 +37,22 @@ def test_volatile_load_state_does_not_change_model_identity(model):
 @pytest.mark.parametrize("digest", ["", "invalid"])
 def test_invalid_model_digest_is_not_identity_evidence(model, digest):
     assert discovery_identity(model, observations(digest=digest))["status"] == "unavailable"
+
+
+def test_adapter_code_drift_stops_observation_before_network(ledger, protocol, model):
+    planned = {**adapter_code_manifest(Ollama()), "engine_source_digest": "0" * 64}
+    protocol = protocol.model_copy(update={"adapter_code_manifest": planned})
+    run = ledger.create_run(protocol)
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(503, json={"error": "unavailable"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(ValueError, match="(?i)adapter.*code"):
+            observe_run(ledger, run, Transport(model, client))
+    assert calls == []
 
 
 def test_digest_drift_blocks_generation_and_persists_evidence(ledger, protocol, task):

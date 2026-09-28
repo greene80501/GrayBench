@@ -9,6 +9,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign import GenerationRunner
 from graybench.contracts import (
     Contract,
@@ -164,6 +165,12 @@ class ProtectedCampaignSetup(Contract):
             or self.protocol.task_keys != self.cohort.task_keys
         ):
             raise StateError("Protected protocol and cohort identities differ")
+        if (
+            self.protocol.adapter_code_manifest is not None
+            and adapter_code_manifest(adapter(self.protocol.model.adapter))
+            != self.protocol.adapter_code_manifest
+        ):
+            raise StateError("Protected adapter code changed")
         pinned = validate_protected_cohort(self.cohort, self.tasks, cache=cache)
         binding = cohort_identities(self.tasks, pinned, self.judge(docker))
         for field in ("dataset_digest", "judge_digest", "runtime_digest"):
@@ -247,21 +254,26 @@ def build_protected_setup(
     )
     binding = cohort_identities(tasks, pinned, setup_stub.judge())
     source = source_manifest()["digest"]
+    provider = adapter(model.adapter)
+    adapter_manifest = adapter_code_manifest(provider)
+    adapter_digest = identity(adapter_manifest)
+    requests = {}
+    for task in tasks:
+        request = provider.prepare(model, task.contract.public, system_prompt)
+        if request.adapter_code_digest != adapter_digest:
+            raise StateError("Protected adapter code changed during planning")
+        requests[task_key(task)] = request.digest
     extraction = {task.contract.extraction for task in tasks}
     if len(extraction) != 1:
         raise ValueError("Protected cohort cannot mix extraction policies")
     protocol = setup_stub.protocol.model_copy(
         update={
             "dataset_digest": binding["dataset_digest"],
-            "request_digests": {
-                task_key(task): adapter(model.adapter)
-                .prepare(model, task.contract.public, system_prompt)
-                .digest
-                for task in tasks
-            },
+            "request_digests": requests,
             "system_prompt": system_prompt,
             "extraction": extraction.pop(),
             "generation_code_digest": source,
+            "adapter_code_manifest": adapter_manifest,
             "runtime_digest": binding["runtime_digest"],
             "judge_digest": binding["judge_digest"],
             "analysis_digest": source,

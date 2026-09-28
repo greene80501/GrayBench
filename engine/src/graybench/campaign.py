@@ -5,7 +5,9 @@ the database, not in-memory state, enforces backoff after restart. This is the g
 component of the campaign, not task eligibility certification or a complete scoring runner.
 """
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.contracts import PreparedRequest
+from graybench.identity import identity
 from graybench.ledger import Ledger, StateError
 from graybench.model_discovery import observe_run
 from graybench.provenance import source_manifest
@@ -28,6 +30,10 @@ class GenerationRunner:
         protocol = self.ledger.protocol(self.run_id)
         if source_manifest()["digest"] != protocol.generation_code_digest:
             raise StateError("Generation source differs from frozen experiment")
+        if protocol.adapter_code_manifest is not None and identity(
+            adapter_code_manifest(adapter(protocol.model.adapter))
+        ) != identity(protocol.adapter_code_manifest):
+            raise StateError("Generation adapter code differs from frozen experiment")
         if self.transport.spec != protocol.model:
             raise StateError("Transport model or endpoint differs from frozen experiment")
         if set(self.requests) != set(protocol.task_keys) or any(

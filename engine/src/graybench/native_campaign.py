@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import Field
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.contracts import (
     Contract,
     ModelObservationTiming,
@@ -15,6 +16,7 @@ from graybench.contracts import (
 )
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign, cohort_identities, validate_cohort
+from graybench.identity import identity
 from graybench.ledger import StateError
 from graybench.native_cohort import NativeCohort, task_key, validate_native_cohort
 from graybench.native_judge import NativeJudge
@@ -84,6 +86,12 @@ class NativeCampaignSetup(Contract):
             )
         ):
             raise StateError("Native protocol and cohort identities differ")
+        if (
+            self.protocol.adapter_code_manifest is not None
+            and adapter_code_manifest(adapter(self.protocol.model.adapter))
+            != self.protocol.adapter_code_manifest
+        ):
+            raise StateError("Native adapter code changed")
         tasks = tasks if tasks is not None else self.tasks(cache)
         validate_native_cohort(self.cohort, tasks, cache=cache)
         validate_cohort(self.protocol, tasks, self.judge(cache, tasks, docker))
@@ -135,9 +143,14 @@ def build_native_setup(
         ),
     )
     provider = adapter(model.adapter)
-    requests = {
-        task_key(task): provider.prepare(model, task.public, system_prompt).digest for task in tasks
-    }
+    adapter_manifest = adapter_code_manifest(provider)
+    adapter_digest = identity(adapter_manifest)
+    requests = {}
+    for task in tasks:
+        request = provider.prepare(model, task.public, system_prompt)
+        if request.adapter_code_digest != adapter_digest:
+            raise StateError("Native adapter code changed during planning")
+        requests[task_key(task)] = request.digest
     source = source_manifest()["digest"]
     protocol = Protocol(
         schema_version="3.3",
@@ -161,6 +174,7 @@ def build_native_setup(
         model_observation_timing=model_observation_timing or ModelObservationTiming(),
         model=model,
         generation_code_digest=source,
+        adapter_code_manifest=adapter_manifest,
         runtime_digest=binding["runtime_digest"],
         judge_digest=binding["judge_digest"],
         analysis_digest=source,

@@ -3,12 +3,14 @@ import sys
 
 import pytest
 
-from graybench.campaign_setup import CampaignSetup, build_setup
+from graybench.adapter_provenance import adapter_code_manifest
+from graybench.campaign_setup import CampaignSetup, build_setup, execution_context
 from graybench.cli import main
 from graybench.contracts import ModelSpec
 from graybench.datasets import JudgeTask
 from graybench.evaluation_campaign import validate_cohort
 from graybench.ledger import StateError
+from graybench.providers import Ollama
 
 
 def private_task(task):
@@ -27,10 +29,21 @@ def test_builder_binds_requests_without_including_private_source(model, task):
     assert setup.protocol.repeats == 3
     assert setup.protocol.retry.max_attempts == 1
     assert setup.protocol.retry.statuses == ()
+    assert setup.protocol.adapter_code_manifest == adapter_code_manifest(Ollama())
     assert "SECRET_REFERENCE_SENTINEL" not in setup.model_dump_json()
     assert "SECRET_TEST_SENTINEL" not in setup.model_dump_json()
     with pytest.raises(StateError, match="unique"):
         build_setup("duplicate", model, (private, private), setup.image)
+
+
+def test_campaign_creation_rejects_adapter_manifest_drift(model, task):
+    setup = build_setup("fixture", model, (private_task(task),), "sha256:" + "0" * 64)
+    changed = {**setup.protocol.adapter_code_manifest, "engine_source_digest": "0" * 64}
+    forged = setup.model_copy(
+        update={"protocol": setup.protocol.model_copy(update={"adapter_code_manifest": changed})}
+    )
+    with pytest.raises(StateError, match="(?i)adapter.*code"):
+        execution_context(forged)
 
 
 def test_new_credentialed_campaign_requires_public_account_scope(task):

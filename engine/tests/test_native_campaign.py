@@ -8,6 +8,7 @@ import pytest
 from test_native_cohort import IMAGE, selected
 from test_native_cohort import cache as _synthetic_cache
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign_setup import build_setup
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
@@ -16,6 +17,7 @@ from graybench.ledger import StateError
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import freeze_native_cohort
 from graybench.provenance import source_manifest
+from graybench.providers import Ollama
 from graybench.transport import Transport
 
 MODEL = ModelSpec(adapter="ollama", model="fixture", base_url="http://localhost:11434")
@@ -64,6 +66,14 @@ def native_setup(cache, suite="normal", exception_policy="conservative_unattribu
     return build_native_setup("fixture", MODEL, cohort, tasks, cache=cache)
 
 
+def test_native_resume_rejects_adapter_code_drift(native_cache, monkeypatch):
+    result = native_setup(native_cache)
+    changed = {**result.protocol.adapter_code_manifest, "engine_source_digest": "0" * 64}
+    monkeypatch.setattr("graybench.native_campaign.adapter_code_manifest", lambda provider: changed)
+    with pytest.raises(StateError, match="(?i)adapter code"):
+        result.validate_for_run(native_cache, result.protocol)
+
+
 def test_explicit_exception_policy_is_visible_in_protocol_and_report(native_cache, ledger):
     conservative = native_setup(native_cache)
     scored = native_setup(native_cache, exception_policy="test_exception_is_failure_v1")
@@ -81,6 +91,7 @@ def test_explicit_exception_policy_is_visible_in_protocol_and_report(native_cach
 def test_native_setup_is_single_suite_and_development_only(native_cache, ledger):
     cache = native_cache
     setup = native_setup(cache)
+    assert setup.protocol.adapter_code_manifest == adapter_code_manifest(Ollama())
     assert isinstance(setup, NativeCampaignSetup)
     hard = native_setup(cache, "hard")
     assert setup.protocol.track == "qhe-pinned-native-v1"
@@ -198,7 +209,7 @@ def test_campaign_checks_binding_before_dispatch(native_cache, ledger):
     class NoTransport:
         spec = MODEL
 
-        def discover(self, *_):
+        def discover(self, *_, **__):
             return []
 
         def generate(self, *_):

@@ -7,10 +7,18 @@ from graybench.providers import adapter, model_metadata_path
 
 
 def observe_run(ledger, run_id, transport, *, attempt_id=None, post_token=None):
-    spec = ledger.protocol(run_id).model
+    protocol = ledger.protocol(run_id)
+    spec = protocol.model
     if transport.spec != spec:
         raise ValueError("Discovery transport differs from frozen model")
-    observations = transport.discover(adapter(spec.adapter))
+    provider = adapter(spec.adapter)
+    if protocol.adapter_code_manifest is None:
+        observations = transport.discover(provider)
+    else:
+        observations = transport.discover(
+            provider,
+            expected_adapter_code_digest=identity(protocol.adapter_code_manifest),
+        )
     return ledger.record_model_observation(
         run_id,
         {

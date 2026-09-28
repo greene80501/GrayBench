@@ -57,10 +57,10 @@ resume compare the current manifest with the protocol; observation passes its
 expected digest to discovery. Historical protocols remain readable but cannot
 claim this new provenance.
 
-- [ ] Write failing tests for new setup binding and pre-network drift,
+- [x] Write failing tests for new setup binding and pre-network drift,
   including discovery, and historical protocol identity preservation.
-- [ ] Run red tests; implement the new checks without relabeling old runs.
-- [ ] Document exact coverage and limits. Run focused tests and Ruff/format;
+- [x] Run red tests; implement the new checks without relabeling old runs.
+- [x] Document exact coverage and limits. Run focused tests and Ruff/format;
   commit.
 
 ## Task 4: Complete verification and PR

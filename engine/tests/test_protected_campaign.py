@@ -8,6 +8,7 @@ from pathlib import Path
 import httpx
 import pytest
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
 from graybench.contracts import ModelSpec, Protocol, RetryPolicy
@@ -23,6 +24,7 @@ from graybench.protected_campaign import (
 from graybench.protected_task2 import task2_value_task
 from graybench.protected_task20 import task20_value_task
 from graybench.provenance import source_manifest
+from graybench.providers import Ollama
 from graybench.transport import Transport
 
 IMAGE = os.environ.get("GRAYBENCH_TEST_IMAGE", "sha256:" + "a" * 64)
@@ -53,7 +55,19 @@ def setup(suite="normal"):
         label="task20 development",
         excluded=excluded,
     )
-    return build_protected_setup("fixture", MODEL, cohort, (task,), cache=cache)
+    result = build_protected_setup("fixture", MODEL, cohort, (task,), cache=cache)
+    assert result.protocol.adapter_code_manifest == adapter_code_manifest(Ollama())
+    return result
+
+
+def test_protected_resume_rejects_adapter_code_drift(monkeypatch):
+    result = setup()
+    changed = {**result.protocol.adapter_code_manifest, "engine_source_digest": "0" * 64}
+    monkeypatch.setattr(
+        "graybench.protected_campaign.adapter_code_manifest", lambda provider: changed
+    )
+    with pytest.raises(StateError, match="(?i)adapter code"):
+        result.validate_for_run(Path(CACHE), result.protocol)
 
 
 def two_task_setup(suite="normal"):

@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from graybench.adapter_provenance import adapter_code_manifest
 from graybench.contracts import (
     Contract,
     ExtractionPolicy,
@@ -17,6 +18,7 @@ from graybench.contracts import (
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
 from graybench.evaluation_recipes import EvaluationRecipe, recipe_judge, revised_tasks
+from graybench.identity import identity
 from graybench.ledger import StateError
 from graybench.provenance import environment, source_manifest
 from graybench.providers import adapter
@@ -58,6 +60,12 @@ class CampaignSetup(Contract):
         )
 
     def tasks(self, cache: Path):
+        if (
+            self.protocol.adapter_code_manifest is not None
+            and adapter_code_manifest(adapter(self.protocol.model.adapter))
+            != self.protocol.adapter_code_manifest
+        ):
+            raise StateError("Campaign adapter code differs from frozen plan")
         tasks = tuple(
             task
             for suite in ("normal", "hard")
@@ -82,6 +90,12 @@ def execution_context(setup: CampaignSetup):
     observation = environment()
     if observation["source"]["digest"] != setup.protocol.generation_code_digest:
         raise StateError("Setup source does not match this engine")
+    if (
+        setup.protocol.adapter_code_manifest is not None
+        and adapter_code_manifest(adapter(setup.protocol.model.adapter))
+        != setup.protocol.adapter_code_manifest
+    ):
+        raise StateError("Setup adapter code differs from frozen campaign")
     return {
         "setup": setup.model_dump(mode="json"),
         "environment": observation,
@@ -118,12 +132,14 @@ def build_setup(
     binding = cohort_identities(tasks, judge)
     source = source_manifest()["digest"]
     provider = adapter(model.adapter)
-    requests = {
-        f"{task.public.suite}/{task.public.task_id}": provider.prepare(
-            model, task.public, system_prompt
-        ).digest
-        for task in tasks
-    }
+    adapter_manifest = adapter_code_manifest(provider)
+    adapter_digest = identity(adapter_manifest)
+    requests = {}
+    for task in tasks:
+        request = provider.prepare(model, task.public, system_prompt)
+        if request.adapter_code_digest != adapter_digest:
+            raise StateError("Adapter code changed during campaign planning")
+        requests[f"{task.public.suite}/{task.public.task_id}"] = request.digest
     protocol = Protocol(
         schema_version=protocol_version,
         model_observation_timing=(
@@ -144,6 +160,7 @@ def build_setup(
         judge_digest=binding["judge_digest"],
         runtime_digest=binding["runtime_digest"],
         generation_code_digest=source,
+        adapter_code_manifest=adapter_manifest,
         # Conservatively bind all engine sources, including summary/metric implementation.
         analysis_digest=source,
     )
