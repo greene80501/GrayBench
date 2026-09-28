@@ -1,0 +1,84 @@
+{
+  "model": {
+    "adapter": "gemini",
+    "model": "gemini-2.5-flash",
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "credential_env": "GOOGLE_API_KEY",
+    "credential_scope_id": "google/project/gen-lang-client-0719580231",
+    "settings": [],
+    "accepted_returned_models": [],
+    "model_identity_evidence": null,
+    "discovery_policy": "required",
+    "discovery_exception_reason": null
+  },
+  "observations": [
+    {
+      "name": "/models/gemini-2.5-flash",
+      "status": "observed",
+      "value": {
+        "name": "models/gemini-2.5-flash",
+        "version": "001",
+        "displayName": "Gemini 2.5 Flash",
+        "description": "Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million tokens, released in June of 2025.",
+        "inputTokenLimit": 1048576,
+        "outputTokenLimit": 65536,
+        "supportedGenerationMethods": [
+          "generateContent",
+          "countTokens",
+          "createCachedContent",
+          "batchGenerateContent"
+        ],
+        "temperature": 1,
+        "topP": 0.95,
+        "topK": 64,
+        "maxTemperature": 2,
+        "thinking": true
+      },
+      "detail": null,
+      "evidence": {
+        "adapter_code_digest": "07758c4dc920c0fe01cf4cc059429d5f606178cc16298c3f459f7a7c15c1d0cc",
+        "request_body": null,
+        "request_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "request_content_bytes": 0,
+        "request_public_headers": {
+          "accept": "application/json",
+          "accept-encoding": "identity",
+          "content-type": "application/json",
+          "user-agent": "python-httpx"
+        },
+        "request_public_headers_sha256": "8a48caadaad33aff4c190ca9cc5966c4d072b7b51608f043e81c9e0ced533f0b",
+        "request_httpx_headers": {
+          "accept": "application/json",
+          "accept-encoding": "identity",
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "host": "generativelanguage.googleapis.com",
+          "user-agent": "python-httpx"
+        },
+        "request_httpx_headers_sha256": "171dbdf3e4b403cbb628ce6641a2c7c0bf5bf7e5ce9def8cf3fc1bbec6595ea9",
+        "request_accept_encoding": "identity",
+        "response_capture_version": "encoded_entity_v2",
+        "credential_scope_id": "google/project/gen-lang-client-0719580231",
+        "auth_header_names": [
+          "x-goog-api-key"
+        ],
+        "base_url": "https://generativelanguage.googleapis.com/v1beta",
+        "path": "/models/gemini-2.5-flash",
+        "method": "GET",
+        "response_headers": {
+          "content-type": "application/json; charset=UTF-8",
+          "date": "Mon, 28 Sep 2026 18:24:04 GMT"
+        },
+        "response_body": "{\n  \"name\": \"models/gemini-2.5-flash\",\n  \"version\": \"001\",\n  \"displayName\": \"Gemini 2.5 Flash\",\n  \"description\": \"Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million tokens, released in June of 2025.\",\n  \"inputTokenLimit\": 1048576,\n  \"outputTokenLimit\": 65536,\n  \"supportedGenerationMethods\": [\n    \"generateContent\",\n    \"countTokens\",\n    \"createCachedContent\",\n    \"batchGenerateContent\"\n  ],\n  \"temperature\": 1,\n  \"topP\": 0.95,\n  \"topK\": 64,\n  \"maxTemperature\": 2,\n  \"thinking\": true\n}\n",
+        "billing": "unknown",
+        "wire_sha256": "87e22e114e89f4a58fbb42b81a01600ed079b1d849d8791c6572bf209a0dbd8a",
+        "decoded_body_sha256": "87e22e114e89f4a58fbb42b81a01600ed079b1d849d8791c6572bf209a0dbd8a",
+        "latency_seconds": 0.1727312000002712,
+        "wire_bytes": 534,
+        "response_bytes": 534,
+        "http_status": 200,
+        "observed_at": "2026-09-28T18:24:04.862126+00:00"
+      }
+    }
+  ]
+}

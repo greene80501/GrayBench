@@ -1,0 +1,8 @@
+{
+  "adapter": "gemini",
+  "model": "gemini-2.5-flash",
+  "base_url": "https://generativelanguage.googleapis.com/v1beta",
+  "credential_env": "GOOGLE_API_KEY",
+  "credential_scope_id": "google/project/gen-lang-client-0719580231",
+  "settings": []
+}

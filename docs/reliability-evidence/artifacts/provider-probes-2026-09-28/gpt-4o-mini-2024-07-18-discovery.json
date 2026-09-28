@@ -1,0 +1,75 @@
+{
+  "model": {
+    "adapter": "openai-chat",
+    "model": "gpt-4o-mini-2024-07-18",
+    "base_url": "https://api.openai.com/v1",
+    "credential_env": "OPENAI_API_KEY",
+    "credential_scope_id": "openai/project/proj_5e0CmU2POCJo2c9UFLscDIDP",
+    "settings": [],
+    "accepted_returned_models": [],
+    "model_identity_evidence": null,
+    "discovery_policy": "required",
+    "discovery_exception_reason": null
+  },
+  "observations": [
+    {
+      "name": "/models/gpt-4o-mini-2024-07-18",
+      "status": "observed",
+      "value": {
+        "id": "gpt-4o-mini-2024-07-18",
+        "object": "model",
+        "created": 1721172717,
+        "owned_by": "system",
+        "shutdown_date": null
+      },
+      "detail": null,
+      "evidence": {
+        "adapter_code_digest": "ceb876867ff3a2235cb379f8274318e17cc6aaa009b6ecb47086a0af8443b5db",
+        "request_body": null,
+        "request_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "request_content_bytes": 0,
+        "request_public_headers": {
+          "accept": "application/json",
+          "accept-encoding": "identity",
+          "content-type": "application/json",
+          "user-agent": "python-httpx"
+        },
+        "request_public_headers_sha256": "8a48caadaad33aff4c190ca9cc5966c4d072b7b51608f043e81c9e0ced533f0b",
+        "request_httpx_headers": {
+          "accept": "application/json",
+          "accept-encoding": "identity",
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "host": "api.openai.com",
+          "user-agent": "python-httpx"
+        },
+        "request_httpx_headers_sha256": "b4adc8fbd52d12a8d6e668562f89b5c6696d56e51bc9697bc21a6a31f9138410",
+        "request_accept_encoding": "identity",
+        "response_capture_version": "encoded_entity_v2",
+        "credential_scope_id": "openai/project/proj_5e0CmU2POCJo2c9UFLscDIDP",
+        "auth_header_names": [
+          "authorization"
+        ],
+        "base_url": "https://api.openai.com/v1",
+        "path": "/models/gpt-4o-mini-2024-07-18",
+        "method": "GET",
+        "response_headers": {
+          "date": "Mon, 28 Sep 2026 18:26:46 GMT",
+          "content-type": "application/json",
+          "openai-processing-ms": "212",
+          "openai-version": "2020-10-01",
+          "x-request-id": "f0a8c6b1-ad9e-423d-b1de-89c0ec5e8133"
+        },
+        "response_body": "{\n  \"id\": \"gpt-4o-mini-2024-07-18\",\n  \"object\": \"model\",\n  \"created\": 1721172717,\n  \"owned_by\": \"system\",\n  \"shutdown_date\": null\n}",
+        "billing": "unknown",
+        "wire_sha256": "95293220f0810a5e66ff7d840d2335192f6bb248cf4bbd7e953cc586b3f0071b",
+        "decoded_body_sha256": "95293220f0810a5e66ff7d840d2335192f6bb248cf4bbd7e953cc586b3f0071b",
+        "latency_seconds": 0.37680250000266824,
+        "wire_bytes": 131,
+        "response_bytes": 131,
+        "http_status": 200,
+        "observed_at": "2026-09-28T18:26:46.201006+00:00"
+      }
+    }
+  ]
+}

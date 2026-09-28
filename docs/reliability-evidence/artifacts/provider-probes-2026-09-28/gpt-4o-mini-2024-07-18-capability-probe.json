@@ -1,0 +1,130 @@
+{
+  "schema_version": "1",
+  "spec": {
+    "adapter": "openai-chat",
+    "model": "gpt-4o-mini-2024-07-18",
+    "base_url": "https://api.openai.com/v1",
+    "credential_env": "OPENAI_API_KEY",
+    "credential_scope_id": "openai/project/proj_5e0CmU2POCJo2c9UFLscDIDP",
+    "settings": [],
+    "accepted_returned_models": [],
+    "model_identity_evidence": null,
+    "discovery_policy": "required",
+    "discovery_exception_reason": null
+  },
+  "base_url": "https://api.openai.com/v1",
+  "request": {
+    "adapter": "openai-chat",
+    "model": "gpt-4o-mini-2024-07-18",
+    "path": "/chat/completions",
+    "body": {
+      "model": "gpt-4o-mini-2024-07-18",
+      "messages": [
+        {
+          "role": "user",
+          "content": "GrayBench capability probe. This is not a benchmark task. Reply with READY."
+        }
+      ],
+      "stream": false,
+      "n": 1
+    },
+    "setting_evidence": [],
+    "public_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "content-type": "application/json",
+      "user-agent": "python-httpx"
+    },
+    "credential_header_names": [
+      "authorization"
+    ],
+    "adapter_code_digest": "ceb876867ff3a2235cb379f8274318e17cc6aaa009b6ecb47086a0af8443b5db"
+  },
+  "delivery_kind": "returned",
+  "status": 200,
+  "evidence": {
+    "adapter_code_digest": "ceb876867ff3a2235cb379f8274318e17cc6aaa009b6ecb47086a0af8443b5db",
+    "request_body": {
+      "model": "gpt-4o-mini-2024-07-18",
+      "messages": [
+        {
+          "role": "user",
+          "content": "GrayBench capability probe. This is not a benchmark task. Reply with READY."
+        }
+      ],
+      "stream": false,
+      "n": 1
+    },
+    "request_content_sha256": "e26134e6570966e95549a0c79b926a856907261e4d785d334628fc8ef47c0a02",
+    "request_content_bytes": 172,
+    "request_public_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "content-type": "application/json",
+      "user-agent": "python-httpx"
+    },
+    "request_public_headers_sha256": "8a48caadaad33aff4c190ca9cc5966c4d072b7b51608f043e81c9e0ced533f0b",
+    "request_httpx_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "connection": "keep-alive",
+      "content-length": "172",
+      "content-type": "application/json",
+      "host": "api.openai.com",
+      "user-agent": "python-httpx"
+    },
+    "request_httpx_headers_sha256": "813250d45f80a97bba79f58aa7377f9185eec1792a4961ef741744b6cf650662",
+    "request_accept_encoding": "identity",
+    "response_capture_version": "encoded_entity_v2",
+    "credential_scope_id": "openai/project/proj_5e0CmU2POCJo2c9UFLscDIDP",
+    "auth_header_names": [
+      "authorization"
+    ],
+    "base_url": "https://api.openai.com/v1",
+    "path": "/chat/completions",
+    "method": "POST",
+    "response_headers": {
+      "date": "Mon, 28 Sep 2026 18:26:48 GMT",
+      "content-type": "application/json",
+      "openai-processing-ms": "373",
+      "openai-version": "2020-10-01",
+      "x-request-id": "req_5a261351fe6d46088007fd186fafe099"
+    },
+    "response_body": "{\n  \"id\": \"chatcmpl-ETALongjzXUq933tVerDISAoYa4YY\",\n  \"object\": \"chat.completion\",\n  \"created\": 1790620008,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"READY\",\n        \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 23,\n    \"completion_tokens\": 1,\n    \"total_tokens\": 24,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\": {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\": 0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\": \"default\",\n  \"system_fingerprint\": \"fp_5a9d97c6db\"\n}\n",
+    "billing": "unknown",
+    "wire_sha256": "03896f649a72f730748ba0fd2bee0fdccc1a2e1e256df6334e2495d5d8cc22cf",
+    "decoded_body_sha256": "03896f649a72f730748ba0fd2bee0fdccc1a2e1e256df6334e2495d5d8cc22cf",
+    "latency_seconds": 1.9133001000009244,
+    "wire_bytes": 811,
+    "response_bytes": 811
+  },
+  "generation": {
+    "text": "READY",
+    "returned_model": "gpt-4o-mini-2024-07-18",
+    "response_id": "chatcmpl-ETALongjzXUq933tVerDISAoYa4YY",
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 23,
+      "completion_tokens": 1,
+      "total_tokens": 24,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "effective_settings": {},
+    "metadata": {
+      "system_fingerprint": "fp_5a9d97c6db",
+      "refusal": null,
+      "tool_calls": null,
+      "reasoning_content": null
+    }
+  },
+  "recorded_at": "2026-09-28T18:26:48.827721+00:00"
+}

@@ -1,0 +1,102 @@
+{
+  "schema_version": "1",
+  "spec": {
+    "adapter": "gemini",
+    "model": "gemini-2.5-flash",
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "credential_env": "GOOGLE_API_KEY",
+    "credential_scope_id": "google/project/gen-lang-client-0719580231",
+    "settings": [],
+    "accepted_returned_models": [],
+    "model_identity_evidence": null,
+    "discovery_policy": "required",
+    "discovery_exception_reason": null
+  },
+  "base_url": "https://generativelanguage.googleapis.com/v1beta",
+  "request": {
+    "adapter": "gemini",
+    "model": "gemini-2.5-flash",
+    "path": "/models/gemini-2.5-flash:generateContent",
+    "body": {
+      "contents": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "GrayBench capability probe. This is not a benchmark task. Reply with READY."
+            }
+          ]
+        }
+      ]
+    },
+    "setting_evidence": [],
+    "public_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "content-type": "application/json",
+      "user-agent": "python-httpx"
+    },
+    "credential_header_names": [
+      "x-goog-api-key"
+    ],
+    "adapter_code_digest": "07758c4dc920c0fe01cf4cc059429d5f606178cc16298c3f459f7a7c15c1d0cc"
+  },
+  "delivery_kind": "rejected",
+  "status": 404,
+  "evidence": {
+    "adapter_code_digest": "07758c4dc920c0fe01cf4cc059429d5f606178cc16298c3f459f7a7c15c1d0cc",
+    "request_body": {
+      "contents": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "GrayBench capability probe. This is not a benchmark task. Reply with READY."
+            }
+          ]
+        }
+      ]
+    },
+    "request_content_sha256": "ca9bece65683b2313832a5d1499ec3e26c4c64419fa5d5e004540b13deab950f",
+    "request_content_bytes": 127,
+    "request_public_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "content-type": "application/json",
+      "user-agent": "python-httpx"
+    },
+    "request_public_headers_sha256": "8a48caadaad33aff4c190ca9cc5966c4d072b7b51608f043e81c9e0ced533f0b",
+    "request_httpx_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "connection": "keep-alive",
+      "content-length": "127",
+      "content-type": "application/json",
+      "host": "generativelanguage.googleapis.com",
+      "user-agent": "python-httpx"
+    },
+    "request_httpx_headers_sha256": "11a80bfdde1dd56288d428a60bda1fbd333c7605a32d50a84cbbbd0cd1c08ea1",
+    "request_accept_encoding": "identity",
+    "response_capture_version": "encoded_entity_v2",
+    "credential_scope_id": "google/project/gen-lang-client-0719580231",
+    "auth_header_names": [
+      "x-goog-api-key"
+    ],
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "path": "/models/gemini-2.5-flash:generateContent",
+    "method": "POST",
+    "response_headers": {
+      "content-type": "application/json; charset=UTF-8",
+      "date": "Mon, 28 Sep 2026 18:24:24 GMT"
+    },
+    "response_body": "{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n",
+    "billing": "unknown",
+    "wire_sha256": "039e67909bcac121a2dba595cee428fe2930f962308bb8bce2dd73ecc7e656dc",
+    "decoded_body_sha256": "039e67909bcac121a2dba595cee428fe2930f962308bb8bce2dd73ecc7e656dc",
+    "latency_seconds": 0.18776580000121612,
+    "wire_bytes": 349,
+    "response_bytes": 349
+  },
+  "generation": null,
+  "recorded_at": "2026-09-28T18:24:24.649771+00:00"
+}
