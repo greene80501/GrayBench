@@ -47,14 +47,27 @@ The header freezes each source-bound protected judge manifest before any
 candidate control executes. Inspection verifies every observed judgment against
 that declaration. A failed or changed judge leaves an incomplete log. These
 controls exercise numeric value semantics only, never native-object behavior.
+The separate [task-62 BB84 value revision](../docs/reliability-evidence/protected-task62-bb84-value.md)
+uses explicit selection and its own source-bound [control bundle](../docs/reliability-evidence/artifacts/task62-protected-value-2026-09-28/README.md):
 
-Inventories written now use schema 2: their recorded creator-source digest is
-historical provenance, while validation re-reads the exact pinned task bytes.
-Older schema-1 inventories retain their original current-source check. This
-lets task-card work survive unrelated engine edits without treating a copied
-digest as authenticated source evidence. A legacy JSON inventory that omits
-`schema_version` remains schema 1. To inspect local authored controls
-against the entire inventory, run:
+```sh
+uv run --locked graybench protected-oracle-review CACHE TASK62.jsonl --suite both --task 62 --image sha256:IMAGE_DIGEST
+uv run --locked graybench oracle-review-inspect TASK62.jsonl CACHE
+```
+
+The task-62 result is a protected amplitude-value condition, not a native
+`QuantumCircuit` score. It remains development-only and publication-ineligible.
+
+Inventories written now use schema 3: they freeze the known-finding registry
+and its digest alongside the historical creator-source digest. Validation
+re-reads exact pinned task bytes and checks every card against that frozen
+registry. Historical schema-2 inventories remain readable against their
+original findings, while schema 1 retains its original current-source check.
+To carry review work forward after a new finding, use
+`admission-refresh-findings OLD_INVENTORY CACHE NEW_INVENTORY`; it refuses to
+erase a historical finding. A legacy JSON inventory that omits
+`schema_version` remains schema 1. To inspect local authored controls against
+the entire inventory, run:
 
 ```sh
 uv run graybench admission-control-audit INVENTORY.json CACHE AUDIT.json REVIEW1.jsonl REVIEW2.jsonl

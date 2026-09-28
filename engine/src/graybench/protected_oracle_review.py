@@ -13,6 +13,35 @@ from graybench.protected_task_registry import revised_value_task
 from graybench.protected_value_runner import ValueRunner
 
 
+def _task62_analytic_completion(
+    *,
+    phase: bool = False,
+    ignore_state: bool = False,
+    ignore_basis: bool = False,
+    reverse_order: bool = False,
+    wrong_x_sign: bool = False,
+) -> str:
+    """Freeze readable, valid-output controls without using the trusted oracle."""
+    return (
+        "def bb84_sender_amplitudes(state, basis):\n"
+        "    import math\n"
+        f"    bits = [0] * len(state) if {ignore_state!r} else state\n"
+        f"    axes = [0] * len(basis) if {ignore_basis!r} else basis\n"
+        "    pairs = list(zip(bits, axes))\n"
+        f"    if {reverse_order!r}: pairs.reverse()\n"
+        "    vector = [1.0]\n"
+        "    for bit, axis in pairs:\n"
+        "        if axis == 0:\n"
+        "            single = [0.0, 1.0] if bit else [1.0, 0.0]\n"
+        "        else:\n"
+        f"            sign = -1.0 if bit and not {wrong_x_sign!r} else 1.0\n"
+        "            single = [1 / math.sqrt(2), sign / math.sqrt(2)]\n"
+        "        vector = [amplitude * component for component in single for amplitude in vector]\n"
+        f"    return [[0.0, float(amplitude)] for amplitude in vector] if {phase!r} "
+        "else [[float(amplitude), 0.0] for amplitude in vector]\n"
+    )
+
+
 def protected_probes(source: JudgeTask) -> tuple[Probe, ...]:
     if source.public.task_id == "qiskitHumanEval/2":
         return (
@@ -137,6 +166,64 @@ def protected_probes(source: JudgeTask) -> tuple[Probe, ...]:
                 "    return result\n",
             ),
         )
+    if source.public.task_id == "qiskitHumanEval/62":
+        return (
+            Probe(
+                "analytic-bb84",
+                "pass",
+                "Independent tensor product construction covers state and basis inputs",
+                _task62_analytic_completion(),
+            ),
+            Probe(
+                "qiskit-bb84",
+                "pass",
+                "Qiskit circuit-derived statevector realizes the same public value",
+                "def bb84_sender_amplitudes(state, basis):\n"
+                "    from qiskit import QuantumCircuit\n"
+                "    from qiskit.quantum_info import Statevector\n"
+                "    circuit = QuantumCircuit(len(state))\n"
+                "    for wire, (bit, axis) in enumerate(zip(state, basis)):\n"
+                "        if bit: circuit.x(wire)\n"
+                "        if axis: circuit.h(wire)\n"
+                "    return [[float(z.real), float(z.imag)] for z in Statevector(circuit).data]\n",
+            ),
+            Probe(
+                "global-phase-bb84",
+                "pass",
+                "A common phase of i must leave the sender state equivalent",
+                _task62_analytic_completion(phase=True),
+            ),
+            Probe(
+                "fixed-zero-bb84",
+                "fail",
+                "A well-formed fixed all-zero state ignores both requested inputs",
+                _task62_analytic_completion(ignore_state=True, ignore_basis=True),
+            ),
+            Probe(
+                "ignored-state-bb84",
+                "fail",
+                "The answer depends on the requested sender bits",
+                _task62_analytic_completion(ignore_state=True),
+            ),
+            Probe(
+                "ignored-basis-bb84",
+                "fail",
+                "The answer depends on the requested preparation bases",
+                _task62_analytic_completion(ignore_basis=True),
+            ),
+            Probe(
+                "reversed-order-bb84",
+                "fail",
+                "Qubit order affects asymmetric sender states",
+                _task62_analytic_completion(reverse_order=True),
+            ),
+            Probe(
+                "wrong-x-sign-bb84",
+                "fail",
+                "An X-basis one is minus, not plus",
+                _task62_analytic_completion(wrong_x_sign=True),
+            ),
+        )
     raise ValueError("No authored protected controls for this source task")
 
 
@@ -157,7 +244,10 @@ def run_protected_review(
     if (
         not task_ids
         or len(set(task_ids)) != len(task_ids)
-        or any(task_id not in {"qiskitHumanEval/2", "qiskitHumanEval/20"} for task_id in task_ids)
+        or any(
+            task_id not in {"qiskitHumanEval/2", "qiskitHumanEval/20", "qiskitHumanEval/62"}
+            for task_id in task_ids
+        )
     ):
         raise ValueError("Unknown or duplicate protected-control task")
     runner = ValueRunner(image=image, docker=docker, timeout=timeout)

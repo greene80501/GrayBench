@@ -131,13 +131,13 @@ def main():
     inspect_oracle.add_argument("cache", type=Path)
     protected_controls = commands.add_parser(
         "protected-oracle-review",
-        help="Run predeclared local controls for task-2/20 value revisions; never a model score",
+        help="Run predeclared local controls for selected value revisions; never a model score",
     )
     protected_controls.add_argument("cache", type=Path)
     protected_controls.add_argument("output", type=Path)
     protected_controls.add_argument("--suite", choices=("normal", "hard", "both"), required=True)
     protected_controls.add_argument("--image", required=True)
-    protected_controls.add_argument("--task", choices=("2", "20"), action="append")
+    protected_controls.add_argument("--task", choices=("2", "20", "62"), action="append")
     protected_controls.add_argument("--docker", default="docker")
     protected_controls.add_argument("--timeout", type=float, default=120.0)
     validate = commands.add_parser(

@@ -7,7 +7,7 @@ identity, algorithm use, or any side effect inside the candidate process.
 import hashlib
 import math
 from dataclasses import dataclass
-from itertools import permutations
+from itertools import permutations, product
 from pathlib import Path
 from typing import Literal
 
@@ -22,6 +22,27 @@ from graybench.protected_value_runner import ValueRunner
 TASK20_ORACLE = "task20-seven-qubit-ghz-amplitudes-v1"
 TASK20_ORACLE_V2 = "task20-seven-qubit-ghz-amplitudes-all-layouts-v2"
 TASK2_ORACLE = "task2-two-qubit-phi-plus-amplitudes-v1"
+TASK62_ORACLE = "task62-bb84-sender-amplitudes-v1"
+
+
+def task62_case_pairs():
+    """The ordered, predeclared inputs of the task-62 value revision."""
+    for width in (1, 2, 3):
+        bits = tuple(product((0, 1), repeat=width))
+        yield from product(bits, bits)
+    for basis in product((0, 1), repeat=4):
+        for state in ((0, 0, 0, 0), (0, 1, 0, 1)):
+            yield state, basis
+    yield from (
+        ((0, 0, 0, 0, 0), (0, 0, 0, 0, 0)),
+        ((1, 1, 1, 1, 1), (0, 0, 0, 0, 0)),
+        ((0, 0, 0, 0, 0), (1, 1, 1, 1, 1)),
+        ((1, 1, 1, 1, 1), (1, 1, 1, 1, 1)),
+        ((1, 0, 1, 0, 1), (0, 1, 0, 1, 0)),
+        ((0, 1, 0, 1, 0), (1, 0, 1, 0, 1)),
+        ((0, 1, 1, 1, 0), (1, 0, 0, 1, 0)),
+        ((1, 1, 0, 0, 1), (1, 0, 1, 0, 1)),
+    )
 
 
 class SemanticCase(Contract):
@@ -36,13 +57,19 @@ class ProtectedSemanticTask(Contract):
         "task20-seven-qubit-ghz-amplitudes-v1",
         "task20-seven-qubit-ghz-amplitudes-all-layouts-v2",
         "task2-two-qubit-phi-plus-amplitudes-v1",
+        "task62-bb84-sender-amplitudes-v1",
     ] = TASK20_ORACLE
     cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=256)
     release_eligible: Literal[False] = False
 
     @model_validator(mode="after")
     def valid_cases(self) -> "ProtectedSemanticTask":
-        expected_task = "qiskitHumanEval/2" if self.oracle == TASK2_ORACLE else "qiskitHumanEval/20"
+        expected_task = {
+            TASK2_ORACLE: "qiskitHumanEval/2",
+            TASK20_ORACLE: "qiskitHumanEval/20",
+            TASK20_ORACLE_V2: "qiskitHumanEval/20",
+            TASK62_ORACLE: "qiskitHumanEval/62",
+        }[self.oracle]
         if self.contract.public.task_id != expected_task:
             raise ValueError("Semantic oracle and public task identity differ")
         if len({case.case_id for case in self.cases}) != len(self.cases):
@@ -63,6 +90,32 @@ class ProtectedSemanticTask(Contract):
                 layouts.append(tuple(case.call.args[0]))
             if len(layouts) != 210 or set(layouts) != set(permutations(range(7), 3)):
                 raise ValueError("Task-20 v2 requires all ordered layouts")
+        if self.oracle == TASK62_ORACLE:
+            if len(self.cases) != 124:
+                raise ValueError("Protected task-62 requires its full frozen case set")
+            for case in self.cases:
+                args = case.call.args
+                if (
+                    len(args) != 2
+                    or case.call.kwargs
+                    or any(type(bits) is not list for bits in args)
+                    or not 1 <= len(args[0]) == len(args[1]) <= 5
+                    or any(
+                        type(bit) is not int or bit not in (0, 1) for bits in args for bit in bits
+                    )
+                ):
+                    raise ValueError("Protected task-62 requires binary state and basis inputs")
+            expected = tuple(
+                (
+                    f"width-{len(state)}-state-{''.join(map(str, state))}"
+                    f"-basis-{''.join(map(str, basis))}",
+                    (list(state), list(basis)),
+                )
+                for state, basis in task62_case_pairs()
+            )
+            observed = tuple((case.case_id, case.call.args) for case in self.cases)
+            if observed != expected:
+                raise ValueError("Protected task-62 requires its full frozen case set")
         return self
 
 
@@ -130,6 +183,59 @@ def _task2_phi_value(value: object) -> dict:
     }
 
 
+def _task62_bb84_value(state: object, basis: object, value: object) -> dict:
+    """Derive the ideal tensor-product sender state without using Qiskit."""
+    if (
+        type(state) is not list
+        or type(basis) is not list
+        or not 1 <= len(state) == len(basis) <= 5
+        or any(type(bit) is not int or bit not in (0, 1) for bits in (state, basis) for bit in bits)
+    ):
+        return {"passed": False, "reason": "invalid_case"}
+    if type(value) is not list or len(value) != 1 << len(state):
+        return {"passed": False, "reason": "invalid_value"}
+    amplitudes = []
+    for pair in value:
+        if (
+            type(pair) is not list
+            or len(pair) != 2
+            or any(
+                type(component) not in (int, float)
+                or not math.isfinite(component)
+                or not -1 <= component <= 1
+                for component in pair
+            )
+        ):
+            return {"passed": False, "reason": "invalid_amplitude"}
+        amplitudes.append(complex(*pair))
+    target = []
+    for index in range(len(amplitudes)):
+        expected = 1.0
+        for qubit, (bit, axis) in enumerate(zip(state, basis, strict=True)):
+            observed_bit = (index >> qubit) & 1
+            if axis == 0:
+                expected *= 1.0 if observed_bit == bit else 0.0
+            else:
+                expected *= (-1.0 if bit and observed_bit else 1.0) / math.sqrt(2)
+        target.append(expected)
+    norm = sum(abs(amplitude) ** 2 for amplitude in amplitudes)
+    overlap = sum(
+        expected * amplitude for expected, amplitude in zip(target, amplitudes, strict=True)
+    )
+    if not math.isfinite(norm) or not math.isfinite(abs(overlap)) or abs(overlap) == 0:
+        return {"passed": False, "reason": "invalid_norm_or_overlap"}
+    phase = overlap / abs(overlap)
+    max_error = max(
+        abs(amplitude - phase * expected)
+        for amplitude, expected in zip(amplitudes, target, strict=True)
+    )
+    return {
+        "passed": abs(norm - 1.0) <= 1e-10 and max_error <= 1e-10,
+        "norm": norm,
+        "max_aligned_error": max_error,
+    }
+
+
 class ProtectedSemanticJudge:
     def __init__(self, runner: ValueRunner):
         self.runner = runner
@@ -145,11 +251,14 @@ class ProtectedSemanticJudge:
             "runner": self.runner.manifest(task.contract),
             "release_eligible": False,
         }
-        module = "protected_task2.py" if task.oracle == TASK2_ORACLE else "protected_task20.py"
-        label = (
-            "task2_contract_code_sha256"
+        module, label = (
+            ("protected_task2.py", "task2_contract_code_sha256")
             if task.oracle == TASK2_ORACLE
-            else "task20_contract_code_sha256"
+            else (
+                ("protected_task62.py", "task62_contract_code_sha256")
+                if task.oracle == TASK62_ORACLE
+                else ("protected_task20.py", "task20_contract_code_sha256")
+            )
         )
         manifest[label] = hashlib.sha256(Path(__file__).with_name(module).read_bytes()).hexdigest()
         return manifest
@@ -186,11 +295,12 @@ class ProtectedSemanticJudge:
             )
         case_results = []
         for case, value in zip(task.cases, execution.values, strict=True):
-            result = (
-                _task2_phi_value(value)
-                if task.oracle == TASK2_ORACLE
-                else _task20_ghz_value(case.call.args[0], value)
-            )
+            if task.oracle == TASK2_ORACLE:
+                result = _task2_phi_value(value)
+            elif task.oracle == TASK62_ORACLE:
+                result = _task62_bb84_value(*case.call.args, value)
+            else:
+                result = _task20_ghz_value(case.call.args[0], value)
             case_results.append({"case_id": case.case_id, **result})
         evidence["case_results"] = case_results
         return SemanticJudgment(
