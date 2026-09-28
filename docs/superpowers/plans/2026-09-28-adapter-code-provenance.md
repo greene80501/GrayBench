@@ -65,9 +65,9 @@ claim this new provenance.
 
 ## Task 4: Complete verification and PR
 
-- [ ] Run the complete pinned Python 3.12/Qiskit Docker-enabled engine suite
+- [x] Run the complete pinned Python 3.12/Qiskit Docker-enabled engine suite
   and `git diff --check`.
-- [ ] Obtain independent read-only review of manifest coverage, drift checks,
+- [x] Obtain independent read-only review of manifest coverage, drift checks,
   secret/path leakage, and historical identity. Fix Important findings with
   failing tests and rerun the suite if source changes.
 - [ ] Push under `greene80501` to draft PR #3, update the PR description with
