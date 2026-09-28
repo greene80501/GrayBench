@@ -8,6 +8,8 @@ import contextlib
 import json
 import sys
 
+READY_MARKER = "graybench-protected-value-worker-ready-v1"
+
 
 def main():
     payload = json.load(sys.stdin)
@@ -17,6 +19,10 @@ def main():
     ):
         raise ValueError("Invalid protected value payload")
     channel = sys.stdout
+    # Host uses this pre-candidate marker to distinguish worker execution from
+    # Docker launch errors when the process exits without a JSON answer.
+    sys.stderr.write(READY_MARKER + "\n")
+    sys.stderr.flush()
     safe_dumps = json.dumps
     namespace = {"__name__": "candidate"}
     try:

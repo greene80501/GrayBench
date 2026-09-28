@@ -134,6 +134,13 @@ def test_card_requires_public_revision_controls_findings_and_two_reviewers(cache
     )
     assert admission_blockers(reviewed) == ()
     assert TaskCard.model_validate_json(reviewed.model_dump_json()).source_key == card.source_key
+    rejected = reviewed.model_copy(
+        update={
+            "reviews": reviewed.reviews
+            + (ReviewAttestation(reviewer_id="reviewer-c", decision="reject"),)
+        }
+    )
+    assert "review_rejection_unresolved" in admission_blockers(rejected)
 
 
 def test_duplicate_or_unqualified_reviewers_do_not_admit(cache):

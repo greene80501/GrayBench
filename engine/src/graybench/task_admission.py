@@ -175,6 +175,8 @@ def admission_blockers(card: TaskCard) -> tuple[str, ...]:
     ]
     if len({review.review_artifact_digest for review in qualified}) < 2:
         blockers.append("independent_review_missing")
+    if any(review.decision == "reject" for review in card.reviews):
+        blockers.append("review_rejection_unresolved")
     return tuple(blockers)
 
 

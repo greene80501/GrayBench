@@ -19,8 +19,10 @@ Qiskit but scores only the returned numeric value. No pass-manager use,
 The private case set uses layouts `[2,4,6]`, `[0,1,2]`, and `[1,3,5]`.
 The trusted host-side oracle checks unit norm and fidelity one against GHZ+
 on the selected physical wires, up to global phase, in Qiskit's little-endian
-statevector order. The candidate container receives each input layout but no
-expected amplitudes or oracle code. It returns a bounded JSON value; the host
+statevector order. Each real and imaginary amplitude is constrained to
+`[-1,1]`, the physical range for a normalized state. The candidate container
+receives each input layout but no expected amplitudes or oracle code. It returns
+a bounded JSON value; the host
 validates its declared shape before the oracle runs. A candidate can compute
 or fabricate the correct numeric value. That is a correct answer to this
 revised value task, never proof of how it was computed.
@@ -33,7 +35,11 @@ format errors; the zero state, fixed-layout answer, and wrong relative phase
 failed. Forged pass text was rejected as malformed output. The hard-suite
 revised prompt also passed a direct implementation. Focused verification:
 `pytest tests/test_protected_semantic_judge.py tests/test_protected_value_runner.py -q`
-with the pinned cache/image set: 13 passed. Ruff passed on the new files.
+with the pinned cache/image set: 16 passed after an adversarial review. The
+additional controls reject finite but nonphysical `1e308` amplitudes, classify
+candidate-triggered nonzero exits separately from Docker launch failures, and
+block an invalid judge-owned call as infrastructure rather than candidate error.
+Ruff passed on the new files.
 
 This automated evidence does not replace independent Qiskit review. The task
 card remains pending, the release flag is false, and no protected model score

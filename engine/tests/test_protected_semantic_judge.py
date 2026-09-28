@@ -158,3 +158,17 @@ def test_hard_suite_uses_its_own_revised_contract():
     result = judge.evaluate(task, pinned, direct_solution())
     assert result.outcome == "pass", result.evidence
     assert result.evidence["manifest"]["public_contract_digest"] == task.contract.digest
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Pinned image required")
+def test_extreme_but_finite_amplitude_is_candidate_error_not_oracle_crash():
+    pinned = source()
+    task = task20_value_task(pinned)
+    judge = ProtectedSemanticJudge(ValueRunner(image=IMAGE, timeout=25))
+    result = judge.evaluate(
+        task,
+        pinned,
+        "def ghz_amplitudes(layout):\n    return [[1e308, 0.0] for _ in range(128)]\n",
+    )
+    assert result.outcome == "candidate_error"

@@ -26,6 +26,11 @@ from graybench.protected_value_contract import (
 
 WORKER = Path(__file__).with_name("protected_value_worker.py")
 MAX_PAYLOAD_BYTES = 8 * 1024 * 1024
+READY_MARKER = b"graybench-protected-value-worker-ready-v1\n"
+
+
+class TrustedCaseError(ValueError):
+    """The frozen judge supplied an invalid call; it is not a candidate mistake."""
 
 
 @dataclass(frozen=True)
@@ -39,20 +44,25 @@ def value_payload(
     contract: ProtectedValueContract, completion: str, calls: tuple[ValueCall, ...]
 ) -> dict:
     """Candidate receives public code and inputs, never expected outputs or tests."""
+    try:
+        if not calls:
+            raise ValueError("Protected value evaluation requires at least one call")
+        wire_calls = []
+        for call in calls:
+            if len(call.args) != len(contract.positional) or set(call.kwargs) != set(
+                contract.keywords
+            ):
+                raise ValueError("Call does not match declared argument names and count")
+            for value, shape in zip(call.args, contract.positional, strict=True):
+                validate_value(value, shape)
+            for name, value in call.kwargs.items():
+                validate_value(value, contract.keywords[name])
+            wire_calls.append(call.model_dump(mode="json"))
+    except Exception as exc:
+        raise TrustedCaseError("Invalid frozen protected call") from exc
     extracted = extract(completion, contract.public, contract.extraction)
     if extracted.error:
         raise ValueError("Candidate answer does not match frozen extraction policy")
-    if not calls:
-        raise ValueError("Protected value evaluation requires at least one call")
-    wire_calls = []
-    for call in calls:
-        if len(call.args) != len(contract.positional) or set(call.kwargs) != set(contract.keywords):
-            raise ValueError("Call does not match declared argument names and count")
-        for value, shape in zip(call.args, contract.positional, strict=True):
-            validate_value(value, shape)
-        for name, value in call.kwargs.items():
-            validate_value(value, contract.keywords[name])
-        wire_calls.append(call.model_dump(mode="json"))
     return {
         "protocol": "protected-value-v1",
         "entry_point": contract.public.entry_point,
@@ -214,6 +224,10 @@ class ValueRunner:
         try:
             payload = value_payload(contract, completion, calls)
             wire = canonical(payload)
+        except TrustedCaseError:
+            return ValueExecution(
+                "infrastructure_error", (), {**evidence, "reason": "invalid_frozen_case"}
+            )
         except (TypeError, ValueError, UnicodeError, RecursionError) as exc:
             return ValueExecution("candidate_error", (), {**evidence, "reason": type(exc).__name__})
         if len(wire) > MAX_PAYLOAD_BYTES:
@@ -316,6 +330,7 @@ class ValueRunner:
             "stderr_sha256": hashlib.sha256(output[1]).hexdigest(),
             "stderr_excerpt": output[1][:4096].decode("utf-8", errors="replace"),
             "output_bytes": total[0],
+            "worker_started": READY_MARKER in output[1],
             "manifest_digest": identity(evidence["manifest"]),
         }
         if timed_out:
@@ -324,7 +339,14 @@ class ValueRunner:
             return ValueExecution("candidate_error", (), {**evidence, "reason": "output_limit"})
         if process.returncode != 0:
             return ValueExecution(
-                "infrastructure_error", (), {**evidence, "reason": "container_nonzero"}
+                "candidate_error" if evidence["worker_started"] else "infrastructure_error",
+                (),
+                {
+                    **evidence,
+                    "reason": "candidate_nonzero_exit"
+                    if evidence["worker_started"]
+                    else "container_nonzero_before_worker",
+                },
             )
         try:
             values = parse_value_response(bytes(output[0]), contract, expected_count=count)

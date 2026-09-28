@@ -98,6 +98,14 @@ def test_payload_contains_only_public_code_contract_and_call_inputs():
     assert "test" not in json.dumps(payload)
 
 
+def test_invalid_trusted_case_is_not_charged_to_candidate():
+    spec = contract()
+    runner = ValueRunner(image=IMAGE)
+    result = runner.execute(spec, "def answer(n):\n    return n\n", (ValueCall(args=("bad",)),))
+    assert result.outcome == "infrastructure_error"
+    assert result.evidence["reason"] == "invalid_frozen_case"
+
+
 def test_worker_returns_multiple_declared_values_and_no_verdict():
     spec = contract()
     payload = value_payload(
@@ -183,3 +191,15 @@ def test_pinned_docker_value_runner_reference_wrong_shape_and_early_exit():
     assert wrong_shape.outcome == "candidate_error"
     early_exit = runner.execute(spec, "    import os\n    os._exit(0)\n", calls)
     assert early_exit.outcome == "candidate_error"
+    nonzero_exit = runner.execute(spec, "    import os\n    os._exit(1)\n", calls)
+    assert nonzero_exit.outcome == "candidate_error"
+    assert nonzero_exit.evidence["reason"] == "candidate_nonzero_exit"
+    assert nonzero_exit.evidence["worker_started"] is True
+
+
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_IMAGE"), reason="Pinned image required")
+def test_docker_launch_failure_remains_infrastructure_error():
+    spec = contract("function_completion")
+    runner = ValueRunner(image=IMAGE, docker="graybench-no-such-docker-command")
+    result = runner.execute(spec, "    return n\n", (ValueCall(args=(3,)),))
+    assert result.outcome == "infrastructure_error"

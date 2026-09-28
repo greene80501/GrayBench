@@ -42,7 +42,9 @@ def task20_value_task(source: JudgeTask) -> ProtectedSemanticTask:
     else:
         prompt_format = "standalone_function"
         prompt = REQUIREMENT + " Implement `ghz_amplitudes(layout)` in Python."
-    scalar = ValueShape(kind="number")
+    # Every real or imaginary component of a normalized state is in [-1, 1].
+    # This bound also prevents nonphysical finite values from overflowing the oracle.
+    scalar = ValueShape(kind="number", minimum=-1.0, maximum=1.0)
     amplitude = ValueShape(kind="array", item=scalar, min_items=2, max_items=2)
     contract = ProtectedValueContract(
         source_task_digest=source.digest,
