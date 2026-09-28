@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 import pytest
 
 from graybench.comparison import compare_runs, family_bootstrap, make_plan, validate_plan
@@ -6,6 +9,8 @@ from graybench.datasets import JudgeTask
 from graybench.identity import identity
 from graybench.ledger import Ledger, StateError
 from graybench.providers import Ollama
+
+PINNED_CACHE = os.environ.get("GRAYBENCH_TEST_CACHE")
 
 
 def test_paired_bootstrap_preserves_unequal_family_task_weights_and_sign():
@@ -37,6 +42,22 @@ def test_degenerate_bootstrap_does_not_claim_zero_uncertainty(count, reason):
     assert result["left_minus_right"] == 1
     assert result["interval"] is None
     assert result["interval_unavailable_reason"] == reason
+
+
+def test_historical_comparison_plan_identity_remains_readable():
+    import json
+
+    from graybench.comparison import ComparisonPlan
+
+    fixture = (
+        Path(__file__).resolve().parents[2]
+        / "docs/reliability-evidence/evaluation-recipe-demo.json"
+    )
+    record = json.loads(fixture.read_text(encoding="utf-8"))["comparisons"][0]
+    restored = ComparisonPlan.model_validate_json(json.dumps(record["plan"]))
+    assert identity(record["plan"]) == record["report"]["plan_digest"]
+    assert restored.left.model.discovery_policy == "required"
+    assert restored.right.model.discovery_policy == "required"
 
 
 def setup(protocol, task):
@@ -148,6 +169,75 @@ def test_incompatible_protocols_cannot_be_compared(protocol, task, field, value)
     changed = plan.model_copy(update={"right": plan.right.model_copy(update={field: value})})
     with pytest.raises(StateError, match=field):
         validate_plan(changed)
+
+
+def test_native_plan_binds_single_suite_and_exception_policy(tmp_path, monkeypatch):
+    from test_native_campaign import native_setup
+    from test_native_cohort import cache as synthetic_cache
+
+    cache = synthetic_cache.__wrapped__(tmp_path, monkeypatch)
+    left = native_setup(cache)
+    right = native_setup(cache)
+    plan = make_plan(
+        left.protocol,
+        right.protocol,
+        left.tasks(cache),
+        seed=5,
+        resamples=1000,
+        configuration_comparison="Same synthetic model and condition",
+    )
+    assert plan.left.track == "qhe-pinned-native-v1"
+    assert set(plan.families) == set(left.protocol.task_keys)
+    changed = plan.model_copy(
+        update={
+            "right": plan.right.model_copy(
+                update={"native_exception_policy": "test_exception_is_failure_v1"}
+            )
+        }
+    )
+    with pytest.raises(StateError, match="native_exception_policy"):
+        validate_plan(changed)
+
+
+@pytest.mark.skipif(not PINNED_CACHE, reason="Pinned source cache required")
+def test_protected_plan_binds_revised_and_source_task_digests():
+    from test_protected_campaign import two_task_setup
+
+    from graybench.protected_campaign import build_protected_setup
+
+    left = two_task_setup()
+    right = build_protected_setup(
+        "right",
+        left.protocol.model.model_copy(update={"model": "other-model"}),
+        left.cohort,
+        left.tasks,
+        cache=Path(PINNED_CACHE),
+    )
+    plan = make_plan(
+        left.protocol,
+        right.protocol,
+        left.tasks,
+        seed=5,
+        resamples=1000,
+        configuration_comparison="Different synthetic model names",
+    )
+    assert plan.left.track == "graybench-protected-semantic-v1"
+    assert set(plan.families) == set(left.cohort.task_keys)
+    assert plan.digest == type(plan).model_validate_json(plan.model_dump_json()).digest
+    forged_contract = left.tasks[0].contract.model_copy(update={"source_task_digest": "f" * 64})
+    forged = left.tasks[0].model_copy(update={"contract": forged_contract})
+    with pytest.raises(StateError, match="dataset identity"):
+        make_plan(
+            left.protocol,
+            right.protocol,
+            (forged, *left.tasks[1:]),
+            seed=5,
+            resamples=1000,
+            configuration_comparison="Forged ancestry must fail",
+        )
+    mixed = plan.model_copy(update={"right": plan.right.model_copy(update={"track": "upstream"})})
+    with pytest.raises(StateError, match="track"):
+        validate_plan(mixed)
 
 
 def test_cli_freezes_plan_and_writes_comparison_without_overwriting(

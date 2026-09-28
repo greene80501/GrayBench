@@ -24,15 +24,16 @@
 - Native extraction and exception policy mismatches must be rejected before a plan exists.
 - Stored run context must match the plan and pinned cohort before reporting.
 - A plan must reject wrong or mixed tracks, suite, denominator, population, and exclusions.
-- Historical comparison files must keep their original serialized form and digest.
+- Historical comparison bytes retain their recorded raw digest; parsing may
+  add later ModelSpec defaults, so never silently reissue an old score.
 
 ## Task 1: Track-aware plan binding
 
 **Files:** Modify `engine/src/graybench/comparison.py`; extend `engine/tests/test_comparison.py`.
 
-- [ ] Write failing tests for native and protected task binding, protected wrong ancestry, and mixed-track/mismatched-condition rejection. Preserve a historical round-trip digest assertion.
-- [ ] Run red tests, implement one track-aware binding function and keep the statistical method unchanged.
-- [ ] Run focused tests, Ruff and format; commit.
+- [x] Write failing tests for native and protected task binding, protected wrong ancestry, and mixed-track/mismatched-condition rejection. Verify the raw historical artifact digest without relabeling a parsed model.
+- [x] Run red tests, implement one track-aware binding function and keep the statistical method unchanged.
+- [x] Run focused tests, Ruff and format; commit.
 
 ## Task 2: Setup-aware CLI
 

@@ -39,8 +39,11 @@ effective equivalence.
 
 The CLI reads the setup's frozen protocol track and validates against exactly
 one of `CampaignSetup`, `NativeCampaignSetup`, or `ProtectedCampaignSetup`.
-Both sides use the same setup type. Existing setup and comparison JSON stays
-readable; no schema or digest field changes are needed. Plan creation validates
+Both sides use the same setup type. This change adds no schema or digest field.
+Existing historical comparison bytes retain their recorded raw identities;
+an older artifact that omitted later `ModelSpec` defaults can parse with a
+different current model dump, so it must not be silently reissued as an
+equivalent current plan. Plan creation validates
 each setup against pinned source data, then writes exclusively to a new file.
 Comparison reloads stored run contexts, verifies their setup protocols,
 validates pinned ancestry, and checks the plan against the ledgers in one

@@ -7,8 +7,10 @@ from typing import Literal
 from pydantic import Field
 
 from graybench.contracts import Contract, Protocol
+from graybench.datasets import JudgeTask
 from graybench.identity import identity
 from graybench.ledger import StateError
+from graybench.protected_semantic_judge import ProtectedSemanticTask
 from graybench.provenance import source_manifest
 from graybench.providers import adapter
 
@@ -65,22 +67,39 @@ def validate_plan(plan):
 def make_plan(
     left, right, tasks, *, seed, configuration_comparison, resamples=10000, confidence=0.95
 ):
-    keyed = {f"{task.public.suite}/{task.public.task_id}": task for task in tasks}
+    protected = left.track == "graybench-protected-semantic-v1"
+    if any(
+        not isinstance(task, ProtectedSemanticTask if protected else JudgeTask) for task in tasks
+    ):
+        raise StateError("Comparison task type differs from frozen track")
+    keyed = {
+        f"{public.suite}/{public.task_id}": (task, public)
+        for task in tasks
+        for public in (task.contract.public if protected else task.public,)
+    }
     if len(keyed) != len(tasks) or set(keyed) != set(left.task_keys):
         raise StateError("Task records do not match the comparison cohort")
-    if identity({key: task.digest for key, task in keyed.items()}) != left.dataset_digest:
+    datasets = {
+        key: (
+            {"source": task.contract.source_task_digest, "revised_task": task.digest}
+            if protected
+            else task.digest
+        )
+        for key, (task, _) in keyed.items()
+    }
+    if identity(datasets) != left.dataset_digest:
         raise StateError("Comparison dataset identity mismatch")
     for protocol in (left, right):
         provider = adapter(protocol.model.adapter)
-        for key, task in keyed.items():
+        for key, (_, public) in keyed.items():
             if provider.prepare(
-                protocol.model, task.public, protocol.system_prompt
+                protocol.model, public, protocol.system_prompt
             ).digest != protocol.request_digests.get(key):
                 raise StateError("Comparison request does not match the public task")
     plan = ComparisonPlan(
         left=left,
         right=right,
-        families={key: task.public.family_id for key, task in keyed.items()},
+        families={key: public.family_id for key, (_, public) in keyed.items()},
         seed=seed,
         resamples=resamples,
         confidence=confidence,
