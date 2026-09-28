@@ -28,6 +28,11 @@ def cohort_identities(tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dic
 
 
 def validate_cohort(protocol: Protocol, tasks: tuple[JudgeTask, ...], judge: UpstreamJudge) -> dict:
+    if protocol.extraction == "exact_prompt_suffix_v1" and any(
+        task.public.suite != "normal" or task.public.prompt_format != "function_completion"
+        for task in tasks
+    ):
+        raise StateError("Exact prompt suffix requires normal function-completion tasks")
     concrete = judge
     while hasattr(concrete, "inner"):
         concrete = concrete.inner

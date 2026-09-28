@@ -109,6 +109,35 @@ def test_normal_and_hard_have_distinct_frozen_identities(cache):
     assert set(normal.task_keys).isdisjoint(hard.task_keys)
 
 
+def test_exact_prompt_suffix_cohort_is_normal_only_and_separately_identified(cache):
+    tasks, excluded = selected(cache, "normal")
+    literal = freeze_native_cohort(
+        tasks,
+        cache=cache,
+        suite="normal",
+        population="offline_143",
+        image=IMAGE,
+        extraction="exact_prompt_suffix_v1",
+        label="literal continuation",
+        excluded=excluded,
+    )
+    chat, _ = frozen(cache, "normal")
+    assert literal.digest != chat.digest
+    assert literal.extraction == "exact_prompt_suffix_v1"
+    hard_tasks, hard_excluded = selected(cache, "hard")
+    with pytest.raises(ValueError, match="normal"):
+        freeze_native_cohort(
+            hard_tasks,
+            cache=cache,
+            suite="hard",
+            population="offline_143",
+            image=IMAGE,
+            extraction="exact_prompt_suffix_v1",
+            label="invalid hard continuation",
+            excluded=hard_excluded,
+        )
+
+
 def test_mixed_or_duplicate_tasks_are_rejected(cache):
     tasks, excluded = selected(cache, "normal")
     hard = load_suite("hard", cache)[0]

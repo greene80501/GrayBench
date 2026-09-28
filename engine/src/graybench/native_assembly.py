@@ -5,7 +5,7 @@ import hashlib
 
 from graybench.contracts import ExtractionPolicy
 from graybench.datasets import JudgeTask
-from graybench.extraction import extract
+from graybench.extraction import Extracted, extract
 
 
 def check_test_shape(task: JudgeTask) -> None:
@@ -41,16 +41,26 @@ def check_test_shape(task: JudgeTask) -> None:
 def native_payload(task: JudgeTask, completion: str, extraction: ExtractionPolicy) -> dict:
     """Prepare exact candidate/test bytes; never include a canonical solution."""
     check_test_shape(task)
-    extracted = extract(completion, task.public, extraction)
+    try:
+        completion_bytes = completion.encode("utf-8")
+    except UnicodeEncodeError:
+        completion_bytes = completion.encode("utf-8", "surrogatepass")
+        extracted = Extracted("", "rejected", "Response is not UTF-8 encodable")
+        digest_encoding = "utf-8-surrogatepass"
+    else:
+        extracted = extract(completion, task.public, extraction)
+        digest_encoding = None
     result = {
         "protocol": "qhe-native-worker-v1",
         "suite": task.public.suite,
         "entry_point": task.public.entry_point,
         "task_digest": task.digest,
-        "completion_sha256": hashlib.sha256(completion.encode("utf-8")).hexdigest(),
+        "completion_sha256": hashlib.sha256(completion_bytes).hexdigest(),
         "extraction_method": extracted.method,
         "test": task.upstream_test,
     }
+    if digest_encoding is not None:
+        result["completion_digest_encoding"] = digest_encoding
     if extracted.error:
         return {**result, "extraction_error": extracted.error}
     return {

@@ -861,6 +861,7 @@ class Ledger:
             "protocol_digest": protocol.digest,
             "evaluation_recipe": recipe,
             "track": protocol.track,
+            "extraction_policy": protocol.extraction,
             **(
                 {
                     "suite": protocol.native_suite,

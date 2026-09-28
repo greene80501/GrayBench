@@ -140,6 +140,7 @@ ExtractionPolicy = Literal[
     "raw_or_single_python_fence_v1",
     "unique_entrypoint_fence_v2",
     "unique_entrypoint_fence_v3",
+    "exact_prompt_suffix_v1",
 ]
 
 

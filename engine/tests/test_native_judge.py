@@ -6,6 +6,7 @@ import pytest
 
 from graybench.contracts import PublicTask
 from graybench.datasets import PINS, JudgeTask, load_suite
+from graybench.native_assembly import native_payload
 from graybench.native_cohort import NativeCohort, freeze_native_cohort
 from graybench.native_judge import NativeJudge, native_command
 from graybench.provenance import source_manifest
@@ -101,6 +102,40 @@ def test_native_manifest_binds_task_worker_image_and_limits(tmp_path):
     assert manifest["output_limit"] > 0
 
 
+def test_unencodable_completion_is_a_format_error_with_stable_digest():
+    payload = native_payload(synthetic_task(), "\ud800", "unique_entrypoint_fence_v2")
+    assert payload["extraction_error"] == "Response is not UTF-8 encodable"
+    assert (
+        payload["completion_sha256"]
+        == hashlib.sha256("\ud800".encode("utf-8", "surrogatepass")).hexdigest()
+    )
+    assert payload["completion_digest_encoding"] == "utf-8-surrogatepass"
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache not supplied")
+def test_native_judge_records_unencodable_answer_without_launching_candidate():
+    cache = Path(CACHE)
+    task = load_suite("normal", cache)[0]
+    cohort = freeze_native_cohort(
+        (task,),
+        cache=cache,
+        suite="normal",
+        population="custom_development",
+        image=IMAGE or "sha256:" + "a" * 64,
+        extraction="exact_prompt_suffix_v1",
+        label="unicode fixture",
+        excluded={
+            f"normal/qiskitHumanEval/{number}": "out_of_scope_development"
+            for number in range(1, 151)
+        },
+    )
+    result = NativeJudge(cohort, (task,), cache=cache, docker="no-such-docker").evaluate(
+        task, "\ud800"
+    )
+    assert result.outcome == "candidate_error"
+    assert result.evidence["completion_digest_encoding"] == "utf-8-surrogatepass"
+
+
 def test_native_result_rejects_symlink_and_oversized_file(tmp_path):
     task = synthetic_task()
     judge = NativeJudge(synthetic_cohort(task), (task,), cache=tmp_path)
@@ -147,6 +182,32 @@ def test_pinned_reference_and_wrong_control(suite):
         "    return QuantumCircuit(2)\n"
     )
     assert judge.evaluate(task, wrong).outcome == "fail"
+
+
+@pytest.mark.skipif(not IMAGE or not CACHE, reason="Pinned native Docker image/cache not supplied")
+def test_exact_suffix_native_condition_accepts_suffix_and_runs_raw_replacement():
+    cache = Path(CACHE)
+    task = load_suite("normal", cache)[4]
+    excluded = {
+        f"normal/qiskitHumanEval/{number}": "out_of_scope_development"
+        for number in range(151)
+        if number != 4
+    }
+    cohort = freeze_native_cohort(
+        (task,),
+        cache=cache,
+        suite="normal",
+        population="custom_development",
+        image=IMAGE,
+        extraction="exact_prompt_suffix_v1",
+        label="literal task4 fixture",
+        excluded=excluded,
+    )
+    judge = NativeJudge(cohort, (task,), cache=cache, docker=DOCKER, timeout=30)
+    assert judge.evaluate(task, task.canonical_solution).outcome == "pass"
+    replacement = "\ndef create_unitary_from_matrix():\n    return QuantumCircuit(2)\n"
+    result = judge.evaluate(task, replacement)
+    assert result.outcome == "fail", result.evidence
 
 
 @pytest.mark.skipif(not IMAGE or not CACHE, reason="Pinned native Docker image/cache not supplied")

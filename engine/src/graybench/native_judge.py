@@ -163,6 +163,8 @@ class NativeJudge:
             "completion_sha256": payload["completion_sha256"],
             "extraction_method": payload["extraction_method"],
         }
+        if "completion_digest_encoding" in payload:
+            evidence["completion_digest_encoding"] = payload["completion_digest_encoding"]
         if "extraction_error" in payload:
             return Judgment(
                 "candidate_error", digest, {**evidence, "detail": payload["extraction_error"]}

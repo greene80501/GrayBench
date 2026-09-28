@@ -444,6 +444,7 @@ def main():
             "track": setup.protocol.track,
             "suite": cohort.suite,
             "population": cohort.population,
+            "extraction_policy": cohort.extraction,
             "planned_samples": len(tasks) * args.repeats,
             "publication_eligible": False,
             "output": str(args.output),
@@ -459,6 +460,7 @@ def main():
                 "track": setup.protocol.track,
                 "suite": setup.cohort.suite,
                 "population": setup.cohort.population,
+                "extraction_policy": setup.cohort.extraction,
                 "publication_eligible": False,
             }
         finally:

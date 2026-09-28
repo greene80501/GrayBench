@@ -8,6 +8,7 @@ import pytest
 from test_native_cohort import IMAGE, selected
 from test_native_cohort import cache as _synthetic_cache
 
+from graybench.campaign_setup import build_setup
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
 from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol, RetryPolicy
@@ -150,7 +151,14 @@ def test_native_protocol_cannot_mix_suites_or_omit_binding(native_cache):
         Protocol.model_validate(data)
 
 
-@pytest.mark.parametrize("field,value", [("track", "upstream"), ("native_suite", "hard")])
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("track", "upstream"),
+        ("native_suite", "hard"),
+        ("extraction", "exact_prompt_suffix_v1"),
+    ],
+)
 def test_comparison_rejects_mixed_native_tracks_or_suites(native_cache, field, value):
     setup = native_setup(native_cache)
     right = setup.protocol.model_copy(update={field: value})
@@ -230,6 +238,70 @@ def test_native_cli_plan_create_and_summary(native_cache, tmp_path, monkeypatch,
     report = json.loads(capsys.readouterr().out)
     assert report["denominator"] == 1
     assert report["publication_eligible"] is False
+
+
+def test_native_plan_freezes_exact_suffix_condition_and_rejects_hard_suite(
+    native_cache, tmp_path, monkeypatch, capsys, ledger
+):
+    model_path = tmp_path / "model.json"
+    model_path.write_text(MODEL.model_dump_json(), encoding="utf-8")
+    normal_path = tmp_path / "normal.json"
+    argv = [
+        "graybench",
+        "native-plan",
+        str(model_path),
+        str(native_cache),
+        str(normal_path),
+        "--name",
+        "literal",
+        "--label",
+        "literal condition",
+        "--suite",
+        "normal",
+        "--population",
+        "custom_development",
+        "--task",
+        "normal/qiskitHumanEval/0",
+        "--image",
+        IMAGE,
+        "--extraction",
+        "exact_prompt_suffix_v1",
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    main()
+    plan = json.loads(capsys.readouterr().out)
+    saved = NativeCampaignSetup.model_validate_json(normal_path.read_bytes())
+    assert saved.protocol.extraction == "exact_prompt_suffix_v1"
+    assert saved.cohort.extraction == "exact_prompt_suffix_v1"
+    assert saved.protocol.digest != native_setup(native_cache).protocol.digest
+    assert plan["extraction_policy"] == "exact_prompt_suffix_v1"
+    run = ledger.create_run(saved.protocol)
+    assert ledger.summary(run)["extraction_policy"] == "exact_prompt_suffix_v1"
+    invalid = argv.copy()
+    invalid[4] = str(tmp_path / "hard.json")
+    invalid[invalid.index("normal") + 0] = "hard"
+    invalid[invalid.index("normal/qiskitHumanEval/0")] = "hard/qiskitHumanEval/0"
+    monkeypatch.setattr(sys, "argv", invalid)
+    with pytest.raises(ValueError, match="normal"):
+        main()
+    assert not (tmp_path / "hard.json").exists()
+
+
+@pytest.mark.parametrize("suite", ["hard", "both"])
+def test_shared_campaign_rejects_suffix_policy_when_hard_task_is_scheduled(native_cache, suite):
+    tasks = tuple(
+        task
+        for source_suite in (("hard",) if suite == "hard" else ("normal", "hard"))
+        for task in selected(native_cache, source_suite, "custom_development")[0][:1]
+    )
+    with pytest.raises((StateError, ValueError), match="normal function-completion"):
+        build_setup(
+            "invalid literal campaign",
+            MODEL,
+            tasks,
+            IMAGE,
+            extraction="exact_prompt_suffix_v1",
+        )
 
 
 def test_interrupted_native_judgment_is_not_rerolled(native_cache, ledger, monkeypatch):

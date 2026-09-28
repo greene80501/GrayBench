@@ -134,6 +134,18 @@ uv run graybench native-step LEDGER.sqlite RUN_ID CACHE
 uv run graybench summary LEDGER.sqlite RUN_ID
 ```
 
+The default `raw_or_single_python_fence_v1` extraction accepts a raw normal
+function-body suffix or a complete replacement function (and one Python code
+fence). For a **normal-suite exact prompt suffix** condition, add
+`--extraction exact_prompt_suffix_v1` to `native-plan`. That condition
+concatenates the public prompt and raw response without choosing a code block
+or replacing the prefix. Valid top-level helpers and replacement definitions
+remain possible when they form valid Python, as with ordinary code completion.
+It is unavailable for hard tasks, whose
+public contract requests a standalone function. Plans and reports expose the
+policy, and comparisons reject different policies; see the
+[answer-format evidence](../docs/reliability-evidence/native-answer-format-conditions.md).
+
 The native report names exactly one suite, population and denominator. It never
 combines normal and hard, and `publication_eligible` remains false until task
 admission and independent reproduction are complete.

@@ -1,6 +1,11 @@
 import ast
+import os
+from pathlib import Path
+
+import pytest
 
 from graybench.contracts import PublicTask
+from graybench.datasets import load_suite
 from graybench.extraction import extract
 
 
@@ -19,6 +24,56 @@ def test_body_completion_keeps_exact_public_prompt():
     result = extract("    return sqrt(x)\n", normal())
     assert result.code == normal().prompt + "    return sqrt(x)\n"
     assert result.public_prefix == ""
+
+
+def test_exact_prompt_suffix_is_distinct_from_chat_code_condition():
+    suffix = "    return sqrt(x)\n"
+    literal = extract(suffix, normal(), policy="exact_prompt_suffix_v1")
+    assert literal.error is None
+    assert literal.code == normal().prompt + suffix
+    assert literal.method == "exact_prompt_suffix_v1"
+    assert literal.public_prefix == ""
+    for valid in (
+        "\ndef answer(x):\n    return sqrt(x)\n",
+        "\nanswer = lambda x: sqrt(x)\n",
+        "\n    pass\n\ndef other(x): return sqrt(x)\nglobals()['answer'] = other\n",
+        "\nimport math\n",
+        "    def helper(value): return sqrt(value)\n    return helper(x)\n",
+    ):
+        result = extract(valid, normal(), policy="exact_prompt_suffix_v1")
+        assert result.error is None
+        assert result.code == normal().prompt + valid
+    for malformed in (
+        "```python\n    return sqrt(x)\n```",
+        "explanation followed by code",
+    ):
+        assert extract(malformed, normal(), policy="exact_prompt_suffix_v1").error
+    assert extract("\ndef answer(x): return x\n", normal()).error is None
+
+
+def test_exact_prompt_suffix_preserves_even_an_empty_response():
+    for response in ("", "\n", "  \n"):
+        result = extract(response, normal(), policy="exact_prompt_suffix_v1")
+        assert result.error is None
+        assert result.code == normal().prompt + response
+
+
+def test_exact_prompt_suffix_is_not_a_hard_suite_answer_format(task):
+    result = extract("def answer(x): return x", task, policy="exact_prompt_suffix_v1")
+    assert result.error == "Exact prompt suffix requires a function-completion task"
+
+
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
+def test_pinned_normal_canonical_suffixes_fit_exact_prompt_condition():
+    tasks = load_suite("normal", Path(os.environ["GRAYBENCH_TEST_CACHE"]))
+    for task in tasks:
+        result = extract(
+            task.canonical_solution,
+            task.public,
+            policy="exact_prompt_suffix_v1",
+        )
+        assert result.error is None, (task.public.task_id, result.error)
+        assert result.code == task.public.prompt + task.canonical_solution
 
 
 def test_full_function_keeps_public_imports_and_future_import_semantics():

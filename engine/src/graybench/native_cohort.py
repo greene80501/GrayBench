@@ -51,6 +51,8 @@ class NativeCohort(Contract):
             raise ValueError("Native image must be an immutable SHA-256 digest")
         if self.extraction not in EXTRACTION_POLICIES:
             raise ValueError("Unknown extraction policy")
+        if self.extraction == "exact_prompt_suffix_v1" and self.suite != "normal":
+            raise ValueError("Exact prompt suffix is available only for the normal suite")
         if not HEX_DIGEST.fullmatch(self.source_digest):
             raise ValueError("Native source identity must be a SHA-256 digest")
         if not self.label.strip():

@@ -186,6 +186,18 @@ def extract(
 ) -> Extracted:
     if policy not in EXTRACTION_POLICIES:
         raise ValueError("Unknown extraction policy")
+    if policy == "exact_prompt_suffix_v1":
+        if task.prompt_format != "function_completion":
+            return Extracted(
+                "", "rejected", "Exact prompt suffix requires a function-completion task"
+            )
+        try:
+            text.encode("utf-8")
+            code = task.prompt + text
+            ast.parse(code)
+        except (SyntaxError, ValueError, UnicodeError, RecursionError):
+            return Extracted("", "rejected", "Invalid exact prompt suffix")
+        return Extracted(code, policy)
     if policy in {"unique_entrypoint_fence_v2", "unique_entrypoint_fence_v3"}:
         try:
             text.encode("utf-8")
