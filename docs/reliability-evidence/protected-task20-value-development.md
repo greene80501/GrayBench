@@ -13,8 +13,8 @@ Qiskit but scores only the returned numeric value. No pass-manager use,
 
 | Suite | Pinned source digest | Revised public digest | Revised value contract digest |
 | --- | --- | --- | --- |
-| normal | `50c85aa2a066db0be117730d7b916d7522ccb282002b802ee1a9112c405571ad` | `c8ac5208cf51d30977a032355c3fa95807239248b453e6192ad8a5a6834a85a0` | `db970dbc01766ed7d5c11b57ed2dc06a08cc775788472c58b747ca93ba8c1a05` |
-| hard | `a39d624d99ec39b312f116204d9c9d4af41ca3f89ab07005bbea2952d456c217` | `0fa244d920dbbb2069b98b724c9363a61b8551273893908b5917717628a32ad5` | `c9379af2e320351b9c0b26d6f64944766bdffd25e6f80ed5f79f43ac7fc8a08e` |
+| normal | `50c85aa2a066db0be117730d7b916d7522ccb282002b802ee1a9112c405571ad` | `c8ac5208cf51d30977a032355c3fa95807239248b453e6192ad8a5a6834a85a0` | `cd81bb0840e4e9e30c93bf30c812bfcbbded99de296b7fefcc8a529d76da7080` |
+| hard | `a39d624d99ec39b312f116204d9c9d4af41ca3f89ab07005bbea2952d456c217` | `0fa244d920dbbb2069b98b724c9363a61b8551273893908b5917717628a32ad5` | `4e9302594084b72b480cd56c38013b0f96bec5f92f7d4789eec81a455507b550` |
 
 The private case set uses layouts `[2,4,6]`, `[0,1,2]`, and `[1,3,5]`.
 The trusted host-side oracle checks unit norm and fidelity one against GHZ+

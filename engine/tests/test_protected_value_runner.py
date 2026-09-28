@@ -104,6 +104,12 @@ def test_invalid_trusted_case_is_not_charged_to_candidate():
     result = runner.execute(spec, "def answer(n):\n    return n\n", (ValueCall(args=("bad",)),))
     assert result.outcome == "infrastructure_error"
     assert result.evidence["reason"] == "invalid_frozen_case"
+    string_spec = spec.model_copy(update={"positional": (ValueShape(kind="string"),)})
+    surrogate = runner.execute(
+        string_spec, "def answer(n):\n    return n\n", (ValueCall(args=("\ud800",)),)
+    )
+    assert surrogate.outcome == "infrastructure_error"
+    assert surrogate.evidence["reason"] == "invalid_frozen_case"
 
 
 def test_worker_returns_multiple_declared_values_and_no_verdict():

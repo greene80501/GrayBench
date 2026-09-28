@@ -90,6 +90,11 @@ def validate_value(value: JsonValue, shape: ValueShape, *, depth: int = 0, budge
         valid = type(value) is int or (type(value) is float and math.isfinite(value))
     elif kind == "string":
         valid = type(value) is str and len(value) <= shape.max_length
+        if valid:
+            try:
+                value.encode("utf-8")
+            except UnicodeEncodeError as exc:
+                raise ValueError("Value contains invalid Unicode") from exc
     elif kind == "array":
         valid = type(value) is list and shape.min_items <= len(value) <= shape.max_items
         if valid:
@@ -106,6 +111,10 @@ def validate_value(value: JsonValue, shape: ValueShape, *, depth: int = 0, budge
             for key, item in value.items():
                 if type(key) is not str:
                     raise ValueError("JSON object keys must be strings")
+                try:
+                    key.encode("utf-8")
+                except UnicodeEncodeError as exc:
+                    raise ValueError("JSON object key contains invalid Unicode") from exc
                 validate_value(item, shape.properties[key], depth=depth + 1, budget=budget)
     if not valid:
         raise ValueError("Value does not match declared " + kind + " shape")

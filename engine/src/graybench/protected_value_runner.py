@@ -56,6 +56,7 @@ def value_payload(
             for value, shape in zip(call.args, contract.positional, strict=True):
                 validate_value(value, shape)
             for name, value in call.kwargs.items():
+                name.encode("utf-8")
                 validate_value(value, contract.keywords[name])
             wire_calls.append(call.model_dump(mode="json"))
     except Exception as exc:
