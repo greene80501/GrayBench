@@ -1,3 +1,5 @@
+import hashlib
+
 import httpx
 import pytest
 
@@ -158,6 +160,79 @@ def test_transport_redacts_echoed_key(monkeypatch, task):
         )
     assert result.kind == "rejected"
     assert "secret-for-unit-test" not in str(result.evidence)
+
+
+def test_transport_records_exact_submitted_bytes_and_public_scope(monkeypatch, task):
+    monkeypatch.setenv("TEST_TOKEN", "secret-for-unit-test")
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/graybench-evaluation",
+    )
+    request = OpenAIChat().prepare(model, task, None)
+    submitted = []
+
+    def handler(wire_request):
+        submitted.append(wire_request.content)
+        return httpx.Response(503, text='{"error":"overloaded"}')
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = Transport(model, client).generate(request, OpenAIChat())
+    assert len(submitted) == 1
+    assert result.kind == "ambiguous"
+    assert result.evidence["request_content_sha256"] == hashlib.sha256(submitted[0]).hexdigest()
+    assert result.evidence["request_content_bytes"] == len(submitted[0])
+    assert result.evidence["credential_scope_id"] == "openai/project/graybench-evaluation"
+    assert result.evidence["auth_header_names"] == ["authorization"]
+    assert "secret-for-unit-test" not in str(result.evidence)
+
+
+def test_declared_account_scope_changes_frozen_model_identity():
+    common = {
+        "adapter": "openai-chat",
+        "model": "test",
+        "base_url": "https://example.test",
+        "credential_env": "TEST_TOKEN",
+    }
+    first = ModelSpec(**common, credential_scope_id="openai/project/one")
+    second = ModelSpec(**common, credential_scope_id="openai/project/two")
+    assert first.digest != second.digest
+
+
+@pytest.mark.parametrize("secret", ["sk-proj-fake", "AQ.fake-google-token"])
+def test_api_key_shaped_scope_is_rejected_before_serialization(secret):
+    with pytest.raises(ValueError, match="credential_scope_id"):
+        ModelSpec(
+            adapter="openai-chat",
+            model="test",
+            base_url="https://example.test",
+            credential_env="TEST_TOKEN",
+            credential_scope_id=secret,
+        )
+
+
+def test_actual_credential_cannot_hide_inside_public_scope(monkeypatch):
+    monkeypatch.setenv("TEST_TOKEN", "unit-secret-456")
+    with pytest.raises(ValueError, match="credential_scope_id"):
+        ModelSpec(
+            adapter="openai-chat",
+            model="test",
+            base_url="https://example.test",
+            credential_env="TEST_TOKEN",
+            credential_scope_id="openai/project/unit-secret-456",
+        )
+
+
+def test_transport_rejects_mismatched_prepared_model_before_network(model, task):
+    request = Ollama().prepare(model, task, None)
+    changed = request.model_copy(update={"model": "a-different-model"})
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: pytest.fail("network must not be called"))
+    ) as client:
+        with pytest.raises(ValueError, match="prepared request"):
+            Transport(model, client).generate(changed, Ollama())
 
 
 def test_successful_response_echoing_credential_cannot_be_judged_as_changed_code(monkeypatch, task):

@@ -10,7 +10,7 @@ import pytest
 
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
-from graybench.contracts import ModelSpec, Protocol
+from graybench.contracts import ModelSpec, Protocol, RetryPolicy
 from graybench.datasets import load_suite
 from graybench.ledger import StateError
 from graybench.protected_campaign import (
@@ -111,6 +111,8 @@ def test_frozen_protected_cohort_has_151_record_inventory_and_development_report
     assert frozen.protocol.track == "graybench-protected-semantic-v1"
     assert frozen.protocol.protected_suite == "normal"
     assert frozen.protocol.protected_population == "custom_development"
+    assert frozen.protocol.retry.max_attempts == 1
+    assert frozen.protocol.retry.statuses == ()
     assert len(frozen.cohort.excluded) == 150
     assert frozen.cohort.task_keys == ("normal/qiskitHumanEval/20",)
     run = ledger.create_run(frozen.protocol)
@@ -122,6 +124,14 @@ def test_frozen_protected_cohort_has_151_record_inventory_and_development_report
     assert report["publication_eligible"] is False
     assert report["pass_at_1"] is None
     assert setup("hard").protocol.digest != frozen.protocol.digest
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_new_protected_run_rejects_hand_edited_retry_policy(ledger):
+    frozen = setup()
+    edited = frozen.protocol.model_copy(update={"retry": RetryPolicy()})
+    with pytest.raises(StateError, match="single dispatch"):
+        ledger.create_run(edited)
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")

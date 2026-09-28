@@ -14,7 +14,12 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from graybench.contracts import Generation, PreparedRequest, Protocol
+from graybench.contracts import (
+    Generation,
+    PreparedRequest,
+    Protocol,
+    require_credential_scope_for_new_run,
+)
 from graybench.identity import canonical, identity
 from graybench.ledger_evidence import event_records, verify_records
 from graybench.provenance import source_manifest
@@ -168,6 +173,13 @@ class Ledger:
         self.db.execute("INSERT INTO events VALUES (?,?,?,?)", (seq, previous, digest, payload))
 
     def create_run(self, protocol: Protocol, context: dict | None = None) -> str:
+        require_credential_scope_for_new_run(protocol.model)
+        if protocol.track in {"qhe-pinned-native-v1", "graybench-protected-semantic-v1"} and (
+            protocol.retry.max_attempts != 1
+            or protocol.retry.statuses
+            or protocol.retry.delays_seconds
+        ):
+            raise StateError("New dual-track runs require a frozen single dispatch policy")
         run_id = uuid.uuid4().hex
         with self.transaction():
             manifest = self._blob(protocol.model_dump(mode="json"))

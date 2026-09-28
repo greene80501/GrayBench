@@ -1,5 +1,7 @@
 """Versioned experiment contracts, independent of SDKs and private task oracles."""
 
+import os
+import re
 from typing import Any, Literal
 from urllib.parse import urlsplit
 
@@ -34,11 +36,22 @@ class Setting(Contract):
     evidence: str = Field(min_length=1)
 
 
+_CREDENTIAL_SCOPE_PATTERN = r"^[A-Za-z][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+
+
 class ModelSpec(Contract):
     adapter: str = Field(min_length=1)
     model: str = Field(min_length=1)
     base_url: str
     credential_env: str | None = Field(default=None, pattern=r"^[A-Z][A-Z0-9_]*$")
+    # Public operator-declared account/project scope; never put a credential here.
+    credential_scope_id: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=128,
+        pattern=_CREDENTIAL_SCOPE_PATTERN,
+        exclude_if=lambda value: value is None,
+    )
     settings: tuple[Setting, ...] = ()
     accepted_returned_models: tuple[str, ...] = ()
     model_identity_evidence: str | None = None
@@ -80,7 +93,30 @@ class ModelSpec(Contract):
                 )
         elif self.discovery_exception_reason is not None:
             raise ValueError("discovery_exception_reason requires unverified development policy")
+        if self.credential_scope_id and self.credential_env:
+            credential = os.environ.get(self.credential_env, "")
+            if credential and credential in self.credential_scope_id:
+                raise ValueError("credential_scope_id must not contain the credential")
         return self
+
+
+def require_credential_scope_for_new_run(model: ModelSpec) -> None:
+    """Keep old manifests readable while requiring a public scope for new API runs."""
+    scope = model.credential_scope_id
+    if model.credential_env and not scope:
+        raise ValueError("credential_scope_id is required for a new credentialed campaign")
+    # model_copy(update=...) bypasses Pydantic validation. Recheck at every
+    # durable campaign boundary before a copied model can become an artifact.
+    if scope is not None:
+        if (
+            not isinstance(scope, str)
+            or len(scope) > 128
+            or not re.fullmatch(_CREDENTIAL_SCOPE_PATTERN, scope)
+        ):
+            raise ValueError("credential_scope_id must be a public provider/label")
+        credential = os.environ.get(model.credential_env, "") if model.credential_env else ""
+        if credential and credential in scope:
+            raise ValueError("credential_scope_id must not contain the credential")
 
 
 class RetryPolicy(Contract):

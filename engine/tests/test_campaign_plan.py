@@ -5,6 +5,7 @@ import pytest
 
 from graybench.campaign_setup import CampaignSetup, build_setup
 from graybench.cli import main
+from graybench.contracts import ModelSpec
 from graybench.datasets import JudgeTask
 from graybench.evaluation_campaign import validate_cohort
 from graybench.ledger import StateError
@@ -24,10 +25,45 @@ def test_builder_binds_requests_without_including_private_source(model, task):
     setup = build_setup("fixture", model, (private,), "sha256:" + "0" * 64, repeats=3)
     validate_cohort(setup.protocol, (private,), setup.judge())
     assert setup.protocol.repeats == 3
+    assert setup.protocol.retry.max_attempts == 1
+    assert setup.protocol.retry.statuses == ()
     assert "SECRET_REFERENCE_SENTINEL" not in setup.model_dump_json()
     assert "SECRET_TEST_SENTINEL" not in setup.model_dump_json()
     with pytest.raises(StateError, match="unique"):
         build_setup("duplicate", model, (private, private), setup.image)
+
+
+def test_new_credentialed_campaign_requires_public_account_scope(task):
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+    )
+    private = private_task(task)
+    with pytest.raises(ValueError, match="credential_scope_id"):
+        build_setup("missing-scope", model, (private,), "sha256:" + "0" * 64)
+    declared = model.model_copy(update={"credential_scope_id": "openai/project/benchmark"})
+    setup = build_setup("declared-scope", declared, (private,), "sha256:" + "0" * 64)
+    assert setup.protocol.model.credential_scope_id == "openai/project/benchmark"
+
+
+def test_copied_model_cannot_put_loaded_key_into_campaign_artifact(monkeypatch, task):
+    monkeypatch.setenv("TEST_TOKEN", "unit-secret-456")
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+    )
+    bypassed = model.model_copy(update={"credential_scope_id": "openai/project/unit-secret-456"})
+    with pytest.raises(ValueError, match="credential_scope_id"):
+        build_setup(
+            "copied-scope",
+            bypassed,
+            (private_task(task),),
+            "sha256:" + "0" * 64,
+        )
 
 
 def test_builder_can_freeze_attempt_bound_observation_protocol(model, task):

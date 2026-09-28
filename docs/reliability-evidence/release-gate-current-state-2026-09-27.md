@@ -119,3 +119,16 @@ gates. The current `Adapter.settings` accepts settings marked `documented` or
 `verified` for request construction; that is not by itself proof that a provider
 honored a setting. Any eventual publication gate must distinguish requested,
 documented-supported, observed-effective and unknown controls.
+
+## Subsequent development change
+
+The request-scope and HTTP-503 findings above describe the source digest named
+at the top of this audit. Subsequent source changes add a public
+`credential_scope_id` to new credentialed campaign plans, preserve a digest and
+length of the JSON bytes passed to HTTPX, and freeze one dispatch in new
+campaigns. The transport now classifies 5xx generation responses as ambiguous.
+New dual-track run creation rejects a hand-edited retry policy, and all new
+credentialed runs require a declared scope even when a setup is edited.
+These client-side records do not independently verify the provider account or
+prove remote receipt. Historical ledgers and the no-publication gate retain
+their original interpretation.

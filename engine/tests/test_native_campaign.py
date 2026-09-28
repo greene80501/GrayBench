@@ -10,7 +10,7 @@ from test_native_cohort import cache as _synthetic_cache
 
 from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
-from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol
+from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol, RetryPolicy
 from graybench.ledger import StateError
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import freeze_native_cohort
@@ -71,6 +71,8 @@ def test_native_setup_is_single_suite_and_development_only(native_cache, ledger)
     assert setup.protocol.native_cohort_digest == setup.cohort.digest
     assert setup.protocol.native_suite == "normal"
     assert setup.protocol.native_population == "custom_development"
+    assert setup.protocol.retry.max_attempts == 1
+    assert setup.protocol.retry.statuses == ()
     assert setup.digest != hard.digest
     assert setup.tasks(cache)[0].public.suite == "normal"
     run = ledger.create_run(setup.protocol)
@@ -82,6 +84,13 @@ def test_native_setup_is_single_suite_and_development_only(native_cache, ledger)
     assert report["planned_samples"] == 2
     assert report["pass_at_1"] is None
     assert report["publication_eligible"] is False
+
+
+def test_new_native_run_rejects_hand_edited_retry_policy(native_cache, ledger):
+    setup = native_setup(native_cache)
+    edited = setup.protocol.model_copy(update={"retry": RetryPolicy()})
+    with pytest.raises(StateError, match="single dispatch"):
+        ledger.create_run(edited)
 
 
 @pytest.mark.parametrize(

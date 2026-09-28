@@ -11,6 +11,8 @@ from graybench.contracts import (
     ModelObservationTiming,
     ModelSpec,
     Protocol,
+    RetryPolicy,
+    require_credential_scope_for_new_run,
 )
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
@@ -108,6 +110,7 @@ def build_setup(
     model_observation_timing: ModelObservationTiming | None = None,
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
+    require_credential_scope_for_new_run(model)
     judge = recipe_judge(
         evaluation_recipe, image=image, parser_image=parser_image, extraction=extraction
     )
@@ -134,6 +137,7 @@ def build_setup(
         repeats=repeats,
         system_prompt=system_prompt,
         extraction=extraction,
+        retry=RetryPolicy(max_attempts=1, statuses=(), delays_seconds=()),
         task_keys=tuple(requests),
         request_digests=requests,
         dataset_digest=binding["dataset_digest"],

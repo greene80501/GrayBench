@@ -80,6 +80,19 @@ native adapters use the `graybench.adapters` entry-point group. This is an
 extension mechanism, not verified support for every model. Exact endpoint/model
 settings need evidence. An accepted request setting is not proof the provider
 honored it. No default helpful prompt, answer repair or hidden retry is added.
+For a new API-backed campaign, the model specification must also declare a
+public `credential_scope_id` such as `openai/project/graybench-evaluation`.
+This is an operator label, not a credential or an independently authenticated
+account ID. Use a provider/namespace/label form; a loaded key cannot occur
+inside the label. Keep the key only in
+`credential_env`. The transport records the
+scope and a digest and length of the exact JSON bytes passed to HTTPX, while
+recording only the names of authentication headers. New campaign plans freeze
+one dispatch per sample; ambiguous 5xx responses stop the run without an
+automatic replay. Historical manifests remain readable with their earlier
+retry policy and without a scope label. New native and protected runs also
+reject hand-edited retry policies at ledger creation. Older development tracks
+retain their frozen retry conditions and cannot be reported as either new track.
 
 `campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
 and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.

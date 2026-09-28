@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from graybench.contracts import Generation
+from graybench.contracts import Generation, ModelSpec
 from graybench.ledger import Ledger, StateError
 from graybench.providers import Ollama
 
@@ -12,6 +12,31 @@ def returned(text=""):
     return Generation(
         text=text, returned_model="test-model", response_id=None, finish_reason="stop", usage={}
     )
+
+
+def test_new_run_rejects_credentialed_model_without_public_scope(ledger, protocol):
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test-model",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+    )
+    edited = protocol.model_copy(update={"model": model})
+    with pytest.raises(ValueError, match="credential_scope_id"):
+        ledger.create_run(edited)
+
+
+def test_new_run_rejects_copied_scope_containing_loaded_key(ledger, protocol, monkeypatch):
+    monkeypatch.setenv("TEST_TOKEN", "unit-secret-456")
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test-model",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+    ).model_copy(update={"credential_scope_id": "openai/project/unit-secret-456"})
+    edited = protocol.model_copy(update={"model": model})
+    with pytest.raises(ValueError, match="credential_scope_id"):
+        ledger.create_run(edited)
 
 
 def test_empty_return_cannot_be_retried(ledger, protocol, task):

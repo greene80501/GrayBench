@@ -5,7 +5,14 @@ from typing import Literal
 
 from pydantic import Field
 
-from graybench.contracts import Contract, ModelObservationTiming, ModelSpec, Protocol
+from graybench.contracts import (
+    Contract,
+    ModelObservationTiming,
+    ModelSpec,
+    Protocol,
+    RetryPolicy,
+    require_credential_scope_for_new_run,
+)
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign, cohort_identities, validate_cohort
 from graybench.ledger import StateError
@@ -97,6 +104,7 @@ def build_native_setup(
     tmpfs_bytes: int = 64 * 1024**2,
 ) -> NativeCampaignSetup:
     """Freeze exactly one pinned suite without contacting a model provider."""
+    require_credential_scope_for_new_run(model)
     validate_native_cohort(cohort, tasks, cache=cache)
     limits = dict(
         judge_timeout=judge_timeout,
@@ -138,6 +146,7 @@ def build_native_setup(
         repeats=repeats,
         system_prompt=system_prompt,
         extraction=cohort.extraction,
+        retry=RetryPolicy(max_attempts=1, statuses=(), delays_seconds=()),
         model_observation_timing=model_observation_timing or ModelObservationTiming(),
         model=model,
         generation_code_digest=source,

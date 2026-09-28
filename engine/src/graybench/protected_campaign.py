@@ -10,7 +10,15 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from graybench.campaign import GenerationRunner
-from graybench.contracts import Contract, Generation, ModelObservationTiming, ModelSpec, Protocol
+from graybench.contracts import (
+    Contract,
+    Generation,
+    ModelObservationTiming,
+    ModelSpec,
+    Protocol,
+    RetryPolicy,
+    require_credential_scope_for_new_run,
+)
 from graybench.datasets import PINS, JudgeTask, load_suite
 from graybench.identity import canonical, identity
 from graybench.ledger import Ledger, StateError
@@ -211,6 +219,7 @@ def build_protected_setup(
     system_prompt: str | None = None,
     model_observation_timing: ModelObservationTiming | None = None,
 ) -> ProtectedCampaignSetup:
+    require_credential_scope_for_new_run(model)
     pinned = validate_protected_cohort(cohort, tasks, cache=cache)
     setup_stub = ProtectedCampaignSetup(
         protocol=Protocol(
@@ -225,6 +234,7 @@ def build_protected_setup(
             task_keys=cohort.task_keys,
             request_digests={key: "0" * 64 for key in cohort.task_keys},
             repeats=repeats,
+            retry=RetryPolicy(max_attempts=1, statuses=(), delays_seconds=()),
             model_observation_timing=model_observation_timing or ModelObservationTiming(),
             model=model,
             generation_code_digest="0" * 64,

@@ -35,6 +35,8 @@ class Transport:
         self.secret = os.environ.get(spec.credential_env, "") if spec.credential_env else ""
         if spec.credential_env and not self.secret:
             raise ValueError(f"Missing credential environment variable {spec.credential_env}")
+        if self.secret and spec.credential_scope_id and self.secret in spec.credential_scope_id:
+            raise ValueError("Credential scope must not contain the credential")
         self.client = client or httpx.Client(
             timeout=httpx.Timeout(timeout_seconds, connect=30),
             follow_redirects=False,
@@ -50,18 +52,21 @@ class Transport:
     def _redact(self, value: str) -> str:
         return value.replace(self.secret, "[REDACTED]") if self.secret else value
 
-    def _headers(self) -> dict[str, str]:
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-        headers.update(adapter(self.spec.adapter).auth_headers(self.secret))
-        return headers
-
     def _exchange(self, method: str, path: str, body: dict | None) -> tuple[int | None, dict]:
         # Plugins cannot redirect credentials to another origin via a supplied absolute URL.
         if not path.startswith("/") or path.startswith("//") or "?" in path or "#" in path:
             raise ValueError("Request path must be a relative, query-free API path")
         started = time.perf_counter()
+        content = canonical(body) if body is not None else b""
+        auth_headers = adapter(self.spec.adapter).auth_headers(self.secret)
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        headers.update(auth_headers)
         evidence = {
             "request_body": body,
+            "request_content_sha256": hashlib.sha256(content).hexdigest(),
+            "request_content_bytes": len(content),
+            "credential_scope_id": self.spec.credential_scope_id,
+            "auth_header_names": sorted(self._redact(name.lower()) for name in auth_headers),
             "base_url": self.spec.base_url,
             "path": path,
             "method": method,
@@ -75,8 +80,8 @@ class Transport:
             with self.client.stream(
                 method,
                 self.spec.base_url + path,
-                headers=self._headers(),
-                content=canonical(body) if body is not None else None,
+                headers=headers,
+                content=content if body is not None else None,
             ) as response:
                 status = response.status_code
                 evidence["response_headers"] = {
@@ -116,8 +121,17 @@ class Transport:
         return status, evidence
 
     def generate(self, request: PreparedRequest, adapter: Adapter) -> Delivery:
+        if (
+            request.adapter != self.spec.adapter
+            or request.model != self.spec.model
+            or adapter.name != self.spec.adapter
+        ):
+            raise ValueError("Transport and prepared request have different model identities")
         status, evidence = self._exchange("POST", request.path, request.body)
         if "error" in evidence:
+            return Delivery("ambiguous", status, evidence)
+        if status is not None and status >= 500:
+            evidence["error"] = "Server error does not prove no generation occurred"
             return Delivery("ambiguous", status, evidence)
         if status is not None and status >= 400:
             return Delivery("rejected", status, evidence)
