@@ -8,6 +8,7 @@ from graybench.providers import adapter, model_metadata_path
 
 def observe_run(ledger, run_id, transport, *, attempt_id=None, post_token=None):
     protocol = ledger.protocol(run_id)
+    ledger.require_protocol_serialization_stable(run_id, protocol)
     spec = protocol.model
     if transport.spec != spec:
         raise ValueError("Discovery transport differs from frozen model")

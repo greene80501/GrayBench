@@ -40,8 +40,10 @@ historical report must not be silently reissued as a current-source score.
 The ledger summary now uses the stored run-manifest digest as `protocol_digest`,
 reports the current parser's `interpreted_protocol_digest` separately, and
 blocks scoring with `protocol_serialization_drift` if they differ. New
-dispatches on that run are rejected. `validate-protocol` makes the same
-distinction for a standalone JSON file, with `serialization_stable` showing
+dispatches, model observations, delivery completions, and judgments on that
+run are rejected; the original engine is needed to continue it. The
+`validate-protocol` command makes the same distinction for a standalone JSON
+file, with `serialization_stable` showing
 whether its parsed representation retains the original canonical identity.
 Neither check changes or rewrites archived evidence.
 

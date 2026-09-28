@@ -213,7 +213,9 @@ class Ledger:
         attempt_id: str | None = None,
         post_token: str | None = None,
     ) -> dict:
-        if observation.get("model_spec_digest") != self.protocol(run_id).model.digest:
+        protocol = self.protocol(run_id)
+        self.require_protocol_serialization_stable(run_id, protocol)
+        if observation.get("model_spec_digest") != protocol.model.digest:
             raise StateError("Discovery observation belongs to a different model specification")
         with self.transaction():
             if attempt_id is not None:
@@ -641,6 +643,7 @@ class Ledger:
                 "SELECT run_id FROM samples WHERE id=?", (attempt["sample_id"],)
             ).fetchone()["run_id"]
             protocol = self.protocol(run_id)
+            self.require_protocol_serialization_stable(run_id, protocol)
             received_at = now() if protocol.schema_version == "3.3" else None
             post_token = (
                 secrets.token_urlsafe(32) if protocol.schema_version in {"3.2", "3.3"} else None
@@ -705,6 +708,7 @@ class Ledger:
         if sample is None:
             raise StateError("Unscheduled sample")
         protocol = self.protocol(sample["run_id"])
+        self.require_protocol_serialization_stable(sample["run_id"], protocol)
         if protocol.track in {"qhe-pinned-native-v1", "graybench-protected-semantic-v1"}:
             if judge_digest != protocol.judge_digest:
                 label = "native" if protocol.track == "qhe-pinned-native-v1" else "protected"

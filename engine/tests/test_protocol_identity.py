@@ -9,6 +9,7 @@ import pytest
 from graybench.cli import main
 from graybench.identity import identity
 from graybench.ledger import StateError, now
+from graybench.model_discovery import observe_run
 from graybench.providers import Ollama
 
 
@@ -57,6 +58,71 @@ def test_archived_run_cannot_start_new_dispatch(ledger, protocol, task):
     with pytest.raises(StateError, match="protocol serialization drift"):
         ledger.begin_attempt(sample_id, request)
     assert ledger.verify()["events"] == 1
+
+
+def test_archived_run_cannot_add_model_observation(ledger, protocol):
+    run_id, _ = archived_run(ledger, protocol)
+    observation = {"model_spec_digest": ledger.protocol(run_id).model.digest}
+    with pytest.raises(StateError, match="protocol serialization drift"):
+        ledger.record_model_observation(run_id, observation)
+    assert ledger.verify()["events"] == 1
+
+
+def test_archived_run_rejects_discovery_before_network(ledger, protocol):
+    run_id, _ = archived_run(ledger, protocol)
+
+    class Transport:
+        spec = ledger.protocol(run_id).model
+        called = False
+
+        def discover(self, provider):
+            self.called = True
+            return []
+
+    transport = Transport()
+    with pytest.raises(StateError, match="protocol serialization drift"):
+        observe_run(ledger, run_id, transport)
+    assert transport.called is False
+
+
+def test_archived_run_cannot_claim_judgment(ledger, protocol):
+    run_id, _ = archived_run(ledger, protocol)
+    sample_id = ledger.samples(run_id)[0]["id"]
+    with pytest.raises(StateError, match="protocol serialization drift"):
+        ledger.claim_judgment(sample_id, protocol.judge_digest)
+    assert ledger.verify()["events"] == 1
+
+
+def test_archived_run_cannot_record_judgment(ledger, protocol):
+    run_id, _ = archived_run(ledger, protocol)
+    sample_id = ledger.samples(run_id)[0]["id"]
+    with pytest.raises(StateError, match="protocol serialization drift"):
+        ledger.judge(sample_id, protocol.judge_digest, "pass", {})
+    assert ledger.verify()["events"] == 1
+
+
+def test_archived_pending_attempt_cannot_be_finished_by_new_parser(ledger, protocol, task):
+    run_id, _ = archived_run(ledger, protocol)
+    sample_id = ledger.samples(run_id)[0]["id"]
+    request = Ollama().prepare(protocol.model, task, None)
+    attempt_id = uuid.uuid4().hex
+    with ledger.transaction():
+        request_digest = ledger._blob(request.model_dump(mode="json"))
+        ledger.db.execute(
+            "INSERT INTO attempts VALUES (?,?,?,?,?)",
+            (attempt_id, sample_id, 1, request_digest, now()),
+        )
+        ledger._event(
+            "attempt_started",
+            attempt_id=attempt_id,
+            sample_id=sample_id,
+            request=request_digest,
+        )
+    assert ledger.verify()["events"] == 2
+
+    with pytest.raises(StateError, match="protocol serialization drift"):
+        ledger.finish_attempt(attempt_id, "ambiguous", {"reason": "legacy pending attempt"})
+    assert ledger.verify()["events"] == 2
 
 
 def test_validate_protocol_distinguishes_raw_and_interpreted_digest(
