@@ -64,3 +64,5 @@ test exceptions as candidate failures, or authorize a published accuracy. The
 a `None` return can make the pinned Qiskit assertion raise `QiskitError`, which
 the current native worker conservatively treats as an infrastructure error.
 A canonical pass alone is not a sound blanket exception-attribution policy.
+The companion [286-case null-return screen](native-null-return-screen.md)
+quantifies this ambiguity across both offline suites without changing scores.
