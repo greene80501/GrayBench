@@ -331,6 +331,7 @@ def audit_control_coverage(
                     "artifact_file_sha256": file_digest,
                     "declared_frozen_judge_matches_card": (
                         control["judge_manifest_verified"]
+                        and control["judge_predeclared"]
                         and control["judge_track"] == TRACK
                         and card.public_contract_digest is not None
                         and control["public_contract_digest"] == card.public_contract_digest
@@ -364,7 +365,7 @@ def audit_control_coverage(
         control["expected"] == "pass" and control["actual"] == "fail" for control in mismatches
     )
     return {
-        "schema_version": "4",
+        "schema_version": "5",
         "track": TRACK,
         "inventory_digest": inventory.digest,
         "source_pins": inventory.source_pins,

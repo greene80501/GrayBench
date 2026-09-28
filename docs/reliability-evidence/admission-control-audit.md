@@ -75,6 +75,35 @@ Twelve controls declare `upstream-proxy-v1`; six declare
 uncovered cards, and eight upstream false passes remain; there is still no
 protected admission evidence in these logs. This new report is local output
 outside the PR, alongside the preserved older reports.
-The current `run_review` probe factory covers task families 0 and 1; producing
-real protected task-2/20 controls with this exact judge binding still requires
-a separate authored-control runner. No card is admitted by this audit.
+The previous report remains preserved. It did not predeclare judge manifests
+before execution, so schema 5 also leaves all 18 controls unqualified.
+
+## Predeclared protected controls (report schema 5)
+
+`protected-oracle-review` freezes the source-bound judge manifests in the
+header before executing authored controls for the separately revised task-2
+and task-20 value contracts. The inspector checks every observed judge digest
+and full manifest against that header. The coverage audit requires this
+predeclaration in addition to the schema-4 track, contract and exact judge
+binding. A runtime change or mismatch leaves an incomplete control log.
+
+On 2026-09-28, the pinned Python 3.12 image
+`sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd`
+produced six matching controls per task and suite, 24/24 in all. The combined
+local JSONL is `GrayBench-v3-protected-controls-both-final-20260928.jsonl`, SHA-256
+`321d7cac8b64934f5cc0a5ab7751d8923456453bc9b5d57729dcc4233e8b55d9`.
+Each task has three positive alternatives (analytic, Qiskit-derived and global
+phase) and three semantically wrong, well-formed values (product state, wrong
+basis or fixed layout, and relative minus phase). These are authored, visible
+controls, not an unseen holdout or independent review. They demonstrate the
+revised numeric value behavior, not the original native-object QHE semantics.
+
+The schema-5 audit combined those 24 controls with the prior 18 into
+`GrayBench-v3-admission-control-audit-v7-20260928.json`, SHA-256
+`b1e9da8fc9812e796446ccbe2e2cea575e5479ba2975b9db831861fa8f5a8ed9`.
+It records 42 controls across 8 cards, 294 uncovered cards and the same eight
+upstream false passes. All 24 new controls have predeclared judges. The pending
+inventory does not yet bind any card to a protected judge or claim requirement
+coverage, so `declared_frozen_judge_control_count` remains zero. This is the
+correct admission result; no card or score is published. The evidence files
+are local outputs outside the PR and must be provided to reproduce the audit.

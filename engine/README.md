@@ -35,6 +35,18 @@ the recorded judgments. Unexpected outcomes are listed rather than discarded.
 Its `locally_verified` field means only internal consistency with pinned task
 ancestry. A holder can rewrite an unsigned chain; the command cannot establish
 semantic adequacy, reviewer identity, independence, or publication eligibility.
+For the revised task-2 and task-20 value contracts, run the predeclared local
+controls against an immutable Docker image:
+
+```sh
+uv run graybench protected-oracle-review CACHE REVIEW.jsonl --suite both --image sha256:IMAGE_DIGEST
+uv run graybench oracle-review-inspect REVIEW.jsonl CACHE
+```
+
+The header freezes each source-bound protected judge manifest before any
+candidate control executes. Inspection verifies every observed judgment against
+that declaration. A failed or changed judge leaves an incomplete log. These
+controls exercise numeric value semantics only, never native-object behavior.
 
 Inventories written now use schema 2: their recorded creator-source digest is
 historical provenance, while validation re-reads the exact pinned task bytes.
@@ -55,11 +67,12 @@ review attestations, infer semantic adequacy, or admit tasks. The saved control
 logs must be available separately to reverify the audit.
 The summary separates authored wrong controls that passed, authored correct
 controls that failed, and other mismatches such as timeouts.
-Report schema 4 verifies any recorded judge manifest against its digest and
-requires an exact card-bound protected judge digest before a control can support
-a requirement. The judge identity includes the oracle and private cases, so an
-earlier oracle cannot qualify merely because it shares a public contract. A
-matching declaration is local, unsigned evidence, not independent attestation.
+Report schema 5 verifies any recorded judge manifest against its digest and
+requires a judge manifest predeclared in the log header, plus an exact
+card-bound protected judge digest, before a control can support a requirement.
+The judge identity includes the oracle and private cases, so an earlier oracle
+cannot qualify merely because it shares a public contract. A matching
+declaration is local, unsigned evidence, not independent attestation.
 
 ## Execution conditions
 

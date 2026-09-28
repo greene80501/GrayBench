@@ -25,6 +25,7 @@ from graybench.protected_campaign import (
     build_protected_setup,
     freeze_protected_cohort,
 )
+from graybench.protected_oracle_review import run_protected_review
 from graybench.protected_task_registry import VALUE_TASKS, revised_value_task
 from graybench.provenance import environment
 from graybench.providers import adapter
@@ -126,6 +127,17 @@ def main():
     )
     inspect_oracle.add_argument("path", type=Path)
     inspect_oracle.add_argument("cache", type=Path)
+    protected_controls = commands.add_parser(
+        "protected-oracle-review",
+        help="Run predeclared local controls for task-2/20 value revisions; never a model score",
+    )
+    protected_controls.add_argument("cache", type=Path)
+    protected_controls.add_argument("output", type=Path)
+    protected_controls.add_argument("--suite", choices=("normal", "hard", "both"), required=True)
+    protected_controls.add_argument("--image", required=True)
+    protected_controls.add_argument("--task", choices=("2", "20"), action="append")
+    protected_controls.add_argument("--docker", default="docker")
+    protected_controls.add_argument("--timeout", type=float, default=120.0)
     validate = commands.add_parser(
         "validate-protocol", help="Validate a frozen experiment contract"
     )
@@ -735,6 +747,29 @@ def main():
                 card.external_service for card in admission_inventory.cards
             ),
             "publication_eligible": admission_inventory.publication_eligible,
+            "output": str(args.output),
+        }
+    elif args.command == "protected-oracle-review":
+        task_ids = (
+            tuple(f"qiskitHumanEval/{number}" for number in args.task)
+            if args.task
+            else ("qiskitHumanEval/2", "qiskitHumanEval/20")
+        )
+        report = run_protected_review(
+            args.cache,
+            args.output,
+            suite=args.suite,
+            image=args.image,
+            task_ids=task_ids,
+            docker=args.docker,
+            timeout=args.timeout,
+        )
+        result = {
+            "file_sha256": report["file_sha256"],
+            "control_count": report["control_count"],
+            "controls_matching_expectation": report["controls_matching_expectation"],
+            "task_keys": report["task_keys"],
+            "publication_eligible": False,
             "output": str(args.output),
         }
     elif args.command == "admission-control-audit":

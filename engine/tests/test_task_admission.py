@@ -308,8 +308,10 @@ def test_admission_control_audit_separates_wrong_passes_rejections_and_errors(ca
 
 
 def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tmp_path):
+    task = load_suite("normal", cache)[0]
     manifest = {
         "track": "graybench-protected-semantic-v1",
+        "source_task_digest": task.digest,
         "public_contract_digest": "c" * 64,
     }
 
@@ -320,7 +322,7 @@ def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tm
 
     inventory = build_pending_inventory(cache)
     review = tmp_path / "review.jsonl"
-    run_review((load_suite("normal", cache)[0],), ProbeJudge(), review)
+    run_review((task,), ProbeJudge(), review)
     controls = inspect_oracle_review(review, cache)["controls"]
     by_name = {item["case_key"].rsplit("/", 1)[1]: item for item in controls}
     requirement = RequirementEvidence(
@@ -340,15 +342,24 @@ def test_admission_audit_links_requirement_claims_to_observed_controls(cache, tm
     inventory = inventory.model_copy(update={"cards": (card, *inventory.cards[1:])})
 
     report = audit_control_coverage(inventory, cache, (review,))
-    assert report["schema_version"] == "4"
+    assert report["schema_version"] == "5"
     links = {item["role"]: item for item in report["tasks"][0]["evidence_links"]}
     assert links["oracle_case"]["status"] == "unverified_fixture"
+    assert links["independent_alternative"]["status"] == "unqualified_judge_condition"
+    assert links["wrong_mutant"]["status"] == "unqualified_judge_condition"
+
+    declared = tmp_path / "declared.jsonl"
+    run_review(
+        (task,),
+        ProbeJudge(),
+        declared,
+        declared_judges={"normal/qiskitHumanEval/0": manifest},
+    )
+    report = audit_control_coverage(inventory, cache, (review, declared))
+    links = {item["role"]: item for item in report["tasks"][0]["evidence_links"]}
     assert links["independent_alternative"]["status"] == "matching_local_observation"
     assert links["wrong_mutant"]["status"] == "matching_local_observation"
-    assert (
-        links["wrong_mutant"]["observations"][0]["artifact_file_sha256"]
-        == report["artifacts"][0]["file_sha256"]
-    )
+    assert links["wrong_mutant"]["declared_frozen_judge_observation_count"] == 1
     assert report["publication_eligible"] is False
 
 
@@ -369,6 +380,7 @@ def test_admission_audit_does_not_credit_upstream_or_unbound_controls(cache, tmp
     wrong_oracle = tmp_path / "wrong-oracle.jsonl"
     matching_manifest = {
         "track": "graybench-protected-semantic-v1",
+        "source_task_digest": task.digest,
         "public_contract_digest": "c" * 64,
         "oracle": "all-layouts-v2",
     }
@@ -378,14 +390,28 @@ def test_admission_audit_does_not_credit_upstream_or_unbound_controls(cache, tmp
     run_review(
         (task,),
         ConditionJudge(
-            {"track": "graybench-protected-semantic-v1", "public_contract_digest": "d" * 64}
+            {
+                "track": "graybench-protected-semantic-v1",
+                "source_task_digest": task.digest,
+                "public_contract_digest": "d" * 64,
+            }
         ),
         wrong_contract,
+        declared_judges={
+            "normal/qiskitHumanEval/0": {
+                "track": "graybench-protected-semantic-v1",
+                "source_task_digest": task.digest,
+                "public_contract_digest": "d" * 64,
+            }
+        },
     )
     run_review(
         (task,),
         ConditionJudge({**matching_manifest, "oracle": "three-layouts-v1"}),
         wrong_oracle,
+        declared_judges={
+            "normal/qiskitHumanEval/0": {**matching_manifest, "oracle": "three-layouts-v1"}
+        },
     )
     control = inspect_oracle_review(upstream, cache)["controls"][0]
     card = inventory.cards[0].model_copy(
@@ -417,6 +443,7 @@ def test_admission_audit_does_not_credit_upstream_or_unbound_controls(cache, tmp
         (task,),
         ConditionJudge(matching_manifest),
         matching,
+        declared_judges={"normal/qiskitHumanEval/0": matching_manifest},
     )
     combined = audit_control_coverage(
         inventory, cache, (upstream, wrong_contract, wrong_oracle, matching)
@@ -442,8 +469,10 @@ def test_admission_audit_rejects_claimed_manifest_with_wrong_judge_digest(cache,
 
 
 def test_admission_audit_flags_missing_wrong_role_and_conflicting_outcomes(cache, tmp_path):
+    task = load_suite("normal", cache)[0]
     manifest = {
         "track": "graybench-protected-semantic-v1",
+        "source_task_digest": task.digest,
         "public_contract_digest": "c" * 64,
     }
 
@@ -460,11 +489,20 @@ def test_admission_audit_flags_missing_wrong_role_and_conflicting_outcomes(cache
             return Judgment("pass", identity(manifest), {"manifest": manifest})
 
     inventory = build_pending_inventory(cache)
-    task = load_suite("normal", cache)[0]
     good = tmp_path / "good.jsonl"
     bad = tmp_path / "bad.jsonl"
-    run_review((task,), ExpectedJudge(), good)
-    run_review((task,), AlwaysPassJudge(), bad)
+    run_review(
+        (task,),
+        ExpectedJudge(),
+        good,
+        declared_judges={"normal/qiskitHumanEval/0": manifest},
+    )
+    run_review(
+        (task,),
+        AlwaysPassJudge(),
+        bad,
+        declared_judges={"normal/qiskitHumanEval/0": manifest},
+    )
     controls = inspect_oracle_review(good, cache)["controls"]
     by_name = {item["case_key"].rsplit("/", 1)[1]: item for item in controls}
     requirement = RequirementEvidence(

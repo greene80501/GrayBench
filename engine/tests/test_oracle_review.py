@@ -8,7 +8,13 @@ from graybench.cli import main
 from graybench.datasets import JudgeTask, load_suite
 from graybench.identity import canonical, identity
 from graybench.judge import Judgment
-from graybench.oracle_review import CircuitSizeJudge, inspect_oracle_review, probes, run_review
+from graybench.oracle_review import (
+    CircuitSizeJudge,
+    Probe,
+    inspect_oracle_review,
+    probes,
+    run_review,
+)
 
 
 def private(task):
@@ -175,4 +181,66 @@ def test_local_oracle_verifier_rejects_nonstring_judge_digest_and_source_file(tm
 
     _rewrite_chain(output, change_source_file)
     with pytest.raises(ValueError, match="source manifest"):
+        inspect_oracle_review(output, cache)
+
+
+def test_protected_control_log_predeclares_judge_before_execution(tmp_path, cache):
+    task = load_suite("normal", cache)[0]
+    task_key = f"{task.public.suite}/{task.public.task_id}"
+    manifest = {
+        "track": "graybench-protected-semantic-v1",
+        "source_task_digest": task.digest,
+        "public_contract_digest": "a" * 64,
+        "oracle": "fixture-v1",
+        "private_case_digest": "b" * 64,
+    }
+
+    class Judge:
+        def evaluate(self, _task, _completion):
+            return Judgment("pass", identity(manifest), {"manifest": manifest})
+
+    output = tmp_path / "protected.jsonl"
+    run_review(
+        (task,),
+        Judge(),
+        output,
+        probes_for=lambda _task: (Probe("valid", "pass", "Correct value", "def answer(): pass"),),
+        declared_judges={task_key: manifest},
+    )
+    report = inspect_oracle_review(output, cache)
+    assert report["controls"][0]["judge_predeclared"] is True
+    assert report["controls"][0]["judge_digest"] == identity(manifest)
+
+    def alter_declared_manifest(records):
+        header = records[0]["event"]
+        header["selection"]["declared_judges"][task_key]["oracle"] = "fixture-v0"
+
+    _rewrite_chain(output, alter_declared_manifest)
+    with pytest.raises(ValueError, match="declared judge"):
+        inspect_oracle_review(output, cache)
+
+
+def test_protected_control_run_stops_on_unexpected_judge_digest(tmp_path, cache):
+    task = load_suite("normal", cache)[0]
+    task_key = f"{task.public.suite}/{task.public.task_id}"
+    manifest = {
+        "track": "graybench-protected-semantic-v1",
+        "source_task_digest": task.digest,
+        "public_contract_digest": "a" * 64,
+    }
+
+    class ChangedJudge:
+        def evaluate(self, _task, _completion):
+            return Judgment("pass", "0" * 64, {"manifest": manifest})
+
+    output = tmp_path / "incomplete.jsonl"
+    with pytest.raises(ValueError, match="declared judge"):
+        run_review(
+            (task,),
+            ChangedJudge(),
+            output,
+            probes_for=lambda _task: (Probe("valid", "pass", "Correct value", "code"),),
+            declared_judges={task_key: manifest},
+        )
+    with pytest.raises(ValueError, match="incomplete"):
         inspect_oracle_review(output, cache)

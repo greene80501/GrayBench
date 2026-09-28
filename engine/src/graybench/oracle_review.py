@@ -117,8 +117,26 @@ def probes(task):
     raise ValueError("No reviewed probe set for this task family")
 
 
-def run_review(tasks, judge, output):
-    cases = [(task, probe) for task in tasks for probe in probes(task)]
+def run_review(tasks, judge, output, *, probes_for=probes, declared_judges=None):
+    tasks = tuple(tasks)
+    task_keys = {f"{task.public.suite}/{task.public.task_id}" for task in tasks}
+    if len(task_keys) != len(tasks):
+        raise ValueError("Oracle-review source tasks must be unique")
+    if declared_judges is not None:
+        if not isinstance(declared_judges, dict) or set(declared_judges) != task_keys:
+            raise ValueError("Declared judges must cover exactly the reviewed source tasks")
+        for task in tasks:
+            key = f"{task.public.suite}/{task.public.task_id}"
+            manifest = declared_judges[key]
+            if (
+                not isinstance(manifest, dict)
+                or manifest.get("source_task_digest") != task.digest
+                or not isinstance(manifest.get("track"), str)
+                or not isinstance(manifest.get("public_contract_digest"), str)
+                or not re.fullmatch(r"[0-9a-f]{64}", manifest["public_contract_digest"])
+            ):
+                raise ValueError("Declared judge differs from source task or public contract")
+    cases = [(task, probe) for task in tasks for probe in probes_for(task)]
     metadata = {
         f"{task.public.suite}/{task.public.task_id}/{probe.name}": {
             "task_digest": task.digest,
@@ -136,6 +154,14 @@ def run_review(tasks, judge, output):
     def evaluate(case):
         task, probe = case
         result = judge.evaluate(task, probe.completion)
+        if declared_judges is not None:
+            key = f"{task.public.suite}/{task.public.task_id}"
+            declared = declared_judges[key]
+            if (
+                result.judge_digest != identity(declared)
+                or result.evidence.get("manifest") != declared
+            ):
+                raise ValueError("Observed judgment differs from the declared judge")
         return Judgment(
             result.outcome,
             result.judge_digest,
@@ -147,15 +173,18 @@ def run_review(tasks, judge, output):
             },
         )
 
+    selection = {
+        "cases": metadata,
+        "review": "local authored probes; not independent certification",
+    }
+    if declared_judges is not None:
+        selection["declared_judges"] = declared_judges
     return run_evidence_cases(
         items,
         evaluate,
         output,
         purpose="oracle counterexamples and valid alternatives; not model scoring",
-        selection={
-            "cases": metadata,
-            "review": "local authored probes; not independent certification",
-        },
+        selection=selection,
     )
 
 
@@ -184,6 +213,12 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
     cases = selection.get("cases")
     if not isinstance(cases, dict) or not cases or set(cases) != set(header["tasks"]):
         raise ValueError("Oracle-review cases differ from planned controls")
+    declared_judges = selection.get("declared_judges")
+    if declared_judges is not None and (
+        not isinstance(declared_judges, dict)
+        or set(declared_judges) != {key.rsplit("/", 1)[0] for key in cases}
+    ):
+        raise ValueError("Oracle-review declared judges differ from planned source tasks")
     source = header.get("source")
     if (
         not isinstance(source, dict)
@@ -261,6 +296,19 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
                 or not re.fullmatch(r"[0-9a-f]{64}", public_contract_digest)
             ):
                 raise ValueError("Invalid oracle-review public-contract digest")
+        judge_predeclared = declared_judges is not None
+        if judge_predeclared:
+            declared = declared_judges[match[1]]
+            if (
+                not isinstance(declared, dict)
+                or declared.get("source_task_digest") != metadata["task_digest"]
+                or not isinstance(declared.get("track"), str)
+                or not isinstance(declared.get("public_contract_digest"), str)
+                or not re.fullmatch(r"[0-9a-f]{64}", declared["public_contract_digest"])
+                or manifest != declared
+                or result["judge_digest"] != identity(declared)
+            ):
+                raise ValueError("Oracle-review declared judge differs from observed judgment")
         if result["outcome"] != expected:
             unexpected_outcomes.append(
                 {"task_key": key, "expected": expected, "actual": result["outcome"]}
@@ -276,6 +324,7 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
                 "actual": result["outcome"],
                 "judge_digest": result["judge_digest"],
                 "judge_manifest_verified": manifest_verified,
+                "judge_predeclared": judge_predeclared,
                 "judge_track": judge_track,
                 "public_contract_digest": public_contract_digest,
             }
