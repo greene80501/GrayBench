@@ -56,6 +56,11 @@ class Adapter(ABC):
     def request(self, spec: ModelSpec, path: str, body: dict) -> PreparedRequest:
         if spec.adapter != self.name:
             raise CapabilityError("Adapter identity mismatch")
+        profile = spec.capability_profile
+        if profile is not None:
+            ModelSpec.model_validate_json(spec.model_dump_json())
+            if profile.generation_path != path:
+                raise CapabilityError("Capability profile generation path mismatch")
         public_headers = freeze_public_headers(self.public_headers(spec))
         secret = os.environ.get(spec.credential_env, "") if spec.credential_env else ""
         if secret and any(secret in value for value in public_headers.values()):
@@ -71,6 +76,7 @@ class Adapter(ABC):
                 self.credential_header_names if spec.credential_env else frozenset()
             ),
             adapter_code_digest=adapter_code_digest(self),
+            capability_profile_digest=profile.digest if profile is not None else None,
         )
 
     def discovery_requests(self, spec: ModelSpec) -> tuple[tuple[str, str, dict | None], ...]:

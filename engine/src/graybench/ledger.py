@@ -16,6 +16,7 @@ from typing import Any
 
 from graybench.contracts import (
     Generation,
+    ModelSpec,
     PreparedRequest,
     Protocol,
     require_credential_scope_for_new_run,
@@ -173,6 +174,8 @@ class Ledger:
         self.db.execute("INSERT INTO events VALUES (?,?,?,?)", (seq, previous, digest, payload))
 
     def create_run(self, protocol: Protocol, context: dict | None = None) -> str:
+        if protocol.model.capability_profile is not None:
+            ModelSpec.model_validate_json(protocol.model.model_dump_json())
         require_credential_scope_for_new_run(protocol.model)
         if protocol.track in {"qhe-pinned-native-v1", "graybench-protected-semantic-v1"} and (
             protocol.retry.max_attempts != 1
@@ -902,6 +905,7 @@ class Ledger:
         ).fetchone()
         declared_setup = self.blob(context_row[0]).get("setup") if context_row else None
         recipe = declared_setup.get("evaluation_recipe") if type(declared_setup) is dict else None
+        capability = protocol.model.capability_profile
         return {
             "run_id": run_id,
             "protocol_digest": recorded_protocol_digest,
@@ -953,6 +957,8 @@ class Ledger:
             "publication_blockers": [
                 "reviewed_task_and_protocol_admission_required",
                 "independent_reproducibility_required",
+                *(["provider_capability_profile_missing"] if capability is None else []),
+                "provider_effective_settings_not_attested",
                 *(
                     ["model_discovery_unverified"]
                     if discovery["status"] != "stable_observed"
@@ -967,6 +973,15 @@ class Ledger:
             },
             "model_identity": model_identity,
             "model_discovery": discovery,
+            "provider_capability": {
+                "status": "operator_evidence_recorded" if capability else "missing",
+                "profile_digest": capability.digest if capability else None,
+                "profile": capability.model_dump(mode="json") if capability else None,
+                "requested_settings": [
+                    setting.model_dump(mode="json") for setting in protocol.model.settings
+                ],
+                "effective_settings_status": "not_attested",
+            },
             "attempt_model_observations": attempt_observations,
         }
 

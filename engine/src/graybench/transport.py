@@ -69,6 +69,8 @@ class Transport:
         timeout_seconds: float = 600,
         max_response_bytes: int = 16 * 1024 * 1024,
     ):
+        if spec.capability_profile is not None:
+            ModelSpec.model_validate_json(spec.model_dump_json())
         self.spec = spec
         self.max_response_bytes = max_response_bytes
         self.secret = os.environ.get(spec.credential_env, "") if spec.credential_env else ""
@@ -279,6 +281,13 @@ class Transport:
             or adapter.name != self.spec.adapter
         ):
             raise ValueError("Transport and prepared request have different model identities")
+        profile = self.spec.capability_profile
+        if profile is not None:
+            ModelSpec.model_validate_json(self.spec.model_dump_json())
+        if request.capability_profile_digest != (profile.digest if profile else None):
+            raise ValueError("Prepared request capability profile differs from transport")
+        if profile is not None and request.path != profile.generation_path:
+            raise ValueError("Prepared request capability generation path differs from transport")
         if request.public_headers is None:
             raise ValueError("Historical request has no frozen public headers for dispatch")
         if request.credential_header_names is None:

@@ -245,6 +245,13 @@ adapter without one may use a frozen, reasoned `unverified_development` exceptio
 those runs retain a publication blocker. Live capability calibration remains
 required for release.
 
+Model specs may include an exact-model `capability_profile` with dated
+documentation, request-probe digests, declared control support and token
+limits. Its digest travels with new prepared requests. Reports distinguish
+this operator evidence from effective settings, which remain unattested by a
+successful request alone. See the
+[capability evidence contract](../docs/reliability-evidence/provider-capability-evidence.md).
+
 `verify-ledger` validates retained evidence. `summary` reports completeness and
 score blockers before accuracy. `comparison-plan` and `compare` accept matched
 historical, native, or protected-semantic setup files and retain paired task

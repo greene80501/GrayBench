@@ -2,6 +2,7 @@
 
 import os
 import re
+from datetime import date
 from typing import Any, Literal
 from urllib.parse import urlsplit
 
@@ -41,6 +42,90 @@ class Setting(Contract):
     evidence: str = Field(min_length=1)
 
 
+class ControlSupport(Contract):
+    """Evidence that a control can be requested, never that it took effect."""
+
+    status: Literal["documented", "probe_accepted", "ignored", "unsupported", "unknown"]
+    evidence_refs: tuple[str, ...] = ()
+
+
+class CapabilityProfile(Contract):
+    """Operator-frozen, exact-model endpoint evidence for request construction."""
+
+    schema_version: Literal["1"] = "1"
+    adapter: str = Field(min_length=1)
+    model: str = Field(min_length=1)
+    base_url: str = Field(min_length=1)
+    generation_path: str = Field(pattern=r"^/[^?#]*$")
+    checked_on: str
+    documentation: tuple[str, ...] = ()
+    probe_digests: tuple[str, ...] = ()
+    controls: dict[str, ControlSupport] = Field(default_factory=dict)
+    input_token_limit: int | None = Field(default=None, gt=0)
+    output_token_limit: int | None = Field(default=None, gt=0)
+    limit_evidence_refs: tuple[str, ...] = ()
+
+    @field_validator("generation_path")
+    @classmethod
+    def relative_generation_path(cls, value: str) -> str:
+        if value.startswith("//"):
+            raise ValueError("Capability generation_path must be a relative API path")
+        return value
+
+    @model_validator(mode="after")
+    def evidence_is_closed(self) -> "CapabilityProfile":
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", self.checked_on) is None:
+            raise ValueError("Capability evidence checked_on must be YYYY-MM-DD")
+        try:
+            date.fromisoformat(self.checked_on)
+        except ValueError as exc:
+            raise ValueError("Capability evidence needs a valid checked_on date") from exc
+        if len(set(self.documentation)) != len(self.documentation) or any(
+            urlsplit(url).scheme != "https"
+            or not urlsplit(url).hostname
+            or urlsplit(url).username
+            or urlsplit(url).password
+            or urlsplit(url).query
+            or urlsplit(url).fragment
+            for url in self.documentation
+        ):
+            raise ValueError(
+                "Capability documentation must be unique HTTPS URLs without credentials"
+            )
+        if len(set(self.probe_digests)) != len(self.probe_digests) or any(
+            re.fullmatch(r"[0-9a-f]{64}", digest) is None for digest in self.probe_digests
+        ):
+            raise ValueError("Capability probe evidence must use unique SHA-256 digests")
+        if not self.documentation and not self.probe_digests:
+            raise ValueError("Capability profile needs at least one evidence source")
+        documents, probes = set(self.documentation), set(self.probe_digests)
+        for name, control in self.controls.items():
+            refs = set(control.evidence_refs)
+            if (
+                not name.strip()
+                or len(refs) != len(control.evidence_refs)
+                or not refs <= documents | probes
+                or (control.status == "documented" and not refs & documents)
+                or (control.status == "probe_accepted" and not refs & probes)
+                or (control.status in {"ignored", "unsupported"} and not refs)
+                or (control.status == "unknown" and refs)
+            ):
+                raise ValueError(
+                    "Capability control evidence is missing or mismatched, including probe evidence"
+                )
+        limit_refs = set(self.limit_evidence_refs)
+        if (
+            len(limit_refs) != len(self.limit_evidence_refs)
+            or not limit_refs <= documents | probes
+            or (self.input_token_limit is not None or self.output_token_limit is not None)
+            and not limit_refs
+            or (self.input_token_limit is None and self.output_token_limit is None)
+            and limit_refs
+        ):
+            raise ValueError("Capability token limits need matching limit evidence")
+        return self
+
+
 _CREDENTIAL_SCOPE_PATTERN = r"^[A-Za-z][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._:/-]*$"
 
 
@@ -58,6 +143,9 @@ class ModelSpec(Contract):
         exclude_if=lambda value: value is None,
     )
     settings: tuple[Setting, ...] = ()
+    capability_profile: CapabilityProfile | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
     accepted_returned_models: tuple[str, ...] = ()
     model_identity_evidence: str | None = None
     discovery_policy: Literal["required", "unverified_development"] = "required"
@@ -85,6 +173,22 @@ class ModelSpec(Contract):
         if len({s.name for s in self.settings}) != len(self.settings):
             raise ValueError("Duplicate model settings")
         reject_credentials({s.name: s.value for s in self.settings})
+        profile = self.capability_profile
+        if profile is not None:
+            if (profile.adapter, profile.model, profile.base_url) != (
+                self.adapter,
+                self.model,
+                self.base_url,
+            ):
+                raise ValueError("capability profile must match exact adapter, model, and base URL")
+            for setting in self.settings:
+                control = profile.controls.get(setting.name)
+                if control is None or control.status not in {"documented", "probe_accepted"}:
+                    raise ValueError("Requested setting lacks supported model capability")
+                if setting.support == "verified" and control.status != "probe_accepted":
+                    raise ValueError(
+                        "Verified request support requires a probe_accepted capability"
+                    )
         if len(set(self.accepted_returned_models)) != len(self.accepted_returned_models) or any(
             not name.strip() for name in self.accepted_returned_models
         ):
@@ -289,6 +393,9 @@ class PreparedRequest(Contract):
         default=None, exclude_if=lambda value: value is None
     )
     adapter_code_digest: str | None = Field(
+        default=None, pattern="^[0-9a-f]{64}$", exclude_if=lambda value: value is None
+    )
+    capability_profile_digest: str | None = Field(
         default=None, pattern="^[0-9a-f]{64}$", exclude_if=lambda value: value is None
     )
 
