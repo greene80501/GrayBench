@@ -91,6 +91,10 @@ card-bound protected judge digest, before a control can support a requirement.
 The judge identity includes the oracle and private cases, so an earlier oracle
 cannot qualify merely because it shares a public contract. A matching
 declaration is local, unsigned evidence, not independent attestation.
+The [task-62 admission successor](../docs/reliability-evidence/artifacts/admission-task62-protected-2026-09-28/README.md)
+adds two protected value cards and a fourth source-bound control log. It
+retains unresolved native findings and independent-review blockers; its
+58 controls on ten cards are still development evidence, not a ranking.
 
 ## Execution conditions
 
