@@ -77,10 +77,10 @@
 - Consumes: Task 2 value channel and frozen private case/test manifest.
 - Produces: `ProtectedSemanticJudge.evaluate(task, completion) -> Judgment` with manifest containing the revised public contract, oracle/test hashes, value schema, image, resource limits and track; a task-20 GHZ-state value-contract development example with reference and independent-correct controls plus deliberate wrong mutants.
 
-- [ ] **Step 1: Write failing tests** for correct alternatives, wrong-sized and empty-state mutants, fabricated pass markers, source/test drift, malformed or unsupported values, and disclosure boundaries. Show explicitly that a valid GHZ value can pass without proving the candidate constructed a native `QuantumCircuit`.
-- [ ] **Step 2: Run** focused tests; expect failure.
-- [ ] **Step 3: Implement** the trusted oracle and one honest public representation revision, keeping its ancestry and new contract ID visible. Do not mark the task admitted merely because these automated cases pass.
-- [ ] **Step 4: Run** pinned-image reference and mutant controls, Ruff; commit.
+- [x] **Step 1: Write failing tests** for correct alternatives, wrong-sized and empty-state mutants, fabricated pass markers, source/test drift, malformed or unsupported values, and disclosure boundaries. Show explicitly that a valid GHZ value can pass without proving the candidate constructed a native `QuantumCircuit`.
+- [x] **Step 2: Run** focused tests; expect failure.
+- [x] **Step 3: Implement** the trusted oracle and one honest public representation revision, keeping its ancestry and new contract ID visible. Do not mark the task admitted merely because these automated cases pass.
+- [x] **Step 4: Run** pinned-image reference and mutant controls, Ruff; commit.
 
 ### Task 4: Frozen protected campaigns and release-blocked reporting
 
