@@ -9,6 +9,7 @@ from importlib.metadata import entry_points
 from typing import Any
 from urllib.parse import quote
 
+from graybench.adapter_provenance import adapter_code_digest
 from graybench.contracts import Generation, ModelSpec, PreparedRequest, PublicTask
 from graybench.request_headers import freeze_credential_header_names, freeze_public_headers
 
@@ -69,6 +70,7 @@ class Adapter(ABC):
             credential_header_names=freeze_credential_header_names(
                 self.credential_header_names if spec.credential_env else frozenset()
             ),
+            adapter_code_digest=adapter_code_digest(self),
         )
 
     def discovery_requests(self, spec: ModelSpec) -> tuple[tuple[str, str, dict | None], ...]:

@@ -39,9 +39,9 @@ missing or changed adapter digest before any network I/O. Discovery records
 the adapter digest in each observation and accepts an optional frozen expected
 digest that it checks before I/O.
 
-- [ ] Write failing tests for prepared digest change, historical round-trip,
+- [x] Write failing tests for prepared digest change, historical round-trip,
   changed provider file before generation, and changed file before discovery.
-- [ ] Run red tests, implement the contract and transport check, then run the
+- [x] Run red tests, implement the contract and transport check, then run the
   affected provider/discovery/campaign suite; commit.
 
 ## Task 3: Bind campaigns and document assurance

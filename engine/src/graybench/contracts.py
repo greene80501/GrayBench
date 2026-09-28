@@ -265,7 +265,7 @@ class Protocol(Contract):
 
 
 class PreparedRequest(Contract):
-    """Frozen public request body, headers, and credential field names."""
+    """Frozen public request body, headers, credential fields, and adapter code."""
 
     adapter: str
     model: str
@@ -278,6 +278,9 @@ class PreparedRequest(Contract):
     )
     credential_header_names: tuple[str, ...] | None = Field(
         default=None, exclude_if=lambda value: value is None
+    )
+    adapter_code_digest: str | None = Field(
+        default=None, pattern="^[0-9a-f]{64}$", exclude_if=lambda value: value is None
     )
 
     @field_validator("public_headers")

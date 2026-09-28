@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 
 import httpx
 
+from graybench.adapter_provenance import adapter_code_digest
 from graybench.contracts import Generation, ModelSpec, Observation, PreparedRequest
 from graybench.identity import canonical, identity
 from graybench.providers import Adapter
@@ -141,11 +142,18 @@ class Transport:
         provider: Adapter,
         public_headers: dict[str, str],
         credential_header_names: tuple[str, ...],
+        expected_adapter_code_digest: str | None = None,
     ) -> tuple[int | None, dict]:
         # Plugins cannot redirect credentials to another origin via a supplied absolute URL.
         if not path.startswith("/") or path.startswith("//") or "?" in path or "#" in path:
             raise ValueError("Request path must be a relative, query-free API path")
         started = time.perf_counter()
+        current_adapter_code_digest = adapter_code_digest(provider)
+        if (
+            expected_adapter_code_digest is not None
+            and current_adapter_code_digest != expected_adapter_code_digest
+        ):
+            raise ValueError("Adapter code differs from frozen request")
         body = deepcopy(body)
         public_headers = validate_frozen_public_headers(dict(public_headers))
         content = canonical(body) if body is not None else b""
@@ -166,7 +174,10 @@ class Transport:
         built_public_headers = self._preflight_request(
             request, method, url, content, public_headers, auth_headers
         )
+        if adapter_code_digest(provider) != current_adapter_code_digest:
+            raise ValueError("Adapter code changed before network dispatch")
         evidence = {
+            "adapter_code_digest": current_adapter_code_digest,
             "request_body": body,
             "request_content_sha256": hashlib.sha256(content).hexdigest(),
             "request_content_bytes": len(content),
@@ -274,6 +285,8 @@ class Transport:
             raise ValueError(
                 "Historical request has no frozen credential header names for dispatch"
             )
+        if request.adapter_code_digest is None:
+            raise ValueError("Historical request has no frozen adapter code for dispatch")
         public_headers = validate_frozen_public_headers(request.public_headers)
         if public_headers != freeze_public_headers(adapter.public_headers(self.spec)):
             raise ValueError("Adapter public headers differ from frozen request")
@@ -282,6 +295,8 @@ class Transport:
         )
         if request.credential_header_names != expected_credential_names:
             raise ValueError("Adapter credential header names differ from frozen request")
+        if request.adapter_code_digest != adapter_code_digest(adapter):
+            raise ValueError("Adapter code differs from frozen request")
         status, evidence = self._exchange(
             "POST",
             request.path,
@@ -289,6 +304,7 @@ class Transport:
             adapter,
             public_headers,
             request.credential_header_names,
+            request.adapter_code_digest,
         )
         if "error" in evidence:
             return Delivery("ambiguous", status, evidence)
@@ -311,9 +327,16 @@ class Transport:
             return Delivery("ambiguous", status, evidence)
         return Delivery("returned", status, evidence, generation)
 
-    def discover(self, adapter: Adapter) -> list[Observation]:
+    def discover(
+        self, adapter: Adapter, *, expected_adapter_code_digest: str | None = None
+    ) -> list[Observation]:
         if adapter.name != self.spec.adapter:
             raise ValueError("Discovery adapter differs from frozen model identity")
+        if (
+            expected_adapter_code_digest is not None
+            and adapter_code_digest(adapter) != expected_adapter_code_digest
+        ):
+            raise ValueError("Adapter code differs from frozen campaign")
         public_headers = freeze_public_headers(adapter.public_headers(self.spec))
         credential_header_names = freeze_credential_header_names(
             adapter.credential_header_names if self.spec.credential_env else frozenset()
@@ -321,7 +344,13 @@ class Transport:
         result = []
         for method, path, body in adapter.discovery_requests(self.spec):
             status, evidence = self._exchange(
-                method, path, body, adapter, public_headers, credential_header_names
+                method,
+                path,
+                body,
+                adapter,
+                public_headers,
+                credential_header_names,
+                expected_adapter_code_digest,
             )
             evidence["http_status"] = status
             evidence["observed_at"] = datetime.now(UTC).isoformat()
@@ -343,6 +372,7 @@ class Transport:
                     name="model_metadata",
                     status="unavailable",
                     detail="This adapter has no discovery endpoint",
+                    evidence={"adapter_code_digest": adapter_code_digest(adapter)},
                 )
             )
         return result

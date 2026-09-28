@@ -443,7 +443,8 @@ def test_auth_adapter_cannot_add_a_second_content_encoding_request_header(model,
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
         with pytest.raises(ValueError, match="credential header"):
-            Transport(model, client).generate(Ollama().prepare(model, task, None), AuthOnly())
+            provider = AuthOnly()
+            Transport(model, client).generate(provider.prepare(model, task, None), provider)
     assert calls == []
 
 
