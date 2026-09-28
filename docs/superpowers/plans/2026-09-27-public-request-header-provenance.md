@@ -56,3 +56,13 @@
 - [ ] Document the precise assurance boundary: application-supplied headers, no proof of provider receipt, and unchanged historical artifacts.
 - [ ] Run focused tests, changed-file Ruff/format, `git diff --check`, then the complete Docker-enabled test suite.
 - [ ] Review the diff and tests, commit under `greene80501`, push to draft PR #3, and update its verification count while leaving workflows disabled.
+
+## Ruling during Task 2
+
+Ruling: An injected HTTPX client can merge default headers, cookies, or query
+parameters after GrayBench supplies its frozen map. Build one request, reject
+unfrozen URL/header/body changes and request hooks before network I/O, and
+send that same object with client authentication and redirects disabled. This
+also records the checked non-secret HTTPX headers. The cost if this ruling is
+wrong is rejection of a custom client that relies on implicit defaults; such
+values must instead be declared in the public adapter header contract.

@@ -6,6 +6,7 @@ BASE_PUBLIC_HEADERS = {
     "accept": "application/json",
     "accept-encoding": "identity",
     "content-type": "application/json",
+    "user-agent": "python-httpx",
 }
 _TOKEN_CHARS = frozenset(
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'*+-.^_`|~"
@@ -73,3 +74,25 @@ def validate_frozen_public_headers(headers: dict[str, str]) -> dict[str, str]:
     if freeze_public_headers(extra) != headers:
         raise ValueError("Frozen public headers are not canonical")
     return headers
+
+
+def validate_credential_headers(
+    headers: Mapping[str, str], declared_names: frozenset[str], public: Mapping[str, str]
+) -> dict[str, str]:
+    """Limit authentication to named fields without persisting their values."""
+    if not isinstance(headers, Mapping) or not isinstance(declared_names, frozenset):
+        raise ValueError("Invalid credential header declaration")
+    if any(
+        not valid_header_name(name) or name != name.lower() or name in public
+        for name in declared_names
+    ):
+        raise ValueError("Invalid credential header declaration")
+    result = {}
+    for original, value in headers.items():
+        if not valid_header_name(original) or not valid_header_value(value):
+            raise ValueError("Invalid credential header name or value")
+        name = original.lower()
+        if name not in declared_names or name in public or name in result:
+            raise ValueError("Undeclared or overlapping credential header")
+        result[name] = value
+    return result

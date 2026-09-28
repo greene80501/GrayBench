@@ -3,6 +3,7 @@
 Adapter support is extensible; it is not a claim that every endpoint/model has been validated.
 """
 
+import os
 from abc import ABC, abstractmethod
 from importlib.metadata import entry_points
 from typing import Any
@@ -54,13 +55,17 @@ class Adapter(ABC):
     def request(self, spec: ModelSpec, path: str, body: dict) -> PreparedRequest:
         if spec.adapter != self.name:
             raise CapabilityError("Adapter identity mismatch")
+        public_headers = freeze_public_headers(self.public_headers(spec))
+        secret = os.environ.get(spec.credential_env, "") if spec.credential_env else ""
+        if secret and any(secret in value for value in public_headers.values()):
+            raise ValueError("Credential may not enter public request headers")
         return PreparedRequest(
             adapter=self.name,
             model=spec.model,
             path=path,
             body=body,
             setting_evidence=spec.settings,
-            public_headers=freeze_public_headers(self.public_headers(spec)),
+            public_headers=public_headers,
         )
 
     def discovery_requests(self, spec: ModelSpec) -> tuple[tuple[str, str, dict | None], ...]:

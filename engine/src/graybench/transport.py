@@ -5,14 +5,20 @@ import json
 import os
 import time
 import zlib
+from contextlib import closing
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
 import httpx
 
 from graybench.contracts import Generation, ModelSpec, Observation, PreparedRequest
-from graybench.identity import canonical
+from graybench.identity import canonical, identity
 from graybench.providers import Adapter
+from graybench.request_headers import (
+    freeze_public_headers,
+    validate_credential_headers,
+    validate_frozen_public_headers,
+)
 
 
 @dataclass(frozen=True)
@@ -82,32 +88,89 @@ class Transport:
     def _redact(self, value: str) -> str:
         return value.replace(self.secret, "[REDACTED]") if self.secret else value
 
+    def _preflight_request(
+        self,
+        request: httpx.Request,
+        method: str,
+        url: str,
+        content: bytes,
+        public_headers: dict[str, str],
+        auth_headers: dict[str, str],
+    ) -> dict[str, str]:
+        if request.method != method or request.url != httpx.URL(url) or request.content != content:
+            raise ValueError("HTTPX client changed the frozen request URL, method, or body")
+        if any(self.client.event_hooks.get(phase) for phase in ("request", "response")):
+            raise ValueError("HTTPX client request hook can change frozen request evidence")
+        actual = {}
+        for name, value in request.headers.multi_items():
+            actual.setdefault(name, []).append(value)
+        allowed = (
+            set(public_headers)
+            | set(auth_headers)
+            | {
+                "host",
+                "connection",
+                "content-length",
+            }
+        )
+        if set(actual) - allowed:
+            raise ValueError("HTTPX client added an undeclared request header")
+        for name, value in {**public_headers, **auth_headers}.items():
+            if actual.get(name) != [value]:
+                raise ValueError("HTTPX client changed a frozen request header")
+        if actual.get("host") != [request.url.netloc.decode("ascii")]:
+            raise ValueError("HTTPX client changed the request host header")
+        if actual.get("content-length", []) != ([str(len(content))] if method == "POST" else []):
+            raise ValueError("HTTPX client changed the request content length")
+        if actual.get("connection", []) not in ([], ["keep-alive"]):
+            raise ValueError("HTTPX client changed the request connection header")
+        public_actual = {
+            name: values[0] for name, values in actual.items() if name not in auth_headers
+        }
+        if self.secret and any(self.secret in value for value in public_actual.values()):
+            raise ValueError("Credential may not enter public request headers")
+        return dict(sorted(public_actual.items()))
+
     def _exchange(
-        self, method: str, path: str, body: dict | None, provider: Adapter
+        self,
+        method: str,
+        path: str,
+        body: dict | None,
+        provider: Adapter,
+        public_headers: dict[str, str],
     ) -> tuple[int | None, dict]:
         # Plugins cannot redirect credentials to another origin via a supplied absolute URL.
         if not path.startswith("/") or path.startswith("//") or "?" in path or "#" in path:
             raise ValueError("Request path must be a relative, query-free API path")
         started = time.perf_counter()
         content = canonical(body) if body is not None else b""
-        auth_headers = provider.auth_headers(self.secret)
-        headers = httpx.Headers(
-            {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Accept-Encoding": "identity",
-            }
+        public_headers = validate_frozen_public_headers(public_headers)
+        if self.secret and any(self.secret in value for value in public_headers.values()):
+            raise ValueError("Credential may not enter public request headers")
+        auth_headers = validate_credential_headers(
+            provider.auth_headers(self.secret), provider.credential_header_names, public_headers
         )
+        headers = httpx.Headers(public_headers)
         headers.update(auth_headers)
-        headers["Accept-Encoding"] = "identity"
+        url = self.spec.base_url + path
+        request = self.client.build_request(
+            method, url, headers=headers, content=content if body is not None else None
+        )
+        built_public_headers = self._preflight_request(
+            request, method, url, content, public_headers, auth_headers
+        )
         evidence = {
             "request_body": body,
             "request_content_sha256": hashlib.sha256(content).hexdigest(),
             "request_content_bytes": len(content),
+            "request_public_headers": public_headers,
+            "request_public_headers_sha256": identity(public_headers),
+            "request_httpx_headers": built_public_headers,
+            "request_httpx_headers_sha256": identity(built_public_headers),
             "request_accept_encoding": "identity",
             "response_capture_version": "encoded_entity_v2",
             "credential_scope_id": self.spec.credential_scope_id,
-            "auth_header_names": sorted(self._redact(name.lower()) for name in auth_headers),
+            "auth_header_names": sorted(auth_headers),
             "base_url": self.spec.base_url,
             "path": path,
             "method": method,
@@ -120,11 +183,8 @@ class Transport:
         decoded_received = bytearray()
         wire_available = True
         try:
-            with self.client.stream(
-                method,
-                self.spec.base_url + path,
-                headers=headers,
-                content=content if body is not None else None,
+            with closing(
+                self.client.send(request, stream=True, auth=None, follow_redirects=False)
             ) as response:
                 status = response.status_code
                 evidence["response_headers"] = {
@@ -197,7 +257,14 @@ class Transport:
             or adapter.name != self.spec.adapter
         ):
             raise ValueError("Transport and prepared request have different model identities")
-        status, evidence = self._exchange("POST", request.path, request.body, adapter)
+        if request.public_headers is None:
+            raise ValueError("Historical request has no frozen public headers for dispatch")
+        public_headers = validate_frozen_public_headers(request.public_headers)
+        if public_headers != freeze_public_headers(adapter.public_headers(self.spec)):
+            raise ValueError("Adapter public headers differ from frozen request")
+        status, evidence = self._exchange(
+            "POST", request.path, request.body, adapter, public_headers
+        )
         if "error" in evidence:
             return Delivery("ambiguous", status, evidence)
         if status is not None and status >= 500:
@@ -222,9 +289,10 @@ class Transport:
     def discover(self, adapter: Adapter) -> list[Observation]:
         if adapter.name != self.spec.adapter:
             raise ValueError("Discovery adapter differs from frozen model identity")
+        public_headers = freeze_public_headers(adapter.public_headers(self.spec))
         result = []
         for method, path, body in adapter.discovery_requests(self.spec):
-            status, evidence = self._exchange(method, path, body, adapter)
+            status, evidence = self._exchange(method, path, body, adapter, public_headers)
             evidence["http_status"] = status
             evidence["observed_at"] = datetime.now(UTC).isoformat()
             try:

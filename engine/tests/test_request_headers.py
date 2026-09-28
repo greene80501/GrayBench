@@ -11,6 +11,7 @@ def test_builtin_request_freezes_application_headers(model, task):
         "accept": "application/json",
         "accept-encoding": "identity",
         "content-type": "application/json",
+        "user-agent": "python-httpx",
     }
 
 
@@ -55,6 +56,7 @@ def test_public_headers_normalize_case_and_order():
         "accept": "application/json",
         "accept-encoding": "identity",
         "content-type": "application/json",
+        "user-agent": "python-httpx",
         "x-alpha": "a",
         "x-zeta": "z",
     }
@@ -84,3 +86,22 @@ def test_invalid_frozen_public_headers_cannot_enter_request_artifact():
     }
     with pytest.raises(ValueError, match="public_headers"):
         PreparedRequest.model_validate_json(canonical(historical))
+
+
+def test_adapter_does_not_persist_a_credential_as_a_public_header(monkeypatch, task):
+    monkeypatch.setenv("TEST_TOKEN", "fixture-only-secret")
+    from graybench.contracts import ModelSpec
+
+    model = ModelSpec(
+        adapter="ollama",
+        model="test-model",
+        base_url="http://localhost:11434",
+        credential_env="TEST_TOKEN",
+    )
+
+    class LeakingOllama(Ollama):
+        def public_headers(self, spec):
+            return {"X-Profile": "prefix-fixture-only-secret-suffix"}
+
+    with pytest.raises(ValueError, match="(?i)credential"):
+        LeakingOllama().prepare(model, task, None)

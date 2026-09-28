@@ -228,6 +228,131 @@ def test_discovery_rejects_an_adapter_outside_the_frozen_model_identity(model):
     assert calls == []
 
 
+def test_transport_sends_and_records_frozen_public_headers(model, task):
+    class ProfiledOllama(Ollama):
+        def public_headers(self, spec):
+            return {"X-Model-Profile": "stable"}
+
+    provider = ProfiledOllama()
+    request = provider.prepare(model, task, None)
+
+    def handler(wire_request):
+        assert wire_request.headers["x-model-profile"] == "stable"
+        assert wire_request.headers["accept-encoding"] == "identity"
+        return httpx.Response(503, json={"error": "unavailable"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = Transport(model, client).generate(request, provider)
+    assert result.kind == "ambiguous"
+    assert result.evidence["request_public_headers"] == request.public_headers
+    assert (
+        result.evidence["request_public_headers_sha256"]
+        == hashlib.sha256(
+            json.dumps(request.public_headers, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+    )
+
+
+def test_changed_adapter_public_headers_stop_before_network(model, task):
+    class ProfiledOllama(Ollama):
+        def __init__(self):
+            self.profile = "planned"
+
+        def public_headers(self, spec):
+            return {"X-Model-Profile": self.profile}
+
+    provider = ProfiledOllama()
+    request = provider.prepare(model, task, None)
+    provider.profile = "changed"
+    calls = []
+    with httpx.Client(transport=httpx.MockTransport(lambda req: calls.append(req))) as client:
+        with pytest.raises(ValueError, match="public headers"):
+            Transport(model, client).generate(request, provider)
+    assert calls == []
+
+
+@pytest.mark.parametrize("auth_header", ["Accept", "X-Model-Profile", "X-Undeclared-Auth"])
+def test_credential_headers_cannot_override_public_or_use_undeclared_names(
+    model, task, auth_header
+):
+    class AuthOnly(Ollama):
+        def public_headers(self, spec):
+            return {"X-Model-Profile": "stable"}
+
+        def auth_headers(self, secret):
+            return {auth_header: "auth-value"}
+
+    provider = AuthOnly()
+    request = provider.prepare(model, task, None)
+    calls = []
+    with httpx.Client(transport=httpx.MockTransport(lambda req: calls.append(req))) as client:
+        with pytest.raises(ValueError, match="credential header"):
+            Transport(model, client).generate(request, provider)
+    assert calls == []
+
+
+def test_discovery_records_adapter_public_headers(model):
+    class ProfiledOllama(Ollama):
+        def public_headers(self, spec):
+            return {"X-Model-Profile": "stable"}
+
+    provider = ProfiledOllama()
+    paths = []
+
+    def handler(request):
+        paths.append(request.url.path)
+        assert request.headers["x-model-profile"] == "stable"
+        return httpx.Response(200, json={"ok": True})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        observations = Transport(model, client).discover(provider)
+    assert len(paths) == 4
+    assert all(
+        o.evidence["request_public_headers"]["x-model-profile"] == "stable" for o in observations
+    )
+
+
+@pytest.mark.parametrize(
+    "client_options",
+    [
+        {"headers": {"X-Hidden-Model-Mode": "altered"}},
+        {"headers": {"Cookie": "session=hidden"}},
+        {"params": {"model_mode": "altered"}},
+    ],
+)
+def test_client_defaults_cannot_add_unfrozen_request_semantics(model, task, client_options):
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(503, json={"error": "unavailable"})
+
+    provider = Ollama()
+    with httpx.Client(transport=httpx.MockTransport(handler), **client_options) as client:
+        with pytest.raises(ValueError, match="client.*(header|URL)"):
+            Transport(model, client).generate(provider.prepare(model, task, None), provider)
+    assert calls == []
+
+
+def test_client_request_hook_cannot_mutate_headers_after_preflight(model, task):
+    calls = []
+
+    def hook(request):
+        request.headers["X-Hidden-Model-Mode"] = "altered"
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(503, json={"error": "unavailable"})
+
+    provider = Ollama()
+    with httpx.Client(
+        transport=httpx.MockTransport(handler), event_hooks={"request": [hook]}
+    ) as client:
+        with pytest.raises(ValueError, match="client request hook"):
+            Transport(model, client).generate(provider.prepare(model, task, None), provider)
+    assert calls == []
+
+
 def test_transport_redacts_echoed_key(monkeypatch, task):
     monkeypatch.setenv("TEST_TOKEN", "secret-for-unit-test")
     model = ModelSpec(
@@ -271,6 +396,9 @@ def test_transport_records_exact_submitted_bytes_and_public_scope(monkeypatch, t
     assert result.kind == "ambiguous"
     assert result.evidence["request_content_sha256"] == hashlib.sha256(submitted[0]).hexdigest()
     assert result.evidence["request_content_bytes"] == len(submitted[0])
+    assert result.evidence["request_httpx_headers"]["content-length"] == str(len(submitted[0]))
+    assert result.evidence["request_httpx_headers"]["host"] == "example.test"
+    assert "authorization" not in result.evidence["request_httpx_headers"]
     assert result.evidence["credential_scope_id"] == "openai/project/graybench-evaluation"
     assert result.evidence["auth_header_names"] == ["authorization"]
     assert "secret-for-unit-test" not in str(result.evidence)
@@ -311,16 +439,16 @@ def test_auth_adapter_cannot_add_a_second_content_encoding_request_header(model,
         def auth_headers(self, _secret):
             return {"accept-encoding": "gzip"}
 
+    calls = []
+
     def handler(request):
-        encoding_headers = [
-            value for key, value in request.headers.multi_items() if key == "accept-encoding"
-        ]
-        assert encoding_headers == ["identity"]
+        calls.append(request)
         return httpx.Response(503, json={"error": "unavailable"})
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
-        result = Transport(model, client).generate(Ollama().prepare(model, task, None), AuthOnly())
-    assert result.kind == "ambiguous"
+        with pytest.raises(ValueError, match="credential header"):
+            Transport(model, client).generate(Ollama().prepare(model, task, None), AuthOnly())
+    assert calls == []
 
 
 def test_transport_bounds_decoded_gzip_body_after_small_encoded_entity(model, task):
