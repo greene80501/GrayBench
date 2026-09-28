@@ -115,7 +115,13 @@ class ModelObservationTiming(Contract):
 class Protocol(Contract):
     schema_version: Literal["3.1", "3.2", "3.3"] = "3.1"
     name: str = Field(min_length=1)
-    track: Literal["upstream", "strengthened", "robustness", "qhe-pinned-native-v1"]
+    track: Literal[
+        "upstream",
+        "strengthened",
+        "robustness",
+        "qhe-pinned-native-v1",
+        "graybench-protected-semantic-v1",
+    ]
     # Absent fields are omitted to preserve historical protocol identities.
     native_cohort_digest: str | None = Field(
         default=None, pattern="^[0-9a-f]{64}$", exclude_if=lambda value: value is None
@@ -124,6 +130,18 @@ class Protocol(Contract):
         default=None, exclude_if=lambda value: value is None
     )
     native_population: Literal["offline_143", "custom_development"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
+    protected_cohort_digest: str | None = Field(
+        default=None, pattern="^[0-9a-f]{64}$", exclude_if=lambda value: value is None
+    )
+    protected_suite: Literal["normal", "hard"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
+    protected_population: Literal["custom_development"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
+    protected_excluded: dict[str, str] | None = Field(
         default=None, exclude_if=lambda value: value is None
     )
     dataset_digest: str = Field(pattern="^[0-9a-f]{64}$")
@@ -163,6 +181,12 @@ class Protocol(Contract):
             self.native_suite,
             self.native_population,
         )
+        protected_fields = (
+            self.protected_cohort_digest,
+            self.protected_suite,
+            self.protected_population,
+            self.protected_excluded,
+        )
         if self.track == "qhe-pinned-native-v1":
             if self.schema_version != "3.3" or any(value is None for value in native_fields):
                 raise ValueError("Native track requires protocol 3.3 and complete cohort identity")
@@ -170,6 +194,22 @@ class Protocol(Contract):
                 raise ValueError("Native protocol cannot mix suites")
         elif any(value is not None for value in native_fields):
             raise ValueError("Native cohort fields require the native track")
+        if self.track == "graybench-protected-semantic-v1":
+            if self.schema_version != "3.3" or any(value is None for value in protected_fields):
+                raise ValueError(
+                    "Protected track requires protocol 3.3 and complete cohort identity"
+                )
+            expected = {f"{self.protected_suite}/qiskitHumanEval/{number}" for number in range(151)}
+            scheduled = set(self.task_keys)
+            if (
+                not scheduled <= expected
+                or len(scheduled) != len(self.task_keys)
+                or set(self.protected_excluded) != expected - scheduled
+                or any(not reason.strip() for reason in self.protected_excluded.values())
+            ):
+                raise ValueError("Protected exclusions must cover all unscheduled suite tasks")
+        elif any(value is not None for value in protected_fields):
+            raise ValueError("Protected cohort fields require the protected track")
         return self
 
 

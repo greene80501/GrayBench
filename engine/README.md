@@ -124,6 +124,28 @@ uv run graybench summary LEDGER.sqlite RUN_ID
 The native report names exactly one suite, population and denominator. It never
 combines normal and hard, and `publication_eligible` remains false until task
 admission and independent reproduction are complete.
+
+`protected-plan` currently supports the separately versioned task-20 GHZ
+amplitude contract as a development example. It freezes one normal or hard
+suite, the revised public contract, private semantic cases, a pinned image,
+exact provider request and all 150 exclusions before any generation. The
+candidate returns bounded numeric values; the trusted host judge checks their
+semantics without treating them as proof of a native `QuantumCircuit` or a
+pass-manager call. `protected-create` records the plan without a model request,
+and `protected-step` performs at most one generation or judgment. A generation
+step may be billable. For example:
+
+```sh
+uv run graybench protected-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'task20 value development' --suite normal --task normal/qiskitHumanEval/20 --image sha256:IMAGE_ID
+uv run graybench protected-create SETUP.json CACHE LEDGER.sqlite
+uv run graybench campaign-observe LEDGER.sqlite RUN_ID
+uv run graybench protected-step LEDGER.sqlite RUN_ID CACHE
+uv run graybench summary LEDGER.sqlite RUN_ID
+```
+
+This is a revised value task with a one-task `custom_development` denominator,
+not an unchanged QHE or 143/151-task score. All 302 pinned source cards remain
+pending independent admission review; see the [task-20 development evidence](../docs/reliability-evidence/protected-task20-value-development.md).
 Use each command's `--help` for required arguments. See
 [model discovery](../docs/reliability-evidence/model-discovery.md) and
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md).
@@ -145,9 +167,10 @@ required for release.
 
 `verify-ledger` validates retained evidence. `summary` reports completeness and
 score blockers before accuracy. The existing `comparison-plan` and `compare`
-commands handle matched legacy/protected setups and keep normal/hard task
-families together during paired resampling; they do not yet accept native setup
-files. See [report integrity](../docs/reliability-evidence/summary-integrity.md),
+commands handle matched historical evaluation-recipe setups and keep normal/hard
+task families together during paired resampling; they do not yet accept native
+or new protected-semantic setup files. See
+[report integrity](../docs/reliability-evidence/summary-integrity.md),
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
 [comparisons](../docs/reliability-evidence/paired-comparisons.md).
 Hashes and SQLite append rules are not external authenticity guarantees.

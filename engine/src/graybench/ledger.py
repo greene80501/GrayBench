@@ -682,9 +682,10 @@ class Ledger:
         if sample is None:
             raise StateError("Unscheduled sample")
         protocol = self.protocol(sample["run_id"])
-        if protocol.track == "qhe-pinned-native-v1":
+        if protocol.track in {"qhe-pinned-native-v1", "graybench-protected-semantic-v1"}:
             if judge_digest != protocol.judge_digest:
-                raise StateError("Frozen native judge identity mismatch")
+                label = "native" if protocol.track == "qhe-pinned-native-v1" else "protected"
+                raise StateError(f"Frozen {label} judge identity mismatch")
             return True
         return False
 
@@ -695,7 +696,7 @@ class Ledger:
             "SELECT 1 FROM judgment_claims WHERE sample_id=? AND judge_digest=?",
             (sample_id, judge_digest),
         ).fetchone():
-            raise StateError("Native judgment requires a prior durable claim")
+            raise StateError("Track judgment requires a prior durable claim")
 
     def _require_model_observation_for_judgment(self, sample_id: str) -> None:
         sample = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
@@ -856,6 +857,17 @@ class Ledger:
                     "denominator": len(expected),
                 }
                 if protocol.track == "qhe-pinned-native-v1"
+                else {}
+            ),
+            **(
+                {
+                    "suite": protocol.protected_suite,
+                    "population": protocol.protected_population,
+                    "protected_cohort_digest": protocol.protected_cohort_digest,
+                    "excluded": protocol.protected_excluded,
+                    "denominator": len(expected),
+                }
+                if protocol.track == "graybench-protected-semantic-v1"
                 else {}
             ),
             "planned_samples": len(expected),

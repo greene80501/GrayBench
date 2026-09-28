@@ -96,10 +96,10 @@
 - Consumes: Tasks 1-3, existing `GenerationRunner`, append-only judgment claim path, and pinned source/runtimes.
 - Produces: a separate `graybench-protected-semantic-v1` development campaign and suite-specific report whose denominator and exclusions are frozen before generation. Publication remains false until a later independent release gate verifies complete admission and reproduction.
 
-- [ ] **Step 1: Write failing tests** for cross-track and cross-suite rejection, request/test/oracle/source drift, interrupted judgment, missing/unsupported case blocking, no post-hoc task removal, 143-versus-151 labeling, and historical V3/native ledger compatibility.
-- [ ] **Step 2: Run** focused tests; expect failure.
-- [ ] **Step 3: Implement** additive protocol identity and CLI plan/create/step commands, reusing exact-request generation and claim-first judgment. Keep all output development-only and expose every exclusion.
-- [ ] **Step 4: Run** focused tests, full engine suite, Ruff, and pinned-image reference/wrong controls; commit and update the draft PR.
+- [x] **Step 1: Write failing tests** for cross-track and cross-suite rejection, request/test/oracle/source drift, interrupted judgment, missing/unsupported case blocking, no post-hoc task removal, 143-versus-151 labeling, and historical V3/native ledger compatibility.
+- [x] **Step 2: Run** focused tests; expect failure.
+- [x] **Step 3: Implement** additive protocol identity and CLI plan/create/step commands, reusing exact-request generation and claim-first judgment. Keep all output development-only and expose every exclusion.
+- [x] **Step 4: Run** focused tests, full engine suite, Ruff, and pinned-image reference/wrong controls; commit and update the draft PR.
 
 ## Follow-on release work
 

@@ -16,6 +16,13 @@ from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import freeze_native_cohort, task_key
+from graybench.protected_campaign import (
+    ProtectedCampaign,
+    ProtectedCampaignSetup,
+    build_protected_setup,
+    freeze_protected_cohort,
+)
+from graybench.protected_task20 import task20_value_task
 from graybench.provenance import environment
 from graybench.providers import adapter
 from graybench.reference_scan import inspect_reference_scan, run_reference_scan
@@ -163,6 +170,32 @@ def main():
     native_step.add_argument("run_id")
     native_step.add_argument("cache", type=Path)
     native_step.add_argument("--docker", default="docker")
+    protected_plan = commands.add_parser(
+        "protected-plan", help="Freeze one revised value task and all exclusions; development only"
+    )
+    protected_plan.add_argument("model_spec", type=Path)
+    protected_plan.add_argument("cache", type=Path)
+    protected_plan.add_argument("output", type=Path)
+    protected_plan.add_argument("--name", required=True)
+    protected_plan.add_argument("--label", required=True)
+    protected_plan.add_argument("--suite", choices=("normal", "hard"), required=True)
+    protected_plan.add_argument("--task", required=True)
+    protected_plan.add_argument("--image", required=True)
+    protected_plan.add_argument("--repeats", type=int, default=1)
+    protected_plan.add_argument("--system-prompt", type=Path)
+    protected_create = commands.add_parser(
+        "protected-create", help="Create a frozen protected development run"
+    )
+    protected_create.add_argument("setup", type=Path)
+    protected_create.add_argument("cache", type=Path)
+    protected_create.add_argument("ledger", type=Path)
+    protected_step = commands.add_parser(
+        "protected-step", help="Perform one protected generation or judgment"
+    )
+    protected_step.add_argument("ledger", type=Path)
+    protected_step.add_argument("run_id")
+    protected_step.add_argument("cache", type=Path)
+    protected_step.add_argument("--docker", default="docker")
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
@@ -447,6 +480,93 @@ def main():
             )
             try:
                 result = NativeCampaign(
+                    ledger, args.run_id, setup, args.cache, transport, docker=args.docker
+                ).step()
+                result["summary"] = ledger.summary(args.run_id)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "protected-plan":
+        key = f"{args.suite}/qiskitHumanEval/20"
+        if args.task != key:
+            parser.error("Only revised task 20 has a protected development interface")
+        pinned = load_suite(args.suite, args.cache)
+        source = next(task for task in pinned if task.public.task_id == "qiskitHumanEval/20")
+        task = task20_value_task(source)
+        excluded = {
+            f"{args.suite}/qiskitHumanEval/{number}": (
+                "external_service_unqualified"
+                if number in EXTERNAL_IDS
+                else "unreviewed_or_unsupported"
+            )
+            for number in range(151)
+            if number != 20
+        }
+        cohort = freeze_protected_cohort(
+            (task,),
+            cache=args.cache,
+            suite=args.suite,
+            image=args.image,
+            label=args.label,
+            excluded=excluded,
+        )
+        model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        setup = build_protected_setup(
+            args.name,
+            model,
+            cohort,
+            (task,),
+            cache=args.cache,
+            repeats=args.repeats,
+            system_prompt=args.system_prompt.read_text(encoding="utf-8")
+            if args.system_prompt
+            else None,
+        )
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(setup.model_dump_json(indent=2) + "\n")
+        result = {
+            "setup_digest": setup.digest,
+            "track": setup.protocol.track,
+            "suite": cohort.suite,
+            "population": cohort.population,
+            "planned_samples": len(cohort.task_keys) * args.repeats,
+            "excluded": cohort.excluded,
+            "publication_eligible": False,
+            "output": str(args.output),
+        }
+    elif args.command == "protected-create":
+        setup = ProtectedCampaignSetup.model_validate_json(args.setup.read_bytes())
+        setup.validate_for_run(args.cache, setup.protocol)
+        context = execution_context(setup)
+        ledger = Ledger(args.ledger)
+        try:
+            result = {
+                "run_id": ledger.create_run(setup.protocol, context),
+                "track": setup.protocol.track,
+                "suite": setup.cohort.suite,
+                "population": setup.cohort.population,
+                "publication_eligible": False,
+            }
+        finally:
+            ledger.close()
+    elif args.command == "protected-step":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            context = ledger.context(args.run_id)
+            setup = ProtectedCampaignSetup.model_validate(context["setup"])
+            validate_host(context)
+            setup.validate_for_run(args.cache, ledger.protocol(args.run_id), docker=args.docker)
+            transport = Transport(
+                setup.protocol.model,
+                timeout_seconds=setup.http_timeout,
+                max_response_bytes=setup.response_limit,
+            )
+            try:
+                result = ProtectedCampaign(
                     ledger, args.run_id, setup, args.cache, transport, docker=args.docker
                 ).step()
                 result["summary"] = ledger.summary(args.run_id)

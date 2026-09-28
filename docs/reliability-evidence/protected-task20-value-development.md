@@ -40,3 +40,6 @@ card remains pending, the release flag is false, and no protected model score
 or 151-task claim follows from these controls. Before admission, reviewers
 must decide whether this revised, value-based requirement belongs in a
 released benchmark and independently validate the domain, oracle, and controls.
+The three development inputs are checked into this repository and are not an
+unseen holdout; a released revision needs a separately frozen, reviewed case
+set and a disclosure of possible training exposure.
