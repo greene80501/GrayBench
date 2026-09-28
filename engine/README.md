@@ -146,6 +146,26 @@ public contract requests a standalone function. Plans and reports expose the
 policy, and comparisons reject different policies; see the
 [answer-format evidence](../docs/reliability-evidence/native-answer-format-conditions.md).
 
+`native-reference-scan` runs pinned canonical answers through the same native
+judge without making model requests or scores. It writes a new append-only,
+source-bound evidence file; an existing path is never overwritten. By default
+it scans the 143 offline tasks in one suite. Use repeated `--task` keys for a
+declared subset, or `--include-external` to deliberately include the eight
+service-dependent tasks. The extraction policy must be supplied explicitly.
+Normal exact-suffix and hard standalone conditions
+remain separate:
+
+```sh
+uv run graybench native-reference-scan CACHE NORMAL.jsonl --suite normal --image sha256:IMAGE_ID --extraction exact_prompt_suffix_v1
+uv run graybench native-reference-scan CACHE HARD.jsonl --suite hard --image sha256:IMAGE_ID --extraction raw_or_single_python_fence_v1
+uv run graybench reference-inspect NORMAL.jsonl
+```
+
+One canonical pass establishes only that the pinned test can execute that
+reference once in the specified image. It does not establish test stability,
+oracle adequacy, or publication eligibility. See the
+[native calibration evidence](../docs/reliability-evidence/native-reference-calibration.md).
+
 The native report names exactly one suite, population and denominator. It never
 combines normal and hard, and `publication_eligible` remains false until task
 admission and independent reproduction are complete.

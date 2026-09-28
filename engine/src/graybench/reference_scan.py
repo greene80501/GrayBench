@@ -5,8 +5,12 @@ import json
 import os
 from pathlib import Path
 
+from graybench.contracts import ExtractionPolicy
+from graybench.datasets import EXTERNAL_IDS, load_suite
 from graybench.identity import canonical, identity
 from graybench.ledger import now
+from graybench.native_cohort import Suite, freeze_native_cohort, task_key
+from graybench.native_judge import NativeJudge
 from graybench.provenance import source_manifest
 
 
@@ -18,6 +22,74 @@ def run_reference_scan(tasks, judge, output: Path, *, selection=None):
         output,
         purpose="reference interface calibration; not model scoring",
         selection=selection,
+    )
+
+
+def run_native_reference_scan(
+    cache: Path,
+    output: Path,
+    *,
+    suite: Suite,
+    image: str,
+    extraction: ExtractionPolicy,
+    task_keys: tuple[str, ...] = (),
+    include_external: bool = False,
+    docker: str = "docker",
+):
+    """Calibrate canonical answers in a frozen native cohort, never a model score."""
+    pinned = load_suite(suite, cache)
+    indexed = {task_key(task): task for task in pinned}
+    if len(set(task_keys)) != len(task_keys) or set(task_keys) - indexed.keys():
+        raise ValueError("Native reference selection has duplicate or unknown task keys")
+    if task_keys:
+        chosen = set(task_keys)
+        tasks = tuple(task for task in pinned if task_key(task) in chosen)
+        population = "custom_development"
+    elif include_external:
+        tasks = pinned
+        population = "custom_development"
+    else:
+        tasks = tuple(
+            task
+            for task in pinned
+            if int(task.public.task_id.rsplit("/", 1)[1]) not in EXTERNAL_IDS
+        )
+        population = "offline_143"
+    if not include_external and any(
+        int(task.public.task_id.rsplit("/", 1)[1]) in EXTERNAL_IDS for task in tasks
+    ):
+        raise ValueError("External-service reference tasks require --include-external")
+    selected = {task_key(task) for task in tasks}
+    excluded = {
+        key: (
+            "external_service"
+            if int(key.rsplit("/", 1)[1]) in EXTERNAL_IDS
+            else "out_of_scope_development"
+        )
+        for key in indexed
+        if key not in selected
+    }
+    cohort = freeze_native_cohort(
+        tasks,
+        cache=cache,
+        suite=suite,
+        population=population,
+        image=image,
+        extraction=extraction,
+        label="native reference calibration",
+        excluded=excluded,
+    )
+    judge = NativeJudge(cohort, tasks, cache=cache, docker=docker)
+    return run_reference_scan(
+        tasks,
+        judge,
+        output,
+        selection={
+            "track": cohort.track,
+            "cohort": cohort.model_dump(mode="json"),
+            "cohort_digest": cohort.digest,
+            "include_external": include_external,
+        },
     )
 
 

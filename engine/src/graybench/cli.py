@@ -25,7 +25,11 @@ from graybench.protected_campaign import (
 from graybench.protected_task_registry import VALUE_TASKS, revised_value_task
 from graybench.provenance import environment
 from graybench.providers import adapter
-from graybench.reference_scan import inspect_reference_scan, run_reference_scan
+from graybench.reference_scan import (
+    inspect_reference_scan,
+    run_native_reference_scan,
+    run_reference_scan,
+)
 from graybench.task_admission import admission_blockers, build_pending_inventory
 from graybench.transport import Transport
 from graybench.upstream import UpstreamJudge
@@ -68,6 +72,18 @@ def main():
     reference.add_argument(
         "--offline", action="store_true", help="Explicitly omit known external-service tasks"
     )
+    native_reference = commands.add_parser(
+        "native-reference-scan",
+        help="Calibrate canonical answers in the native track; no model score",
+    )
+    native_reference.add_argument("cache", type=Path)
+    native_reference.add_argument("output", type=Path)
+    native_reference.add_argument("--suite", choices=("normal", "hard"), required=True)
+    native_reference.add_argument("--image", required=True)
+    native_reference.add_argument("--docker", default="docker")
+    native_reference.add_argument("--extraction", choices=EXTRACTION_POLICIES, required=True)
+    native_reference.add_argument("--task", action="append", default=[])
+    native_reference.add_argument("--include-external", action="store_true")
     inspect_scan = commands.add_parser(
         "reference-inspect", help="Verify reference evidence and identify incomplete invocations"
     )
@@ -275,6 +291,17 @@ def main():
             UpstreamJudge(image=args.image, docker=args.docker, protocol=args.bridge_protocol),
             args.output,
             selection={"offline": args.offline, "excluded": excluded},
+        )
+    elif args.command == "native-reference-scan":
+        result = run_native_reference_scan(
+            args.cache,
+            args.output,
+            suite=args.suite,
+            image=args.image,
+            extraction=args.extraction,
+            task_keys=tuple(args.task),
+            include_external=args.include_external,
+            docker=args.docker,
         )
     elif args.command == "campaign-observe":
         if not args.ledger.is_file():
