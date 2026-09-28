@@ -126,6 +126,64 @@ def test_registered_package_rejects_symlink(monkeypatch, tmp_path):
         _package_files(package, source)
 
 
+def test_registered_package_rejects_junction_before_descending(monkeypatch, tmp_path):
+    from graybench.adapter_provenance import _package_files
+
+    package = tmp_path / "package"
+    package.mkdir()
+    source = package / "__init__.py"
+    source.write_text("pass", encoding="utf-8")
+    junction = package / "junction"
+    junction.mkdir()
+    (junction / "outside.py").write_text("pass", encoding="utf-8")
+    monkeypatch.setattr(Path, "is_junction", lambda path: path == junction)
+    with pytest.raises(ValueError, match="junction"):
+        _package_files(package, source)
+
+
+def test_registered_package_rejects_unreadable_subdirectory(monkeypatch, tmp_path):
+    import os
+
+    from graybench.adapter_provenance import _package_files
+
+    package = tmp_path / "package"
+    package.mkdir()
+    source = package / "__init__.py"
+    source.write_text("pass", encoding="utf-8")
+    blocked = package / "blocked"
+    blocked.mkdir()
+    original = os.scandir
+
+    def unreadable(path):
+        if Path(path) == blocked:
+            raise PermissionError("blocked")
+        return original(path)
+
+    monkeypatch.setattr(os, "scandir", unreadable)
+    with pytest.raises(ValueError, match="unreadable"):
+        _package_files(package, source)
+
+
+def test_registered_entry_wrapper_outside_class_package_is_rejected(monkeypatch, registered_plugin):
+    from graybench.adapter_provenance import adapter_code_manifest
+
+    provider, _ = registered_plugin
+
+    class WrapperEntry:
+        name = provider.name
+        value = "different_plugin:FixtureAdapter"
+        dist = type("Dist", (), {"metadata": {"Name": "fixture"}, "version": "1.0"})()
+
+        def load(self):
+            return type(provider)
+
+    monkeypatch.setattr(
+        "graybench.adapter_provenance.entry_points", lambda **kwargs: [WrapperEntry()]
+    )
+    with pytest.raises(ValueError, match="entry-point.*class package"):
+        adapter_code_manifest(provider)
+
+
 def test_registered_package_rejects_oversize_source(monkeypatch, tmp_path):
     import graybench.adapter_provenance as provenance
 

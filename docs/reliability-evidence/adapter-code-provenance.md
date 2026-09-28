@@ -16,8 +16,10 @@ An unregistered or directly supplied subclass is marked
 `module_only_development` and hashes only its defining module. Registered
 single-file modules receive a distinct limited-coverage label. File keys are
 logical relative names; absolute host paths and file contents are excluded.
-The package scan rejects missing or unreadable files, symlinks, ambiguous
-namespace roots, more than 4,096 files, and more than 64 MiB of input. It
+The package scan rejects missing or unreadable files and directories,
+symlinks, Windows junctions, ambiguous namespace roots, entry-point targets
+outside the class's top-level package, more than 4,096 files, more than 8,192
+traversed entries, and more than 64 MiB of input. It
 excludes transient caches (`__pycache__`, `.pyc`, `.git`, `.pytest_cache`,
 `.ruff_cache`).
 
@@ -41,7 +43,8 @@ made for this revision.
 These hashes detect edits to covered local files. They do not attest an
 adapter's honesty, imported dependencies or dynamically loaded code outside
 the scanned package, mutable in-memory state, provider receipt, effective
-settings, or model weights. Independent plugin and provider qualification and
+settings, or model weights. A file can also change in the small interval
+between the final local digest check and the network send. Independent plugin and provider qualification and
 clean-machine reproduction remain release gates. Both Actions workflows are
 manually disabled while GitHub billing is exhausted; local verification is
 reported separately from CI.

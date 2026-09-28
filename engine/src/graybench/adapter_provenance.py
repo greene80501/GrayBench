@@ -1,6 +1,7 @@
 """Local adapter-code change detection; hashes are not plugin attestations."""
 
 import hashlib
+import os
 import re
 import sys
 from importlib import import_module
@@ -11,6 +12,7 @@ from graybench.identity import identity
 from graybench.provenance import source_manifest
 
 MAX_FILES = 4096
+MAX_ENTRIES = 8192
 MAX_BYTES = 64 * 1024 * 1024
 EXCLUDED_DIRS = frozenset({"__pycache__", ".git", ".pytest_cache", ".ruff_cache"})
 HEX = re.compile(r"[0-9a-f]{64}\Z")
@@ -106,7 +108,7 @@ def _file_digest(path: Path, *, remaining: int) -> tuple[str, int]:
 
 
 def _package_files(root: Path, defining_source: Path) -> dict[str, str]:
-    if root.is_symlink() or not root.is_dir():
+    if root.is_symlink() or root.is_junction() or not root.is_dir():
         raise ValueError("Adapter package root is unstable")
     try:
         defining_source.resolve(strict=True).relative_to(root.resolve(strict=True))
@@ -114,22 +116,34 @@ def _package_files(root: Path, defining_source: Path) -> dict[str, str]:
         raise ValueError("Adapter class source is outside its package") from error
     result = {}
     total = 0
-    for path in sorted(root.rglob("*")):
-        relative = path.relative_to(root)
-        if EXCLUDED_DIRS.intersection(relative.parts) or path.suffix == ".pyc":
-            continue
-        if path.is_symlink():
-            raise ValueError("Adapter source package contains a symlink")
-        if path.is_dir():
-            continue
-        if len(result) >= MAX_FILES:
-            raise ValueError("Adapter source package exceeds file limit")
-        digest, size = _file_digest(path, remaining=MAX_BYTES - total)
-        result[relative.as_posix()] = digest
-        total += size
+    entries_seen = 0
+    directories = [root]
+    while directories:
+        directory = directories.pop()
+        try:
+            with os.scandir(directory) as entries:
+                for entry in entries:
+                    path = Path(entry.path)
+                    if entry.name in EXCLUDED_DIRS or path.suffix == ".pyc":
+                        continue
+                    entries_seen += 1
+                    if entries_seen > MAX_ENTRIES:
+                        raise ValueError("Adapter source package exceeds entry limit")
+                    if path.is_symlink() or path.is_junction():
+                        raise ValueError("Adapter source package contains a symlink or junction")
+                    if entry.is_dir(follow_symlinks=False):
+                        directories.append(path)
+                        continue
+                    if len(result) >= MAX_FILES:
+                        raise ValueError("Adapter source package exceeds file limit")
+                    digest, size = _file_digest(path, remaining=MAX_BYTES - total)
+                    result[path.relative_to(root).as_posix()] = digest
+                    total += size
+        except OSError as error:
+            raise ValueError("Adapter source package is unreadable") from error
     if not result:
         raise ValueError("Adapter source package has no files")
-    return result
+    return dict(sorted(result.items()))
 
 
 def _registered_entry(provider):
@@ -166,6 +180,8 @@ def adapter_code_manifest(provider) -> dict:
             "coverage": "module_only_development",
             "files": {source.name: digest},
         }
+    if entry.value.partition(":")[0].split(".", 1)[0] != cls.__module__.split(".", 1)[0]:
+        raise ValueError("Adapter entry-point target is outside its class package")
     top_level = import_module(cls.__module__.split(".", 1)[0])
     roots = tuple(getattr(top_level, "__path__", ()))
     if roots:
