@@ -60,10 +60,10 @@
 - Consumes: one frozen public task/value contract, a first returned completion, an immutable image and limits.
 - Produces: an explicit versioned JSON value channel with a strict bounded type/shape schema and a candidate runner that receives only public instructions and call inputs. Candidate stdout cannot be a verdict. The host treats a declared valid value as the answer, without claiming it proves native object origin.
 
-- [ ] **Step 1: Write failing tests** for exact public-only mounts, no oracle/test bytes, bounded depth/size, non-finite numbers, duplicate keys, wrong output shape, early exit, forged pass text, candidate encoder monkeypatch, and multiple private-input calls. A forged but semantically valid value is allowed as a value answer, not accepted as native-object evidence.
-- [ ] **Step 2: Run** focused tests and record the initial failures.
-- [ ] **Step 3: Implement** the standalone worker and host supervisor with explicit result-channel and resource identities. Keep private cases outside the candidate container; the judge may send call inputs but not expected outputs or test code.
-- [ ] **Step 4: Run** focused tests and pinned-image controls; commit.
+- [x] **Step 1: Write failing tests** for exact public-only mounts, no oracle/test bytes, bounded depth/size, non-finite numbers, duplicate keys, wrong output shape, early exit, forged pass text, candidate encoder monkeypatch, and multiple private-input calls. A forged but semantically valid value is allowed as a value answer, not accepted as native-object evidence.
+- [x] **Step 2: Run** focused tests and record the initial failures.
+- [x] **Step 3: Implement** the standalone worker and host supervisor with explicit result-channel and resource identities. Keep private cases outside the candidate container; the judge may send call inputs but not expected outputs or test code.
+- [x] **Step 4: Run** focused tests and pinned-image controls; commit.
 
 ### Task 3: Trusted semantic oracle and reviewed controls
 
