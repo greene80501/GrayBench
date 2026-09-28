@@ -40,6 +40,7 @@ from graybench.task_admission import (
     admission_blockers,
     audit_control_coverage,
     build_pending_inventory,
+    refresh_finding_registry,
 )
 from graybench.transport import Transport
 from graybench.upstream import UpstreamJudge
@@ -175,6 +176,13 @@ def main():
     )
     admission.add_argument("cache", type=Path)
     admission.add_argument("output", type=Path)
+    admission_refresh = commands.add_parser(
+        "admission-refresh-findings",
+        help="Carry historical task reviews into the current frozen finding registry",
+    )
+    admission_refresh.add_argument("inventory", type=Path)
+    admission_refresh.add_argument("cache", type=Path)
+    admission_refresh.add_argument("output", type=Path)
     admission_controls = commands.add_parser(
         "admission-control-audit", help="Join locally checked oracle controls to all task cards"
     )
@@ -754,6 +762,21 @@ def main():
                 card.external_service for card in admission_inventory.cards
             ),
             "publication_eligible": admission_inventory.publication_eligible,
+            "output": str(args.output),
+        }
+    elif args.command == "admission-refresh-findings":
+        historical = AdmissionInventory.model_validate_json(args.inventory.read_bytes())
+        refreshed = refresh_finding_registry(historical, args.cache)
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(refreshed.model_dump_json(indent=2) + "\n")
+        result = {
+            "source_inventory_digest": historical.digest,
+            "inventory_digest": refreshed.digest,
+            "new_finding_card_count": sum(
+                old.known_findings != new.known_findings
+                for old, new in zip(historical.cards, refreshed.cards, strict=True)
+            ),
+            "publication_eligible": refreshed.publication_eligible,
             "output": str(args.output),
         }
     elif args.command == "protected-oracle-review":

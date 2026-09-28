@@ -4,6 +4,8 @@ The pinned tests for task families 62, 63, 100 and 109 use NumPy randomness or s
 
 The [manifest](manifest.json) fixes all six append-only JSONL files by byte count and SHA-256. From `engine/`, with both SHA-256-pinned QHE parquet files already in `CACHE`, verify the copied bytes, event chains, source digest, selected task ancestry, cohort, reconstructed judge manifests, runtime and outcomes:
 
+Because the verifier checks the exact historical engine source digest, check out revision `2e9854d4063291198e4aa5b6dc778418ec2258f4` before running it. Later source edits require a fresh replay, not an edit to this evidence.
+
 ```sh
 uv run --locked python ../docs/reliability-evidence/artifacts/native-stochastic-repeat-2026-09-28/verify.py CACHE
 ```

@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 from test_native_cohort import cache as _synthetic_cache
 
+from graybench import datasets
+from graybench import task_admission as admission
 from graybench.cli import main
 from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS, load_suite
 from graybench.identity import identity
@@ -31,7 +33,7 @@ def cache(tmp_path, monkeypatch):
 
 def test_pending_inventory_contains_exact_pinned_302_and_no_admission(cache):
     inventory = build_pending_inventory(cache)
-    assert inventory.schema_version == "2"
+    assert inventory.schema_version == "3"
     assert inventory.track == "graybench-protected-semantic-v1"
     assert len(inventory.cards) == 302
     assert inventory.cards[0].source_key == "normal/qiskitHumanEval/0"
@@ -52,12 +54,114 @@ def test_pending_inventory_contains_exact_pinned_302_and_no_admission(cache):
             )
             assert card.dependency_status == "external_service_unqualified"
     assert inventory.cards[0].known_findings == tuple(KNOWN_FINDINGS[0])
+    for suite in ("normal", "hard"):
+        card = next(
+            card for card in inventory.cards if card.source_key == f"{suite}/qiskitHumanEval/62"
+        )
+        assert card.known_findings == tuple(KNOWN_FINDINGS[62])
+        assert "known_findings_unresolved" in admission_blockers(card)
+    admission.require_current_finding_registry(inventory)
     validate_inventory(inventory, cache)
 
 
-def test_v2_admission_inventory_survives_engine_changes_but_v1_does_not(cache, monkeypatch):
+def test_v2_historical_findings_verify_but_new_registry_is_required_for_current_use(cache):
+    current = build_pending_inventory(cache)
+    legacy_cards = tuple(
+        card.model_copy(
+            update={
+                "known_findings": tuple(
+                    datasets.KNOWN_FINDINGS_V2.get(int(card.source_key.rsplit("/", 1)[1]), ())
+                )
+            }
+        )
+        for card in current.cards
+    )
+    legacy = current.model_copy(
+        update={
+            "schema_version": "2",
+            "finding_registry": {},
+            "finding_registry_digest": None,
+            "cards": legacy_cards,
+        }
+    )
+    validate_inventory(legacy, cache)
+    with pytest.raises(ValueError, match="current finding registry"):
+        admission.require_current_finding_registry(legacy)
+    omitted = current.model_copy(
+        update={
+            "cards": tuple(
+                card.model_copy(update={"known_findings": ()})
+                if card.source_key == "normal/qiskitHumanEval/62"
+                else card
+                for card in current.cards
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="finding registry"):
+        validate_inventory(omitted, cache)
+    with pytest.raises(ValueError, match="current finding registry"):
+        admission.require_current_finding_registry(omitted)
+
+
+def test_current_finding_mutation_cannot_change_frozen_v2_registry():
+    historical = tuple(datasets.KNOWN_FINDINGS_V2[0])
+    datasets.KNOWN_FINDINGS[0].append("New current finding")
+    try:
+        assert tuple(datasets.KNOWN_FINDINGS_V2[0]) == historical
+    finally:
+        datasets.KNOWN_FINDINGS[0].pop()
+
+
+def test_v3_finding_snapshot_remains_readable_after_new_registry_change(cache, monkeypatch):
     inventory = build_pending_inventory(cache)
-    old = inventory.model_copy(update={"schema_version": "1"})
+    expanded = {**KNOWN_FINDINGS, 100: ["Newly discovered finding"]}
+    monkeypatch.setattr("graybench.task_admission.KNOWN_FINDINGS", expanded)
+    validate_inventory(inventory, cache)
+    with pytest.raises(ValueError, match="current finding registry"):
+        admission.require_current_finding_registry(inventory)
+
+
+def test_refresh_finding_registry_preserves_review_work_and_adds_task62(cache):
+    current = build_pending_inventory(cache)
+    source_cards = []
+    for card in current.cards:
+        number = int(card.source_key.rsplit("/", 1)[1])
+        source_cards.append(
+            card.model_copy(
+                update={
+                    "known_findings": tuple(datasets.KNOWN_FINDINGS_V2.get(number, ())),
+                    "public_contract_digest": (
+                        "a" * 64 if card.source_key == "normal/qiskitHumanEval/2" else None
+                    ),
+                }
+            )
+        )
+    historical = current.model_copy(
+        update={
+            "schema_version": "2",
+            "finding_registry": {},
+            "finding_registry_digest": None,
+            "cards": tuple(source_cards),
+        }
+    )
+    refreshed = admission.refresh_finding_registry(historical, cache)
+    validate_inventory(refreshed, cache)
+    admission.require_current_finding_registry(refreshed)
+    assert refreshed.schema_version == "3"
+    assert refreshed.cards[2].public_contract_digest == "a" * 64
+    assert historical.cards[2].public_contract_digest == "a" * 64
+    for suite in ("normal", "hard"):
+        key = f"{suite}/qiskitHumanEval/62"
+        card = next(card for card in refreshed.cards if card.source_key == key)
+        assert card.known_findings == tuple(KNOWN_FINDINGS[62])
+        assert "known_findings_unresolved" in admission_blockers(card)
+
+
+def test_v3_admission_inventory_survives_engine_changes_but_v1_does_not(cache, monkeypatch):
+    inventory = build_pending_inventory(cache)
+    old = inventory.model_copy(
+        update={"schema_version": "1", "finding_registry": {}, "finding_registry_digest": None}
+    )
     legacy = old.model_dump(mode="json")
     legacy.pop("schema_version")
     parsed_legacy = AdmissionInventory.model_validate_json(json.dumps(legacy))
@@ -221,6 +325,48 @@ def test_cli_writes_exclusive_pending_inventory(cache, tmp_path, monkeypatch, ca
     monkeypatch.setattr(sys, "argv", ["graybench", "inventory", str(cache)])
     main()
     assert json.loads(capsys.readouterr().out)["task_count"] == 302
+
+
+def test_cli_refreshes_historical_findings_without_overwriting(
+    cache, tmp_path, monkeypatch, capsys
+):
+    current = build_pending_inventory(cache)
+    historical = current.model_copy(
+        update={
+            "schema_version": "2",
+            "finding_registry": {},
+            "finding_registry_digest": None,
+            "cards": tuple(
+                card.model_copy(
+                    update={
+                        "known_findings": tuple(
+                            datasets.KNOWN_FINDINGS_V2.get(
+                                int(card.source_key.rsplit("/", 1)[1]), ()
+                            )
+                        )
+                    }
+                )
+                for card in current.cards
+            ),
+        }
+    )
+    source = tmp_path / "historical.json"
+    source.write_text(historical.model_dump_json(), encoding="utf-8")
+    output = tmp_path / "refreshed.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["graybench", "admission-refresh-findings", str(source), str(cache), str(output)],
+    )
+    main()
+    result = json.loads(capsys.readouterr().out)
+    saved = AdmissionInventory.model_validate_json(output.read_bytes())
+    assert saved.schema_version == "3"
+    assert result["inventory_digest"] == saved.digest
+    assert result["new_finding_card_count"] == 2
+    assert result["publication_eligible"] is False
+    with pytest.raises(FileExistsError):
+        main()
 
 
 def test_admission_control_audit_links_verified_cases_without_admitting_tasks(

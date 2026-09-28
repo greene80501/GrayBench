@@ -133,3 +133,28 @@ alternatives do not replace independent reviewers, and the known upstream
 findings are still unresolved on the cards. The original pending bundle remains
 available as a historical snapshot. Neither inventory is eligible for a
 published benchmark score.
+
+## Frozen findings and task 62
+
+The [task-62 native probe](artifacts/task62-fixed-oracle-2026-09-28/README.md)
+found another upstream false pass: a fixed circuit ignores the requested BB84
+state and basis yet passes the pinned normal and hard tests. An independent
+all-zero input gives a different result for the exact canonical function and
+that fixed circuit. This is a known oracle limitation, not a score adjustment.
+
+New admission inventories use schema 3 to embed a digest-bound snapshot of the
+known-finding registry. Historical schema-2 inventories continue to validate
+against their original registry. To carry review work forward, run
+`graybench admission-refresh-findings OLD_INVENTORY CACHE NEW_INVENTORY`;
+the command validates the old inventory, adds current findings and refuses to
+erase historical findings. A separate current-registry check can reject an
+otherwise valid historical snapshot when current use is required.
+
+The [successor bundle](artifacts/admission-findings-2026-09-28/README.md)
+adds the task-62 finding to both suite cards while preserving the task-2/20
+bindings and all 42 prior controls. Its inventory digest is
+`a7854800a714a4aed491d02174397910bca5cffde8ae27f258c86f0c7e843ec2`;
+the recomputed audit SHA-256 is
+`2507b4f75cc6c86a5cc6b5653c8f768f10f4d88571801123a34a1da981e316a4`.
+The audit still has 294 cards without controls, no independent reviews and
+`publication_eligible: false`.

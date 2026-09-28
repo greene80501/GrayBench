@@ -12,7 +12,8 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from graybench.contracts import Contract
-from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS, load_suite
+from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, KNOWN_FINDINGS_V2, PINS, load_suite
+from graybench.identity import identity
 from graybench.oracle_review import inspect_oracle_review
 from graybench.provenance import source_manifest
 
@@ -126,10 +127,16 @@ class TaskCard(Contract):
 
 
 class AdmissionInventory(Contract):
-    schema_version: Literal["1", "2"] = "1"
+    schema_version: Literal["1", "2", "3"] = "1"
     track: Literal["graybench-protected-semantic-v1"] = TRACK
     source_pins: dict[str, dict[str, str]]
     source_digest: str
+    finding_registry: dict[str, tuple[str, ...]] = Field(
+        default_factory=dict, exclude_if=lambda value: not value
+    )
+    finding_registry_digest: str | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
     cards: tuple[TaskCard, ...] = Field(min_length=302, max_length=302)
 
     @property
@@ -152,7 +159,52 @@ class AdmissionInventory(Contract):
             raise ValueError("Admission inventory source pins are incomplete")
         if not _digest(self.source_digest):
             raise ValueError("Admission inventory source identity is invalid")
+        if self.schema_version == "3":
+            if (
+                not self.finding_registry
+                or self.finding_registry_digest != identity(self.finding_registry)
+                or any(
+                    not key.isdecimal()
+                    or key != str(int(key))
+                    or not 0 <= int(key) <= 150
+                    or not findings
+                    or len(set(findings)) != len(findings)
+                    or any(not item.strip() for item in findings)
+                    for key, findings in self.finding_registry.items()
+                )
+            ):
+                raise ValueError("Invalid frozen finding registry")
+        elif self.finding_registry or self.finding_registry_digest is not None:
+            raise ValueError("Historical inventory cannot claim a finding registry")
         return self
+
+
+def _current_finding_registry() -> dict[str, tuple[str, ...]]:
+    return {str(number): tuple(findings) for number, findings in sorted(KNOWN_FINDINGS.items())}
+
+
+def require_current_finding_registry(inventory: AdmissionInventory) -> None:
+    """Gate current use separately from historical evidence verification."""
+    AdmissionInventory.model_validate_json(inventory.model_dump_json())
+    registry = _current_finding_registry()
+    if (
+        inventory.schema_version != "3"
+        or inventory.finding_registry_digest != identity(registry)
+        or inventory.finding_registry != registry
+        or any(
+            card.known_findings != registry.get(card.source_key.rsplit("/", 1)[1], ())
+            for card in inventory.cards
+        )
+    ):
+        raise ValueError("Inventory does not use the current finding registry")
+
+
+def _frozen_findings(inventory: AdmissionInventory, number: int) -> tuple[str, ...]:
+    if inventory.schema_version == "3":
+        return inventory.finding_registry.get(str(number), ())
+    if inventory.schema_version == "2":
+        return tuple(KNOWN_FINDINGS_V2.get(number, ()))
+    return tuple(KNOWN_FINDINGS.get(number, ()))
 
 
 def admission_blockers(card: TaskCard) -> tuple[str, ...]:
@@ -197,9 +249,9 @@ def validate_inventory(inventory: AdmissionInventory, cache: Path) -> None:
     AdmissionInventory.model_validate_json(inventory.model_dump_json())
     if inventory.source_pins != PINS:
         raise ValueError("Admission inventory pinned dataset revision changed")
-    # V1 conflated the source that created the checklist with the source that
-    # later inspects it. V2 keeps that historical identity while allowing
-    # task review to continue across unrelated engine edits.
+    # V1 conflated creation source with inspection source. V2 freezes its
+    # historical finding registry; V3 carries its own snapshot so new findings
+    # cannot rewrite saved evidence. Current use is a separate gate.
     if inventory.schema_version == "1" and inventory.source_digest != source_manifest()["digest"]:
         raise ValueError("Admission inventory engine source changed")
     pinned = tuple(task for suite in ("normal", "hard") for task in load_suite(suite, cache))
@@ -209,10 +261,11 @@ def validate_inventory(inventory: AdmissionInventory, cache: Path) -> None:
             card.source_suite != task.public.suite
             or card.source_key != f"{task.public.suite}/{task.public.task_id}"
             or card.source_task_digest != task.digest
-            or card.known_findings != tuple(KNOWN_FINDINGS.get(number, ()))
             or card.external_service != (number in EXTERNAL_IDS)
         ):
             raise ValueError("Admission card differs from pinned task ancestry")
+        if card.known_findings != _frozen_findings(inventory, number):
+            raise ValueError("Admission card finding registry differs from frozen inventory")
 
 
 def build_pending_inventory(cache: Path) -> AdmissionInventory:
@@ -234,13 +287,42 @@ def build_pending_inventory(cache: Path) -> AdmissionInventory:
             )
         )
     inventory = AdmissionInventory(
-        schema_version="2",
+        schema_version="3",
         source_pins={suite: dict(pin) for suite, pin in PINS.items()},
         source_digest=source_manifest()["digest"],
+        finding_registry=_current_finding_registry(),
+        finding_registry_digest=identity(_current_finding_registry()),
         cards=tuple(cards),
     )
     validate_inventory(inventory, cache)
     return inventory
+
+
+def refresh_finding_registry(inventory: AdmissionInventory, cache: Path) -> AdmissionInventory:
+    """Carry review work forward without silently dropping historical findings."""
+    if inventory.schema_version == "1":
+        raise ValueError("Schema-1 inventories require explicit historical source adjudication")
+    validate_inventory(inventory, cache)
+    registry = _current_finding_registry()
+    cards = []
+    for card in inventory.cards:
+        number = card.source_key.rsplit("/", 1)[1]
+        findings = registry.get(number, ())
+        if not set(card.known_findings) <= set(findings):
+            raise ValueError("Current finding registry removed a historical finding")
+        cards.append(card.model_copy(update={"known_findings": findings}))
+    refreshed = inventory.model_copy(
+        update={
+            "schema_version": "3",
+            "source_digest": source_manifest()["digest"],
+            "finding_registry": registry,
+            "finding_registry_digest": identity(registry),
+            "cards": tuple(cards),
+        }
+    )
+    validate_inventory(refreshed, cache)
+    require_current_finding_registry(refreshed)
+    return refreshed
 
 
 def _requirement_links(card: TaskCard, controls: list[dict]) -> list[dict]:

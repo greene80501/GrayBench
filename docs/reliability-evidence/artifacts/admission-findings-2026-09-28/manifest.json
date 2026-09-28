@@ -1,0 +1,31 @@
+{
+  "schema_version": "1",
+  "scope": "local authored controls; not model scoring",
+  "inventory": {
+    "file": "GrayBench-v3-admission-inventory-task62-finding-20260928.json",
+    "bytes": 161191,
+    "sha256": "e7efdb632c944a14b889a6c7aab2552d881825f6efe5f7371c619a97bc391d9a"
+  },
+  "reviews": [
+    {
+      "file": "GrayBench-v3-task0-1-upstream-oracle-review-verified.jsonl",
+      "bytes": 47518,
+      "sha256": "1b9e9018bfaca653b6d4d6543b7b122c8f01b3d31de38e1ae29404dad9477b9d"
+    },
+    {
+      "file": "GrayBench-v3-task0-strengthened-review-verified.jsonl",
+      "bytes": 74138,
+      "sha256": "f5cfb17f216b65e0626e67985b52bbf8694abb419fe47c1c6616ec2231f3db3b"
+    },
+    {
+      "file": "GrayBench-v3-protected-controls-both-final-20260928.jsonl",
+      "bytes": 339097,
+      "sha256": "321d7cac8b64934f5cc0a5ab7751d8923456453bc9b5d57729dcc4233e8b55d9"
+    }
+  ],
+  "audit": {
+    "file": "GrayBench-v3-admission-control-audit-task62-finding-20260928.json",
+    "bytes": 101212,
+    "sha256": "2507b4f75cc6c86a5cc6b5653c8f768f10f4d88571801123a34a1da981e316a4"
+  }
+}

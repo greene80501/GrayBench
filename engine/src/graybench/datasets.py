@@ -4,6 +4,7 @@ import ast
 import hashlib
 import re
 from pathlib import Path
+from types import MappingProxyType
 
 from pydantic import Field
 
@@ -24,7 +25,9 @@ PINS = {
 }
 # Explicit provisional inventory, not discovered by whether a candidate happens to pass.
 EXTERNAL_IDS = frozenset({43, 97, 98, 122, 129, 133, 134, 146})
-KNOWN_FINDINGS = {
+# Frozen registry used by historical schema-2 admission inventories. Do not
+# append new findings here: those inventories must remain verifiable as saved.
+_KNOWN_FINDINGS_V2_RAW = {
     0: ["Upstream accepts a constant three-qubit circuit that ignores the requested size"],
     1: ["Upstream accepts fabricated balanced counts, negative counts and fractional counts"],
     2: ["Upstream trusts the returned object's equiv method and accepts wrong state amplitudes"],
@@ -73,6 +76,13 @@ KNOWN_FINDINGS = {
         "Upstream accepts the first BitArray string without checking which result is most common"
     ],
     150: ["Upstream accepts a missing break, wrong condition, and fixed iteration count"],
+}
+KNOWN_FINDINGS_V2 = MappingProxyType(
+    {number: tuple(findings) for number, findings in _KNOWN_FINDINGS_V2_RAW.items()}
+)
+KNOWN_FINDINGS = {
+    **{number: list(findings) for number, findings in KNOWN_FINDINGS_V2.items()},
+    62: ["Upstream accepts a fixed BB84 sender circuit that ignores state and basis"],
 }
 
 
