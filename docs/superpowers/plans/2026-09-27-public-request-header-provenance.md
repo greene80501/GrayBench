@@ -55,7 +55,7 @@
 
 - [x] Document the precise assurance boundary: application-supplied headers, no proof of provider receipt, and unchanged historical artifacts.
 - [x] Run focused tests, changed-file Ruff/format, `git diff --check`, then the complete Docker-enabled test suite after review fixes.
-- [ ] Review the diff and tests, commit under `greene80501`, push to draft PR #3, and update its verification count while leaving workflows disabled.
+- [x] Review the diff and tests, commit under `greene80501`, push to draft PR #3, and update its verification count while leaving workflows disabled.
 
 ## Ruling during Task 2
 
