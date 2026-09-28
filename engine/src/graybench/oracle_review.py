@@ -211,6 +211,7 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
     results = {event["task_key"]: event for event in events if event["kind"] == "result"}
     expected_failures = 0
     unexpected_outcomes = []
+    controls = []
     task_keys = set()
     for key, metadata in cases.items():
         match = re.fullmatch(r"((?:normal|hard)/qiskitHumanEval/(?:\d+))/([^/]+)", key)
@@ -246,6 +247,17 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
                 {"task_key": key, "expected": expected, "actual": result["outcome"]}
             )
         expected_failures += expected == "fail"
+        controls.append(
+            {
+                "case_key": key,
+                "task_key": match[1],
+                "case_digest": header["tasks"][key],
+                "task_digest": metadata["task_digest"],
+                "expected": expected,
+                "actual": result["outcome"],
+                "judge_digest": result["judge_digest"],
+            }
+        )
     return {
         "locally_verified": True,
         "independent_review": False,
@@ -255,6 +267,7 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
         "expected_passes": len(cases) - expected_failures,
         "controls_matching_expectation": len(cases) - len(unexpected_outcomes),
         "unexpected_outcomes": unexpected_outcomes,
+        "controls": controls,
         "task_keys": sorted(task_keys),
         "source_digest": source["digest"],
         "file_sha256": scan["file_sha256"],

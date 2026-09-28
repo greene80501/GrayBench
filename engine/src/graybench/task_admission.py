@@ -13,6 +13,7 @@ from pydantic import Field, model_validator
 
 from graybench.contracts import Contract
 from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS, load_suite
+from graybench.oracle_review import inspect_oracle_review
 from graybench.provenance import source_manifest
 
 HEX = re.compile(r"[0-9a-f]{64}\Z")
@@ -116,7 +117,7 @@ class TaskCard(Contract):
 
 
 class AdmissionInventory(Contract):
-    schema_version: Literal["1"] = "1"
+    schema_version: Literal["1", "2"] = "1"
     track: Literal["graybench-protected-semantic-v1"] = TRACK
     source_pins: dict[str, dict[str, str]]
     source_digest: str
@@ -185,7 +186,10 @@ def validate_inventory(inventory: AdmissionInventory, cache: Path) -> None:
     AdmissionInventory.model_validate_json(inventory.model_dump_json())
     if inventory.source_pins != PINS:
         raise ValueError("Admission inventory pinned dataset revision changed")
-    if inventory.source_digest != source_manifest()["digest"]:
+    # V1 conflated the source that created the checklist with the source that
+    # later inspects it. V2 keeps that historical identity while allowing
+    # task review to continue across unrelated engine edits.
+    if inventory.schema_version == "1" and inventory.source_digest != source_manifest()["digest"]:
         raise ValueError("Admission inventory engine source changed")
     pinned = tuple(task for suite in ("normal", "hard") for task in load_suite(suite, cache))
     for card, task in zip(inventory.cards, pinned, strict=True):
@@ -219,9 +223,80 @@ def build_pending_inventory(cache: Path) -> AdmissionInventory:
             )
         )
     inventory = AdmissionInventory(
+        schema_version="2",
         source_pins={suite: dict(pin) for suite, pin in PINS.items()},
         source_digest=source_manifest()["digest"],
         cards=tuple(cards),
     )
     validate_inventory(inventory, cache)
     return inventory
+
+
+def audit_control_coverage(
+    inventory: AdmissionInventory, cache: Path, review_logs: tuple[Path, ...]
+) -> dict:
+    """Join verified local controls to every task card; never admit a task."""
+    validate_inventory(inventory, cache)
+    by_task = {card.source_key: [] for card in inventory.cards}
+    task_digests = {card.source_key: card.source_task_digest for card in inventory.cards}
+    artifacts = []
+    seen = set()
+    for path in review_logs:
+        report = inspect_oracle_review(path, cache)
+        file_digest = report["file_sha256"]
+        if file_digest in seen:
+            raise ValueError("Duplicate oracle-review artifact")
+        seen.add(file_digest)
+        artifacts.append(
+            {
+                "file_sha256": file_digest,
+                "chain_head": report["chain_head"],
+                "source_digest": report["source_digest"],
+                "control_count": report["control_count"],
+            }
+        )
+        for control in report["controls"]:
+            key = control["task_key"]
+            if key not in by_task or control["task_digest"] != task_digests[key]:
+                raise ValueError("Oracle control differs from inventory task ancestry")
+            by_task[key].append({**control, "artifact_file_sha256": file_digest})
+    rows = [
+        {
+            "task_key": card.source_key,
+            "source_task_digest": card.source_task_digest,
+            "controls": sorted(
+                by_task[card.source_key],
+                key=lambda control: (control["artifact_file_sha256"], control["case_key"]),
+            ),
+        }
+        for card in inventory.cards
+    ]
+    mismatches = [
+        control
+        for row in rows
+        for control in row["controls"]
+        if control["expected"] != control["actual"]
+    ]
+    false_passes = sum(
+        control["expected"] == "fail" and control["actual"] == "pass" for control in mismatches
+    )
+    false_rejections = sum(
+        control["expected"] == "pass" and control["actual"] == "fail" for control in mismatches
+    )
+    return {
+        "schema_version": "1",
+        "track": TRACK,
+        "inventory_digest": inventory.digest,
+        "source_pins": inventory.source_pins,
+        "artifacts": sorted(artifacts, key=lambda item: item["file_sha256"]),
+        "tasks": rows,
+        "control_count": sum(len(row["controls"]) for row in rows),
+        "covered_task_count": sum(bool(row["controls"]) for row in rows),
+        "uncovered_task_count": sum(not row["controls"] for row in rows),
+        "unexpected_outcome_count": len(mismatches),
+        "false_pass_count": false_passes,
+        "false_rejection_count": false_rejections,
+        "other_mismatch_count": len(mismatches) - false_passes - false_rejections,
+        "independent_review": False,
+        "publication_eligible": False,
+    }

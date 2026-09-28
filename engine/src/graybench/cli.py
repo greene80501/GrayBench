@@ -1,6 +1,7 @@
 """Inspection commands for the replacement engine; campaign release gates remain explicit."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -32,7 +33,12 @@ from graybench.reference_scan import (
     run_native_reference_scan,
     run_reference_scan,
 )
-from graybench.task_admission import admission_blockers, build_pending_inventory
+from graybench.task_admission import (
+    AdmissionInventory,
+    admission_blockers,
+    audit_control_coverage,
+    build_pending_inventory,
+)
 from graybench.transport import Transport
 from graybench.upstream import UpstreamJudge
 
@@ -156,6 +162,13 @@ def main():
     )
     admission.add_argument("cache", type=Path)
     admission.add_argument("output", type=Path)
+    admission_controls = commands.add_parser(
+        "admission-control-audit", help="Join locally checked oracle controls to all task cards"
+    )
+    admission_controls.add_argument("inventory", type=Path)
+    admission_controls.add_argument("cache", type=Path)
+    admission_controls.add_argument("output", type=Path)
+    admission_controls.add_argument("review_logs", type=Path, nargs="+")
     plan = commands.add_parser(
         "campaign-plan", help="Freeze selected tasks and requests offline; no generations"
     )
@@ -722,6 +735,24 @@ def main():
                 card.external_service for card in admission_inventory.cards
             ),
             "publication_eligible": admission_inventory.publication_eligible,
+            "output": str(args.output),
+        }
+    elif args.command == "admission-control-audit":
+        inventory_record = AdmissionInventory.model_validate_json(args.inventory.read_bytes())
+        report = audit_control_coverage(inventory_record, args.cache, tuple(args.review_logs))
+        payload = canonical(report)
+        with args.output.open("xb") as output:
+            output.write(payload)
+        result = {
+            "report_digest": hashlib.sha256(payload).hexdigest(),
+            "covered_task_count": report["covered_task_count"],
+            "uncovered_task_count": report["uncovered_task_count"],
+            "control_count": report["control_count"],
+            "unexpected_outcome_count": report["unexpected_outcome_count"],
+            "false_pass_count": report["false_pass_count"],
+            "false_rejection_count": report["false_rejection_count"],
+            "other_mismatch_count": report["other_mismatch_count"],
+            "publication_eligible": False,
             "output": str(args.output),
         }
     elif args.command == "validate-protocol":

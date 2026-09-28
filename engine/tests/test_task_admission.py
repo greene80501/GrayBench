@@ -8,13 +8,16 @@ import pytest
 from test_native_cohort import cache as _synthetic_cache
 
 from graybench.cli import main
-from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS
+from graybench.datasets import EXTERNAL_IDS, KNOWN_FINDINGS, PINS, load_suite
+from graybench.judge import Judgment
+from graybench.oracle_review import run_review
 from graybench.task_admission import (
     AdmissionInventory,
     RequirementEvidence,
     ReviewAttestation,
     TaskCard,
     admission_blockers,
+    audit_control_coverage,
     build_pending_inventory,
     validate_inventory,
 )
@@ -27,6 +30,7 @@ def cache(tmp_path, monkeypatch):
 
 def test_pending_inventory_contains_exact_pinned_302_and_no_admission(cache):
     inventory = build_pending_inventory(cache)
+    assert inventory.schema_version == "2"
     assert inventory.track == "graybench-protected-semantic-v1"
     assert len(inventory.cards) == 302
     assert inventory.cards[0].source_key == "normal/qiskitHumanEval/0"
@@ -47,6 +51,21 @@ def test_pending_inventory_contains_exact_pinned_302_and_no_admission(cache):
             assert card.dependency_status == "external_service_unqualified"
     assert inventory.cards[0].known_findings == tuple(KNOWN_FINDINGS[0])
     validate_inventory(inventory, cache)
+
+
+def test_v2_admission_inventory_survives_engine_changes_but_v1_does_not(cache, monkeypatch):
+    inventory = build_pending_inventory(cache)
+    old = inventory.model_copy(update={"schema_version": "1"})
+    legacy = old.model_dump(mode="json")
+    legacy.pop("schema_version")
+    parsed_legacy = AdmissionInventory.model_validate_json(json.dumps(legacy))
+    assert parsed_legacy.schema_version == "1"
+    monkeypatch.setattr("graybench.task_admission.source_manifest", lambda: {"digest": "f" * 64})
+    validate_inventory(inventory, cache)
+    with pytest.raises(ValueError, match="engine source changed"):
+        validate_inventory(old, cache)
+    with pytest.raises(ValueError, match="engine source changed"):
+        validate_inventory(parsed_legacy, cache)
 
 
 def test_changed_source_file_or_card_is_rejected(cache):
@@ -198,6 +217,90 @@ def test_cli_writes_exclusive_pending_inventory(cache, tmp_path, monkeypatch, ca
     monkeypatch.setattr(sys, "argv", ["graybench", "inventory", str(cache)])
     main()
     assert json.loads(capsys.readouterr().out)["task_count"] == 302
+
+
+def test_admission_control_audit_links_verified_cases_without_admitting_tasks(
+    cache, tmp_path, monkeypatch, capsys
+):
+    class ProbeJudge:
+        def evaluate(self, _task, completion):
+            outcome = "pass" if "QuantumCircuit(3)" not in completion else "fail"
+            return Judgment(outcome, "0" * 64, {})
+
+    inventory = build_pending_inventory(cache)
+    task = load_suite("normal", cache)[0]
+    review = tmp_path / "review.jsonl"
+    run_review((task,), ProbeJudge(), review)
+    report = audit_control_coverage(inventory, cache, (review,))
+    assert report["control_count"] == 3
+    assert report["covered_task_count"] == 1
+    assert report["uncovered_task_count"] == 301
+    assert report["unexpected_outcome_count"] == 0
+    assert report["publication_eligible"] is False
+    first = report["tasks"][0]
+    assert first["task_key"] == "normal/qiskitHumanEval/0"
+    assert first["controls"][0]["case_digest"]
+    assert all(not row["controls"] for row in report["tasks"][1:])
+
+    inventory_file = tmp_path / "inventory.json"
+    inventory_file.write_text(inventory.model_dump_json())
+    output = tmp_path / "audit.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "graybench",
+            "admission-control-audit",
+            str(inventory_file),
+            str(cache),
+            str(output),
+            str(review),
+        ],
+    )
+    main()
+    cli = json.loads(capsys.readouterr().out)
+    assert cli["report_digest"] == hashlib.sha256(output.read_bytes()).hexdigest()
+    assert cli["covered_task_count"] == 1
+    with pytest.raises(FileExistsError):
+        main()
+
+
+def test_admission_control_audit_rejects_duplicate_or_unpinned_evidence(cache, tmp_path):
+    class Judge:
+        def evaluate(self, _task, completion):
+            return Judgment("pass", "0" * 64, {})
+
+    inventory = build_pending_inventory(cache)
+    review = tmp_path / "review.jsonl"
+    run_review((load_suite("normal", cache)[0],), Judge(), review)
+    report = audit_control_coverage(inventory, cache, (review,))
+    assert report["unexpected_outcome_count"] == 1
+    with pytest.raises(ValueError, match="Duplicate"):
+        audit_control_coverage(inventory, cache, (review, review))
+    changed = inventory.model_copy(update={"source_pins": {"normal": {}, "hard": {}}})
+    with pytest.raises(ValueError):
+        audit_control_coverage(changed, cache, (review,))
+
+
+def test_admission_control_audit_separates_wrong_passes_rejections_and_errors(cache, tmp_path):
+    class MixedJudge:
+        def evaluate(self, _task, completion):
+            if "QuantumCircuit(3)" in completion:
+                outcome = "pass"
+            elif "QuantumRegister" in completion:
+                outcome = "fail"
+            else:
+                outcome = "timeout"
+            return Judgment(outcome, "0" * 64, {})
+
+    inventory = build_pending_inventory(cache)
+    review = tmp_path / "mixed.jsonl"
+    run_review((load_suite("normal", cache)[0],), MixedJudge(), review)
+    report = audit_control_coverage(inventory, cache, (review,))
+    assert report["unexpected_outcome_count"] == 3
+    assert report["false_pass_count"] == 1
+    assert report["false_rejection_count"] == 1
+    assert report["other_mismatch_count"] == 1
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Needs pinned parquet")

@@ -93,6 +93,8 @@ def test_local_oracle_verifier_checks_pinned_ancestry_and_outcomes(tmp_path, cac
     assert report["independent_review"] is False
     assert report["publication_eligible"] is False
     assert report["control_count"] == 3
+    assert report["controls"][0]["case_digest"]
+    assert report["controls"][0]["task_digest"] == load_suite("normal", cache)[0].digest
     assert report["expected_failures"] == 1
     assert report["expected_passes"] == 2
     assert set(report["task_keys"]) == {"normal/qiskitHumanEval/0"}

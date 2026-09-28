@@ -36,6 +36,26 @@ Its `locally_verified` field means only internal consistency with pinned task
 ancestry. A holder can rewrite an unsigned chain; the command cannot establish
 semantic adequacy, reviewer identity, independence, or publication eligibility.
 
+Inventories written now use schema 2: their recorded creator-source digest is
+historical provenance, while validation re-reads the exact pinned task bytes.
+Older schema-1 inventories retain their original current-source check. This
+lets task-card work survive unrelated engine edits without treating a copied
+digest as authenticated source evidence. A legacy JSON inventory that omits
+`schema_version` remains schema 1. To inspect local authored controls
+against the entire inventory, run:
+
+```sh
+uv run graybench admission-control-audit INVENTORY.json CACHE AUDIT.json REVIEW1.jsonl REVIEW2.jsonl
+```
+
+The exclusive, content-addressed audit lists all 302 task cards, including
+those with no controls, and names each control's artifact, case, task, expected
+and actual outcome, and judge digest. It does not fill requirement evidence or
+review attestations, infer semantic adequacy, or admit tasks. The saved control
+logs must be available separately to reverify the audit.
+The summary separates authored wrong controls that passed, authored correct
+controls that failed, and other mismatches such as timeouts.
+
 ## Execution conditions
 
 | Selection | Behavior | Current limitation |
