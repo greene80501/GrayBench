@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "captured_on_utc": "2026-09-28",
+  "source_revision": "54be7e1f4bb94d0adebcf1d675de34a70640668f",
+  "source_digest": "be85d5ff6a9c61b3777b6083b183f5f3411cb06b4d484ebcabc9f28b22593cc0",
+  "files": [
+    {
+      "path": "control.jsonl",
+      "bytes": 17938,
+      "sha256": "021eb87337c5c8f47dd624363daf78ae53965ddc42bf33aec6e273a65f30f253"
+    },
+    {
+      "path": "../../task62_fixed_oracle_probe.py",
+      "bytes": 3175,
+      "sha256": "ff839f161ac410ccb64472eea87ad9a6f3c868adb35a7f0c0a52a5aaf6f734ef"
+    }
+  ]
+}
