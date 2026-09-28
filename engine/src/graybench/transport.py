@@ -12,7 +12,7 @@ import httpx
 
 from graybench.contracts import Generation, ModelSpec, Observation, PreparedRequest
 from graybench.identity import canonical
-from graybench.providers import Adapter, adapter
+from graybench.providers import Adapter
 
 
 @dataclass(frozen=True)
@@ -82,13 +82,15 @@ class Transport:
     def _redact(self, value: str) -> str:
         return value.replace(self.secret, "[REDACTED]") if self.secret else value
 
-    def _exchange(self, method: str, path: str, body: dict | None) -> tuple[int | None, dict]:
+    def _exchange(
+        self, method: str, path: str, body: dict | None, provider: Adapter
+    ) -> tuple[int | None, dict]:
         # Plugins cannot redirect credentials to another origin via a supplied absolute URL.
         if not path.startswith("/") or path.startswith("//") or "?" in path or "#" in path:
             raise ValueError("Request path must be a relative, query-free API path")
         started = time.perf_counter()
         content = canonical(body) if body is not None else b""
-        auth_headers = adapter(self.spec.adapter).auth_headers(self.secret)
+        auth_headers = provider.auth_headers(self.secret)
         headers = httpx.Headers(
             {
                 "Content-Type": "application/json",
@@ -195,7 +197,7 @@ class Transport:
             or adapter.name != self.spec.adapter
         ):
             raise ValueError("Transport and prepared request have different model identities")
-        status, evidence = self._exchange("POST", request.path, request.body)
+        status, evidence = self._exchange("POST", request.path, request.body, adapter)
         if "error" in evidence:
             return Delivery("ambiguous", status, evidence)
         if status is not None and status >= 500:
@@ -218,9 +220,11 @@ class Transport:
         return Delivery("returned", status, evidence, generation)
 
     def discover(self, adapter: Adapter) -> list[Observation]:
+        if adapter.name != self.spec.adapter:
+            raise ValueError("Discovery adapter differs from frozen model identity")
         result = []
         for method, path, body in adapter.discovery_requests(self.spec):
-            status, evidence = self._exchange(method, path, body)
+            status, evidence = self._exchange(method, path, body, adapter)
             evidence["http_status"] = status
             evidence["observed_at"] = datetime.now(UTC).isoformat()
             try:

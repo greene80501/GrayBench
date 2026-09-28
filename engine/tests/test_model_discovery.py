@@ -185,7 +185,6 @@ def test_no_metadata_adapter_requires_declared_development_exception(
     provider = NoMetadataAdapter()
     monkeypatch.setattr("graybench.campaign.adapter", lambda _: provider)
     monkeypatch.setattr("graybench.model_discovery.adapter", lambda _: provider)
-    monkeypatch.setattr("graybench.transport.adapter", lambda _: provider)
     request = provider.prepare(model, task, None)
     protocol = protocol.model_copy(
         update={

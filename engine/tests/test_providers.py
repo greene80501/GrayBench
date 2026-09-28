@@ -144,6 +144,90 @@ def test_transport_does_not_retry_timeout(model, task):
     assert len(calls) == 1
 
 
+def test_generation_authenticates_with_the_supplied_adapter_instance(monkeypatch, task):
+    monkeypatch.setenv("TEST_TOKEN", "stateful-fixture-secret")
+    model = ModelSpec(
+        adapter="ollama",
+        model="test-model",
+        base_url="http://localhost:11434",
+        credential_env="TEST_TOKEN",
+    )
+
+    class StatefulOllama(Ollama):
+        def __init__(self):
+            self.auth_calls = 0
+
+        def auth_headers(self, secret):
+            self.auth_calls += 1
+            return {"Authorization": f"Bearer {secret}:instance-specific"}
+
+    provider = StatefulOllama()
+
+    def handler(request):
+        assert (
+            request.headers["Authorization"] == "Bearer stateful-fixture-secret:instance-specific"
+        )
+        return httpx.Response(
+            200,
+            json={
+                "model": model.model,
+                "done": True,
+                "message": {"role": "assistant", "content": "return 1"},
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = Transport(model, client).generate(provider.prepare(model, task, None), provider)
+    assert result.kind == "returned"
+    assert provider.auth_calls == 1
+    assert "stateful-fixture-secret" not in str(result.evidence)
+
+
+def test_discovery_authenticates_with_the_supplied_adapter_instance(monkeypatch):
+    monkeypatch.setenv("TEST_TOKEN", "stateful-fixture-secret")
+    model = ModelSpec(
+        adapter="ollama",
+        model="test-model",
+        base_url="http://localhost:11434",
+        credential_env="TEST_TOKEN",
+    )
+
+    class StatefulOllama(Ollama):
+        def __init__(self):
+            self.auth_calls = 0
+
+        def auth_headers(self, secret):
+            self.auth_calls += 1
+            return {"Authorization": f"Bearer {secret}:instance-specific"}
+
+    provider = StatefulOllama()
+
+    def handler(request):
+        assert (
+            request.headers["Authorization"] == "Bearer stateful-fixture-secret:instance-specific"
+        )
+        return httpx.Response(200, json={"ok": True})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        observations = Transport(model, client).discover(provider)
+    assert len(observations) == 4
+    assert all(observation.status == "observed" for observation in observations)
+    assert provider.auth_calls == 4
+
+
+def test_discovery_rejects_an_adapter_outside_the_frozen_model_identity(model):
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(200, json={"name": "models/test-model"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(ValueError, match="adapter"):
+            Transport(model, client).discover(Gemini())
+    assert calls == []
+
+
 def test_transport_redacts_echoed_key(monkeypatch, task):
     monkeypatch.setenv("TEST_TOKEN", "secret-for-unit-test")
     model = ModelSpec(
@@ -222,12 +306,10 @@ def test_transport_distinguishes_encoded_entity_from_decoded_response(model, tas
     assert result.evidence["response_capture_version"] == "encoded_entity_v2"
 
 
-def test_auth_adapter_cannot_add_a_second_content_encoding_request_header(monkeypatch, model, task):
-    class AuthOnly:
+def test_auth_adapter_cannot_add_a_second_content_encoding_request_header(model, task):
+    class AuthOnly(Ollama):
         def auth_headers(self, _secret):
             return {"accept-encoding": "gzip"}
-
-    monkeypatch.setattr("graybench.transport.adapter", lambda _: AuthOnly())
 
     def handler(request):
         encoding_headers = [
@@ -237,7 +319,7 @@ def test_auth_adapter_cannot_add_a_second_content_encoding_request_header(monkey
         return httpx.Response(503, json={"error": "unavailable"})
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
-        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), AuthOnly())
     assert result.kind == "ambiguous"
 
 

@@ -98,6 +98,8 @@ entity bytes and decoded JSON bytes. It requests identity encoding and also
 accepts bounded gzip and deflate responses. Already-decoded injected responses
 cannot claim an encoded hash. See the
 [response capture audit](../docs/reliability-evidence/response-entity-capture.md).
+The transport also uses the supplied adapter instance for authentication and
+discovery; see the [adapter consistency audit](../docs/reliability-evidence/adapter-instance-consistency.md).
 
 `campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
 and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.
