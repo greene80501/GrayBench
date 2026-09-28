@@ -28,6 +28,14 @@ public contracts, positive and wrong-answer controls, and two independent
 reviews. An empty structural checklist is not external verification;
 `publication_eligible` remains false.
 
+`oracle-review-inspect REVIEW.jsonl CACHE` checks a completed local authored
+control run against the pinned task bytes. It verifies the event chain, case
+identities, recorded expectations, source-manifest digest, and consistency of
+the recorded judgments. Unexpected outcomes are listed rather than discarded.
+Its `locally_verified` field means only internal consistency with pinned task
+ancestry. A holder can rewrite an unsigned chain; the command cannot establish
+semantic adequacy, reviewer identity, independence, or publication eligibility.
+
 ## Execution conditions
 
 | Selection | Behavior | Current limitation |

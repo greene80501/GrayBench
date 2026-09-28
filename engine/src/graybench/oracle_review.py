@@ -1,11 +1,16 @@
 """Versioned oracle probes; never prompts or hints supplied to benchmarked models."""
 
+import hashlib
+import json
+import re
 from dataclasses import dataclass
+from pathlib import Path
 
+from graybench.datasets import load_suite
 from graybench.identity import identity
 from graybench.judge import Judgment
 from graybench.provenance import source_manifest
-from graybench.reference_scan import run_evidence_cases
+from graybench.reference_scan import inspect_reference_scan, run_evidence_cases
 from graybench.upstream import UpstreamJudge
 
 SIZE_CHECK = """def check(candidate):
@@ -152,6 +157,109 @@ def run_review(tasks, judge, output):
             "review": "local authored probes; not independent certification",
         },
     )
+
+
+def inspect_oracle_review(path: Path, cache: Path) -> dict:
+    """Check local control-log consistency against pinned task bytes, not reviewer identity.
+
+    A complete hash chain can be rewritten by its holder. This check detects accidental
+    or internally inconsistent claims; it is not an independent review or release gate.
+    """
+    scan = inspect_reference_scan(path)
+    if not scan["complete"]:
+        raise ValueError("Oracle review is incomplete")
+    with path.open("rb") as stream:
+        raw = stream.read(64 * 1024 * 1024 + 1)
+    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != scan["file_sha256"]:
+        raise ValueError("Oracle-review file exceeds limit or changed during inspection")
+    events = [json.loads(line)["event"] for line in raw.splitlines()]
+    header = events[0]
+    if header.get("purpose") != "oracle counterexamples and valid alternatives; not model scoring":
+        raise ValueError("Unexpected oracle-review purpose")
+    selection = header.get("selection")
+    if not isinstance(selection, dict) or selection.get("review") != (
+        "local authored probes; not independent certification"
+    ):
+        raise ValueError("Missing local oracle-review selection")
+    cases = selection.get("cases")
+    if not isinstance(cases, dict) or not cases or set(cases) != set(header["tasks"]):
+        raise ValueError("Oracle-review cases differ from planned controls")
+    source = header.get("source")
+    if (
+        not isinstance(source, dict)
+        or set(source) != {"files", "digest"}
+        or not isinstance(source.get("files"), dict)
+        or not source["files"]
+        or any(
+            not isinstance(name, str)
+            or not re.fullmatch(r"[A-Za-z0-9_./-]+\.py", name)
+            or ".." in name.split("/")
+            or not isinstance(digest, str)
+            or not re.fullmatch(r"[0-9a-f]{64}", digest)
+            for name, digest in source["files"].items()
+        )
+        or (identity(source["files"]) != source.get("digest"))
+    ):
+        raise ValueError("Oracle-review source manifest digest mismatch")
+    pinned = {}
+    for suite in sorted({key.split("/", 1)[0] for key in cases}):
+        if suite not in {"normal", "hard"}:
+            raise ValueError("Unknown oracle-review suite")
+        pinned.update(
+            (f"{suite}/{task.public.task_id}", task.digest) for task in load_suite(suite, cache)
+        )
+    results = {event["task_key"]: event for event in events if event["kind"] == "result"}
+    expected_failures = 0
+    unexpected_outcomes = []
+    task_keys = set()
+    for key, metadata in cases.items():
+        match = re.fullmatch(r"((?:normal|hard)/qiskitHumanEval/(?:\d+))/([^/]+)", key)
+        if match is None or match[1] not in pinned or not isinstance(metadata, dict):
+            raise ValueError("Unknown oracle-review case or task")
+        task_keys.add(match[1])
+        if set(metadata) != {"task_digest", "expectation", "rationale", "completion"} or (
+            metadata["task_digest"] != pinned[match[1]]
+            or header["tasks"][key] != identity(metadata)
+        ):
+            raise ValueError("Oracle-review case or pinned task digest mismatch")
+        expected = metadata["expectation"]
+        if expected not in {"pass", "fail"} or any(
+            not isinstance(metadata[field], str) or not metadata[field].strip()
+            for field in ("rationale", "completion")
+        ):
+            raise ValueError("Invalid oracle-review control metadata")
+        result = results[key]
+        evidence = result.get("evidence")
+        if (
+            not isinstance(evidence, dict)
+            or set(evidence) != {"expected", "rationale", "matches_expectation", "judgment"}
+            or not isinstance(result.get("judge_digest"), str)
+            or not re.fullmatch(r"[0-9a-f]{64}", result["judge_digest"])
+        ):
+            raise ValueError("Invalid oracle-review judgment evidence")
+        if evidence["expected"] != expected or evidence["rationale"] != metadata["rationale"]:
+            raise ValueError("Oracle-review evidence differs from case expectation")
+        if evidence["matches_expectation"] is not (result["outcome"] == expected):
+            raise ValueError("Oracle-review declared expectation match differs from outcome")
+        if result["outcome"] != expected:
+            unexpected_outcomes.append(
+                {"task_key": key, "expected": expected, "actual": result["outcome"]}
+            )
+        expected_failures += expected == "fail"
+    return {
+        "locally_verified": True,
+        "independent_review": False,
+        "publication_eligible": False,
+        "control_count": len(cases),
+        "expected_failures": expected_failures,
+        "expected_passes": len(cases) - expected_failures,
+        "controls_matching_expectation": len(cases) - len(unexpected_outcomes),
+        "unexpected_outcomes": unexpected_outcomes,
+        "task_keys": sorted(task_keys),
+        "source_digest": source["digest"],
+        "file_sha256": scan["file_sha256"],
+        "chain_head": scan["chain_head"],
+    }
 
 
 PAULI_CONTRACT = (

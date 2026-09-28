@@ -55,6 +55,13 @@ cases: both constant solutions fail and all four alternatives pass. Two addition
 canonical reference checks pass. Earlier pre-metadata-refinement artifacts remain
 preserved separately.
 
+The `oracle-review-inspect` command re-reads pinned dataset bytes and checks
+saved case identities and judgments. Applied to the two saved authored-control
+artifacts, it reports 8 unexpected passes among 12 upstream controls and 0
+unexpected outcomes among 6 strengthened task-0 controls. This is local
+consistency checking, not authenticated authorship or independent semantic
+review. The artifacts remain outside the PR and are not release evidence.
+
 The inventory now surfaces these findings alongside previously reproduced issues
 for tasks9,14,20,32 and35. Every task remains release-ineligible pending the complete
 specification, interface, oracle, mutation and independent-review gates. Further

@@ -13,8 +13,8 @@ from graybench.contracts import (
     ModelSpec,
     Protocol,
     RetryPolicy,
-    require_credential_scope_for_new_run,
     reject_model_credential,
+    require_credential_scope_for_new_run,
 )
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign, cohort_identities, validate_cohort

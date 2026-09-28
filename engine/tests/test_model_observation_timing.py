@@ -10,9 +10,9 @@ import pytest
 from pydantic import ValidationError
 
 import graybench.ledger as ledger_module
-from graybench.cli import main
 from graybench.campaign import GenerationRunner
 from graybench.campaign_setup import build_setup
+from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
 from graybench.contracts import Generation, ModelObservationTiming, Protocol
 from graybench.datasets import JudgeTask

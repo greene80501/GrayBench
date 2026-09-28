@@ -5,9 +5,9 @@ from pathlib import Path
 
 import httpx
 import pytest
+from test_capability_probe import accepted_probe, matching_profile, spec
 from test_native_cohort import IMAGE, selected
 from test_native_cohort import cache as _synthetic_cache
-from test_capability_probe import accepted_probe, matching_profile, spec
 
 from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign_setup import build_setup

@@ -17,6 +17,7 @@ from graybench.ledger import Ledger
 from graybench.model_discovery import observe_run
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import NATIVE_EXCEPTION_POLICIES, freeze_native_cohort, task_key
+from graybench.oracle_review import inspect_oracle_review
 from graybench.protected_campaign import (
     ProtectedCampaign,
     ProtectedCampaignSetup,
@@ -114,6 +115,11 @@ def main():
         "reference-inspect", help="Verify reference evidence and identify incomplete invocations"
     )
     inspect_scan.add_argument("path", type=Path)
+    inspect_oracle = commands.add_parser(
+        "oracle-review-inspect", help="Check local oracle controls against pinned task bytes"
+    )
+    inspect_oracle.add_argument("path", type=Path)
+    inspect_oracle.add_argument("cache", type=Path)
     validate = commands.add_parser(
         "validate-protocol", help="Validate a frozen experiment contract"
     )
@@ -317,6 +323,8 @@ def main():
         }
     elif args.command == "reference-inspect":
         result = inspect_reference_scan(args.path)
+    elif args.command == "oracle-review-inspect":
+        result = inspect_oracle_review(args.path, args.cache)
     elif args.command == "reference-scan":
         all_tasks = tuple(
             task

@@ -20,8 +20,8 @@ from graybench.contracts import (
     ModelSpec,
     PreparedRequest,
     Protocol,
-    require_credential_scope_for_new_run,
     reject_model_credential,
+    require_credential_scope_for_new_run,
 )
 from graybench.identity import canonical, identity
 from graybench.ledger_evidence import event_records, verify_records

@@ -10,8 +10,8 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from graybench.adapter_provenance import adapter_code_manifest
-from graybench.capability_probe import CapabilityProbe, verify_probe_bundle
 from graybench.campaign import GenerationRunner
+from graybench.capability_probe import CapabilityProbe, verify_probe_bundle
 from graybench.contracts import (
     Contract,
     Generation,
@@ -19,8 +19,8 @@ from graybench.contracts import (
     ModelSpec,
     Protocol,
     RetryPolicy,
-    require_credential_scope_for_new_run,
     reject_model_credential,
+    require_credential_scope_for_new_run,
 )
 from graybench.datasets import PINS, JudgeTask, load_suite
 from graybench.identity import canonical, identity

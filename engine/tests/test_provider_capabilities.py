@@ -1,7 +1,7 @@
 """Capability records bind an exact endpoint without claiming effective settings."""
 
-import pytest
 import httpx
+import pytest
 from pydantic import ValidationError
 
 from graybench.campaign_setup import CampaignSetup, build_setup
