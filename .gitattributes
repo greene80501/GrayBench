@@ -7,6 +7,8 @@ docs/reliability-evidence/artifacts/provider-probes-2026-09-28/*.json -text whit
 docs/reliability-evidence/artifacts/native-stochastic-repeat-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task62-fixed-oracle-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task62-protected-value-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task62-protected-current-source-2026-09-28/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task62-protected-current-source-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/admission-task62-protected-2026-09-28/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/admission-task62-protected-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task62_fixed_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
