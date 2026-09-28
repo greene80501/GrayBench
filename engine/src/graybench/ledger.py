@@ -21,6 +21,7 @@ from graybench.contracts import (
     PreparedRequest,
     Protocol,
     require_credential_scope_for_new_run,
+    reject_model_credential,
 )
 from graybench.identity import canonical, identity
 from graybench.ledger_evidence import event_records, verify_records
@@ -203,7 +204,9 @@ class Ledger:
         )
         if probe_status not in {"no_probe_claims", "verified_local_records"}:
             raise StateError("Capability probe artifacts are missing or invalid")
-        require_credential_scope_for_new_run(protocol.model)
+        require_credential_scope_for_new_run(protocol.model, system_prompt=protocol.system_prompt)
+        reject_model_credential(protocol.model, protocol.model_dump(mode="json"), "protocol")
+        reject_model_credential(protocol.model, context, "run context")
         if protocol.track in {"qhe-pinned-native-v1", "graybench-protected-semantic-v1"} and (
             protocol.retry.max_attempts != 1
             or protocol.retry.statuses
@@ -247,6 +250,7 @@ class Ledger:
         self.require_protocol_serialization_stable(run_id, protocol)
         if observation.get("model_spec_digest") != protocol.model.digest:
             raise StateError("Discovery observation belongs to a different model specification")
+        reject_model_credential(protocol.model, observation, "model observation")
         with self.transaction():
             if attempt_id is not None:
                 attempt = self.db.execute(
@@ -543,6 +547,9 @@ class Ledger:
                 raise StateError("Unscheduled sample")
             protocol = self.protocol(sample["run_id"])
             self.require_protocol_serialization_stable(sample["run_id"], protocol)
+            reject_model_credential(
+                protocol.model, request.model_dump(mode="json"), "attempt request"
+            )
             if self.model_identity(sample["run_id"])["status"] == "unresolved":
                 raise StateError("Returned model identity requires adjudication")
             if self.discovery_status(sample["run_id"])["status"] == "unresolved":
@@ -702,6 +709,11 @@ class Ledger:
             ).fetchone()["run_id"]
             protocol = self.protocol(run_id)
             self.require_protocol_serialization_stable(run_id, protocol)
+            reject_model_credential(protocol.model, evidence, "delivery evidence")
+            if generation is not None:
+                reject_model_credential(
+                    protocol.model, generation.model_dump(mode="json"), "generation"
+                )
             received_at = now() if protocol.schema_version == "3.3" else None
             post_token = (
                 secrets.token_urlsafe(32) if protocol.schema_version in {"3.2", "3.3"} else None
@@ -731,6 +743,11 @@ class Ledger:
         with self.transaction():
             self._require_native_judge_claim(sample_id, judge_digest)
             self._require_model_observation_for_judgment(sample_id)
+            row = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
+            protocol = self.protocol(row["run_id"])
+            reject_model_credential(
+                protocol.model, {"outcome": outcome, "evidence": evidence}, "judgment"
+            )
             artifact = self._blob(evidence)
             self.db.execute(
                 "INSERT INTO judgments VALUES (?,?,?,?)",

@@ -15,6 +15,7 @@ from graybench.contracts import (
     Protocol,
     RetryPolicy,
     require_credential_scope_for_new_run,
+    reject_model_credential,
 )
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
@@ -96,6 +97,10 @@ def host_contract(observation):
 
 
 def execution_context(setup: CampaignSetup):
+    require_credential_scope_for_new_run(
+        setup.protocol.model, system_prompt=setup.protocol.system_prompt
+    )
+    reject_model_credential(setup.protocol.model, setup.model_dump(mode="json"), "campaign setup")
     verify_probe_bundle(
         setup.protocol.model,
         setup.capability_probes,
@@ -139,7 +144,7 @@ def build_setup(
     capability_probes: tuple[CapabilityProbe, ...] = (),
 ) -> CampaignSetup:
     """Freeze exactly the supplied tasks and public requests without provider access."""
-    require_credential_scope_for_new_run(model)
+    require_credential_scope_for_new_run(model, system_prompt=system_prompt)
     judge = recipe_judge(
         evaluation_recipe, image=image, parser_image=parser_image, extraction=extraction
     )
@@ -187,5 +192,6 @@ def build_setup(
         parser_image=parser_image,
         evaluation_recipe=evaluation_recipe,
     )
+    reject_model_credential(model, setup.model_dump(mode="json"), "campaign setup")
     validate_cohort(protocol, tasks, setup.judge())
     return setup

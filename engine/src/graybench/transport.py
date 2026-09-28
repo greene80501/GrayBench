@@ -14,7 +14,7 @@ import httpx
 
 from graybench.adapter_provenance import adapter_code_digest
 from graybench.contracts import Generation, ModelSpec, Observation, PreparedRequest
-from graybench.identity import canonical, identity
+from graybench.identity import canonical, identity, reject_credential_value
 from graybench.providers import Adapter
 from graybench.request_headers import (
     freeze_credential_header_names,
@@ -78,6 +78,7 @@ class Transport:
             raise ValueError(f"Missing credential environment variable {spec.credential_env}")
         if self.secret and spec.credential_scope_id and self.secret in spec.credential_scope_id:
             raise ValueError("Credential scope must not contain the credential")
+        reject_credential_value(spec.model_dump(mode="json"), self.secret, "model specification")
         self.client = client or httpx.Client(
             timeout=httpx.Timeout(timeout_seconds, connect=30),
             follow_redirects=False,
@@ -159,6 +160,7 @@ class Transport:
         body = deepcopy(body)
         public_headers = validate_frozen_public_headers(dict(public_headers))
         content = canonical(body) if body is not None else b""
+        reject_credential_value({"path": path, "body": body}, self.secret, "request path or body")
         if self.secret and any(self.secret in value for value in public_headers.values()):
             raise ValueError("Credential may not enter public request headers")
         auth_headers = validate_credential_headers(

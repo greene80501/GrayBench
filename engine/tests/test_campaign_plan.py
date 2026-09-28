@@ -6,7 +6,7 @@ import pytest
 from graybench.adapter_provenance import adapter_code_manifest
 from graybench.campaign_setup import CampaignSetup, build_setup, execution_context
 from graybench.cli import main
-from graybench.contracts import ModelSpec
+from graybench.contracts import ModelSpec, Setting
 from graybench.datasets import JudgeTask
 from graybench.evaluation_campaign import validate_cohort
 from graybench.ledger import StateError
@@ -77,6 +77,63 @@ def test_copied_model_cannot_put_loaded_key_into_campaign_artifact(monkeypatch, 
             (private_task(task),),
             "sha256:" + "0" * 64,
         )
+
+
+def test_campaign_cannot_freeze_setting_containing_key_loaded_later(monkeypatch, task):
+    secret = "unit-secret-plan-789"
+    monkeypatch.delenv("TEST_TOKEN", raising=False)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+        settings=(Setting(name="stop", value=secret, support="documented", evidence="docs"),),
+    )
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    with pytest.raises(ValueError, match="credential"):
+        build_setup("secret-setting", model, (private_task(task),), "sha256:" + "0" * 64)
+
+
+def test_campaign_and_ledger_cannot_store_key_in_system_prompt(monkeypatch, task, ledger):
+    secret = "unit-secret-prompt-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+    )
+    private = private_task(task)
+    image = "sha256:" + "0" * 64
+    with pytest.raises(ValueError, match="credential"):
+        build_setup("secret-prompt", model, (private,), image, system_prompt=secret)
+    setup = build_setup("safe-prompt", model, (private,), image, system_prompt="public")
+    forged = setup.protocol.model_copy(update={"system_prompt": secret})
+    with pytest.raises(ValueError, match="credential"):
+        ledger.create_run(forged)
+    assert ledger.verify()["events"] == 0
+
+
+def test_campaign_and_ledger_reject_key_in_other_public_artifacts(monkeypatch, task, ledger):
+    secret = "unit-secret-artifact-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+    )
+    private = private_task(task)
+    image = "sha256:" + "0" * 64
+    with pytest.raises(ValueError, match="credential"):
+        build_setup(secret, model, (private,), image)
+    setup = build_setup("safe", model, (private,), image)
+    with pytest.raises(ValueError, match="credential"):
+        ledger.create_run(setup.protocol, {"operator_note": secret})
+    assert ledger.verify()["events"] == 0
 
 
 def test_builder_can_freeze_attempt_bound_observation_protocol(model, task):

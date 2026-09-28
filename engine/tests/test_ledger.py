@@ -39,6 +39,67 @@ def test_new_run_rejects_copied_scope_containing_loaded_key(ledger, protocol, mo
         ledger.create_run(edited)
 
 
+def test_attempt_cannot_store_request_containing_key_loaded_after_plan(
+    ledger, protocol, task, monkeypatch
+):
+    secret = "unit-secret-attempt-789"
+    monkeypatch.delenv("TEST_TOKEN", raising=False)
+    model = protocol.model.model_copy(
+        update={"credential_env": "TEST_TOKEN", "credential_scope_id": "ollama/local/fixture"}
+    )
+    request = Ollama().prepare(model, task, None)
+    leaked = request.model_copy(update={"body": {**request.body, "leak": secret}})
+    edited = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {key: leaked.digest for key in protocol.task_keys},
+        }
+    )
+    run = ledger.create_run(edited)
+    sample = ledger.samples(run)[0]["id"]
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    before = ledger.verify()["events"]
+    with pytest.raises(ValueError, match="credential"):
+        ledger.begin_attempt(sample, leaked)
+    assert ledger.verify()["events"] == before
+
+
+def test_ledger_rejects_loaded_key_in_context_observation_delivery_and_judgment(
+    ledger, protocol, task, monkeypatch
+):
+    secret = "unit-secret-ledger-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = protocol.model.model_copy(
+        update={"credential_env": "TEST_TOKEN", "credential_scope_id": "ollama/local/fixture"}
+    )
+    request = Ollama().prepare(model, task, None)
+    edited = protocol.model_copy(
+        update={
+            "model": model,
+            "request_digests": {key: request.digest for key in protocol.task_keys},
+        }
+    )
+    with pytest.raises(ValueError, match="credential"):
+        ledger.create_run(edited, {"note": secret})
+    assert ledger.verify()["events"] == 0
+    run = ledger.create_run(edited)
+    before = ledger.verify()["events"]
+    with pytest.raises(ValueError, match="credential"):
+        ledger.record_model_observation(run, {"model_spec_digest": model.digest, "note": secret})
+    assert ledger.verify()["events"] == before
+    sample = ledger.samples(run)[0]["id"]
+    attempt = ledger.begin_attempt(sample, request)
+    before = ledger.verify()["events"]
+    with pytest.raises(ValueError, match="credential"):
+        ledger.finish_attempt(attempt, "returned", {"note": secret}, 200, returned())
+    assert ledger.verify()["events"] == before
+    ledger.finish_attempt(attempt, "returned", {}, 200, returned())
+    before = ledger.verify()["events"]
+    with pytest.raises(ValueError, match="credential"):
+        ledger.judge(sample, edited.judge_digest, "fail", {"note": secret})
+    assert ledger.verify()["events"] == before
+
+
 def test_empty_return_cannot_be_retried(ledger, protocol, task):
     run = ledger.create_run(protocol)
     sample = ledger.samples(run)[0]["id"]

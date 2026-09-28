@@ -82,6 +82,23 @@ def test_protected_plan_rejects_missing_capability_probe_artifact():
         )
 
 
+def test_protected_plan_rejects_loaded_credential_in_campaign_name(monkeypatch):
+    baseline = setup()
+    secret = "unit-secret-protected-name-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = MODEL.model_copy(
+        update={"credential_env": "TEST_TOKEN", "credential_scope_id": "ollama/local/fixture"}
+    )
+    with pytest.raises(ValueError, match="credential"):
+        build_protected_setup(
+            secret,
+            model,
+            baseline.cohort,
+            baseline.tasks,
+            cache=Path(CACHE),
+        )
+
+
 def test_protected_plan_freezes_verified_capability_probe():
     baseline = setup()
     record = accepted_probe()

@@ -104,6 +104,23 @@ def test_native_plan_rejects_missing_capability_probe_artifact(native_cache):
         )
 
 
+def test_native_plan_rejects_loaded_credential_in_campaign_name(native_cache, monkeypatch):
+    baseline = native_setup(native_cache)
+    secret = "unit-secret-native-name-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = MODEL.model_copy(
+        update={"credential_env": "TEST_TOKEN", "credential_scope_id": "ollama/local/fixture"}
+    )
+    with pytest.raises(ValueError, match="credential"):
+        build_native_setup(
+            secret,
+            model,
+            baseline.cohort,
+            baseline.tasks(native_cache),
+            cache=native_cache,
+        )
+
+
 def test_native_plan_freezes_verified_capability_probe(native_cache):
     baseline = native_setup(native_cache)
     record = accepted_probe()

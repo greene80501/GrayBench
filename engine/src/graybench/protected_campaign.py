@@ -20,6 +20,7 @@ from graybench.contracts import (
     Protocol,
     RetryPolicy,
     require_credential_scope_for_new_run,
+    reject_model_credential,
 )
 from graybench.datasets import PINS, JudgeTask, load_suite
 from graybench.identity import canonical, identity
@@ -158,6 +159,12 @@ class ProtectedCampaignSetup(Contract):
     def validate_for_run(
         self, cache: Path, run_protocol: Protocol, *, docker: str = "docker"
     ) -> dict[str, JudgeTask]:
+        require_credential_scope_for_new_run(
+            self.protocol.model, system_prompt=self.protocol.system_prompt
+        )
+        reject_model_credential(
+            self.protocol.model, self.model_dump(mode="json"), "protected campaign setup"
+        )
         verify_probe_bundle(
             self.protocol.model,
             self.capability_probes,
@@ -236,7 +243,7 @@ def build_protected_setup(
     model_observation_timing: ModelObservationTiming | None = None,
     capability_probes: tuple[CapabilityProbe, ...] = (),
 ) -> ProtectedCampaignSetup:
-    require_credential_scope_for_new_run(model)
+    require_credential_scope_for_new_run(model, system_prompt=system_prompt)
     pinned = validate_protected_cohort(cohort, tasks, cache=cache)
     setup_stub = ProtectedCampaignSetup(
         protocol=Protocol(
@@ -292,6 +299,7 @@ def build_protected_setup(
         }
     )
     setup = setup_stub.model_copy(update={"protocol": protocol})
+    reject_model_credential(model, setup.model_dump(mode="json"), "protected campaign setup")
     setup.validate_for_run(cache, protocol)
     return setup
 

@@ -17,7 +17,7 @@ from graybench.contracts import (
     PublicTask,
     require_credential_scope_for_new_run,
 )
-from graybench.identity import canonical, identity
+from graybench.identity import canonical, identity, reject_credential_value
 from graybench.providers import Adapter
 from graybench.transport import Transport
 
@@ -45,19 +45,6 @@ class CapabilityProbe(Contract):
     recorded_at: str
 
 
-def _contains_secret(value: object, secret: str) -> bool:
-    if isinstance(value, str):
-        return secret in value
-    if isinstance(value, dict):
-        return any(
-            _contains_secret(key, secret) or _contains_secret(item, secret)
-            for key, item in value.items()
-        )
-    if isinstance(value, (tuple, list)):
-        return any(_contains_secret(item, secret) for item in value)
-    return False
-
-
 def capture_probe(
     spec: ModelSpec, provider: Adapter, *, client: httpx.Client | None = None
 ) -> CapabilityProbe:
@@ -67,11 +54,9 @@ def capture_probe(
     )
     require_credential_scope_for_new_run(bare)
     secret = os.environ.get(bare.credential_env, "") if bare.credential_env else ""
-    if secret and _contains_secret(bare.model_dump(mode="json"), secret):
-        raise ValueError("Capability probe config contains the credential")
+    reject_credential_value(bare.model_dump(mode="json"), secret, "capability probe config")
     request = provider.prepare(bare, PROBE_TASK, None)
-    if secret and _contains_secret(request.model_dump(mode="json"), secret):
-        raise ValueError("Capability probe request contains the credential")
+    reject_credential_value(request.model_dump(mode="json"), secret, "capability probe request")
     transport = Transport(bare, client=client)
     try:
         delivery = transport.generate(request, provider)

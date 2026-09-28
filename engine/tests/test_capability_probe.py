@@ -124,7 +124,7 @@ def test_probe_artifact_excludes_loaded_credential(monkeypatch):
 
 def test_probe_rejects_credential_in_setting_before_dispatch(monkeypatch):
     secret = "unit-secret-probe-123"
-    monkeypatch.setenv("GRAYBENCH_PROBE_TEST_KEY", secret)
+    monkeypatch.delenv("GRAYBENCH_PROBE_TEST_KEY", raising=False)
     credentialed = ModelSpec(
         adapter="openai-chat",
         model="probe-model",
@@ -133,6 +133,7 @@ def test_probe_rejects_credential_in_setting_before_dispatch(monkeypatch):
         credential_scope_id="openai/project/probe",
         settings=(Setting(name="stop", value=secret, support="documented", evidence="probe"),),
     )
+    monkeypatch.setenv("GRAYBENCH_PROBE_TEST_KEY", secret)
     calls = []
 
     def handler(request):

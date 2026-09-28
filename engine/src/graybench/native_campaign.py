@@ -14,6 +14,7 @@ from graybench.contracts import (
     Protocol,
     RetryPolicy,
     require_credential_scope_for_new_run,
+    reject_model_credential,
 )
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign, cohort_identities, validate_cohort
@@ -73,6 +74,12 @@ class NativeCampaignSetup(Contract):
         tasks: tuple[JudgeTask, ...] | None = None,
         docker: str = "docker",
     ) -> tuple[JudgeTask, ...]:
+        require_credential_scope_for_new_run(
+            self.protocol.model, system_prompt=self.protocol.system_prompt
+        )
+        reject_model_credential(
+            self.protocol.model, self.model_dump(mode="json"), "native campaign setup"
+        )
         verify_probe_bundle(
             self.protocol.model,
             self.capability_probes,
@@ -128,7 +135,7 @@ def build_native_setup(
     tmpfs_bytes: int = 64 * 1024**2,
 ) -> NativeCampaignSetup:
     """Freeze exactly one pinned suite without contacting a model provider."""
-    require_credential_scope_for_new_run(model)
+    require_credential_scope_for_new_run(model, system_prompt=system_prompt)
     validate_native_cohort(cohort, tasks, cache=cache)
     limits = dict(
         judge_timeout=judge_timeout,
@@ -193,6 +200,7 @@ def build_native_setup(
     setup = NativeCampaignSetup(
         protocol=protocol, cohort=cohort, capability_probes=capability_probes, **limits
     )
+    reject_model_credential(model, setup.model_dump(mode="json"), "native campaign setup")
     setup.validate_for_run(cache, protocol, tasks=tasks)
     return setup
 

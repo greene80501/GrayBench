@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, field_validator, model_validator
 
 from graybench.adapter_provenance import validate_adapter_code_manifest
-from graybench.identity import identity, reject_credentials
+from graybench.identity import identity, reject_credential_value, reject_credentials
 from graybench.request_headers import (
     freeze_credential_header_names,
     validate_frozen_public_headers,
@@ -206,10 +206,14 @@ class ModelSpec(Contract):
             credential = os.environ.get(self.credential_env, "")
             if credential and credential in self.credential_scope_id:
                 raise ValueError("credential_scope_id must not contain the credential")
+        credential = os.environ.get(self.credential_env, "") if self.credential_env else ""
+        reject_credential_value(self.model_dump(mode="json"), credential, "model specification")
         return self
 
 
-def require_credential_scope_for_new_run(model: ModelSpec) -> None:
+def require_credential_scope_for_new_run(
+    model: ModelSpec, *, system_prompt: str | None = None
+) -> None:
     """Keep old manifests readable while requiring a public scope for new API runs."""
     scope = model.credential_scope_id
     if model.credential_env and not scope:
@@ -226,6 +230,15 @@ def require_credential_scope_for_new_run(model: ModelSpec) -> None:
         credential = os.environ.get(model.credential_env, "") if model.credential_env else ""
         if credential and credential in scope:
             raise ValueError("credential_scope_id must not contain the credential")
+    credential = os.environ.get(model.credential_env, "") if model.credential_env else ""
+    reject_credential_value(model.model_dump(mode="json"), credential, "model specification")
+    reject_credential_value(system_prompt, credential, "system prompt")
+
+
+def reject_model_credential(model: ModelSpec, value: Any, context: str) -> None:
+    """Keep the model's loaded credential out of one public artifact."""
+    credential = os.environ.get(model.credential_env, "") if model.credential_env else ""
+    reject_credential_value(value, credential, context)
 
 
 class RetryPolicy(Contract):

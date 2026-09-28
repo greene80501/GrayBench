@@ -636,6 +636,93 @@ def test_actual_credential_cannot_hide_inside_public_scope(monkeypatch):
         )
 
 
+def test_loaded_credential_cannot_hide_inside_model_setting_evidence(monkeypatch):
+    secret = "unit-secret-evidence-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    with pytest.raises(ValueError, match="credential") as caught:
+        ModelSpec(
+            adapter="openai-chat",
+            model="test",
+            base_url="https://example.test",
+            credential_env="TEST_TOKEN",
+            credential_scope_id="openai/project/benchmark",
+            settings=(Setting(name="stop", value="END", support="documented", evidence=secret),),
+        )
+    assert secret not in str(caught.value)
+
+
+def test_adapter_does_not_prepare_body_containing_key_loaded_later(monkeypatch, task):
+    secret = "unit-secret-adapter-789"
+    monkeypatch.delenv("TEST_TOKEN", raising=False)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+        settings=(Setting(name="stop", value=secret, support="documented", evidence="docs"),),
+    )
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    with pytest.raises(ValueError, match="credential"):
+        OpenAIChat().prepare(model, task, None)
+
+
+def test_adapter_does_not_prepare_path_containing_loaded_key(monkeypatch):
+    secret = "unit-secret-path-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+    )
+    with pytest.raises(ValueError, match="credential"):
+        OpenAIChat().request(model, "/chat/" + secret, {"model": "test"})
+
+
+def test_transport_refuses_forged_secret_body_before_network(monkeypatch, task):
+    secret = "unit-secret-transport-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+    )
+    provider = OpenAIChat()
+    prepared = provider.prepare(model, task, None)
+    changed = prepared.model_copy(update={"body": {**prepared.body, "stop": secret}})
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: pytest.fail("network must not be called"))
+    ) as client:
+        with pytest.raises(ValueError, match="credential"):
+            Transport(model, client).generate(changed, provider)
+
+
+def test_transport_refuses_plugin_discovery_path_containing_key(monkeypatch):
+    secret = "unit-secret-discovery-789"
+    monkeypatch.setenv("TEST_TOKEN", secret)
+    model = ModelSpec(
+        adapter="openai-chat",
+        model="test",
+        base_url="https://example.test",
+        credential_env="TEST_TOKEN",
+        credential_scope_id="openai/project/benchmark",
+    )
+
+    class LeakyDiscovery(OpenAIChat):
+        def discovery_requests(self, _spec):
+            return (("GET", "/models/" + secret, None),)
+
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: pytest.fail("network must not be called"))
+    ) as client:
+        with pytest.raises(ValueError, match="credential"):
+            Transport(model, client).discover(LeakyDiscovery())
+
+
 def test_transport_rejects_mismatched_prepared_model_before_network(model, task):
     request = Ollama().prepare(model, task, None)
     changed = request.model_copy(update={"model": "a-different-model"})

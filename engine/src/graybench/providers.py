@@ -11,6 +11,7 @@ from urllib.parse import quote
 
 from graybench.adapter_provenance import adapter_code_digest
 from graybench.contracts import Generation, ModelSpec, PreparedRequest, PublicTask
+from graybench.identity import reject_credential_value
 from graybench.request_headers import freeze_credential_header_names, freeze_public_headers
 
 
@@ -63,6 +64,9 @@ class Adapter(ABC):
                 raise CapabilityError("Capability profile generation path mismatch")
         public_headers = freeze_public_headers(self.public_headers(spec))
         secret = os.environ.get(spec.credential_env, "") if spec.credential_env else ""
+        reject_credential_value(spec.model_dump(mode="json"), secret, "model specification")
+        reject_credential_value(path, secret, "prepared request path")
+        reject_credential_value(body, secret, "prepared request body")
         if secret and any(secret in value for value in public_headers.values()):
             raise ValueError("Credential may not enter public request headers")
         return PreparedRequest(

@@ -36,3 +36,25 @@ def reject_credentials(value: Any) -> None:
     elif isinstance(value, (list, tuple)):
         for item in value:
             reject_credentials(item)
+
+
+def contains_credential_value(value: Any, credential: str) -> bool:
+    """Find the loaded credential in values destined for public artifacts or requests."""
+    if not credential:
+        return False
+    if isinstance(value, str):
+        return credential in value
+    if isinstance(value, dict):
+        return any(
+            contains_credential_value(key, credential)
+            or contains_credential_value(item, credential)
+            for key, item in value.items()
+        )
+    if isinstance(value, (list, tuple)):
+        return any(contains_credential_value(item, credential) for item in value)
+    return False
+
+
+def reject_credential_value(value: Any, credential: str, context: str) -> None:
+    if contains_credential_value(value, credential):
+        raise ValueError(f"Loaded credential may not enter {context}")
