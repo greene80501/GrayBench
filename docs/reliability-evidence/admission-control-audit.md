@@ -183,6 +183,9 @@ model score.
 
 The later [task-62 case-coverage probe](task62-case-coverage-gap.md) found a
 separate false pass in the protected value-v1 case set. That finding is not in
-this frozen inventory's registry and has not been resolved. The bundle remains
-a historical, verifiable snapshot rather than a current complete-finding
+this frozen inventory's registry and has not been resolved. It is now recorded
+in the engine's current known-finding registry for both suite cards. The count
+of 94 unresolved card-level findings above describes this frozen bundle; a new
+inventory has two additional unresolved entries. The bundle remains a
+historical, verifiable snapshot rather than a current complete-finding
 admission claim.

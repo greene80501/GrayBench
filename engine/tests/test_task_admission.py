@@ -59,6 +59,10 @@ def test_pending_inventory_contains_exact_pinned_302_and_no_admission(cache):
             card for card in inventory.cards if card.source_key == f"{suite}/qiskitHumanEval/62"
         )
         assert card.known_findings == tuple(KNOWN_FINDINGS[62])
+        assert any(
+            "omits valid inputs" in finding and "124 cases" in finding
+            for finding in card.known_findings
+        )
         assert "known_findings_unresolved" in admission_blockers(card)
     admission.require_current_finding_registry(inventory)
     validate_inventory(inventory, cache)
