@@ -263,6 +263,23 @@ def test_task62_authored_controls_cover_independent_and_wrong_styles():
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_task62_v2_control_adds_the_exact_omitted_input_mutant_without_changing_v1():
+    pinned = source()
+    old = task62_value_task(pinned)
+    revised = task62_module.task62_value_task_v2(pinned)
+    v1 = protected_probes(pinned, oracle=old.oracle)
+    v2 = protected_probes(pinned, oracle=revised.oracle)
+    assert v1 == protected_probes(pinned)
+    assert len(v1) == 8
+    assert len(v2) == 9
+    assert v2[:8] == v1
+    assert v2[-1].name == "omitted-input-bb84"
+    assert v2[-1].expectation == "fail"
+    assert "[1, 0, 0, 0]" in v2[-1].completion
+    assert "[0, 0, 0, 0]" in v2[-1].completion
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
 def test_task62_control_runner_predeclares_selected_judge(monkeypatch, tmp_path):
     captured = {}
 
@@ -274,7 +291,7 @@ def test_task62_control_runner_predeclares_selected_judge(monkeypatch, tmp_path)
     monkeypatch.setattr("graybench.protected_oracle_review.run_review", fake_run_review)
     monkeypatch.setattr(
         "graybench.protected_oracle_review.inspect_oracle_review",
-        lambda _path, _cache: {"control_count": 8},
+        lambda _path, _cache: {"control_count": 9},
     )
     report = run_protected_review(
         Path(CACHE),
@@ -283,11 +300,11 @@ def test_task62_control_runner_predeclares_selected_judge(monkeypatch, tmp_path)
         image="sha256:" + "a" * 64,
         task_ids=("qiskitHumanEval/62",),
     )
-    assert report == {"control_count": 8}
+    assert report == {"control_count": 9}
     assert [task.public.task_id for task in captured["sources"]] == ["qiskitHumanEval/62"]
     key = "normal/qiskitHumanEval/62"
     assert captured["declared"][key]["oracle"] == revised_value_task(source()).oracle
-    assert len(captured["probes"]) == 8
+    assert len(captured["probes"]) == 9
 
 
 def test_task62_cli_accepts_explicit_protected_control_selection(monkeypatch, tmp_path, capsys):

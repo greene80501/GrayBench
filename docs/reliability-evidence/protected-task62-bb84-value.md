@@ -11,6 +11,18 @@ input-specific wrong answer that passes all 124 frozen cases but fails on a
 valid omitted width-4 input. The current condition remains development-only;
 the probe does not alter its cases or any recorded verdict.
 
+The separately named `task62-bb84-sender-amplitudes-all-inputs-v2` condition
+keeps the exact public value contract and tests all 1,364 valid binary
+state/basis inputs of widths 1 through 5, ordered by width, state, then basis.
+It is now the default development revision; v1 remains explicitly selectable
+for historical reconstruction. The [v2 control bundle](artifacts/task62-protected-exhaustive-2026-09-28/README.md)
+records 18/18 expected outcomes under the pinned isolated runtime: three
+correct styles pass and six wrong styles fail per suite. The mutant that
+exposed the omitted v1 input fails in normal and hard v2. Complete coverage
+of this finite value domain removes that case-set hole but does not establish
+native-circuit semantics, adequate runtime limits for every correct program,
+independent oracle review, or release eligibility.
+
 The [preserved control bundle](artifacts/task62-protected-value-2026-09-28/README.md) records eight predeclared authored probes per suite under image `sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd`. An independent analytic tensor construction, a Qiskit circuit-derived `Statevector`, and a global-phase variant passed in both suites. Fixed-output, ignored-state, ignored-basis, reversed-wire-order and incorrect X-sign mutants failed in both suites. The source-bound log has SHA-256 `0e000f7129cc724acdbc08e50709b0a64807b1d36f3408e9d46b7c8f426c4d55` and reports 16/16 expected outcomes, six passes and ten failures. These are tests of this declared value contract, not a measured model success rate.
 
 The revision is available for explicit development selection, with `release_eligible: false`. The task-62 admission finding remains unresolved for the pinned native task; this new condition also lacks independent fixture and oracle reviews, full-domain proof, and release authorization. Finite authored controls can find mistakes but cannot establish 100% semantic accuracy. The prior task-2/20 control logs bind their historical judge source, which differs from this source revision, and are not silently promoted to current task-62 evidence.

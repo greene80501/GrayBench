@@ -1,6 +1,6 @@
 # Task-62 protected value case-coverage limit
 
-The current `task62-bb84-sender-amplitudes-v1` condition freezes 124 valid
+The historical `task62-bb84-sender-amplitudes-v1` condition freezes 124 valid
 state/basis pairs. Its declared binary-list domain has 1,364 pairs over widths
 one through five. Widths one through three are exhaustive; widths four and five
 are sampled. The [host-side probe](task62_case_coverage_probe.py) constructs a
@@ -8,8 +8,8 @@ function that computes the correct BB84 amplitudes on every frozen input but
 returns the wrong state on the omitted valid input `state=[1,0,0,0]`,
 `basis=[0,0,0,0]`. It passes the host oracle on all 124 frozen pairs and fails
 on the omitted pair. This is an exact case-set false pass, not a model result.
-An optional isolated-worker run also confirms that the current
-normal and hard protected judges accept the constructed Python candidate.
+An optional isolated-worker run also confirms that the v1 normal and hard
+protected judges accept the constructed Python candidate.
 
 From `engine/`, reproduce without API access, Docker, or the pinned dataset
 cache:
@@ -45,13 +45,13 @@ One straightforward correct numeric representation of all 1,364 expected outputs
 was 533,164 bytes in compact JSON in a local sizing check, below the runner's
 default 1 MiB output limit. That single representation is not resource
 calibration: other correct implementations, serialization choices and runtimes
-may exceed the limit or timeout. The current `ProtectedSemanticTask` schema
-also caps cases at 256. An exhaustive condition therefore needs a separately
-versioned oracle and case contract, raised and calibrated resource limits,
-positive alternatives and wrong-answer controls, then a new source-bound
-admission review. It must preserve v1 evidence rather than rewriting old
-judgments. Even exhaustive inputs would attest only the stated amplitude
-values, not a native `QuantumCircuit` or the algorithm used to produce them.
+may exceed the limit or timeout. At the time of this probe,
+`ProtectedSemanticTask` capped cases at 256. V2 raises that ceiling to 1,364,
+uses a separately versioned oracle, and has positive and wrong-answer controls.
+Its resource defaults still need broader calibration and a new source-bound
+admission review. V1 evidence remains unchanged. Even exhaustive inputs attest
+only the stated amplitude values, not a native `QuantumCircuit` or the
+algorithm used to produce them.
 
 The separate [exhaustive worker feasibility probe](task62_exhaustive_feasibility_probe.py)
 bypasses the 256-case task schema without altering it. With the same pinned
@@ -76,3 +76,9 @@ The report binds the source task, contract, full input list, runner manifest,
 candidate code and returned bytes. This is one-machine feasibility evidence,
 not timing calibration, independent semantic review, a new frozen judge, or a
 model score.
+
+The subsequent [exhaustive v2 control bundle](artifacts/task62-protected-exhaustive-2026-09-28/README.md)
+tests the entire declared 1,364-input domain under a distinct oracle identity.
+Its source-bound normal and hard judges both reject the input-specific mutant.
+V1 and this probe remain unchanged as historical evidence. V2 is still a
+development value condition with separate admission and resource-review gates.

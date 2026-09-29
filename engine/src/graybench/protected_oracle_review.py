@@ -8,7 +8,11 @@ from pathlib import Path
 
 from graybench.datasets import JudgeTask, load_suite
 from graybench.oracle_review import Probe, inspect_oracle_review, run_review
-from graybench.protected_semantic_judge import ProtectedSemanticJudge
+from graybench.protected_semantic_judge import (
+    TASK62_ORACLE,
+    TASK62_ORACLE_V2,
+    ProtectedSemanticJudge,
+)
 from graybench.protected_task_registry import revised_value_task
 from graybench.protected_value_runner import ValueRunner
 
@@ -42,7 +46,26 @@ def _task62_analytic_completion(
     )
 
 
-def protected_probes(source: JudgeTask) -> tuple[Probe, ...]:
+def _task62_omitted_input_mutant_completion() -> str:
+    """Correct BB84 values except at one valid input omitted by v1."""
+    return (
+        "def bb84_sender_amplitudes(state, basis):\n"
+        "    import math\n"
+        "    if state == [1, 0, 0, 0] and basis == [0, 0, 0, 0]:\n"
+        "        state = [0, 0, 0, 0]\n"
+        "    vector = [1.0]\n"
+        "    for bit, axis in zip(state, basis):\n"
+        "        if axis == 0:\n"
+        "            single = [0.0, 1.0] if bit else [1.0, 0.0]\n"
+        "        else:\n"
+        "            sign = -1.0 if bit else 1.0\n"
+        "            single = [1 / math.sqrt(2), sign / math.sqrt(2)]\n"
+        "        vector = [amplitude * component for component in single for amplitude in vector]\n"
+        "    return [[float(amplitude), 0.0] for amplitude in vector]\n"
+    )
+
+
+def protected_probes(source: JudgeTask, *, oracle: str | None = None) -> tuple[Probe, ...]:
     if source.public.task_id == "qiskitHumanEval/2":
         return (
             Probe(
@@ -167,7 +190,9 @@ def protected_probes(source: JudgeTask) -> tuple[Probe, ...]:
             ),
         )
     if source.public.task_id == "qiskitHumanEval/62":
-        return (
+        if oracle not in (None, TASK62_ORACLE, TASK62_ORACLE_V2):
+            raise ValueError("Unknown task-62 protected oracle for controls")
+        probes = (
             Probe(
                 "analytic-bb84",
                 "pass",
@@ -224,6 +249,17 @@ def protected_probes(source: JudgeTask) -> tuple[Probe, ...]:
                 _task62_analytic_completion(wrong_x_sign=True),
             ),
         )
+        if oracle == TASK62_ORACLE_V2:
+            return (
+                *probes,
+                Probe(
+                    "omitted-input-bb84",
+                    "fail",
+                    "One valid width-4 input omitted by v1 receives a wrong state",
+                    _task62_omitted_input_mutant_completion(),
+                ),
+            )
+        return probes
     raise ValueError("No authored protected controls for this source task")
 
 
@@ -271,11 +307,15 @@ def run_protected_review(
             key = f"{source.public.suite}/{source.public.task_id}"
             return judge.evaluate(revisions[key], source, completion)
 
+    def probes_for_source(source: JudgeTask) -> tuple[Probe, ...]:
+        key = f"{source.public.suite}/{source.public.task_id}"
+        return protected_probes(source, oracle=revisions[key].oracle)
+
     run_review(
         sources,
         BoundJudge(),
         output,
-        probes_for=protected_probes,
+        probes_for=probes_for_source,
         declared_judges=declared,
     )
     return inspect_oracle_review(output, cache)

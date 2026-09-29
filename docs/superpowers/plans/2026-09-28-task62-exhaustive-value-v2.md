@@ -57,10 +57,10 @@
 
 **Interfaces:** `protected_probes(source, *, oracle=None)` preserves eight v1 controls and includes a ninth v2-only wrong candidate. `run_protected_review` binds probes to the predeclared revision.
 
-- [ ] Test that v1 keeps eight controls, v2 adds the exact wrong-input control, and the review runner predeclares the selected judge.
-- [ ] Run focused tests red, implement the selector, run green.
-- [ ] Execute 18 controls under the pinned image and verify three positive and six negative outcomes per suite, including the omitted-input mutant.
-- [ ] Save the immutable log, byte hashes, source and runtime manifests, and a local verifier; run it and commit.
+- [x] Test that v1 keeps eight controls, v2 adds the exact wrong-input control, and the review runner predeclares the selected judge.
+- [x] Run focused tests red, implement the selector, run green.
+- [x] Execute 18 controls under the pinned image and verify three positive and six negative outcomes per suite, including the omitted-input mutant.
+- [x] Save the immutable log, byte hashes, source and runtime manifests, and a local verifier; run it and commit.
 
 ### Task 4: Carry the admission inventory forward without rewriting history
 

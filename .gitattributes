@@ -101,3 +101,6 @@ docs/reliability-evidence/task111_native_oracle_probe.py -text whitespace=traili
 docs/reliability-evidence/GrayBench-task111-native-oracle-probe.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/admission-findings-2026-09-28/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/admission-findings-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task62-protected-exhaustive-2026-09-28/control.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task62-protected-exhaustive-2026-09-28/manifest.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task62-protected-exhaustive-2026-09-28/verify.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
