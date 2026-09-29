@@ -8,9 +8,11 @@ from graybench.contracts import PublicTask
 from graybench.datasets import JudgeTask
 from graybench.protected_semantic_judge import (
     TASK62_ORACLE,
+    TASK62_ORACLE_V2,
     ProtectedSemanticTask,
     SemanticCase,
     task62_case_pairs,
+    task62_case_pairs_v2,
 )
 from graybench.protected_value_contract import ProtectedValueContract, ValueCall, ValueShape
 
@@ -74,5 +76,24 @@ def task62_value_task(source: JudgeTask) -> ProtectedSemanticTask:
                 call=ValueCall(args=(list(state), list(basis))),
             )
             for state, basis in task62_case_pairs()
+        ),
+    )
+
+
+def task62_value_task_v2(source: JudgeTask) -> ProtectedSemanticTask:
+    """Judge every valid input while keeping the original value contract."""
+    original = task62_value_task(source)
+    return ProtectedSemanticTask(
+        contract=original.contract,
+        oracle=TASK62_ORACLE_V2,
+        cases=tuple(
+            SemanticCase(
+                case_id=(
+                    f"width-{len(state)}-state-{''.join(map(str, state))}"
+                    f"-basis-{''.join(map(str, basis))}"
+                ),
+                call=ValueCall(args=(list(state), list(basis))),
+            )
+            for state, basis in task62_case_pairs_v2()
         ),
     )

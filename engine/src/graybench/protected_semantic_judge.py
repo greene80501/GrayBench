@@ -23,6 +23,7 @@ TASK20_ORACLE = "task20-seven-qubit-ghz-amplitudes-v1"
 TASK20_ORACLE_V2 = "task20-seven-qubit-ghz-amplitudes-all-layouts-v2"
 TASK2_ORACLE = "task2-two-qubit-phi-plus-amplitudes-v1"
 TASK62_ORACLE = "task62-bb84-sender-amplitudes-v1"
+TASK62_ORACLE_V2 = "task62-bb84-sender-amplitudes-all-inputs-v2"
 
 
 def task62_case_pairs():
@@ -45,6 +46,13 @@ def task62_case_pairs():
     )
 
 
+def task62_case_pairs_v2():
+    """Every ordered binary state and basis pair in the declared finite domain."""
+    for width in range(1, 6):
+        bits = tuple(product((0, 1), repeat=width))
+        yield from product(bits, bits)
+
+
 class SemanticCase(Contract):
     case_id: str = Field(min_length=1)
     call: ValueCall
@@ -58,8 +66,9 @@ class ProtectedSemanticTask(Contract):
         "task20-seven-qubit-ghz-amplitudes-all-layouts-v2",
         "task2-two-qubit-phi-plus-amplitudes-v1",
         "task62-bb84-sender-amplitudes-v1",
+        "task62-bb84-sender-amplitudes-all-inputs-v2",
     ] = TASK20_ORACLE
-    cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=256)
+    cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=1364)
     release_eligible: Literal[False] = False
 
     @model_validator(mode="after")
@@ -69,6 +78,7 @@ class ProtectedSemanticTask(Contract):
             TASK20_ORACLE: "qiskitHumanEval/20",
             TASK20_ORACLE_V2: "qiskitHumanEval/20",
             TASK62_ORACLE: "qiskitHumanEval/62",
+            TASK62_ORACLE_V2: "qiskitHumanEval/62",
         }[self.oracle]
         if self.contract.public.task_id != expected_task:
             raise ValueError("Semantic oracle and public task identity differ")
@@ -90,8 +100,19 @@ class ProtectedSemanticTask(Contract):
                 layouts.append(tuple(case.call.args[0]))
             if len(layouts) != 210 or set(layouts) != set(permutations(range(7), 3)):
                 raise ValueError("Task-20 v2 requires all ordered layouts")
-        if self.oracle == TASK62_ORACLE:
-            if len(self.cases) != 124:
+        if self.oracle in {TASK62_ORACLE, TASK62_ORACLE_V2}:
+            expected_pairs = (
+                task62_case_pairs_v2() if self.oracle == TASK62_ORACLE_V2 else task62_case_pairs()
+            )
+            expected = tuple(
+                (
+                    f"width-{len(state)}-state-{''.join(map(str, state))}"
+                    f"-basis-{''.join(map(str, basis))}",
+                    (list(state), list(basis)),
+                )
+                for state, basis in expected_pairs
+            )
+            if len(self.cases) != len(expected):
                 raise ValueError("Protected task-62 requires its full frozen case set")
             for case in self.cases:
                 args = case.call.args
@@ -105,14 +126,6 @@ class ProtectedSemanticTask(Contract):
                     )
                 ):
                     raise ValueError("Protected task-62 requires binary state and basis inputs")
-            expected = tuple(
-                (
-                    f"width-{len(state)}-state-{''.join(map(str, state))}"
-                    f"-basis-{''.join(map(str, basis))}",
-                    (list(state), list(basis)),
-                )
-                for state, basis in task62_case_pairs()
-            )
             observed = tuple((case.case_id, case.call.args) for case in self.cases)
             if observed != expected:
                 raise ValueError("Protected task-62 requires its full frozen case set")

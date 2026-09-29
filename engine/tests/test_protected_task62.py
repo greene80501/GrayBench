@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+import graybench.protected_task62 as task62_module
 from graybench.cli import main
 from graybench.contracts import ModelSpec
 from graybench.datasets import load_suite
@@ -73,6 +74,44 @@ def test_task62_cases_exhaust_small_binary_inputs_and_vary_larger_widths():
         assert observed == expected
     assert {len(state) for state, _ in pairs} == {1, 2, 3, 4, 5}
     assert ([0, 1, 1, 1, 0], [1, 0, 0, 1, 0]) in pairs
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_task62_v2_exhausts_the_finite_domain_without_rewriting_v1():
+    for suite in ("normal", "hard"):
+        pinned = source(suite)
+        old = task62_value_task(pinned)
+        revised = task62_module.task62_value_task_v2(pinned)
+        assert old.oracle == "task62-bb84-sender-amplitudes-v1"
+        assert len(old.cases) == 124
+        assert revised.oracle == "task62-bb84-sender-amplitudes-all-inputs-v2"
+        assert revised.contract == old.contract
+        assert len(revised.cases) == 1364
+        assert len({case.call.digest for case in revised.cases}) == 1364
+        observed = [(tuple(case.call.args[0]), tuple(case.call.args[1])) for case in revised.cases]
+        expected = [
+            (state, basis)
+            for width in range(1, 6)
+            for state in product((0, 1), repeat=width)
+            for basis in product((0, 1), repeat=width)
+        ]
+        assert observed == expected
+        assert ((1, 0, 0, 0), (0, 0, 0, 0)) in observed
+        assert old == task62_value_task(pinned)
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_task62_v2_rejects_missing_reordered_and_changed_cases():
+    revised = task62_module.task62_value_task_v2(source())
+    omitted = revised.cases[:-1]
+    reordered = (revised.cases[1], revised.cases[0], *revised.cases[2:])
+    changed = (
+        revised.cases[0].model_copy(update={"case_id": "wrong-case-id"}),
+        *revised.cases[1:],
+    )
+    for cases in (omitted, reordered, changed):
+        with pytest.raises(ValidationError, match="full frozen case set"):
+            ProtectedSemanticTask(contract=revised.contract, oracle=revised.oracle, cases=cases)
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")

@@ -34,10 +34,10 @@
 
 **Interfaces:** Add `TASK62_ORACLE_V2`, `task62_case_pairs_v2()`, and `task62_value_task_v2(source: JudgeTask) -> ProtectedSemanticTask`; keep the v1 names and behavior.
 
-- [ ] Write tests for exactly 1,364 distinct ordered calls, the omitted v1 input, v1 reconstruction, and rejection of missing/reordered/changed cases.
-- [ ] Run the focused tests and confirm they fail for the absent v2 behavior.
-- [ ] Implement the v2 constructor and exact-case validator; increase the schema maximum only to 1,364.
-- [ ] Run focused tests and Ruff; confirm no v1 regression.
+- [x] Write tests for exactly 1,364 distinct ordered calls, the omitted v1 input, v1 reconstruction, and rejection of missing/reordered/changed cases.
+- [x] Run the focused tests and confirm they fail for the absent v2 behavior.
+- [x] Implement the v2 constructor and exact-case validator; increase the schema maximum only to 1,364.
+- [x] Run focused tests and Ruff; confirm no v1 regression.
 - [ ] Commit the tested identity and validation change.
 
 ### Task 2: Make the isolated judge and registry select v2 safely
