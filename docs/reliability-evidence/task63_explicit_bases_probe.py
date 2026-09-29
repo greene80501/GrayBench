@@ -1,7 +1,7 @@
 """Protected authored controls for the separately named BB84 explicit-bases recipe.
 
 Run from engine/: uv run --extra dataset python ../docs/reliability-evidence/
-task63_explicit_bases_probe.py OUTPUT.jsonl --image sha256:... --docker PATH
+task63_explicit_bases_probe.py OUTPUT.jsonl --cache CACHE --image sha256:... --docker PATH
 The output is evidence, never a model score. An existing output is not overwritten.
 """
 
@@ -49,29 +49,24 @@ ERROR = """def bb84_circuit_generate_key(senders_basis, circuit, receivers_basis
 """
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("output", type=Path)
-    parser.add_argument("--image", required=True)
-    parser.add_argument("--docker", default="docker")
-    args = parser.parse_args()
-
-    judge = recipe_judge("qhe63-explicit-bases-v1", image=args.image, docker=args.docker)
+def plan_cases(cache: Path, judge, *, image: str) -> tuple[list, dict]:
+    """Freeze pinned task, control and judge identities before candidate execution."""
     originals = [
-        next(
-            task
-            for task in load_suite(suite, Path("../../GrayBench/data/datasets"))
-            if task.public.family_id == "qhe/63"
-        )
+        next(task for task in load_suite(suite, cache) if task.public.family_id == "qhe/63")
         for suite in ("normal", "hard")
     ]
     if any(t.digest != PINNED_SOURCE_TASK_DIGESTS[t.public.suite] for t in originals):
         raise ValueError("Pinned task 63 source changed")
     cases = []
     selection = {}
+    declared_judges = {}
     for original in originals:
         revised = judge.revise(original)
         suite = original.public.suite
+        declared = judge.configuration(revised)[1]
+        if declared["inner"]["image"] != image:
+            raise ValueError("Predeclared BB84 judge image differs from requested image")
+        declared_judges[f"{suite}/{original.public.task_id}"] = declared
         controls = (
             ("reference", REFERENCE_BODY if suite == "normal" else HARD_REFERENCE, "pass"),
             ("statevector-alternative", STATEVECTOR, "pass"),
@@ -93,9 +88,33 @@ def main():
             selection[key] = record
             cases.append((key, identity(record), (revised, code, expected)))
 
+    return cases, {
+        "recipe": "qhe63-explicit-bases-v1",
+        "probe_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "image": image,
+        "cases": selection,
+        "declared_judges": declared_judges,
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("output", type=Path)
+    parser.add_argument("--cache", required=True, type=Path)
+    parser.add_argument("--image", required=True)
+    parser.add_argument("--docker", default="docker")
+    args = parser.parse_args()
+
+    judge = recipe_judge("qhe63-explicit-bases-v1", image=args.image, docker=args.docker)
+    cases, selection = plan_cases(args.cache, judge, image=args.image)
+
     def evaluate(case):
         revised, code, expected = case
         result = judge.evaluate(revised, code)
+        task_key = f"{revised.public.suite}/{revised.public.task_id}"
+        declared = selection["declared_judges"][task_key]
+        if result.judge_digest != identity(declared) or result.evidence.get("manifest") != declared:
+            raise ValueError("Observed BB84 judge differs from predeclared judge")
         return Judgment(
             result.outcome,
             result.judge_digest,
@@ -111,15 +130,10 @@ def main():
         evaluate,
         args.output,
         purpose="BB84 explicit-bases protected authored controls; not model scoring",
-        selection={
-            "recipe": "qhe63-explicit-bases-v1",
-            "probe_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-            "image": args.image,
-            "cases": selection,
-        },
+        selection=selection,
     )
     if not summary["complete"] or any(
-        summary["results"][key] != record["expected"] for key, record in selection.items()
+        summary["results"][key] != record["expected"] for key, record in selection["cases"].items()
     ):
         raise AssertionError("BB84 protected controls did not match predeclared outcomes")
     print(json.dumps(summary, sort_keys=True))

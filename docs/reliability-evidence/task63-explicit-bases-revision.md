@@ -56,10 +56,19 @@ with the same predeclared outcomes, and this final artifact verifies there.
 The prior artifact remains recoverable in Git history; its results are not
 combined with the new ledger.
 
+A later [declared-judge successor](artifacts/task63-declared-controls-2026-09-28/README.md)
+ran the same seven authored candidates per suite under a newer engine source.
+Its probe requires an explicit pinned-cache path and writes both complete judge
+manifests in the header before execution. The verifier binds every result to
+those declarations and distinguishes internally consistent historical logs
+from logs whose source and probe bytes match the running checkout. All 14
+outcomes matched the predeclared expectations. This remains a graph-recipe
+development control, not a value-track admission control or model score.
+
 From `engine/`, after obtaining the pinned dataset and immutable image:
 
 ```powershell
-uv run --extra dataset python ../docs/reliability-evidence/task63_explicit_bases_probe.py NEW_OUTPUT.jsonl --image sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd --docker 'C:/Program Files/Docker/Docker/resources/bin/docker.exe'
+uv run --extra dataset python ../docs/reliability-evidence/task63_explicit_bases_probe.py NEW_OUTPUT.jsonl --cache CACHE --image sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd --docker 'C:/Program Files/Docker/Docker/resources/bin/docker.exe'
 uv run --extra dataset python ../docs/reliability-evidence/verify_task63_explicit_bases.py NEW_OUTPUT.jsonl
 ```
 
