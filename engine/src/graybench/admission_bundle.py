@@ -11,6 +11,7 @@ import tempfile
 from pathlib import Path
 
 from graybench.identity import canonical
+from graybench.provenance import source_manifest
 from graybench.task_admission import AdmissionInventory, audit_control_coverage
 
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
@@ -111,6 +112,21 @@ def verify_admission_bundle(bundle: Path, cache: Path) -> dict:
             _artifact(bundle, descriptor, 64 * 1024**2)
         except (OSError, ValueError) as error:
             raise ValueError("Admission-bundle source changed during verification") from error
+    artifact_sources = {
+        artifact["file_sha256"]: artifact["source_digest"] for artifact in recomputed["artifacts"]
+    }
+    inventory_source_bound = []
+    different_source_bound = []
+    for task in recomputed["tasks"]:
+        for control in task["controls"]:
+            if not control["declared_frozen_judge_matches_card"]:
+                continue
+            destination = (
+                inventory_source_bound
+                if artifact_sources[control["artifact_file_sha256"]] == inventory.source_digest
+                else different_source_bound
+            )
+            destination.append(task["task_key"])
     return {
         "verified": True,
         "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
@@ -119,6 +135,13 @@ def verify_admission_bundle(bundle: Path, cache: Path) -> dict:
         "covered_task_count": recomputed["covered_task_count"],
         "uncovered_task_count": recomputed["uncovered_task_count"],
         "declared_frozen_judge_control_count": recomputed["declared_frozen_judge_control_count"],
+        "inventory_source_bound_control_count": len(inventory_source_bound),
+        "different_source_bound_control_count": len(different_source_bound),
+        "inventory_source_bound_task_keys": sorted(set(inventory_source_bound)),
+        "different_source_bound_task_keys": sorted(set(different_source_bound)),
+        "inventory_source_matches_running_source": (
+            inventory.source_digest == source_manifest()["digest"]
+        ),
         "false_pass_count": recomputed["false_pass_count"],
         "false_rejection_count": recomputed["false_rejection_count"],
         "independent_review": False,

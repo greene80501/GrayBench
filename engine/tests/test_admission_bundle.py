@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import os
+from pathlib import Path
 
 import pytest
 from test_native_cohort import cache as _synthetic_cache
@@ -59,6 +61,33 @@ def test_bundle_recomputes_exact_saved_audit(tmp_path, cache):
     assert result["false_pass_count"] == 0
     assert result["publication_eligible"] is False
     assert result["independent_review"] is False
+    assert result["inventory_source_bound_control_count"] == 0
+    assert result["different_source_bound_control_count"] == 0
+
+
+@pytest.mark.skipif(
+    not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned source cache required"
+)
+def test_verified_successor_separates_historical_from_inventory_source_controls():
+    bundle = (
+        Path(__file__).resolve().parents[2]
+        / "docs/reliability-evidence/artifacts/admission-task62-exhaustive-2026-09-28"
+    )
+    result = verify_admission_bundle(bundle, Path(os.environ["GRAYBENCH_TEST_CACHE"]))
+    assert result["declared_frozen_judge_control_count"] == 42
+    assert result["inventory_source_bound_control_count"] == 18
+    assert result["different_source_bound_control_count"] == 24
+    assert result["inventory_source_bound_task_keys"] == [
+        "hard/qiskitHumanEval/62",
+        "normal/qiskitHumanEval/62",
+    ]
+    assert result["different_source_bound_task_keys"] == [
+        "hard/qiskitHumanEval/2",
+        "hard/qiskitHumanEval/20",
+        "normal/qiskitHumanEval/2",
+        "normal/qiskitHumanEval/20",
+    ]
+    assert result["inventory_source_matches_running_source"] is False
 
 
 def test_bundle_rejects_changed_log_and_rehashed_but_false_audit(tmp_path, cache):

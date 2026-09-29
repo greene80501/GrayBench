@@ -83,6 +83,11 @@ includes its inventory, three control logs, and exact schema-5 audit. With a
 pinned dataset cache, `admission-bundle-verify BUNDLE CACHE` checks file hashes,
 re-inspects every log, and recomputes the saved audit byte for byte. A matching
 bundle is reproducible local evidence, not independent attestation.
+The verifier reports separately how many declared-judge controls match the
+inventory's engine source and how many come from a different engine source.
+It also says whether the inventory source matches the engine running the
+verification command. A bound historical control is preserved as evidence;
+it is not a current-source control merely because its judge digest matches.
 The summary separates authored wrong controls that passed, authored correct
 controls that failed, and other mismatches such as timeouts.
 Report schema 5 verifies any recorded judge manifest against its digest and

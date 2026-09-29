@@ -205,3 +205,12 @@ protected judges, eight historical upstream false passes, and 292 cards
 without controls. The 96 card-level known findings remain unresolved; no
 oracle-case fixture or independent review is present. `publication_eligible`
 is false and no model score has been produced.
+
+The bundle verifier now distinguishes judge binding from source identity
+without changing any frozen bundle bytes. Of the 42 bound controls, 18 task-62
+controls were run under the inventory's engine source and 24 task-2/20 controls
+were run under different, earlier engine sources. The verifier also reports
+whether the inventory source matches the running engine; it does not after this reporting
+change. These fields describe provenance, not a verdict on the older judges'
+semantics. A current-source release would require fresh, frozen control runs
+and the remaining admission gates.
