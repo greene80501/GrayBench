@@ -61,7 +61,7 @@ def main() -> None:
         "Header source differs",
     )
     selection = header["selection"]
-    judge = ProtectedSemanticJudge(ValueRunner(image=IMAGE, timeout=120))
+    judge = ProtectedSemanticJudge(ValueRunner(image=IMAGE, timeout=120.0))
     expected_cases = {}
     expected_judges = {}
     for suite in ("normal", "hard"):
@@ -78,7 +78,10 @@ def main() -> None:
                 "rationale": probe.rationale,
                 "completion": probe.completion,
             }
-    require(selection["declared_judges"] == expected_judges, "Predeclared judges differ")
+    require(
+        identity(selection["declared_judges"]) == identity(expected_judges),
+        "Predeclared judges differ",
+    )
     require(selection["cases"] == expected_cases, "Predeclared controls differ")
     require(
         header["tasks"] == {key: identity(case) for key, case in expected_cases.items()},
@@ -100,6 +103,20 @@ def main() -> None:
         len(omitted) == 2 and all(c["expected"] == c["actual"] == "fail" for c in omitted),
         "The v1 counterexample was not rejected in both suites",
     )
+    omitted_events = [
+        event
+        for event in events
+        if event["kind"] == "result" and event["task_key"].endswith("/omitted-input-bb84")
+    ]
+    require(len(omitted_events) == 2, "Missing exact omitted-input results")
+    for event in omitted_events:
+        cases = event["evidence"]["judgment"]["case_results"]
+        require(len(cases) == 1364, "Omitted-input mutant did not run all v2 cases")
+        require(
+            [case["case_id"] for case in cases if not case["passed"]]
+            == ["width-4-state-1000-basis-0000"],
+            "Omitted-input mutant failed at a different v2 case",
+        )
     print("Protected task-62 exhaustive-v2 controls verified: 18/18; publication ineligible")
 
 

@@ -68,7 +68,7 @@
 
 **Interfaces:** `refresh_finding_registry(old_inventory, cache)` preserves card review work and adds the current task-62 finding; `verify_admission_bundle(bundle, cache)` replays exact saved bytes.
 
-- [ ] Verify the predecessor bundle and assert its old finding registry fails the current-registry gate while historical validation still passes.
-- [ ] Build a successor from the pinned predecessor, preserve its first three logs byte-for-byte, replace the task-62 log, refresh source and finding registry, then recompute the audit.
-- [ ] Verify the successor from exact bytes and independently reproduce it in a second directory; keep publication eligibility false and no finding auto-resolution.
-- [ ] Run the full applicable local suite, Ruff, review the diff, commit, push to draft PR #3, and update its description.
+- [x] Verify the predecessor bundle and assert its old finding registry fails the current-registry gate while historical validation still passes.
+- [x] Build a successor from the pinned predecessor, preserve its first three logs byte-for-byte, replace the task-62 log, refresh source and finding registry, then recompute the audit.
+- [x] Verify the successor from exact bytes and independently reproduce it in a second directory; keep publication eligibility false and no finding auto-resolution.
+- [x] Run the full applicable local suite, Ruff, review the diff, commit, push to draft PR #3, and update its description.

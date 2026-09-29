@@ -189,3 +189,19 @@ of 94 unresolved card-level findings above describes this frozen bundle; a new
 inventory has two additional unresolved entries. The bundle remains a
 historical, verifiable snapshot rather than a current complete-finding
 admission claim.
+
+## Exhaustive-v2 task-62 successor, 2026-09-28
+
+The [new successor bundle](artifacts/admission-task62-exhaustive-2026-09-28/README.md)
+keeps the first three historical logs byte-for-byte, replaces the task-62 log
+with 18 source-bound v2 controls, and binds both task-62 cards to the new
+1,364-input judge. It advances the frozen finding registry to include the
+protected-v1 case gap without claiming it resolved. Its manifest SHA-256 is
+`4855b7d3f5c870c543f2b83b129387c04b902b1dd65d67594b2ba9d2722a5502`;
+the recomputed audit SHA-256 is
+`a3a1ee09ba776966d1e4c10a32280c5391961a3339d7ead81831071f730481d3`.
+The audit verifies 60 controls on ten cards, 42 linked to predeclared
+protected judges, eight historical upstream false passes, and 292 cards
+without controls. The 96 card-level known findings remain unresolved; no
+oracle-case fixture or independent review is present. `publication_eligible`
+is false and no model score has been produced.

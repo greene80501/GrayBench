@@ -52,7 +52,6 @@ def test_task62_contract_freezes_distinct_normal_and_hard_prompts_and_pinned_anc
         assert task.contract.track == "graybench-protected-semantic-v1"
         assert task.release_eligible is False
         assert revised_value_task(pinned, oracle=task.oracle) == task
-        assert revised_value_task(pinned, oracle=task.oracle) == task
         with pytest.raises(ValueError, match="pinned QHE task-62"):
             task62_value_task(pinned.model_copy(update={"canonical_solution": "altered"}))
 

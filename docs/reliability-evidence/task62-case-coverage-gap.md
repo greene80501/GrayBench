@@ -48,10 +48,11 @@ calibration: other correct implementations, serialization choices and runtimes
 may exceed the limit or timeout. At the time of this probe,
 `ProtectedSemanticTask` capped cases at 256. V2 raises that ceiling to 1,364,
 uses a separately versioned oracle, and has positive and wrong-answer controls.
-Its resource defaults still need broader calibration and a new source-bound
-admission review. V1 evidence remains unchanged. Even exhaustive inputs attest
-only the stated amplitude values, not a native `QuantumCircuit` or the
-algorithm used to produce them.
+Its resource defaults still need broader calibration and independent admission
+review. A source-bound local successor bundle now records the v2 controls;
+v1 evidence remains unchanged. Even exhaustive inputs attest only the stated
+amplitude values, not a native `QuantumCircuit` or the algorithm used to
+produce them.
 
 The separate [exhaustive worker feasibility probe](task62_exhaustive_feasibility_probe.py)
 bypasses the 256-case task schema without altering it. With the same pinned
