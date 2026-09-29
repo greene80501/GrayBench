@@ -51,7 +51,7 @@ def test_task62_contract_freezes_distinct_normal_and_hard_prompts_and_pinned_anc
         )
         assert task.contract.track == "graybench-protected-semantic-v1"
         assert task.release_eligible is False
-        assert revised_value_task(pinned) == task
+        assert revised_value_task(pinned, oracle=task.oracle) == task
         assert revised_value_task(pinned, oracle=task.oracle) == task
         with pytest.raises(ValueError, match="pinned QHE task-62"):
             task62_value_task(pinned.model_copy(update={"canonical_solution": "altered"}))
@@ -112,6 +112,52 @@ def test_task62_v2_rejects_missing_reordered_and_changed_cases():
     for cases in (omitted, reordered, changed):
         with pytest.raises(ValidationError, match="full frozen case set"):
             ProtectedSemanticTask(contract=revised.contract, oracle=revised.oracle, cases=cases)
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_task62_v2_is_default_but_both_versions_remain_explicitly_reconstructible():
+    for suite in ("normal", "hard"):
+        pinned = source(suite)
+        old = task62_value_task(pinned)
+        revised = task62_module.task62_value_task_v2(pinned)
+        assert revised_value_task(pinned) == revised
+        assert revised_value_task(pinned, oracle=old.oracle) == old
+        assert revised_value_task(pinned, oracle=revised.oracle) == revised
+        assert old.digest != revised.digest
+
+
+@pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
+def test_task62_v2_judge_dispatches_bb84_and_preserves_runner_error():
+    pinned = source()
+    revised = task62_module.task62_value_task_v2(pinned)
+
+    class FakeRunner:
+        def __init__(self, outcome):
+            self.outcome = outcome
+
+        def manifest(self, _contract):
+            return {"runner": "test"}
+
+        def execute(self, _contract, _completion, calls):
+            if self.outcome != "returned":
+                return ValueExecution(self.outcome, (), {"reason": "test_timeout"})
+            values = tuple(
+                [[1.0, 0.0]] + [[0.0, 0.0] for _ in range(2 ** len(call.args[0]) - 1)]
+                for call in calls
+            )
+            return ValueExecution("returned", values, {"test": True})
+
+    judge = ProtectedSemanticJudge(FakeRunner("returned"))
+    assert "task62_contract_code_sha256" in judge.manifest(revised)
+    verdict = judge.evaluate(revised, pinned, "ignored by fake")
+    assert verdict.outcome == "fail"
+    assert len(verdict.evidence["case_results"]) == 1364
+    assert verdict.evidence["case_results"][0]["passed"] is True
+    assert "max_aligned_error" in verdict.evidence["case_results"][0]
+    assert verdict.evidence["native_object_attested"] is False
+    timeout = ProtectedSemanticJudge(FakeRunner("timeout")).evaluate(revised, pinned, "ignored")
+    assert timeout.outcome == "timeout"
+    assert "case_results" not in timeout.evidence
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
@@ -240,7 +286,7 @@ def test_task62_control_runner_predeclares_selected_judge(monkeypatch, tmp_path)
     assert report == {"control_count": 8}
     assert [task.public.task_id for task in captured["sources"]] == ["qiskitHumanEval/62"]
     key = "normal/qiskitHumanEval/62"
-    assert captured["declared"][key]["oracle"] == task62_value_task(source()).oracle
+    assert captured["declared"][key]["oracle"] == revised_value_task(source()).oracle
     assert len(captured["probes"]) == 8
 
 

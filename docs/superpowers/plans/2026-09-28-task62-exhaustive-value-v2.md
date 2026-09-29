@@ -46,10 +46,10 @@
 
 **Interfaces:** `revised_value_task(source, oracle=None)` defaults task 62 to v2 and selects v1 or v2 explicitly; `ProtectedSemanticJudge.manifest/evaluate` use the task-62 code and BB84 oracle for either identity.
 
-- [ ] Write tests for distinct v1/v2 digests, exact old-oracle replay, v2 default selection, and outcome propagation for execution failure.
-- [ ] Run focused tests red.
-- [ ] Add registry and dispatch branches, preserving source ancestry and no release eligibility.
-- [ ] Run focused tests green, Ruff, and commit.
+- [x] Write tests for distinct v1/v2 digests, exact old-oracle replay, v2 default selection, and outcome propagation for execution failure.
+- [x] Run focused tests red.
+- [x] Add registry and dispatch branches, preserving source ancestry and no release eligibility.
+- [x] Run focused tests green, Ruff, and commit.
 
 ### Task 3: Add the omitted-input mutant and run both-suite controls
 

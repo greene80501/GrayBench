@@ -269,7 +269,7 @@ class ProtectedSemanticJudge:
             if task.oracle == TASK2_ORACLE
             else (
                 ("protected_task62.py", "task62_contract_code_sha256")
-                if task.oracle == TASK62_ORACLE
+                if task.oracle in {TASK62_ORACLE, TASK62_ORACLE_V2}
                 else ("protected_task20.py", "task20_contract_code_sha256")
             )
         )
@@ -310,7 +310,7 @@ class ProtectedSemanticJudge:
         for case, value in zip(task.cases, execution.values, strict=True):
             if task.oracle == TASK2_ORACLE:
                 result = _task2_phi_value(value)
-            elif task.oracle == TASK62_ORACLE:
+            elif task.oracle in {TASK62_ORACLE, TASK62_ORACLE_V2}:
                 result = _task62_bb84_value(*case.call.args, value)
             else:
                 result = _task20_ghz_value(case.call.args[0], value)
