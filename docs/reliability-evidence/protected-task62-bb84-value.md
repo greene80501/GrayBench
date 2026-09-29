@@ -6,6 +6,11 @@ The public function `bb84_sender_amplitudes(state, basis)` accepts equal-length 
 
 The frozen 124-case set exhausts all 84 binary `state`/`basis` combinations at widths 1–3, includes 32 declared width-4 combinations and eight width-5 combinations. The validator requires the exact ordered case IDs and calls. The source task digest, revised public contract, private case digest, oracle source, runner and worker sources, resource limits, and immutable Python 3.12 runtime image enter the predeclared judge manifest. Candidate code runs in a separate isolated container; the expected values and judge code remain host-side.
 
+A [case-coverage probe](task62-case-coverage-gap.md) now demonstrates an
+input-specific wrong answer that passes all 124 frozen cases but fails on a
+valid omitted width-4 input. The current condition remains development-only;
+the probe does not alter its cases or any recorded verdict.
+
 The [preserved control bundle](artifacts/task62-protected-value-2026-09-28/README.md) records eight predeclared authored probes per suite under image `sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd`. An independent analytic tensor construction, a Qiskit circuit-derived `Statevector`, and a global-phase variant passed in both suites. Fixed-output, ignored-state, ignored-basis, reversed-wire-order and incorrect X-sign mutants failed in both suites. The source-bound log has SHA-256 `0e000f7129cc724acdbc08e50709b0a64807b1d36f3408e9d46b7c8f426c4d55` and reports 16/16 expected outcomes, six passes and ten failures. These are tests of this declared value contract, not a measured model success rate.
 
 The revision is available for explicit development selection, with `release_eligible: false`. The task-62 admission finding remains unresolved for the pinned native task; this new condition also lacks independent fixture and oracle reviews, full-domain proof, and release authorization. Finite authored controls can find mistakes but cannot establish 100% semantic accuracy. The prior task-2/20 control logs bind their historical judge source, which differs from this source revision, and are not silently promoted to current task-62 evidence.

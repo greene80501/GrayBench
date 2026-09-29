@@ -180,3 +180,9 @@ control logs remain historical earlier-source observations; only the task-62
 log binds the current engine source. The bundle therefore remains
 `publication_eligible: false` and supplies neither an admitted population nor a
 model score.
+
+The later [task-62 case-coverage probe](task62-case-coverage-gap.md) found a
+separate false pass in the protected value-v1 case set. That finding is not in
+this frozen inventory's registry and has not been resolved. The bundle remains
+a historical, verifiable snapshot rather than a current complete-finding
+admission claim.
