@@ -7,6 +7,7 @@ from pathlib import Path
 
 from graybench.contracts import ExtractionPolicy, NativeExceptionPolicy
 from graybench.datasets import EXTERNAL_IDS, load_suite
+from graybench.fs_paths import readable_path
 from graybench.identity import canonical, identity
 from graybench.ledger import now
 from graybench.native_cohort import Suite, freeze_native_cohort, task_key
@@ -153,6 +154,7 @@ def run_evidence_cases(items, evaluate, output: Path, *, purpose, selection=None
 
 
 def inspect_reference_scan(path: Path):
+    path = readable_path(path)
     previous, count, header, pending, results, complete = "0" * 64, 0, None, None, {}, False
     file_digest = hashlib.sha256()
     with path.open("rb") as stream:

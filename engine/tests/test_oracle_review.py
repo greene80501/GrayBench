@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 import pytest
 from test_native_cohort import cache as _synthetic_cache
@@ -104,6 +105,22 @@ def test_local_oracle_verifier_checks_pinned_ancestry_and_outcomes(tmp_path, cac
     assert report["expected_failures"] == 1
     assert report["expected_passes"] == 2
     assert set(report["task_keys"]) == {"normal/qiskitHumanEval/0"}
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows extended-length paths only")
+def test_local_oracle_verifier_reads_log_beyond_windows_legacy_path_limit(tmp_path, cache):
+    source = _review_log(tmp_path, cache)
+    long_path = tmp_path
+    while len(str(long_path / "review.jsonl")) <= 280:
+        long_path = long_path / ("x" * 80)
+    long_path = long_path / "review.jsonl"
+    extended = Path("\\\\?\\" + str(long_path.absolute()))
+    extended.parent.mkdir(parents=True)
+    extended.write_bytes(source.read_bytes())
+
+    report = inspect_oracle_review(long_path, cache)
+    assert report["locally_verified"] is True
+    assert report["control_count"] == 3
 
 
 @pytest.mark.parametrize("actual", ["pass", "timeout"])

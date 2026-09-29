@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from graybench.datasets import load_suite
+from graybench.fs_paths import readable_path
 from graybench.identity import identity
 from graybench.judge import Judgment
 from graybench.provenance import source_manifest
@@ -194,6 +195,7 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
     A complete hash chain can be rewritten by its holder. This check detects accidental
     or internally inconsistent claims; it is not an independent review or release gate.
     """
+    path = readable_path(path)
     scan = inspect_reference_scan(path)
     if not scan["complete"]:
         raise ValueError("Oracle review is incomplete")

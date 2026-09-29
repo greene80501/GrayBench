@@ -10,6 +10,7 @@ import re
 import tempfile
 from pathlib import Path
 
+from graybench.fs_paths import readable_path
 from graybench.identity import canonical
 from graybench.provenance import source_manifest
 from graybench.task_admission import AdmissionInventory, audit_control_coverage
@@ -62,6 +63,7 @@ def _artifact(bundle: Path, descriptor: object, limit: int) -> tuple[Path, bytes
 
 def verify_admission_bundle(bundle: Path, cache: Path) -> dict:
     """Verify listed bytes and replay schema-5 controls against pinned QHE tasks."""
+    bundle = readable_path(bundle)
     manifest_path = bundle / "manifest.json"
     if manifest_path.is_symlink() or not manifest_path.is_file():
         raise ValueError("Missing or linked admission-bundle manifest")

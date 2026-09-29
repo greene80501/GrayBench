@@ -65,6 +65,22 @@ def test_bundle_recomputes_exact_saved_audit(tmp_path, cache):
     assert result["different_source_bound_control_count"] == 0
 
 
+@pytest.mark.skipif(os.name != "nt", reason="Windows extended-length paths only")
+def test_bundle_replays_when_manifest_files_exceed_windows_legacy_path_limit(tmp_path, cache):
+    source, _ = _bundle(tmp_path / "short", cache)
+    long_bundle = tmp_path
+    while len(str(long_bundle / "review.jsonl")) <= 280:
+        long_bundle = long_bundle / ("x" * 80)
+    extended = Path("\\\\?\\" + str(long_bundle.absolute()))
+    extended.mkdir(parents=True)
+    for path in source.iterdir():
+        (extended / path.name).write_bytes(path.read_bytes())
+
+    result = verify_admission_bundle(long_bundle, cache)
+    assert result["verified"] is True
+    assert result["control_count"] == 3
+
+
 @pytest.mark.skipif(
     not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned source cache required"
 )
