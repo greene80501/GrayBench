@@ -65,6 +65,13 @@ from logs whose source and probe bytes match the running checkout. All 14
 outcomes matched the predeclared expectations. This remains a graph-recipe
 development control, not a value-track admission control or model score.
 
+The later [graph-call feasibility probe](artifacts/task63-graph-throughput-2026-09-29/README.md)
+shows that both correct implementations pass a complete 72-input width-1/2
+matrix under delta transport, but both reach the candidate-active time limit
+after 256 of 584 planned width-1/2/3 calls. Those timeouts are resource
+evidence, not wrong-answer verdicts. The nine-case recipe is not silently
+expanded; a larger judge needs a separately reviewed transport/resource design.
+
 From `engine/`, after obtaining the pinned dataset and immutable image:
 
 ```powershell
