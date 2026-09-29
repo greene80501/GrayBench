@@ -15,6 +15,8 @@ docs/reliability-evidence/artifacts/admission-task62-protected-2026-09-28/*.json
 docs/reliability-evidence/artifacts/admission-task62-protected-2026-09-28/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task62_fixed_oracle_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task62_case_coverage_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task62_exhaustive_feasibility_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task62-exhaustive-feasibility-2026-09-28.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 .github/workflows/engine.yml text eol=lf
 docs/reliability-evidence/*.jsonl -text
 docs/reliability-evidence/native_task63_control.py text eol=lf

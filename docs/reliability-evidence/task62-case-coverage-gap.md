@@ -52,3 +52,27 @@ positive alternatives and wrong-answer controls, then a new source-bound
 admission review. It must preserve v1 evidence rather than rewriting old
 judgments. Even exhaustive inputs would attest only the stated amplitude
 values, not a native `QuantumCircuit` or the algorithm used to produce them.
+
+The separate [exhaustive worker feasibility probe](task62_exhaustive_feasibility_probe.py)
+bypasses the 256-case task schema without altering it. With the same pinned
+cache and image, run:
+
+```sh
+uv run --locked python ../docs/reliability-evidence/task62_exhaustive_feasibility_probe.py --cache CACHE --image sha256:IMAGE_ID
+```
+
+The [saved report](artifacts/task62-exhaustive-feasibility-2026-09-28.json)
+submitted all 1,364 calls through the isolated value worker for
+the three existing correct alternatives, five existing wrong mutants, and the
+new input-specific mutant. The three alternatives had zero host-oracle failures;
+each wrong mutant had at least one, and the new mutant failed on exactly the
+omitted width-4 input. All nine responses fit the 1 MiB diagnostic output
+limit (largest 533,206 bytes) and completed before the 60-second timeout.
+Two runs produced byte-identical JSON reports. The saved report SHA-256 is
+`bcd1ac80afc2da23774e58fc2c251194d0e0eee7790533cc10537f4cc1dc62ec`;
+the script SHA-256 is
+`3b44644a66dddceb1ee51d403f6823e0d3f0c803717ea20adc7a97a86e453f15`.
+The report binds the source task, contract, full input list, runner manifest,
+candidate code and returned bytes. This is one-machine feasibility evidence,
+not timing calibration, independent semantic review, a new frozen judge, or a
+model score.
