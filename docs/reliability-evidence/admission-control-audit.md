@@ -214,3 +214,21 @@ whether the inventory source matches the running engine; it does not after this 
 change. These fields describe provenance, not a verdict on the older judges'
 semantics. A current-source release would require fresh, frozen control runs
 and the remaining admission gates.
+
+## One-source protected-control successor, 2026-09-28
+
+The [next admission bundle](artifacts/admission-current-controls-2026-09-28/README.md)
+preserves the two upstream task-0/1 logs and replaces the task-2/20 and
+task-62 protected logs with [replays under one engine source](artifacts/protected-controls-current-source-2026-09-28/README.md).
+The task-2/20 replay matched 24/24 predeclared outcomes; task 62 matched
+18/18, including the exhaustive-v2 omitted-input mutant. The successor's
+inventory changes only its source digest and four task-2/20 judge digests;
+task-62 judge identity was already unchanged. Two builds reproduced all seven
+pinned files byte-for-byte.
+
+Its verifier reports 60 total controls, 42 bound to declared protected judges,
+all 42 under the inventory source, zero bound under a different source, and
+292 cards without controls. The same eight historical upstream false passes,
+96 unresolved card-level findings, missing fixture review and absent independent
+review keep publication eligibility false. The prior bundle remains a valid
+historical snapshot.

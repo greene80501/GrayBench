@@ -100,6 +100,10 @@ The [task-62 admission successor](../docs/reliability-evidence/artifacts/admissi
 adds two protected value cards and a fourth source-bound control log. It
 retains unresolved native findings and independent-review blockers; its
 58 controls on ten cards are still development evidence, not a ranking.
+The later [one-source protected-control successor](../docs/reliability-evidence/artifacts/admission-current-controls-2026-09-28/README.md)
+replays tasks 2, 20 and 62 under one engine source. Its verifier separates
+42 inventory-source bound controls from the historical upstream observations;
+it still admits no task and publishes no score.
 
 ## Execution conditions
 
