@@ -158,3 +158,25 @@ the recomputed audit SHA-256 is
 `2507b4f75cc6c86a5cc6b5653c8f768f10f4d88571801123a34a1da981e316a4`.
 The audit still has 294 cards without controls, no independent reviews and
 `publication_eligible: false`.
+
+## Current-source task-62 successor, 2026-09-28
+
+The [current-source successor bundle](artifacts/admission-task62-current-2026-09-28/README.md)
+verifies against the pinned normal and hard parquet bytes. Its manifest SHA-256 is
+`7ae09096586f140a642601ea7e378a6dc39bf7fe43d3ea7fabb92297c3c24c1c`;
+the recomputed audit SHA-256 is
+`6f827cbadaf2e26cc844e69d88e450e60442720dc3c89724ab001d9eccb6bd68`.
+It has 58 authored candidate controls on ten cards, including 40 linked to
+predeclared protected judges. All 40 requirement links have matching local
+candidate observations. This does not show that those judges' private fixtures
+cover the public requirements.
+
+An inventory-wide count finds requirements and exact public-contract and judge
+bindings on only six cards (normal and hard tasks 2, 20, and 62). None of their
+requirements cites an oracle-case fixture digest. No card has two review
+attestations, and 94 card-level known findings have no resolution evidence.
+The other 292 cards have no candidate controls in this bundle. The first three
+control logs remain historical earlier-source observations; only the task-62
+log binds the current engine source. The bundle therefore remains
+`publication_eligible: false` and supplies neither an admitted population nor a
+model score.
