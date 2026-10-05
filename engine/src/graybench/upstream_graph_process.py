@@ -32,6 +32,9 @@ def main():
         anchors=registry,
     )
     transport = validate_transport(task["graph_transport"])
+    batch_mode = task.get("graph_batch", "none")
+    if batch_mode not in ("none", "positional-batch-v1"):
+        raise WireError("Unknown graph batch mode")
     if transport["state_bytes"] != arena.limits.message_bytes:
         raise WireError("Graph state and transport limits differ")
     if transport["mode"] == "delta-v1":
@@ -39,7 +42,7 @@ def main():
     remote_exceptions = []
     bridge_failure = None
 
-    def exchange(*args, **kwargs):
+    def exchange(args, kwargs, *, batch=False):
         nonlocal calls
         calls += 1
         try:
@@ -49,7 +52,15 @@ def main():
         except WireError as exc:
             raise BridgeFailure("unsupported", str(exc)) from exc
         print(
-            json.dumps({"kind": "call", "sequence": calls, "graph": outgoing}, allow_nan=False),
+            json.dumps(
+                {
+                    "kind": "call",
+                    "sequence": calls,
+                    "graph": outgoing,
+                    **({"batch": True} if batch else {}),
+                },
+                allow_nan=False,
+            ),
             file=channel,
             flush=True,
         )
@@ -108,7 +119,7 @@ def main():
         if bridge_failure is not None:
             raise bridge_failure
         try:
-            return exchange(*args, **kwargs)
+            return exchange(args, kwargs)
         except BridgeFailure as exc:
             bridge_failure = exc
             raise
@@ -126,6 +137,29 @@ def main():
             except BaseException:
                 pass
             raise bridge_failure from exc
+
+    if batch_mode == "positional-batch-v1":
+
+        def batch(cases):
+            nonlocal bridge_failure
+            if bridge_failure is not None:
+                raise bridge_failure
+            if (
+                type(cases) is not tuple
+                or not 1 <= len(cases) <= 1024
+                or any(type(case) is not tuple for case in cases)
+            ):
+                bridge_failure = BridgeFailure(
+                    "infrastructure_error", "Invalid trusted positional batch"
+                )
+                raise bridge_failure
+            try:
+                return exchange((cases,), {}, batch=True)
+            except BridgeFailure as exc:
+                bridge_failure = exc
+                raise
+
+        proxy.batch = batch
 
     evidence = {}
     try:

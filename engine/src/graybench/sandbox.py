@@ -77,6 +77,7 @@ class Candidate:
         graph_manifest: dict | None = None,
         graph_transport: str = "snapshot-v1",
         graph_state_limit: int | None = None,
+        graph_batch: str = "none",
     ):
         if type(protocol) is not int or protocol not in (3, 4):
             raise ValueError("Unknown candidate protocol")
@@ -89,8 +90,15 @@ class Candidate:
         self.protocol, self.graph_session = protocol, graph_session
         from graybench.graph_limits import transport_record
 
-        if protocol != 4 and (graph_transport != "snapshot-v1" or graph_state_limit is not None):
+        if graph_batch not in ("none", "positional-batch-v1"):
+            raise ValueError("Unknown graph batch mode")
+        if protocol != 4 and (
+            graph_transport != "snapshot-v1"
+            or graph_state_limit is not None
+            or graph_batch != "none"
+        ):
             raise ValueError("Graph transport settings require protocol4")
+        self.graph_batch = graph_batch
         transport = (
             transport_record(graph_transport, output_limit, graph_state_limit)
             if protocol == 4
@@ -145,6 +153,7 @@ class Candidate:
                         "anchors": graph_manifest,
                         "limits": GraphLimits(message_bytes=transport["state_bytes"]).record(),
                         "transport": transport,
+                        **({"graph_batch": graph_batch} if graph_batch != "none" else {}),
                     }
                 ),
                 encoding="utf-8",
@@ -427,10 +436,12 @@ class Candidate:
             self.close()
             raise
 
-    def call_graph(self, entry_point, graph, *, discard_result=False):
+    def call_graph(self, entry_point, graph, *, discard_result=False, batch=False):
         """Relay a graph envelope without constructing any candidate object on the host."""
         if self.protocol != 4:
             raise CandidateError("Graph calls require protocol4")
+        if type(batch) is not bool or (batch and self.graph_batch != "positional-batch-v1"):
+            raise CandidateError("Undeclared graph batch call")
         self.sequence += 1
         request = (
             json.dumps(
@@ -441,6 +452,7 @@ class Candidate:
                     "entry_point": entry_point,
                     "graph": graph,
                     "discard_result": discard_result,
+                    **({"batch": True} if batch else {}),
                 },
                 allow_nan=False,
             ).encode()

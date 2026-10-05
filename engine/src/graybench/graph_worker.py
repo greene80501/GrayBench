@@ -18,6 +18,20 @@ from graybench.graph_rpc import (
 from graybench.graph_wire import GraphArena, GraphLimits
 
 
+def execute_positional_batch(entry_point, args, kwargs):
+    """Validate every case before invoking the candidate's ordinary function."""
+    if type(args) is not tuple or len(args) != 1 or type(kwargs) is not dict or kwargs:
+        raise WireError("Invalid positional batch argument roots")
+    cases = args[0]
+    if (
+        type(cases) is not tuple
+        or not 1 <= len(cases) <= 1024
+        or any(type(case) is not tuple for case in cases)
+    ):
+        raise WireError("Invalid positional batch cases")
+    return tuple(entry_point(*case) for case in cases)
+
+
 def main():
     channel = sys.stdout
     config = json.loads(Path("/input/graph_config.json").read_text())
@@ -30,6 +44,9 @@ def main():
         anchors=registry,
     )
     transport = validate_transport(config["transport"])
+    batch_mode = config.get("graph_batch", "none")
+    if batch_mode not in ("none", "positional-batch-v1"):
+        raise WireError("Unknown graph batch mode")
     if transport["state_bytes"] != arena.limits.message_bytes:
         raise WireError("Graph state and transport limits differ")
     if transport["mode"] == "delta-v1":
@@ -55,9 +72,11 @@ def main():
         phase = "decoding"
         request = json.loads(line)
         try:
+            batch = request.get("batch", False)
             fields(
                 request,
-                {"protocol", "session", "sequence", "entry_point", "graph", "discard_result"},
+                {"protocol", "session", "sequence", "entry_point", "graph", "discard_result"}
+                | ({"batch"} if batch else set()),
             )
             sequence += 1
             if (
@@ -68,6 +87,8 @@ def main():
                 or request["session"] != config["session"]
                 or type(request["entry_point"]) is not str
                 or type(request["discard_result"]) is not bool
+                or type(batch) is not bool
+                or (batch and batch_mode != "positional-batch-v1")
             ):
                 raise WireError("Invalid graph call request")
             validate_roots(request["graph"], {"args", "kwargs"})
@@ -82,7 +103,12 @@ def main():
                 phase = "execution"
                 result, raised, raised_args = None, None, None
                 try:
-                    result = namespace[request["entry_point"]](*roots["args"], **roots["kwargs"])
+                    entry_point = namespace[request["entry_point"]]
+                    result = (
+                        execute_positional_batch(entry_point, roots["args"], roots["kwargs"])
+                        if batch
+                        else entry_point(*roots["args"], **roots["kwargs"])
+                    )
                     if request["discard_result"]:
                         result = None
                 except BaseException as exc:

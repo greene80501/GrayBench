@@ -33,6 +33,21 @@ def judge(test, code):
     return UpstreamJudge(image=IMAGE, docker=DOCKER, protocol=4).evaluate(task(test), code)
 
 
+def test_opt_in_batch_runs_ordinary_candidate_entry_point_for_each_case():
+    result = UpstreamJudge(
+        image=IMAGE,
+        docker=DOCKER,
+        protocol=4,
+        graph_batch="positional-batch-v1",
+    ).evaluate(
+        task("def check(candidate):\n    assert candidate.batch(((1,), (2,), (3,))) == (2, 3, 4)"),
+        "def answer(value): return value + 1",
+    )
+    assert result.outcome == "pass", result
+    assert result.evidence["calls"] == 1
+    assert result.evidence["manifest"]["graph_batch"] == "positional-batch-v1"
+
+
 CASES = [
     (
         "same_argument",

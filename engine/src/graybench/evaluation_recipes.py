@@ -2,6 +2,7 @@
 
 from typing import Literal, get_args
 
+from graybench.bb84_batch_revision import BB84BatchJudge
 from graybench.bb84_revision import BB84Judge
 from graybench.bell_revision import BellStatevectorJudge
 from graybench.file_judge import QpyFileJudge
@@ -22,6 +23,7 @@ EvaluationRecipe = Literal[
     "qhe116-evolution-semantics-v1",
     "qhe120-diagonal-semantics-v1",
     "qhe63-explicit-bases-v1",
+    "qhe63-explicit-bases-v2",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -39,6 +41,7 @@ class RevisionJudge:
             "qhe116-evolution-semantics-v1",
             "qhe120-diagonal-semantics-v1",
             "qhe63-explicit-bases-v1",
+            "qhe63-explicit-bases-v2",
             "qhe2-bell-statevector-v1",
         ):
             return self.inner.revise(task)
@@ -80,6 +83,8 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = GateSemanticsJudge(recipe, **kwargs)
     elif recipe == "qhe63-explicit-bases-v1":
         inner = BB84Judge(**kwargs)
+    elif recipe == "qhe63-explicit-bases-v2":
+        inner = BB84BatchJudge(**kwargs)
     elif recipe in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
         inner = QpyFileJudge(
             track=recipe, parser_timeout=parser_timeout, parser_image=parser_image, **kwargs

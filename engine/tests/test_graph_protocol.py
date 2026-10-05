@@ -12,6 +12,7 @@ from graybench.evaluation_campaign import validate_cohort
 from graybench.evaluation_recipes import recipe_judge
 from graybench.graph_runtime import GRAPH_FILES
 from graybench.ledger import StateError
+from graybench.upstream import UpstreamJudge
 
 IMAGE = "sha256:" + "0" * 64
 
@@ -47,6 +48,24 @@ def test_graph_recipe_is_explicit_and_source_bound(model, task):
 def test_explicit_graph_recipe_cannot_be_overridden_to_v3():
     with pytest.raises(ValueError):
         recipe_judge("upstream-graph-v4", image=IMAGE, protocol=3)
+
+
+def test_graph_batch_is_manifest_bound_and_not_an_implicit_default(task):
+    item = fixture(task)
+    ordinary = UpstreamJudge(image=IMAGE, protocol=4)
+    batched = UpstreamJudge(image=IMAGE, protocol=4, graph_batch="positional-batch-v1")
+    old_payload, old_manifest = ordinary.configuration(item)
+    payload, manifest = batched.configuration(item)
+    assert "graph_batch" not in old_payload
+    assert "graph_batch" not in old_manifest
+    assert payload["graph_batch"] == "positional-batch-v1"
+    assert manifest["graph_batch"] == "positional-batch-v1"
+    assert manifest["batch_case_limit"] == 1024
+    assert manifest["task_payload"] != old_manifest["task_payload"]
+    with pytest.raises(ValueError, match="protocol4"):
+        UpstreamJudge(image=IMAGE, protocol=3, graph_batch="positional-batch-v1")
+    with pytest.raises(ValueError, match="Unknown graph batch"):
+        UpstreamJudge(image=IMAGE, protocol=4, graph_batch="unknown")
 
 
 def test_delta_recipe_roundtrip_preserves_transport_and_model_requests(model, task):

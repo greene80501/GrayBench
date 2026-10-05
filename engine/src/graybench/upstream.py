@@ -49,6 +49,7 @@ class UpstreamJudge:
         protocol=3,
         graph_transport="snapshot-v1",
         graph_state_limit=None,
+        graph_batch="none",
         extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
     ):
         if type(protocol) is not int or protocol not in (3, 4):
@@ -59,8 +60,15 @@ class UpstreamJudge:
         self.protocol = protocol
         from graybench.graph_limits import transport_record
 
-        if protocol != 4 and (graph_transport != "snapshot-v1" or graph_state_limit is not None):
+        if graph_batch not in ("none", "positional-batch-v1"):
+            raise ValueError("Unknown graph batch mode")
+        if protocol != 4 and (
+            graph_transport != "snapshot-v1"
+            or graph_state_limit is not None
+            or graph_batch != "none"
+        ):
             raise ValueError("Graph transport settings require protocol4")
+        self.graph_batch = graph_batch
         self.graph_transport = (
             transport_record(graph_transport, output_limit, graph_state_limit)
             if protocol == 4
@@ -95,6 +103,8 @@ class UpstreamJudge:
                 message_bytes=self.graph_transport["state_bytes"]
             ).record()
             payload["graph_transport"] = dict(self.graph_transport)
+            if self.graph_batch != "none":
+                payload["graph_batch"] = self.graph_batch
         source = Path(__file__).parent
         files = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in FILES}
         for name in (
@@ -137,6 +147,11 @@ class UpstreamJudge:
                     "graph_limits": payload["graph_limits"],
                     "graph_transport": payload["graph_transport"],
                     "wire_output_accounting": "cumulative-per-process-including-bootstrap-v1",
+                    **(
+                        {"graph_batch": self.graph_batch, "batch_case_limit": 1024}
+                        if self.graph_batch != "none"
+                        else {}
+                    ),
                 }
                 if self.protocol == 4
                 else {}
@@ -328,6 +343,11 @@ class UpstreamJudge:
                     sequence += 1
                     if message.get("kind") != "call" or message.get("sequence") != sequence:
                         raise ValueError("Invalid trusted call")
+                    batch = message.get("batch", False)
+                    if type(batch) is not bool or (
+                        batch and self.graph_batch != "positional-batch-v1"
+                    ):
+                        raise ValueError("Undeclared graph batch call")
                     if sequence > 1000:
                         return finish("unsupported", {"detail": "call count exceeds bridge limit"})
                     try:
@@ -346,6 +366,7 @@ class UpstreamJudge:
                                         "graph_manifest": message["graph"]["anchors"],
                                         "graph_transport": self.graph_transport["mode"],
                                         "graph_state_limit": self.graph_transport["state_bytes"],
+                                        "graph_batch": self.graph_batch,
                                     }
                                     if self.protocol == 4
                                     else {}
@@ -353,7 +374,7 @@ class UpstreamJudge:
                             )
                         if self.protocol == 4:
                             returned = candidate.call_graph(
-                                task.public.entry_point, message["graph"]
+                                task.public.entry_point, message["graph"], batch=batch
                             )
                         else:
                             returned = candidate.call_encoded(
