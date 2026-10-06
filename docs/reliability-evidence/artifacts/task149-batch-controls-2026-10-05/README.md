@@ -14,6 +14,17 @@ The frozen engine source digest is
 From `engine/`, run
 `uv run --locked --extra dataset python ../docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/verify.py`
 to check the plan, probe bytes, source manifest and complete declared roster.
-The plan-only report says `controls_executed: false`. A result log must be
-checked separately with the same verifier's result-log argument. These are
-authored development controls, never model generations or a published score.
+The plan-only report says `controls_executed: false`. The frozen plan was
+committed and pushed before the Docker run. The [byte-preserved result log](results.jsonl)
+is 270,211 bytes with SHA-256
+`784f4f84725e6edf7b9cab0779e66e2c2e0245682506789dce0c709791931df0`.
+Its event-chain head is
+`d905f5367b853c9f088cc9fe92470ccb158048acb19135c394a2422cdd188afa`.
+All 14 outcomes matched: four passes, eight wrong-answer failures and two
+candidate errors. Run
+`uv run --locked --extra dataset python ../docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/verify.py ../docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05 ../docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/results.jsonl`
+from `engine/` to check the chain, complete roster, source, judge and candidate
+bindings. The exact source checkout reported `source_matches_running_source:
+true`. This verifies internal consistency, not independent attestation that
+Docker performed the execution. These are authored development controls, never
+model generations or a published score.

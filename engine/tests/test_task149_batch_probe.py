@@ -57,3 +57,23 @@ def test_task149_frozen_plan_verifier_rejects_changed_bytes(tmp_path):
         stream.write(b" ")
     with pytest.raises(ValueError, match="digest mismatch"):
         module.verify(changed)
+
+
+def test_task149_result_verifier_rejects_a_changed_log(tmp_path):
+    bundle = (
+        Path(__file__).resolve().parents[2]
+        / "docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05"
+    )
+    spec = importlib.util.spec_from_file_location("task149_control_verifier", bundle / "verify.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    report = module.verify_results(bundle / "results.jsonl", bundle)
+    assert report["recorded_controls"] == 14
+    assert report["results"] == {"pass": 4, "fail": 8, "candidate_error": 2}
+
+    changed = tmp_path / "changed.jsonl"
+    shutil.copyfile(bundle / "results.jsonl", changed)
+    with changed.open("ab") as stream:
+        stream.write(b" ")
+    with pytest.raises(ValueError):
+        module.verify_results(changed, bundle)
