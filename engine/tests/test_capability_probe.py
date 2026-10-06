@@ -176,6 +176,30 @@ def test_probe_verifies_httpx_normalized_host(base_url):
     assert verify_accepted_probe(record, model, OpenAIChat()) == record.digest
 
 
+def test_body_only_capture_can_be_read_but_cannot_qualify_as_an_accepted_probe():
+    record = accepted_probe()
+    historical = record.model_copy(
+        update={
+            "evidence": {
+                **record.evidence,
+                "request_capture_version": "canonical-body-v1",
+            }
+        }
+    )
+    assert verify_probe_record(historical, spec(), OpenAIChat()) == historical.digest
+    with pytest.raises(ValueError, match="request binding"):
+        verify_accepted_probe(historical, spec(), OpenAIChat())
+
+
+def test_versioned_probe_rejects_false_accept_encoding_capture():
+    record = accepted_probe()
+    altered = record.model_copy(
+        update={"evidence": {**record.evidence, "request_accept_encoding": "gzip"}}
+    )
+    with pytest.raises(ValueError, match="request evidence"):
+        verify_probe_record(altered, spec(), OpenAIChat())
+
+
 @pytest.mark.parametrize(
     "change",
     [

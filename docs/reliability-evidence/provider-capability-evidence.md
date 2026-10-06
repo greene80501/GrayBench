@@ -82,6 +82,14 @@ the campaign model spec. Then supply the record to `campaign-plan`,
 Repeat that flag for each cited digest. Each setup embeds the full records, so
 later verification does not depend on the original path.
 
+Current `probe_accepted` qualification also requires
+`client-built-httpx-v2` request evidence to be fully bound to the frozen
+probe request. Body-only `canonical-body-v1` records remain readable for
+historical inspection but cannot support a new accepted-control claim. The
+probe verifier checks the capture version and identity accept-encoding as
+well as its earlier request fields; changing either no longer leaves an
+otherwise accepted probe qualified.
+
 GrayBench reconstructs the fixed request with the current adapter and checks
 its frozen body, headers, path, account-scope declaration, response hash,
 parsed generation, returned model name when present, and requested control

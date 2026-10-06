@@ -18,6 +18,7 @@ from graybench.contracts import (
 )
 from graybench.identity import canonical, identity, reject_credential_value
 from graybench.providers import Adapter
+from graybench.request_evidence import request_evidence_binding
 from graybench.transport import Transport, parse_provider_json
 
 PROBE_TASK = PublicTask(
@@ -133,6 +134,10 @@ def verify_probe_record(record: CapabilityProbe, target: ModelSpec, provider: Ad
         or httpx_headers.get("connection") not in (None, "keep-alive")
     ):
         raise ValueError("Capability probe transport request evidence differs")
+    try:
+        request_evidence_binding(record.request, record.spec, evidence)
+    except ValueError as exc:
+        raise ValueError("Capability probe request evidence differs") from exc
     body = evidence.get("response_body")
     if isinstance(body, str) and (record.delivery_kind == "returned" or "[REDACTED]" not in body):
         if evidence.get("decoded_body_sha256") != hashlib.sha256(body.encode("utf-8")).hexdigest():
@@ -172,6 +177,8 @@ def verify_accepted_probe(record: CapabilityProbe, target: ModelSpec, provider: 
     digest = verify_probe_record(record, target, provider)
     if record.delivery_kind != "returned":
         raise ValueError("Capability probe was not returned and cannot support probe_accepted")
+    if request_evidence_binding(record.request, record.spec, record.evidence) != "bound":
+        raise ValueError("Capability probe lacks full request binding")
     return digest
 
 
