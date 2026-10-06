@@ -31,9 +31,14 @@ Fourteen protected controls are predeclared in
 `engine/tests/test_task149_revision.py`: per suite, the pinned reference and an
 independent count-based implementation should pass; first-string, last-string,
 fixed-string and wrong-type answers should fail; a deliberate candidate exception
-should be classified as `candidate_error`. They are skipped until both
-`GRAYBENCH_TEST_CACHE` and `GRAYBENCH_TEST_IMAGE` are supplied. Their eventual
-execution must be reported separately from the current host-only checks.
+should be classified as `candidate_error`. They require both
+`GRAYBENCH_TEST_CACHE` and `GRAYBENCH_TEST_IMAGE`. On 2026-10-05 the focused
+module run with the verified pinned cache and image
+`sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd`
+reported 37 passed in 26.87 seconds, including all 14 Docker controls. The
+full engine suite with the same cache and image reported 1,566 passed, 5 skipped,
+6 expected failures and zero failures in 726.88 seconds. These are development
+test results, not an independently attested control archive or a model score.
 
 The [pinned upstream oracle finding](task149-most-common-oracle-review.md) and
 its protected probe remain separate historical evidence.
