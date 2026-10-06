@@ -34,6 +34,18 @@ define and validate explicit value-only semantics for admitted tasks or establis
 a different trusted execution boundary before claiming native-object fidelity.
 This diagnostic alone does not validate either alternative across 302 tasks.
 
+The later `graybench-protected-semantic-v1` runner uses a different contract:
+the candidate submits a bounded JSON value, and the trusted semantic judge
+checks that value against a separately versioned public value task. Its
+`origin_claim` is `candidate_submitted_value_only`; it makes no claim that the
+candidate returned a native Qiskit object. A candidate that fabricates a
+semantically valid value has answered that value task. The adverse probes above
+still disqualify the older `upstream-proxy-v1` and graph bridge from a
+cheat-resistant native-object claim. The value track currently covers only
+explicitly revised task families 2, 20 and 62, and its task cards remain
+pending independent admission. Neither boundary can be renamed into a
+certified score for all pinned Qiskit HumanEval tasks.
+
 ## Protocol-4 graph transport
 
 The [separate graph probe](protected-graph-encoder-probe.py) evaluates the same
