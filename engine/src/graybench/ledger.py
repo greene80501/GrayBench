@@ -27,6 +27,7 @@ from graybench.identity import canonical, identity
 from graybench.ledger_evidence import event_records, verify_records
 from graybench.provenance import source_manifest
 from graybench.providers import adapter
+from graybench.request_evidence import request_evidence_binding
 
 
 class StateError(ValueError):
@@ -715,6 +716,11 @@ class Ledger:
             ).fetchone()["run_id"]
             protocol = self.protocol(run_id)
             self.require_protocol_serialization_stable(run_id, protocol)
+            request = PreparedRequest.model_validate_json(canonical(self.blob(attempt["request"])))
+            try:
+                request_evidence_binding(request, protocol.model, evidence)
+            except (TypeError, ValueError) as exc:
+                raise StateError("Delivery request evidence is invalid: " + str(exc)) from exc
             reject_model_credential(protocol.model, evidence, "delivery evidence")
             if generation is not None:
                 reject_model_credential(
@@ -889,6 +895,19 @@ class Ledger:
         observed = {(row["task_key"], row["replicate"]) for row in rows}
         scored = {"pass", "fail", "candidate_error", "timeout"}
         outcomes = [r["outcome"] for r in rows]
+        request_binding = {"bound": 0, "unbound": 0}
+        for row in self.db.execute(
+            "SELECT a.request,d.evidence FROM attempts a "
+            "JOIN samples s ON s.id=a.sample_id "
+            "JOIN deliveries d ON d.attempt_id=a.id WHERE s.run_id=?",
+            (run_id,),
+        ):
+            status = request_evidence_binding(
+                PreparedRequest.model_validate_json(canonical(self.blob(row["request"]))),
+                protocol.model,
+                self.blob(row["evidence"]),
+            )
+            request_binding[status] += 1
         counts = {
             name: outcomes.count(name)
             for name in (
@@ -997,6 +1016,7 @@ class Ledger:
             "score_status": "development_only" if complete else "unscored",
             "score_blockers": blockers,
             "outcome_counts": counts,
+            "request_evidence_binding": request_binding,
             "cohort": {
                 "missing": [list(slot) for slot in sorted(expected - observed)],
                 "unexpected": [list(slot) for slot in sorted(observed - expected)],
@@ -1015,6 +1035,7 @@ class Ledger:
                     else []
                 ),
                 "provider_effective_settings_not_attested",
+                *(["request_evidence_unbound"] if request_binding["unbound"] else []),
                 *(
                     ["model_discovery_unverified"]
                     if discovery["status"] != "stable_observed"

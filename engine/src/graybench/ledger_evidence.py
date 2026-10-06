@@ -1,10 +1,12 @@
 """Exact relational records bound by ledger events; no database writes."""
 
+import json
 from collections import Counter
 from datetime import datetime, timedelta
 
-from graybench.contracts import Protocol
+from graybench.contracts import PreparedRequest, Protocol
 from graybench.identity import identity
+from graybench.request_evidence import request_evidence_binding
 
 TABLES = (
     "runs",
@@ -248,9 +250,21 @@ def verify_records(db, events):
             if event["attempt_id"] not in attempts or event["attempt_id"] in aborted:
                 raise ValueError("Delivery precedes dispatch intent")
             attempt = db.execute(
-                "SELECT s.run_id FROM attempts a JOIN samples s ON s.id=a.sample_id WHERE a.id=?",
+                "SELECT s.run_id,a.request FROM attempts a JOIN samples s ON s.id=a.sample_id "
+                "WHERE a.id=?",
                 (event["attempt_id"],),
             ).fetchone()
+            request_json = db.execute(
+                "SELECT content FROM blobs WHERE digest=?", (attempt["request"],)
+            ).fetchone()[0]
+            evidence_json = db.execute(
+                "SELECT content FROM blobs WHERE digest=?", (records["deliveries"][0]["evidence"],)
+            ).fetchone()[0]
+            request_evidence_binding(
+                PreparedRequest.model_validate_json(request_json),
+                protocols[attempt["run_id"]].model,
+                json.loads(evidence_json),
+            )
             expects_claim = protocols[attempt["run_id"]].schema_version in {"3.2", "3.3"}
             if ("post_observation_claims" in records) != expects_claim:
                 raise ValueError("Post-observation claim disagrees with protocol version")

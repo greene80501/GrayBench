@@ -16,6 +16,7 @@ from graybench.adapter_provenance import adapter_code_digest
 from graybench.contracts import Generation, ModelSpec, Observation, PreparedRequest
 from graybench.identity import canonical, identity, reject_credential_value
 from graybench.providers import Adapter
+from graybench.request_evidence import CAPTURE_VERSION
 from graybench.request_headers import (
     freeze_credential_header_names,
     freeze_public_headers,
@@ -195,6 +196,7 @@ class Transport:
         if adapter_code_digest(provider) != current_adapter_code_digest:
             raise ValueError("Adapter code changed before network dispatch")
         evidence = {
+            "request_capture_version": CAPTURE_VERSION,
             "adapter_code_digest": current_adapter_code_digest,
             "request_body": body,
             "request_content_sha256": hashlib.sha256(content).hexdigest(),
