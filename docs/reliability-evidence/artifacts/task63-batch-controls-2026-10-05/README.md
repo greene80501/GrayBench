@@ -1,0 +1,5 @@
+# Predeclared task-63 batch controls
+
+`plan.json` freezes the task-63 v2 control selection **before any protected-container executions**. It names the pinned image, exact normal/hard source and revised task digests, public-task digests, judge manifests, candidate-code hashes, and expected outcomes. There are 16 controls: six expected passes, eight expected wrong-answer failures, and two expected candidate errors. The plan SHA-256 is `04d67f997a637cebe8376e13294dcf4c85e50825e4f84e261476406a821b6055`; its probe SHA-256 is `49a371264288177579212688b7db3b706c545fa6ca11a3f90e648ca6d5969040`.
+
+The corresponding raw control log does not exist yet. Docker Desktop's Linux engine is currently unavailable, so this directory proves **predeclaration only**, not that the controls passed. Once the pinned image is available, run `task63_batch_probe.py` against this exact plan. It will refuse a changed source, task, judge, or control selection and will create, never overwrite, its output log. Preserve and verify that log separately before considering task admission. Neither this plan nor a later control log is a model score or independent certification.
