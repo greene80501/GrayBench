@@ -11,6 +11,7 @@ from graybench.bb84_revision import PINNED_SOURCE_TASK_DIGESTS
 from graybench.fs_paths import readable_path
 from graybench.identity import identity
 from graybench.provenance import source_manifest
+from graybench.reference_scan import inspect_reference_scan
 
 HERE = Path(__file__).resolve().parent
 PLAN_SHA256 = "04d67f997a637cebe8376e13294dcf4c85e50825e4f84e261476406a821b6055"
@@ -148,7 +149,87 @@ def verify(bundle: Path = HERE) -> dict:
     }
 
 
+def verify_results(path: Path, bundle: Path = HERE) -> dict:
+    """Bind a completed evidence ledger to the exact frozen plan.
+
+    A hash chain detects accidental edits, but is not an execution attestation:
+    anyone able to write the log can generate a new internally valid chain.
+    """
+    plan_report = verify(bundle)
+    plan = read_plan(readable_path(bundle) / "plan.json")
+    path = readable_path(path)
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("Missing or linked control result log")
+    summary = inspect_reference_scan(path)
+    cases = plan["cases"]
+    if (
+        not summary["complete"]
+        or summary["planned"] != len(cases)
+        or set(summary["results"]) != set(cases)
+    ):
+        raise ValueError("Incomplete control result roster")
+    byte_count = 0
+    file_digest = hashlib.sha256()
+    seen = set()
+    with path.open("rb") as stream:
+        for index, raw in enumerate(stream, 1):
+            byte_count += len(raw)
+            if byte_count > 512 * 1024 * 1024 or len(raw) > 32 * 1024 * 1024:
+                raise ValueError("Control result log exceeds byte limit")
+            file_digest.update(raw)
+            record = json.loads(raw, object_pairs_hook=unique_pairs)
+            event = record["event"]
+            if index == 1:
+                source = next(iter(plan["declared_judges"].values()))["source"]
+                if (
+                    event["kind"] != "header"
+                    or event["purpose"]
+                    != "BB84 batch protected authored controls; not model scoring"
+                    or event["source"] != source
+                    or event["selection"] != plan
+                    or event["tasks"] != {key: identity(case) for key, case in cases.items()}
+                ):
+                    raise ValueError("Control result header identity differs from plan")
+            if event["kind"] != "result":
+                continue
+            key = event["task_key"]
+            if key not in cases or key in seen:
+                raise ValueError("Control result roster identity differs")
+            seen.add(key)
+            case = cases[key]
+            suite = key.split("/", 1)[0]
+            manifest = plan["declared_judges"][f"{suite}/qiskitHumanEval/63"]
+            evidence = event["evidence"]
+            judgment = evidence["judgment"]
+            inner = judgment["inner"]
+            if (
+                event["outcome"] != case["expected"]
+                or evidence["expected"] != case["expected"]
+                or evidence["matches_expectation"] is not True
+                or event["judge_digest"] != identity(manifest)
+                or judgment["manifest"] != manifest
+                or inner["manifest"] != manifest["inner"]
+                or inner["public_task_digest"] != case["revised_public_digest"]
+                or inner["completion_sha256"] != case["completion_sha256"]
+            ):
+                raise ValueError(f"Control result binding differs from plan: {key}")
+    if seen != set(cases) or file_digest.hexdigest() != summary["file_sha256"]:
+        raise ValueError("Control result roster or bytes changed during inspection")
+    return {
+        "plan_sha256": plan_report["plan_sha256"],
+        "result_sha256": summary["file_sha256"],
+        "chain_head": summary["chain_head"],
+        "recorded_controls": len(seen),
+        "results": dict(Counter(summary["results"].values())),
+        "source_matches_running_source": plan_report["source_matches_running_source"],
+        "execution_independently_attested": False,
+        "publication_eligible": False,
+    }
+
+
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        raise SystemExit("Usage: verify.py [BUNDLE_DIRECTORY]")
-    print(json.dumps(verify(Path(sys.argv[1]) if len(sys.argv) == 2 else HERE), sort_keys=True))
+    if len(sys.argv) > 3:
+        raise SystemExit("Usage: verify.py [BUNDLE_DIRECTORY [RESULT_LOG]]")
+    bundle = Path(sys.argv[1]) if len(sys.argv) >= 2 else HERE
+    report = verify_results(Path(sys.argv[2]), bundle) if len(sys.argv) == 3 else verify(bundle)
+    print(json.dumps(report, sort_keys=True))
