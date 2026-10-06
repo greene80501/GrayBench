@@ -2,6 +2,7 @@
 
 import importlib.util
 import os
+import shutil
 from collections import Counter
 from pathlib import Path
 
@@ -37,3 +38,22 @@ def test_task149_batch_plan_freezes_all_control_identities():
     }
     assert {key.split("/", 1)[0] for key in selection["cases"]} == {"normal", "hard"}
     assert all(len(record["completion_sha256"]) == 64 for record in selection["cases"].values())
+
+
+def test_task149_frozen_plan_verifier_rejects_changed_bytes(tmp_path):
+    bundle = (
+        Path(__file__).resolve().parents[2]
+        / "docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05"
+    )
+    spec = importlib.util.spec_from_file_location("task149_control_verifier", bundle / "verify.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module.verify(bundle)["control_count"] == 14
+
+    changed = tmp_path / "changed"
+    changed.mkdir()
+    shutil.copyfile(bundle / "plan.json", changed / "plan.json")
+    with (changed / "plan.json").open("ab") as stream:
+        stream.write(b" ")
+    with pytest.raises(ValueError, match="digest mismatch"):
+        module.verify(changed)
