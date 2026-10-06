@@ -181,7 +181,13 @@ class Ledger:
         row = self.db.execute("SELECT content FROM blobs WHERE digest=?", (digest,)).fetchone()
         if not row:
             raise StateError("Missing artifact")
-        value = json.loads(row[0])
+        try:
+            value = json.loads(row[0])
+            canonical_bytes = canonical(value)
+        except (TypeError, ValueError) as exc:
+            raise StateError("Artifact JSON is invalid") from exc
+        if canonical_bytes != row[0]:
+            raise StateError("Artifact JSON is not canonical")
         if identity(value) != digest:
             raise StateError("Artifact digest mismatch")
         return value

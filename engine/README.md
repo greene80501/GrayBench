@@ -359,6 +359,9 @@ remain development-only and do not certify equivalent provider settings. See
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
 [comparisons](../docs/reliability-evidence/paired-comparisons.md) and the
 [dual-track comparison audit](../docs/reliability-evidence/dual-track-comparison.md).
+Ledger verification requires each stored artifact's exact canonical JSON bytes;
+a duplicate-key or differently encoded blob cannot pass by hashing to the
+same parsed value.
 Hashes and SQLite append rules are not external authenticity guarantees.
 
 If a protocol 3.3 attempt has a saved post-request model observation but its

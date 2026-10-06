@@ -112,3 +112,12 @@ def test_delivery_timestamps_are_bound(ledger, protocol, task):
     ledger.db.execute("UPDATE deliveries SET finished_at='2000-01-01T00:00:00+00:00'")
     with pytest.raises(StateError, match="row binding mismatch"):
         ledger.verify()
+
+
+@pytest.mark.parametrize("tampered", [b'{"a":1,"a":1}', b'{ "a": 1 }'])
+def test_noncanonical_blob_bytes_are_rejected_even_if_parsed_digest_matches(ledger, tampered):
+    digest = ledger._blob({"a": 1})
+    ledger.db.execute("DROP TRIGGER immutable_blobs_UPDATE")
+    ledger.db.execute("UPDATE blobs SET content=? WHERE digest=?", (tampered, digest))
+    with pytest.raises(StateError, match="canonical"):
+        ledger.verify()
