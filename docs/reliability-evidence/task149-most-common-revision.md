@@ -27,5 +27,13 @@ exhaustive proof. Stateful candidates, independent oracle and task-card review,
 and protected Docker controls remain unverified. The manifest therefore records
 `release_eligible: false`. These checks are not model generations or scores.
 
+Fourteen protected controls are predeclared in
+`engine/tests/test_task149_revision.py`: per suite, the pinned reference and an
+independent count-based implementation should pass; first-string, last-string,
+fixed-string and wrong-type answers should fail; a deliberate candidate exception
+should be classified as `candidate_error`. They are skipped until both
+`GRAYBENCH_TEST_CACHE` and `GRAYBENCH_TEST_IMAGE` are supplied. Their eventual
+execution must be reported separately from the current host-only checks.
+
 The [pinned upstream oracle finding](task149-most-common-oracle-review.md) and
 its protected probe remain separate historical evidence.

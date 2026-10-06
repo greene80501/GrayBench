@@ -156,3 +156,70 @@ def test_pinned_task149_reference_satisfies_revised_oracle(suite):
     exec(source, namespace)
     exec(revised.upstream_test, namespace)
     namespace["check"](namespace["most_common_result"])
+
+
+PROTECTED_CONTROLS = (
+    ("reference", "__REFERENCE__", "pass"),
+    (
+        "count-based",
+        "    counts = bits.get_counts()\n    return max(counts, key=counts.get)\n",
+        "pass",
+    ),
+    ("first-string", "    return bits.get_bitstrings()[0]\n", "fail"),
+    ("last-string", "    return bits.get_bitstrings()[-1]\n", "fail"),
+    ("fixed-string", "    return '001'\n", "fail"),
+    ("wrong-type", "    return 1\n", "fail"),
+    ("candidate-exception", "    raise RuntimeError('deliberate control')\n", "candidate_error"),
+)
+
+
+def control_completion(suite, name, body, original):
+    if name == "reference":
+        return original.canonical_solution
+    if suite == "normal":
+        return "\n" + body
+    return "from qiskit.primitives import BitArray\n\ndef most_common_result(bits):\n" + body
+
+
+@pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+@pytest.mark.parametrize("name,body,expected", PROTECTED_CONTROLS)
+def test_task149_predeclared_controls_have_expected_native_outcome(suite, name, body, expected):
+    cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
+    original = next(t for t in load_suite(suite, cache) if t.public.family_id == "qhe/149")
+    revised = recipe_judge(RECIPE, image=IMAGE).revise(original)
+    completion = control_completion(suite, name, body, original)
+    source = revised.public.prompt + completion if suite == "normal" else completion
+    namespace = {}
+    exec(source, namespace)
+    exec(revised.upstream_test, namespace)
+    try:
+        namespace["check"](namespace["most_common_result"])
+    except AssertionError:
+        outcome = "fail"
+    except RuntimeError:
+        outcome = "candidate_error"
+    else:
+        outcome = "pass"
+    assert outcome == expected, (suite, name)
+
+
+@pytest.mark.skipif(
+    not os.environ.get("GRAYBENCH_TEST_CACHE") or not os.environ.get("GRAYBENCH_TEST_IMAGE"),
+    reason="Pinned cache and immutable Docker image required",
+)
+@pytest.mark.parametrize("suite", ["normal", "hard"])
+@pytest.mark.parametrize("name,body,expected", PROTECTED_CONTROLS)
+def test_task149_protected_controls(suite, name, body, expected):
+    cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
+    original = next(t for t in load_suite(suite, cache) if t.public.family_id == "qhe/149")
+    judge = recipe_judge(
+        RECIPE,
+        image=os.environ["GRAYBENCH_TEST_IMAGE"],
+        docker=os.environ.get("GRAYBENCH_DOCKER", "docker"),
+    )
+    revised = judge.revise(original)
+    completion = control_completion(suite, name, body, original)
+    result = judge.evaluate(revised, completion)
+    assert result.outcome == expected, (suite, name, result)
+    assert result.evidence["manifest"]["release_eligible"] is False
