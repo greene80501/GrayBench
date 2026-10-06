@@ -149,3 +149,5 @@ docs/reliability-evidence/artifacts/native-literal-mutants-scored-2026-10-06/*.j
 docs/reliability-evidence/artifacts/native-literal-mutants-scored-2026-10-06/probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task110-tolerance-2026-10-06/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task110_tolerance_workload.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task110_protected_graph.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task110-protected-controls-2026-10-06/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
