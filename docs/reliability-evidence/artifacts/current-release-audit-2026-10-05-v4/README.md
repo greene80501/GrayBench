@@ -25,3 +25,6 @@ uv run --locked --extra dataset python ../docs/reliability-evidence/current_rele
 This audit makes no provider or Docker call. It verifies local prompt
 preparation and admission bookkeeping, not provider receipt, oracle adequacy,
 independent review, or a model ranking.
+
+The same command at a separate checkout of `c3bc35a` produced a byte-identical
+report with the SHA-256 above.

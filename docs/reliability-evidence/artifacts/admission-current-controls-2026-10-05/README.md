@@ -35,3 +35,18 @@ requirement links before writing the successor.
 This is source-bound local evidence, not independent expert review or a model
 score. The inventory still has zero reviewer attestations and zero cards without
 structural blockers; `publication_eligible` remains false.
+
+The bundle verifier passed from a separate checkout at `c3bc35a`, with the
+same manifest SHA-256, 60 controls, 42 source-bound protected controls and
+zero different-source protected controls.
+
+The current inventory's structural blocker counts overlap: 296 cards lack a
+public value contract, protected judge and requirement map; the six controlled
+cards lack verified oracle-case links; 94 cards have unresolved known findings;
+all 302 lack two qualified independent reviews; and 16 external-service cards
+remain unqualified. A control pass alone clears none of those review gates.
+
+The complete Windows/Python 3.12 engine suite with the verified pinned cache
+and image, including both successor-builder tests, reported 1,571 passed,
+5 skipped, 6 expected failures and zero failures in 720.59 seconds. Ruff lint
+and format checks passed.
