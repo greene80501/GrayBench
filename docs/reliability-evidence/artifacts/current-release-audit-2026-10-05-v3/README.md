@@ -32,3 +32,7 @@ oracle correctness, independent review, or a model ranking. The separately
 preserved [current-source value controls](../protected-current-controls-2026-10-05/README.md)
 verify 42 authored outcomes but do not silently update the historical
 admission inventory.
+
+The same command at a separate clean checkout of `cd81e6c` produced a
+byte-identical report with the SHA-256 above. The script bytes also matched
+their recorded SHA-256 in that checkout.
