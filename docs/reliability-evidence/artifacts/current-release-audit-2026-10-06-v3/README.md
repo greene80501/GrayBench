@@ -1,0 +1,7 @@
+# Current-source release-gate and prompt audit
+
+The [report](report.json) reruns the read-only [audit script](../../current_release_audit.py) with the [task 139 admission successor](../admission-task139-current-2026-10-06/README.md). Engine and inventory source digests both equal `0daeaf62640237d5a4af2645c75f4f71a9645c78490781cd30ae79787833b924`. The report SHA-256 is `2272539893310cbd8f3f0c52a233fbf9d96a020cf39b51b8787a07270f857a29`.
+
+Five built-in adapter routes each prepared the exact public prompt for all 302 pinned normal/hard records: 1,510 local request preparations. The current engine exposes four protected value families (2, 20, 62, and 139); eight task cards, both suites for each family, have bound contracts and judges. No card has independent review or clears structural admission blockers. The 143-task offline subset per suite excludes eight external-service tasks and differs from the full 151-task suite. `publication_eligible` remains false.
+
+From `engine/`, reproduce without API or Docker calls using `uv run --extra dataset python ../docs/reliability-evidence/current_release_audit.py --cache <pinned-cache> --inventory ../docs/reliability-evidence/artifacts/admission-task139-current-2026-10-06/inventory.json`. This checks local request preparation and admission bookkeeping; it does not prove provider receipt, semantic oracle quality, effective provider settings, or a model ranking.
