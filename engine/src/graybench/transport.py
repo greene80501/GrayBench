@@ -32,6 +32,20 @@ class Delivery:
     generation: Generation | None = None
 
 
+def _unique_provider_json_pairs(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate provider JSON key: " + key)
+        result[key] = value
+    return result
+
+
+def parse_provider_json(body: str):
+    """Refuse ambiguous object members at every nesting level."""
+    return json.loads(body, object_pairs_hook=_unique_provider_json_pairs)
+
+
 def _bounded_zlib(raw: bytes, limit: int, wbits: int) -> bytes:
     decoder = zlib.decompressobj(wbits)
     decoded = decoder.decompress(raw, limit + 1)
@@ -328,7 +342,7 @@ class Transport:
             evidence["error"] = "Unexpected HTTP status; redirects are not followed"
             return Delivery("ambiguous", status, evidence)
         try:
-            raw = json.loads(evidence["response_body"])
+            raw = parse_provider_json(evidence["response_body"])
             if not isinstance(raw, dict):
                 raise ValueError("Response must be a JSON object")
             generation = adapter.parse(raw)
@@ -370,7 +384,7 @@ class Transport:
             try:
                 if status != 200 or "error" in evidence:
                     raise ValueError(f"Discovery unavailable (HTTP {status})")
-                value = json.loads(evidence["response_body"])
+                value = parse_provider_json(evidence["response_body"])
                 canonical(value)  # Reject non-finite values before they enter durable evidence.
                 result.append(
                     Observation(name=path, status="observed", value=value, evidence=evidence)

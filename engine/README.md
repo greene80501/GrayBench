@@ -183,6 +183,9 @@ entity bytes and decoded JSON bytes. It requests identity encoding and also
 accepts bounded gzip and deflate responses. Already-decoded injected responses
 cannot claim an encoded hash. See the
 [response capture audit](../docs/reliability-evidence/response-entity-capture.md).
+Successful provider responses and discovery metadata with duplicate JSON keys
+remain recorded but are operationally ambiguous; they cannot become answers or
+observed model identities. Capability-probe replay applies the same rule.
 The transport also uses the supplied adapter instance for authentication and
 discovery; see the [adapter consistency audit](../docs/reliability-evidence/adapter-instance-consistency.md).
 New prepared requests freeze the non-secret headers GrayBench sends and the

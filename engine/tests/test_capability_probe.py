@@ -102,6 +102,26 @@ def test_probe_captures_one_fixed_public_request_and_verifies_response():
     assert "api_key" not in record.model_dump_json().lower()
 
 
+def test_rebound_probe_with_duplicate_answer_key_cannot_qualify():
+    record = accepted_probe()
+    body = json.dumps(accepted_response(), separators=(",", ":")).replace(
+        '"content":"READY"', '"content":"READY","content":"READY"'
+    )
+    assert body.count('"content":"READY"') == 2
+    digest = hashlib.sha256(body.encode()).hexdigest()
+    evidence = {
+        **record.evidence,
+        "response_body": body,
+        "decoded_body_sha256": digest,
+        "wire_sha256": digest,
+        "response_bytes": len(body.encode()),
+        "wire_bytes": len(body.encode()),
+    }
+    rebound = record.model_copy(update={"evidence": evidence})
+    with pytest.raises(ValueError, match="cannot be parsed"):
+        verify_accepted_probe(rebound, spec(), OpenAIChat())
+
+
 def test_probe_artifact_excludes_loaded_credential(monkeypatch):
     monkeypatch.setenv("GRAYBENCH_PROBE_TEST_KEY", "unit-secret-probe-123")
     credentialed = ModelSpec(

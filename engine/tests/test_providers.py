@@ -144,6 +144,33 @@ def test_transport_does_not_retry_timeout(model, task):
     assert len(calls) == 1
 
 
+def test_duplicate_provider_answer_key_is_ambiguous_and_retained(model, task):
+    response = (
+        '{"model":"test-model","done":true,"message":{"role":"assistant",'
+        '"content":"return 1","content":"return 2"}}'
+    )
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, text=response))
+    ) as client:
+        result = Transport(model, client).generate(Ollama().prepare(model, task, None), Ollama())
+    assert result.kind == "ambiguous"
+    assert result.generation is None
+    assert result.evidence["response_body"] == response
+    assert "Duplicate provider JSON key" in result.evidence["error"]
+
+
+def test_duplicate_discovery_key_is_not_an_observed_model_identity(model):
+    response = '{"name":"first","name":"second"}'
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, text=response))
+    ) as client:
+        observations = Transport(model, client).discover(Ollama())
+    assert len(observations) == 4
+    assert all(observation.status == "error" for observation in observations)
+    assert all("Duplicate provider JSON key" in observation.detail for observation in observations)
+    assert all(observation.evidence["response_body"] == response for observation in observations)
+
+
 def test_generation_authenticates_with_the_supplied_adapter_instance(monkeypatch, task):
     monkeypatch.setenv("TEST_TOKEN", "stateful-fixture-secret")
     model = ModelSpec(

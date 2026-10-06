@@ -1,7 +1,6 @@
 """One non-benchmark provider call and offline checks of its local evidence."""
 
 import hashlib
-import json
 import os
 from datetime import UTC, date, datetime
 from typing import Literal
@@ -19,7 +18,7 @@ from graybench.contracts import (
 )
 from graybench.identity import canonical, identity, reject_credential_value
 from graybench.providers import Adapter
-from graybench.transport import Transport
+from graybench.transport import Transport, parse_provider_json
 
 PROBE_TASK = PublicTask(
     suite="normal",
@@ -148,7 +147,7 @@ def verify_probe_record(record: CapabilityProbe, target: ModelSpec, provider: Ad
         ):
             raise ValueError("Capability probe returned state is inconsistent")
         try:
-            parsed = provider.parse(json.loads(body))
+            parsed = provider.parse(parse_provider_json(body))
         except (ValueError, TypeError, KeyError, AttributeError, IndexError) as exc:
             raise ValueError("Capability probe response cannot be parsed") from exc
         if parsed != record.generation:
