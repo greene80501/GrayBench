@@ -1,6 +1,6 @@
 # Task 110 Protected Graph Development Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build and verify a development-only, source-bound graph revision of QHE task 110 that rejects the two demonstrated native false passes while accepting valid Clifford circuit alternatives.
 
@@ -34,11 +34,11 @@
 
 **Interfaces:** `revised_task(source: JudgeTask) -> JudgeTask` validates pinned source digests and returns a new public prompt/private test; `Task110GraphJudge.configuration(source)` and `.evaluate(source, completion)` bind and execute that revision; `probes(source)` returns declared authored alternatives and mutants.
 
-- [ ] Write tests for exact source binding, distinct normal/hard public prompts, graph judge configuration, and positive/negative controls.
-- [ ] Run the tests and observe failure because the revision is absent.
-- [ ] Implement the minimal revision and controls without changing `engine/src`.
-- [ ] Run focused tests against the pinned cache and Docker image; fix failures and run Ruff.
-- [ ] Commit with `[skip ci]` because the account's Actions quota is exhausted.
+- [x] Write tests for exact source binding, distinct normal/hard public prompts, graph judge configuration, and positive/negative controls.
+- [x] Run the tests and observe failure because the revision is absent.
+- [x] Implement the minimal revision and controls without changing `engine/src`.
+- [x] Run focused tests against the pinned cache and Docker image; fix failures and run Ruff.
+- [x] Commit with `[skip ci]` because the account's Actions quota is exhausted.
 
 ### Task 2: Reproducible authored-control evidence
 
@@ -46,7 +46,7 @@
 
 **Interfaces:** `run_review` writes a new append-only JSONL log; `inspect_oracle_review` checks its chain, exact case metadata, source and declared judge identities; an additional test binds the development module hash.
 
-- [ ] Write a failing test for exact expected control counts, recorded outcomes, source digest, and module hash.
-- [ ] Generate the log in a new path and verify every declared expectation.
-- [ ] Re-run verification and focused tests from a fresh clone; keep the result release-ineligible.
-- [ ] Commit, push to PR #3, and update its description with the measured result and limits.
+- [x] Write a failing test for exact expected control counts, recorded outcomes, source digest, and module hash.
+- [x] Generate the log in a new path and verify every declared expectation.
+- [x] Re-run verification and focused tests from a fresh clone; keep the result release-ineligible.
+- [x] Commit, push to PR #3, and update its description with the measured result and limits.
