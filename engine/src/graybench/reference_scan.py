@@ -15,6 +15,15 @@ from graybench.native_judge import NativeJudge
 from graybench.provenance import source_manifest
 
 
+def _unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate reference JSON key")
+        result[key] = value
+    return result
+
+
 def run_reference_scan(tasks, judge, output: Path, *, selection=None):
     tasks = tuple(tasks)
     return run_evidence_cases(
@@ -164,7 +173,7 @@ def inspect_reference_scan(path: Path):
             file_digest.update(line)
             if not line.endswith(b"\n"):
                 raise ValueError("Truncated reference event; evidence requires adjudication")
-            record = json.loads(line)
+            record = json.loads(line, object_pairs_hook=_unique_json_object)
             digest = record.pop("digest")
             count += 1
             if (

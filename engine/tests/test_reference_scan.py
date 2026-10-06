@@ -210,3 +210,14 @@ def test_damaged_evidence_is_not_reported_complete(tmp_path, task, corruption):
         output.write_text("\n".join(json.dumps(r) for r in records) + "\n")
     with pytest.raises(ValueError):
         inspect_reference_scan(output)
+
+
+def test_duplicate_json_keys_are_rejected_even_with_valid_parsed_chain(tmp_path, task):
+    output = tmp_path / "scan.jsonl"
+    run_reference_scan((private(task),), Judge(), output)
+    raw = output.read_bytes()
+    altered = raw.replace(b'"sequence":1', b'"sequence":1,"sequence":1', 1)
+    assert altered != raw
+    output.write_bytes(altered)
+    with pytest.raises(ValueError, match="Duplicate.*JSON key"):
+        inspect_reference_scan(output)

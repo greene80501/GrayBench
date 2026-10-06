@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+
 from graybench.identity import canonical, identity
 
 
@@ -54,13 +55,11 @@ def _synthetic_control_log(tmp_path, *, change=None):
     """Construct a chain for binding tests; this is never real execution evidence."""
     verifier = verifier_module()
     plan = verifier.read_plan(verifier.HERE / "plan.json")
-    from graybench.provenance import source_manifest
-
     events = [
         {
             "kind": "header",
             "purpose": "BB84 batch protected authored controls; not model scoring",
-            "source": source_manifest(),
+            "source": next(iter(plan["declared_judges"].values()))["source"],
             "selection": plan,
             "tasks": {key: identity(record) for key, record in plan["cases"].items()},
         }
