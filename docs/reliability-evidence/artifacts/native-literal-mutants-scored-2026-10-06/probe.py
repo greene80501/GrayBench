@@ -32,10 +32,6 @@ FROZEN_CURRENT_PROBE = (
     Path(__file__).resolve().parent / "artifacts/native-literal-mutants-2026-10-06-v2/probe.py"
 )
 FROZEN_CURRENT_PROBE_SHA256 = "471df6f950771e42f3874d8bcccd99539b9d1826161808306e80f08027f05dec"
-FROZEN_SCORED_PROBE = (
-    Path(__file__).resolve().parent / "artifacts/native-literal-mutants-scored-2026-10-06/probe.py"
-)
-FROZEN_SCORED_PROBE_SHA256 = "8cd57d952c049c6972e6cf7a5772e963769e66619f6c185d8454e4c0c064c906"
 
 
 def completion(task, literal: str) -> str:
@@ -140,7 +136,6 @@ def verify(cache: Path, path: Path) -> dict:
     frozen = {
         FROZEN_PROBE_SHA256: FROZEN_PROBE,
         FROZEN_CURRENT_PROBE_SHA256: FROZEN_CURRENT_PROBE,
-        FROZEN_SCORED_PROBE_SHA256: FROZEN_SCORED_PROBE,
     }
     if observed_probe in frozen:
         if hashlib.sha256(frozen[observed_probe].read_bytes()).hexdigest() != observed_probe:

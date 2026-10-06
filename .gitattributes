@@ -143,3 +143,7 @@ docs/reliability-evidence/build_oracle_case_roster_2026_10_06.py text eol=lf
 docs/reliability-evidence/artifacts/admission-task139-current-2026-10-06/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/admission-task139-current-2026-10-06/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/current-release-audit-2026-10-06-v3/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/native-literal-mutants-2026-10-06-v2/probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/native-literal-mutants-scored-2026-10-06/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/native-literal-mutants-scored-2026-10-06/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/native-literal-mutants-scored-2026-10-06/probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol

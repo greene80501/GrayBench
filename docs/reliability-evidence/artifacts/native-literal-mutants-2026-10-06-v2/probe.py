@@ -11,11 +11,10 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from graybench.contracts import NativeExceptionPolicy
 from graybench.datasets import EXTERNAL_IDS, load_suite
 from graybench.identity import identity
 from graybench.native_assembly import native_payload
-from graybench.native_cohort import NATIVE_EXCEPTION_POLICIES, freeze_native_cohort, task_key
+from graybench.native_cohort import freeze_native_cohort, task_key
 from graybench.native_judge import NativeJudge
 from graybench.provenance import source_manifest
 from graybench.reference_scan import inspect_reference_scan, run_evidence_cases
@@ -28,14 +27,6 @@ FROZEN_PROBE = (
     Path(__file__).resolve().parent / "artifacts/native-literal-mutants-2026-10-05/probe.py"
 )
 FROZEN_PROBE_SHA256 = "95df27bd75595a5fe14641bb9861e0b0396882e58c93a4d652a4f150160cfd2a"
-FROZEN_CURRENT_PROBE = (
-    Path(__file__).resolve().parent / "artifacts/native-literal-mutants-2026-10-06-v2/probe.py"
-)
-FROZEN_CURRENT_PROBE_SHA256 = "471df6f950771e42f3874d8bcccd99539b9d1826161808306e80f08027f05dec"
-FROZEN_SCORED_PROBE = (
-    Path(__file__).resolve().parent / "artifacts/native-literal-mutants-scored-2026-10-06/probe.py"
-)
-FROZEN_SCORED_PROBE_SHA256 = "8cd57d952c049c6972e6cf7a5772e963769e66619f6c185d8454e4c0c064c906"
 
 
 def completion(task, literal: str) -> str:
@@ -44,9 +35,7 @@ def completion(task, literal: str) -> str:
     return f"def {task.public.entry_point}(*args, **kwargs):\n    return {literal}\n"
 
 
-def plan(
-    cache: Path, exception_policy: NativeExceptionPolicy = "conservative_unattributed_v1"
-) -> tuple[list[tuple], dict, dict]:
+def plan(cache: Path) -> tuple[list[tuple], dict, dict]:
     cases = []
     judges = {}
     cohorts = {}
@@ -64,7 +53,6 @@ def plan(
             population="offline_143",
             image=IMAGE,
             extraction=EXTRACTION[suite],
-            exception_policy=exception_policy,
             label="native reference calibration",
             excluded={
                 task_key(task): "external_service"
@@ -87,26 +75,17 @@ def plan(
 
 
 def selection(cohorts: dict) -> dict:
-    policies = {cohort.exception_policy for cohort in cohorts.values()}
-    if len(policies) != 1:
-        raise ValueError("Mixed native literal-mutant exception policies")
-    policy = policies.pop()
     return {
         "probe_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "image": IMAGE,
         "mutants": LITERALS,
         "cohorts": {suite: cohort.model_dump(mode="json") for suite, cohort in cohorts.items()},
         "cohort_digests": {suite: cohort.digest for suite, cohort in cohorts.items()},
-        **({"exception_policy": policy} if policy != "conservative_unattributed_v1" else {}),
     }
 
 
-def run(
-    cache: Path,
-    output: Path,
-    exception_policy: NativeExceptionPolicy = "conservative_unattributed_v1",
-) -> dict:
-    cases, judges, cohorts = plan(cache, exception_policy=exception_policy)
+def run(cache: Path, output: Path) -> dict:
+    cases, judges, cohorts = plan(cache)
     result = run_evidence_cases(
         cases,
         lambda case: judges[case[0].public.suite].evaluate(*case),
@@ -130,20 +109,12 @@ def verify(cache: Path, path: Path) -> dict:
     if not inspected["complete"] or inspected["planned"] != 572:
         raise ValueError("Incomplete native literal-mutant screen")
     records = [json.loads(line)["event"] for line in path.read_bytes().splitlines()]
+    cases, judges, cohorts = plan(cache)
     header = records[0]
-    exception_policy = header["selection"].get("exception_policy", "conservative_unattributed_v1")
-    if exception_policy not in NATIVE_EXCEPTION_POLICIES:
-        raise ValueError("Unknown native literal-mutant exception policy")
-    cases, judges, cohorts = plan(cache, exception_policy=exception_policy)
     observed_probe = header["selection"]["probe_sha256"]
     current_probe = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-    frozen = {
-        FROZEN_PROBE_SHA256: FROZEN_PROBE,
-        FROZEN_CURRENT_PROBE_SHA256: FROZEN_CURRENT_PROBE,
-        FROZEN_SCORED_PROBE_SHA256: FROZEN_SCORED_PROBE,
-    }
-    if observed_probe in frozen:
-        if hashlib.sha256(frozen[observed_probe].read_bytes()).hexdigest() != observed_probe:
+    if observed_probe == FROZEN_PROBE_SHA256:
+        if hashlib.sha256(FROZEN_PROBE.read_bytes()).hexdigest() != FROZEN_PROBE_SHA256:
             raise ValueError("Frozen native literal-mutant probe bytes differ")
     elif observed_probe != current_probe:
         raise ValueError("Unknown native literal-mutant probe source")
@@ -197,8 +168,6 @@ def verify(cache: Path, path: Path) -> dict:
         }
         if (result["outcome"] == "pass") != worker_pass:
             raise ValueError(f"Native literal-mutant pass differs from worker: {key}")
-        if worker is not None and result["outcome"] != worker.get("status"):
-            raise ValueError(f"Native literal-mutant outcome differs from worker: {key}")
     counts = Counter(result["outcome"] for result in results.values())
     by_condition = {}
     test_phase_infrastructure = 0
@@ -220,7 +189,6 @@ def verify(cache: Path, path: Path) -> dict:
         "planned": len(cases),
         "source_digest": source_manifest()["digest"],
         "image": IMAGE,
-        "exception_policy": exception_policy,
         "cohort_digests": {suite: cohort.digest for suite, cohort in cohorts.items()},
         "outcomes": dict(counts),
         "by_condition": {
@@ -241,19 +209,10 @@ def main() -> None:
     parser.add_argument("mode", choices=("run", "verify"))
     parser.add_argument("cache", type=Path)
     parser.add_argument("path", type=Path)
-    parser.add_argument(
-        "--exception-policy",
-        choices=NATIVE_EXCEPTION_POLICIES,
-        default="conservative_unattributed_v1",
-    )
     args = parser.parse_args()
-    if args.mode == "verify" and args.exception_policy != "conservative_unattributed_v1":
-        parser.error("Verification reads the exception policy from the frozen log")
     print(
         json.dumps(
-            run(args.cache, args.path, exception_policy=args.exception_policy)
-            if args.mode == "run"
-            else verify(args.cache, args.path)
+            run(args.cache, args.path) if args.mode == "run" else verify(args.cache, args.path)
         )
     )
 

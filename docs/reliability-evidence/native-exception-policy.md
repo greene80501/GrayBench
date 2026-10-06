@@ -66,3 +66,7 @@ normal and hard outcomes agree for every offline task. This validates this
 policy's handling of the selected wrong-answer control, but does not prove
 that every task rejects other wrong answers. Task 63's fixed-string false pass
 remains a concrete counterexample to such a claim.
+
+## Current-source paired literal screen
+
+The [October 6 explicit-policy run](artifacts/native-literal-mutants-scored-2026-10-06/README.md) repeats two literal answers on every offline normal and hard task under current engine source `0daeaf62640237d5a4af2645c75f4f71a9645c78490781cd30ae79787833b924`. Its 572 cases pair exactly with the [conservative run](artifacts/native-literal-mutants-2026-10-06-v2/README.md): 366 failures and four passes are unchanged, while 202 completed test-phase exceptions become failures. Four `[]` false passes on tasks 110 and 139 persist. The verifier now checks the logged non-pass outcome against the captured worker status as well as the event chain and artifact bytes; exact source copies preserve both historical probe identities. This strengthens the local evidence, but does not resolve native oracle adequacy or authorize a model score.
