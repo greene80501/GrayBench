@@ -1,0 +1,7 @@
+# Task 139 protected Schmidt-value controls
+
+The [append-only log](results.jsonl) runs 11 frozen candidate controls against 240 declared calls in each pinned normal and hard suite. It binds the public value contract, trusted oracle, candidate submissions, pinned task digests, and immutable Python 3.12/Qiskit image `sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd` to engine source `0daeaf62640237d5a4af2645c75f4f71a9645c78490781cd30ae79787833b924`.
+
+All 22 controls matched: 10 valid alternatives passed, 10 shape-valid wrong answers failed, and two empty-list controls were rejected as `candidate_error`. The nonorthogonal-A control preserves state reconstruction, both vector norms, B orthogonality, and weight normalization; its A vectors alone break the Schmidt condition. The log is 624,532 bytes; SHA-256 `2324511dc885a4f2ee0d76228ae5da0d732fe6c548b1d1ae06b643d35ca5bc5f`; chain head `1f3a43857928d06ceb3421a3d77a4a65aa361b53fa5b0d65706feb18b26c4332`. Verify from `engine/` with `uv run graybench oracle-review-inspect ../docs/reliability-evidence/artifacts/task139-protected-controls-2026-10-06-v2/results.jsonl <pinned-cache>`.
+
+This [revised task](../../task139-protected-value-design.md) accepts mathematical Schmidt decompositions up to equivalent phases, term order, and degenerate-basis rotations. It is separate from the pinned native task, whose original test still accepts `[]`. These authored controls and finite calls do not establish universal correctness or independent task admission. No task 139 score is publication eligible.

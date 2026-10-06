@@ -11,7 +11,7 @@ from graybench.identity import canonical, identity
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "docs/reliability-evidence/verify_native_reference_current.py"
-ARTIFACTS = ROOT / "docs/reliability-evidence/artifacts/native-reference-current-2026-10-05"
+ARTIFACTS = ROOT / "docs/reliability-evidence/artifacts/native-reference-current-2026-10-06-v2"
 
 
 def load_script():

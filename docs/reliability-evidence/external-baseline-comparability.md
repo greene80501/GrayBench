@@ -149,3 +149,12 @@ not the same test artifact as the pinned current suite. The 101-task paper set
 predates even this first 151-task release, so neither 151-task artifact should
 be used as its denominator without recovering the paper's exact task IDs and
 test revision.
+
+GrayBench's [current native calibration](artifacts/native-reference-current-2026-10-06-v2/README.md)
+exercises only the 143 offline task IDs in each pinned suite; eight
+external-service tasks are excluded. Its denominator therefore differs even
+from a 151-task result on the same dataset revision. The separately versioned
+protected value contracts also ask for different answer types and must be
+reported as a distinct track. We will compare per-task results on matched IDs
+and protocols before making any aggregate claim against an outside score; we
+will not tune a judge merely to reproduce a published percentage.

@@ -247,6 +247,8 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
         )
     results = {event["task_key"]: event for event in events if event["kind"] == "result"}
     expected_failures = 0
+    expected_passes = 0
+    expected_candidate_errors = 0
     unexpected_outcomes = []
     controls = []
     task_keys = set()
@@ -261,7 +263,7 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
         ):
             raise ValueError("Oracle-review case or pinned task digest mismatch")
         expected = metadata["expectation"]
-        if expected not in {"pass", "fail"} or any(
+        if expected not in {"pass", "fail", "candidate_error"} or any(
             not isinstance(metadata[field], str) or not metadata[field].strip()
             for field in ("rationale", "completion")
         ):
@@ -316,6 +318,8 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
                 {"task_key": key, "expected": expected, "actual": result["outcome"]}
             )
         expected_failures += expected == "fail"
+        expected_passes += expected == "pass"
+        expected_candidate_errors += expected == "candidate_error"
         controls.append(
             {
                 "case_key": key,
@@ -333,11 +337,13 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
         )
     return {
         "locally_verified": True,
+        "source_matches_running_source": source == source_manifest(),
         "independent_review": False,
         "publication_eligible": False,
         "control_count": len(cases),
         "expected_failures": expected_failures,
-        "expected_passes": len(cases) - expected_failures,
+        "expected_passes": expected_passes,
+        "expected_candidate_errors": expected_candidate_errors,
         "controls_matching_expectation": len(cases) - len(unexpected_outcomes),
         "unexpected_outcomes": unexpected_outcomes,
         "controls": controls,

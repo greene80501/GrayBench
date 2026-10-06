@@ -5,12 +5,14 @@ candidate produced native Qiskit objects or used a particular algorithm.
 """
 
 from pathlib import Path
+from textwrap import dedent
 
 from graybench.datasets import JudgeTask, load_suite
 from graybench.oracle_review import Probe, inspect_oracle_review, run_review
 from graybench.protected_semantic_judge import (
     TASK62_ORACLE,
     TASK62_ORACLE_V2,
+    TASK139_ORACLE,
     ProtectedSemanticJudge,
 )
 from graybench.protected_task_registry import revised_value_task
@@ -65,7 +67,136 @@ def _task62_omitted_input_mutant_completion() -> str:
     )
 
 
+def _task139_numpy_completion(mode: str = "ordinary") -> str:
+    """Candidate-side SVD; the trusted oracle never uses NumPy or Qiskit."""
+    return dedent(
+        f"""\
+        def schmidt_terms(state, qargs_B):
+            import numpy as np
+            b_qubits = list(qargs_B) if {mode == "wrong_b"!r} else sorted(qargs_B)
+            a_qubits = sorted(set(range(4)) - set(qargs_B))
+            matrix = np.zeros((1 << len(a_qubits), 1 << len(b_qubits)), dtype=complex)
+            for index, (real, imaginary) in enumerate(state):
+                a_index = sum(((index >> q) & 1) << j for j, q in enumerate(a_qubits))
+                b_index = sum(((index >> q) & 1) << j for j, q in enumerate(b_qubits))
+                matrix[a_index, b_index] = complex(real, imaginary)
+            left, weights, right = np.linalg.svd(matrix, full_matrices=False)
+            if {mode == "rotate"!r} and len(weights) > 1 and abs(weights[0] - weights[1]) < 1e-10:
+                x, y = left[:, 0].copy(), left[:, 1].copy()
+                v, w = right[0, :].copy(), right[1, :].copy()
+                left[:, 0], left[:, 1] = (x + y) / np.sqrt(2), (x - y) / np.sqrt(2)
+                right[0, :], right[1, :] = (v + w) / np.sqrt(2), (v - w) / np.sqrt(2)
+            answer = []
+            for index, weight in enumerate(weights):
+                if weight <= 1e-12:
+                    continue
+                a = left[:, index]
+                if {mode == "phase"!r}:
+                    a = 1j * a
+                b = right[index, :]
+                answer.append({{'weight': float(weight),
+                               'a': [[float(z.real), float(z.imag)] for z in a],
+                               'b': [[float(z.real), float(z.imag)] for z in b]}})
+            if {mode == "reverse"!r}:
+                answer.reverse()
+            if {mode == "omit"!r}:
+                answer = answer[:1]
+            if {mode == "nonorthogonal"!r} and qargs_B == [0]:
+                columns = [matrix[:, 0], matrix[:, 1]]
+                column_norms = [float(np.linalg.norm(column)) for column in columns]
+                if min(column_norms) > 1e-12:
+                    vectors = [column / norm for column, norm in zip(columns, column_norms)]
+                    if abs(np.vdot(vectors[0], vectors[1])) > 1e-3:
+                        answer = [
+                            {{'weight': column_norms[k],
+                              'a': [[float(z.real), float(z.imag)] for z in vectors[k]],
+                              'b': [[1.0 if j == k else 0.0, 0.0] for j in range(2)]}}
+                            for k in range(2)
+                        ]
+            if {mode == "bad_weight"!r}:
+                answer[0]['weight'] *= 0.9
+            return answer
+        """
+    )
+
+
 def protected_probes(source: JudgeTask, *, oracle: str | None = None) -> tuple[Probe, ...]:
+    if source.public.task_id == "qiskitHumanEval/139":
+        if oracle not in (None, TASK139_ORACLE):
+            raise ValueError("Unknown task-139 protected oracle for controls")
+        return (
+            Probe("numpy-svd", "pass", "Independent NumPy matrix SVD", _task139_numpy_completion()),
+            Probe(
+                "qiskit-schmidt",
+                "pass",
+                "Qiskit Schmidt decomposition adapted to the public value format",
+                "def schmidt_terms(state, qargs_B):\n"
+                "    from qiskit.quantum_info import Statevector, schmidt_decomposition\n"
+                "    psi = Statevector([complex(r, i) for r, i in state])\n"
+                "    return [{'weight': float(weight),\n"
+                "             'a': [[float(z.real), float(z.imag)] for z in a.data],\n"
+                "             'b': [[float(z.real), float(z.imag)] for z in b.data]}\n"
+                "            for weight, a, b in schmidt_decomposition(psi, qargs_B)\n"
+                "            if weight > 1e-12]\n",
+            ),
+            Probe(
+                "global-phase",
+                "pass",
+                "A common phase changes no state",
+                _task139_numpy_completion("phase"),
+            ),
+            Probe(
+                "reordered-terms",
+                "pass",
+                "Term order is not mathematical",
+                _task139_numpy_completion("reverse"),
+            ),
+            Probe(
+                "degenerate-rotation",
+                "pass",
+                "Equal-weight terms permit basis rotations",
+                _task139_numpy_completion("rotate"),
+            ),
+            Probe(
+                "empty-terms",
+                "candidate_error",
+                "The old native false pass supplies no term",
+                "def schmidt_terms(state, qargs_B):\n    return []\n",
+            ),
+            Probe(
+                "fixed-zero",
+                "fail",
+                "A fixed product answer ignores state and partition",
+                "def schmidt_terms(state, qargs_B):\n"
+                "    a = [[1.0,0.0]] + [[0.0,0.0] for _ in range((1 << (4-len(qargs_B)))-1)]\n"
+                "    b = [[1.0,0.0]] + [[0.0,0.0] for _ in range((1 << len(qargs_B))-1)]\n"
+                "    return [{'weight': 1.0, 'a': a, 'b': b}]\n",
+            ),
+            Probe(
+                "omitted-term",
+                "fail",
+                "Drops nonzero entangled terms",
+                _task139_numpy_completion("omit"),
+            ),
+            Probe(
+                "nonorthogonal",
+                "fail",
+                "Reconstructs the state with nonorthogonal A vectors",
+                _task139_numpy_completion("nonorthogonal"),
+            ),
+            Probe(
+                "bad-weight",
+                "fail",
+                "Miscalibrates a Schmidt coefficient",
+                _task139_numpy_completion("bad_weight"),
+            ),
+            Probe(
+                "wrong-b-order",
+                "fail",
+                "Uses input B order instead of public sorted order",
+                _task139_numpy_completion("wrong_b"),
+            ),
+        )
     if source.public.task_id == "qiskitHumanEval/2":
         return (
             Probe(
@@ -281,7 +412,13 @@ def run_protected_review(
         not task_ids
         or len(set(task_ids)) != len(task_ids)
         or any(
-            task_id not in {"qiskitHumanEval/2", "qiskitHumanEval/20", "qiskitHumanEval/62"}
+            task_id
+            not in {
+                "qiskitHumanEval/2",
+                "qiskitHumanEval/20",
+                "qiskitHumanEval/62",
+                "qiskitHumanEval/139",
+            }
             for task_id in task_ids
         )
     ):

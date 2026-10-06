@@ -137,7 +137,7 @@ def main():
     protected_controls.add_argument("output", type=Path)
     protected_controls.add_argument("--suite", choices=("normal", "hard", "both"), required=True)
     protected_controls.add_argument("--image", required=True)
-    protected_controls.add_argument("--task", choices=("2", "20", "62"), action="append")
+    protected_controls.add_argument("--task", choices=("2", "20", "62", "139"), action="append")
     protected_controls.add_argument("--docker", default="docker")
     protected_controls.add_argument("--timeout", type=float, default=120.0)
     validate = commands.add_parser(

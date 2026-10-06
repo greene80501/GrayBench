@@ -12,7 +12,7 @@ from graybench.identity import canonical, identity
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "docs/reliability-evidence/native_literal_mutant_screen.py"
 ARTIFACT = (
-    ROOT / "docs/reliability-evidence/artifacts/native-literal-mutants-2026-10-05/results.jsonl"
+    ROOT / "docs/reliability-evidence/artifacts/native-literal-mutants-2026-10-06-v2/results.jsonl"
 )
 
 
@@ -30,8 +30,8 @@ def test_literal_mutants_share_current_reference_cohorts():
     cases, _, cohorts = module.plan(cache)
     assert len(cases) == len({item[0] for item in cases}) == 572
     assert {suite: cohort.digest for suite, cohort in cohorts.items()} == {
-        "normal": "cc8009ebcc2bffdc0ec843d087c35d3ea52f470fe73f823084a9766131efe16a",
-        "hard": "fbb41b77ccd613b8dc7aa54009839911a5795661be93eb1ab7bc8a0104038b1f",
+        "normal": "a3fbe24e4f69fa75f4ee2f713298b2578b8242b9cb28ce27249da8bf73347adb",
+        "hard": "000fbb069089ea49609ad1864d12a89532aeb4c979426bad05a6c0f9a8b9cdbd",
     }
     assert all(item[0].endswith(("/zero", "/empty_list")) for item in cases)
 

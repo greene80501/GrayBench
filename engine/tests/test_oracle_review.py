@@ -107,6 +107,41 @@ def test_local_oracle_verifier_checks_pinned_ancestry_and_outcomes(tmp_path, cac
     assert set(report["task_keys"]) == {"normal/qiskitHumanEval/0"}
 
 
+def test_local_oracle_verifier_reports_when_log_source_is_historical(tmp_path, cache, monkeypatch):
+    output = _review_log(tmp_path, cache)
+    assert inspect_oracle_review(output, cache)["source_matches_running_source"] is True
+    monkeypatch.setattr(
+        "graybench.oracle_review.source_manifest",
+        lambda: {"files": {}, "digest": "0" * 64},
+    )
+    stale = inspect_oracle_review(output, cache)
+    assert stale["locally_verified"] is True
+    assert stale["source_matches_running_source"] is False
+
+
+def test_local_oracle_verifier_records_expected_malformed_candidate_separately(tmp_path, cache):
+    class RejectsEmpty:
+        def evaluate(self, *_):
+            return Judgment("candidate_error", "0" * 64, {})
+
+    output = tmp_path / "malformed.jsonl"
+    source = load_suite("normal", cache)[0]
+    run_review(
+        (source,),
+        RejectsEmpty(),
+        output,
+        probes_for=lambda _: (
+            Probe("empty", "candidate_error", "An empty response violates shape", "return []"),
+        ),
+    )
+    report = inspect_oracle_review(output, cache)
+    assert report["control_count"] == 1
+    assert report["controls_matching_expectation"] == 1
+    assert report["expected_failures"] == 0
+    assert report["expected_passes"] == 0
+    assert report["expected_candidate_errors"] == 1
+
+
 @pytest.mark.skipif(os.name != "nt", reason="Windows extended-length paths only")
 def test_local_oracle_verifier_reads_log_beyond_windows_legacy_path_limit(tmp_path, cache):
     source = _review_log(tmp_path, cache)

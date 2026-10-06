@@ -24,6 +24,38 @@ TASK20_ORACLE_V2 = "task20-seven-qubit-ghz-amplitudes-all-layouts-v2"
 TASK2_ORACLE = "task2-two-qubit-phi-plus-amplitudes-v1"
 TASK62_ORACLE = "task62-bb84-sender-amplitudes-v1"
 TASK62_ORACLE_V2 = "task62-bb84-sender-amplitudes-all-inputs-v2"
+TASK139_ORACLE = "task139-four-qubit-schmidt-terms-v1"
+
+
+def task139_case_inputs():
+    """Six deterministic normalized states for every ordered proper partition."""
+    s = 1 / math.sqrt(2)
+    basis_zero = [1 + 0j] + [0j] * 15
+    basis_eleven = [0j] * 11 + [1 + 0j] + [0j] * 4
+    ghz = [s if index in (0, 15) else 0j for index in range(16)]
+    crossing_bells = [0.5 if index in (0, 5, 10, 15) else 0j for index in range(16)]
+    factors = ((s, 1j * s), (math.sqrt(3) / 2, 0.5j), (0.6, 0.8j), (s, -1j * s))
+    complex_product = [
+        math.prod(factors[qubit][(index >> qubit) & 1] for qubit in range(4)) for index in range(16)
+    ]
+    generic_raw = [complex(index % 5 - 2, (3 * index) % 7 - 3) for index in range(16)]
+    generic_norm = math.sqrt(sum(abs(z) ** 2 for z in generic_raw))
+    generic = [z / generic_norm for z in generic_raw]
+    states = (
+        basis_zero,
+        basis_eleven,
+        ghz,
+        crossing_bells,
+        complex_product,
+        generic,
+    )
+    for width in (1, 2, 3):
+        for partition in permutations(range(4), width):
+            for amplitudes in states:
+                yield (
+                    [[float(z.real), float(z.imag)] for z in amplitudes],
+                    list(partition),
+                )
 
 
 def task62_case_pairs():
@@ -67,6 +99,7 @@ class ProtectedSemanticTask(Contract):
         "task2-two-qubit-phi-plus-amplitudes-v1",
         "task62-bb84-sender-amplitudes-v1",
         "task62-bb84-sender-amplitudes-all-inputs-v2",
+        "task139-four-qubit-schmidt-terms-v1",
     ] = TASK20_ORACLE
     cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=1364)
     release_eligible: Literal[False] = False
@@ -79,6 +112,7 @@ class ProtectedSemanticTask(Contract):
             TASK20_ORACLE_V2: "qiskitHumanEval/20",
             TASK62_ORACLE: "qiskitHumanEval/62",
             TASK62_ORACLE_V2: "qiskitHumanEval/62",
+            TASK139_ORACLE: "qiskitHumanEval/139",
         }[self.oracle]
         if self.contract.public.task_id != expected_task:
             raise ValueError("Semantic oracle and public task identity differ")
@@ -129,6 +163,17 @@ class ProtectedSemanticTask(Contract):
             observed = tuple((case.case_id, case.call.args) for case in self.cases)
             if observed != expected:
                 raise ValueError("Protected task-62 requires its full frozen case set")
+        if self.oracle == TASK139_ORACLE:
+            expected = tuple(
+                (
+                    f"partition-{''.join(map(str, partition))}-state-{index}",
+                    (state, partition),
+                )
+                for index, (state, partition) in enumerate(task139_case_inputs())
+            )
+            observed = tuple((case.case_id, case.call.args) for case in self.cases)
+            if observed != expected:
+                raise ValueError("Protected task-139 requires its full frozen case set")
         return self
 
 
@@ -249,6 +294,94 @@ def _task62_bb84_value(state: object, basis: object, value: object) -> dict:
     }
 
 
+def _task139_schmidt_value(state: object, qargs_b: object, value: object) -> dict:
+    """Check a four-qubit Schmidt expansion modulo global phase and basis choice."""
+    tolerance = 1e-8
+    if (
+        type(qargs_b) is not list
+        or not 1 <= len(qargs_b) <= 3
+        or any(type(qubit) is not int or not 0 <= qubit < 4 for qubit in qargs_b)
+        or len(set(qargs_b)) != len(qargs_b)
+    ):
+        return {"passed": False, "reason": "invalid_partition"}
+    b_qubits = sorted(qargs_b)
+    a_qubits = [qubit for qubit in range(4) if qubit not in b_qubits]
+    a_size, b_size = 1 << len(a_qubits), 1 << len(b_qubits)
+
+    def vector(raw: object, size: int) -> list[complex] | None:
+        if type(raw) is not list or len(raw) != size:
+            return None
+        values = []
+        for pair in raw:
+            if (
+                type(pair) is not list
+                or len(pair) != 2
+                or any(
+                    type(component) not in (int, float)
+                    or not -1 <= component <= 1
+                    or not math.isfinite(component)
+                    for component in pair
+                )
+            ):
+                return None
+            values.append(complex(*pair))
+        return values
+
+    target = vector(state, 16)
+    if target is None or abs(sum(abs(z) ** 2 for z in target) - 1) > tolerance:
+        return {"passed": False, "reason": "invalid_state"}
+    if type(value) is not list or not 1 <= len(value) <= min(a_size, b_size):
+        return {"passed": False, "reason": "invalid_term_count"}
+    terms = []
+    for raw in value:
+        if type(raw) is not dict or set(raw) != {"weight", "a", "b"}:
+            return {"passed": False, "reason": "invalid_term"}
+        weight = raw["weight"]
+        a = vector(raw["a"], a_size)
+        b = vector(raw["b"], b_size)
+        if (
+            type(weight) not in (int, float)
+            or not 0 < weight <= 1
+            or not math.isfinite(weight)
+            or a is None
+            or b is None
+        ):
+            return {"passed": False, "reason": "invalid_term"}
+        if (
+            abs(sum(abs(z) ** 2 for z in a) - 1) > tolerance
+            or abs(sum(abs(z) ** 2 for z in b) - 1) > tolerance
+        ):
+            return {"passed": False, "reason": "nonunit_vector"}
+        terms.append((weight, a, b))
+    for i, (_, a_i, b_i) in enumerate(terms):
+        for _, a_j, b_j in terms[:i]:
+            if abs(sum(x.conjugate() * y for x, y in zip(a_i, a_j, strict=True))) > tolerance:
+                return {"passed": False, "reason": "nonorthogonal_a"}
+            if abs(sum(x.conjugate() * y for x, y in zip(b_i, b_j, strict=True))) > tolerance:
+                return {"passed": False, "reason": "nonorthogonal_b"}
+    weight_norm = sum(weight**2 for weight, _, _ in terms)
+    if abs(weight_norm - 1) > tolerance:
+        return {"passed": False, "reason": "invalid_weights"}
+    reconstructed = []
+    for index in range(16):
+        a_index = sum(((index >> qubit) & 1) << position for position, qubit in enumerate(a_qubits))
+        b_index = sum(((index >> qubit) & 1) << position for position, qubit in enumerate(b_qubits))
+        reconstructed.append(sum(weight * a[a_index] * b[b_index] for weight, a, b in terms))
+    overlap = sum(x.conjugate() * y for x, y in zip(target, reconstructed, strict=True))
+    if not math.isfinite(abs(overlap)) or abs(overlap) == 0:
+        return {"passed": False, "reason": "invalid_overlap"}
+    phase = overlap / abs(overlap)
+    max_error = max(
+        abs(actual - phase * expected)
+        for expected, actual in zip(target, reconstructed, strict=True)
+    )
+    return {
+        "passed": math.isfinite(max_error) and max_error <= tolerance,
+        "weight_norm": weight_norm,
+        "max_aligned_error": max_error,
+    }
+
+
 class ProtectedSemanticJudge:
     def __init__(self, runner: ValueRunner):
         self.runner = runner
@@ -264,15 +397,14 @@ class ProtectedSemanticJudge:
             "runner": self.runner.manifest(task.contract),
             "release_eligible": False,
         }
-        module, label = (
-            ("protected_task2.py", "task2_contract_code_sha256")
-            if task.oracle == TASK2_ORACLE
-            else (
-                ("protected_task62.py", "task62_contract_code_sha256")
-                if task.oracle in {TASK62_ORACLE, TASK62_ORACLE_V2}
-                else ("protected_task20.py", "task20_contract_code_sha256")
-            )
-        )
+        module, label = {
+            TASK2_ORACLE: ("protected_task2.py", "task2_contract_code_sha256"),
+            TASK20_ORACLE: ("protected_task20.py", "task20_contract_code_sha256"),
+            TASK20_ORACLE_V2: ("protected_task20.py", "task20_contract_code_sha256"),
+            TASK62_ORACLE: ("protected_task62.py", "task62_contract_code_sha256"),
+            TASK62_ORACLE_V2: ("protected_task62.py", "task62_contract_code_sha256"),
+            TASK139_ORACLE: ("protected_task139.py", "task139_contract_code_sha256"),
+        }[task.oracle]
         manifest[label] = hashlib.sha256(Path(__file__).with_name(module).read_bytes()).hexdigest()
         return manifest
 
@@ -312,6 +444,8 @@ class ProtectedSemanticJudge:
                 result = _task2_phi_value(value)
             elif task.oracle in {TASK62_ORACLE, TASK62_ORACLE_V2}:
                 result = _task62_bb84_value(*case.call.args, value)
+            elif task.oracle == TASK139_ORACLE:
+                result = _task139_schmidt_value(*case.call.args, value)
             else:
                 result = _task20_ghz_value(case.call.args[0], value)
             case_results.append({"case_id": case.case_id, **result})

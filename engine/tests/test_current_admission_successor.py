@@ -14,7 +14,7 @@ from graybench.admission_bundle import verify_admission_bundle
 def test_current_admission_successor_rebinds_only_six_value_cards(tmp_path):
     script = (
         Path(__file__).resolve().parents[2]
-        / "docs/reliability-evidence/refresh_admission_2026_10_05.py"
+        / "docs/reliability-evidence/refresh_admission_2026_10_06.py"
     )
     spec = importlib.util.spec_from_file_location("current_admission_successor", script)
     module = importlib.util.module_from_spec(spec)
@@ -37,7 +37,7 @@ def test_current_admission_successor_rebinds_only_six_value_cards(tmp_path):
 def test_current_admission_successor_refuses_changed_control_log(tmp_path, monkeypatch):
     script = (
         Path(__file__).resolve().parents[2]
-        / "docs/reliability-evidence/refresh_admission_2026_10_05.py"
+        / "docs/reliability-evidence/refresh_admission_2026_10_06.py"
     )
     spec = importlib.util.spec_from_file_location("current_admission_successor", script)
     module = importlib.util.module_from_spec(spec)

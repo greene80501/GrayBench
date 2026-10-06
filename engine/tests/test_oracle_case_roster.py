@@ -8,7 +8,7 @@ import pytest
 
 SCRIPT = (
     Path(__file__).resolve().parents[2]
-    / "docs/reliability-evidence/build_oracle_case_roster_2026_10_05.py"
+    / "docs/reliability-evidence/build_oracle_case_roster_2026_10_06.py"
 )
 
 
