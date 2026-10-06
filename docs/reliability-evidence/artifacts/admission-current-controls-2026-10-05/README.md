@@ -46,6 +46,11 @@ cards lack verified oracle-case links; 94 cards have unresolved known findings;
 all 302 lack two qualified independent reviews; and 16 external-service cards
 remain unqualified. A control pass alone clears none of those review gates.
 
+The later [exact private-call roster](../../oracle-case-roster-2026-10-05.md)
+reconstructs all six revised task call sets from these cards and the current
+judge source for human review. It does not fill the oracle-case links or clear
+any admission blocker.
+
 The complete Windows/Python 3.12 engine suite with the verified pinned cache
 and image, including both successor-builder tests, reported 1,571 passed,
 5 skipped, 6 expected failures and zero failures in 720.59 seconds. Ruff lint
