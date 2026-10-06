@@ -6,6 +6,11 @@ image. Both suites passed 143/143, with a verifier that binds every result to
 the current pinned answer and judge manifest. The historical results below
 remain separate evidence for their earlier source.
 
+A [current-source 572-case literal-mutant screen](artifacts/native-literal-mutants-2026-10-05/README.md)
+used the same cohorts. Empty-list answers passed tasks 110 and 139 in both
+suites, reproducing known vacuous-loop findings. Canonical passes therefore
+must not be read as oracle soundness.
+
 The new `native-reference-scan` command ran the pinned canonical answers in
 fresh Docker containers through the same native judge used for model answers.
 It wrote append-only, source-bound evidence through the existing reference
