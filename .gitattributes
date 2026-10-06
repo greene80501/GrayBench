@@ -124,3 +124,5 @@ docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/*.json -te
 docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/*.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/protected-current-controls-2026-10-05/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/current-release-audit-2026-10-05-v3/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/current_release_audit.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
