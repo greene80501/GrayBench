@@ -129,8 +129,13 @@ def test_noncanonical_blob_bytes_are_rejected_even_if_parsed_digest_matches(ledg
 
 def bound_request_evidence(request, protocol):
     content = canonical(request.body)
+    httpx_headers = {
+        **request.public_headers,
+        "host": httpx.URL(protocol.model.base_url).netloc.decode("ascii"),
+        "content-length": str(len(content)),
+    }
     return {
-        "request_capture_version": "canonical-body-v1",
+        "request_capture_version": "client-built-httpx-v2",
         "request_body": request.body,
         "request_content_sha256": hashlib.sha256(content).hexdigest(),
         "request_content_bytes": len(content),
@@ -140,6 +145,10 @@ def bound_request_evidence(request, protocol):
         "adapter_code_digest": request.adapter_code_digest,
         "credential_scope_id": protocol.model.credential_scope_id,
         "request_public_headers": request.public_headers,
+        "request_public_headers_sha256": identity(request.public_headers),
+        "request_httpx_headers": httpx_headers,
+        "request_httpx_headers_sha256": identity(httpx_headers),
+        "request_accept_encoding": "identity",
         "auth_header_names": list(request.credential_header_names),
     }
 
@@ -155,6 +164,10 @@ def bound_request_evidence(request, protocol):
         ("adapter_code_digest", "0" * 64),
         ("credential_scope_id", "different-scope"),
         ("request_public_headers", {"x-extra": "different"}),
+        ("request_public_headers_sha256", "0" * 64),
+        ("request_httpx_headers", {"host": "other.example"}),
+        ("request_httpx_headers_sha256", "0" * 64),
+        ("request_accept_encoding", "gzip"),
         ("auth_header_names", ["authorization"]),
     ],
 )
@@ -185,6 +198,19 @@ def test_partial_wire_request_evidence_is_rejected(ledger, protocol, task):
         )
 
 
+def test_rehashed_but_wrong_client_built_host_is_rejected(ledger, protocol, task):
+    run = ledger.create_run(protocol)
+    sample = ledger.samples(run)[0]["id"]
+    request = Ollama().prepare(protocol.model, task, None)
+    attempt = ledger.begin_attempt(sample, request)
+    evidence = bound_request_evidence(request, protocol)
+    headers = {**evidence["request_httpx_headers"], "host": "other.example"}
+    evidence["request_httpx_headers"] = headers
+    evidence["request_httpx_headers_sha256"] = identity(headers)
+    with pytest.raises(StateError, match="request evidence"):
+        ledger.finish_attempt(attempt, "rejected", evidence, 400)
+
+
 def test_missing_request_binding_is_visible_but_historical_delivery_still_verifies(
     ledger, protocol, task
 ):
@@ -193,6 +219,27 @@ def test_missing_request_binding_is_visible_but_historical_delivery_still_verifi
     report = ledger.summary(run)
     assert report["request_evidence_binding"] == {"bound": 0, "unbound": 1}
     assert "request_evidence_unbound" in report["publication_blockers"]
+
+
+def test_body_only_v1_capture_remains_readable_but_cannot_claim_full_request_binding(
+    ledger, protocol, task
+):
+    run = ledger.create_run(protocol)
+    sample = ledger.samples(run)[0]["id"]
+    request = Ollama().prepare(protocol.model, task, None)
+    attempt = ledger.begin_attempt(sample, request)
+    legacy = bound_request_evidence(request, protocol)
+    legacy["request_capture_version"] = "canonical-body-v1"
+    for field in (
+        "request_public_headers_sha256",
+        "request_httpx_headers",
+        "request_httpx_headers_sha256",
+        "request_accept_encoding",
+    ):
+        legacy.pop(field)
+    ledger.finish_attempt(attempt, "rejected", legacy, 400)
+    assert ledger.verify()["integrity"] == "verified"
+    assert ledger.summary(run)["request_evidence_binding"] == {"bound": 0, "unbound": 1}
 
 
 def test_matching_wire_request_evidence_verifies_and_is_reported_bound(ledger, protocol, task):
@@ -218,7 +265,7 @@ def test_transport_request_capture_binds_to_attempt(ledger, protocol, task):
     finally:
         client.close()
     assert delivery.kind == "rejected"
-    assert delivery.evidence["request_capture_version"] == "canonical-body-v1"
+    assert delivery.evidence["request_capture_version"] == "client-built-httpx-v2"
     ledger.finish_attempt(attempt, delivery.kind, delivery.evidence, delivery.status)
     assert ledger.summary(run)["request_evidence_binding"] == {"bound": 1, "unbound": 0}
 
