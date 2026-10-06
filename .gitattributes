@@ -130,3 +130,5 @@ docs/reliability-evidence/refresh_admission_2026_10_05.py -text whitespace=trail
 docs/reliability-evidence/artifacts/admission-current-controls-2026-10-05/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/admission-current-controls-2026-10-05/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/current-release-audit-2026-10-05-v4/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/oracle-case-roster-2026-10-05.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/native-reference-current-2026-10-05/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol

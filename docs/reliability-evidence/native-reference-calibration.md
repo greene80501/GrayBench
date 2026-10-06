@@ -1,5 +1,11 @@
 # Native reference calibration, 2026-09-27
 
+The later [2026-10-05 current-source calibration](artifacts/native-reference-current-2026-10-05/README.md)
+reran all 286 offline canonical answers under the current engine and pinned
+image. Both suites passed 143/143, with a verifier that binds every result to
+the current pinned answer and judge manifest. The historical results below
+remain separate evidence for their earlier source.
+
 The new `native-reference-scan` command ran the pinned canonical answers in
 fresh Docker containers through the same native judge used for model answers.
 It wrote append-only, source-bound evidence through the existing reference
