@@ -36,8 +36,9 @@ should be classified as `candidate_error`. They require both
 module run with the verified pinned cache and image
 `sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd`
 reported 37 passed in 26.87 seconds, including all 14 Docker controls. The
-full engine suite with the same cache and image reported 1,566 passed, 5 skipped,
-6 expected failures and zero failures in 726.88 seconds. A [separately frozen
+full engine suite with the same cache and image, including the new evidence
+verifier tests, reported 1,569 passed, 5 skipped, 6 expected failures and zero
+failures in 731.95 seconds. A [separately frozen
 and verified 14-control log](artifacts/task149-batch-controls-2026-10-05/README.md)
 preserves the authored Docker outcomes under their exact source and plan. These
 are development controls without independent execution attestation, not a model
