@@ -16,6 +16,7 @@ the default. These selections are development evaluations, not certified scores.
 | `qhe116-evolution-semantics-v1` | Task 116 | Explicit evolution matrix, phase and behavioral scoring contract |
 | `qhe120-diagonal-semantics-v1` | Task 120 | Explicit diagonal, global-phase allowance and no-mutation contract |
 | `qhe63-explicit-bases-v1` | Task 63 | New three-argument BB84 task with receiver bases supplied publicly |
+| `qhe149-most-common-bitstring-v1` | Task 149 | Explicit unique-most-common BitArray string contract with varied counts and insertion orders |
 
 Select exact tasks; a revision rejects other families rather than filtering or
 falling back. From `engine/`, with a model specification and an inspected immutable
@@ -97,3 +98,8 @@ Its native and protected positive/negative controls run, but
 [candidate-side encoder and graph snapshot substitution](protected-worker-encoder-integrity.md)
 still produce authored protected false passes. Task admission remains pending;
 the recipe is release-ineligible.
+
+The [task 149 most-common-bitstring revision](task149-most-common-revision.md)
+adds order-diverse count cases under a separate public contract. Its host checks
+pass, but protected Docker controls and independent review remain open; it is
+release-ineligible.
