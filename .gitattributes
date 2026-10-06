@@ -119,3 +119,7 @@ docs/reliability-evidence/task63_batch_probe.py -text whitespace=trailing-space,
 docs/reliability-evidence/artifacts/task63-batch-controls-2026-10-05/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task63-batch-controls-2026-10-05/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task63-batch-controls-2026-10-05/*.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task149_batch_probe.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/*.jsonl -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task149-batch-controls-2026-10-05/*.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
