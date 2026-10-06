@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "recorded_on_utc": "2026-10-06",
+  "source_revision": "a9cac8620d132060fad40499ab9f8819a859e16f",
+  "files": [
+    {
+      "path": "gemini-3.8-flash-capability-probe.json",
+      "bytes": 5490,
+      "sha256": "5a00988256f97152dc27d96454470c0eb440aeafbdf9b53791353c4d7bb2e6da"
+    },
+    {
+      "path": "gemini-3.8-flash-discovery.json",
+      "bytes": 3738,
+      "sha256": "fdd19db465833c1dc6eab02de4914c78645d5401c59d13ba3b8aab0f4f901e05"
+    },
+    {
+      "path": "gemini-3.8-flash-model.json",
+      "bytes": 257,
+      "sha256": "25423a5411d1b7bc54d27e086e8d4a88b9117ec66b1df3208fe62445623a6acb"
+    },
+    {
+      "path": "gpt-4o-mini-2024-07-18-capability-probe.json",
+      "bytes": 5317,
+      "sha256": "e4f670ab78b95d4d5e3f1c28a4791aa01df126cb54d1f4b66a814b90f5095810"
+    },
+    {
+      "path": "gpt-4o-mini-2024-07-18-discovery.json",
+      "bytes": 3137,
+      "sha256": "1fc58ee81a9a04b26d9908743a1eba2f53fc685e5d8bc2b9ce5db55585a282f4"
+    },
+    {
+      "path": "gpt-4o-mini-2024-07-18-model.json",
+      "bytes": 248,
+      "sha256": "da96e46ed7206bb31afc4a60614326561a4e4010de6c1c3d1de8cfeef53f364d"
+    }
+  ]
+}

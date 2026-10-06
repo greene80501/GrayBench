@@ -1,0 +1,8 @@
+{
+  "adapter": "openai-chat",
+  "model": "gpt-4o-mini-2024-07-18",
+  "base_url": "https://api.openai.com/v1",
+  "credential_env": "OPENAI_API_KEY",
+  "credential_scope_id": "openai/project/proj_5e0CmU2POCJo2c9UFLscDIDP",
+  "settings": []
+}

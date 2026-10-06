@@ -1,0 +1,127 @@
+{
+  "schema_version": "1",
+  "spec": {
+    "adapter": "gemini",
+    "model": "gemini-3.8-flash",
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "credential_env": "GOOGLE_API_KEY",
+    "credential_scope_id": "google/project/gen-lang-client-0719580231",
+    "settings": [],
+    "accepted_returned_models": [],
+    "model_identity_evidence": null,
+    "discovery_policy": "required",
+    "discovery_exception_reason": null
+  },
+  "base_url": "https://generativelanguage.googleapis.com/v1beta",
+  "request": {
+    "adapter": "gemini",
+    "model": "gemini-3.8-flash",
+    "path": "/models/gemini-3.8-flash:generateContent",
+    "body": {
+      "contents": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "GrayBench capability probe. This is not a benchmark task. Reply with READY."
+            }
+          ]
+        }
+      ]
+    },
+    "setting_evidence": [],
+    "public_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "content-type": "application/json",
+      "user-agent": "python-httpx"
+    },
+    "credential_header_names": [
+      "x-goog-api-key"
+    ],
+    "adapter_code_digest": "fcbf0a4ac1b414d69e55738fb5f2469260ae77eebfabd218624175f8b991a3a7"
+  },
+  "delivery_kind": "returned",
+  "status": 200,
+  "evidence": {
+    "request_capture_version": "client-built-httpx-v2",
+    "adapter_code_digest": "fcbf0a4ac1b414d69e55738fb5f2469260ae77eebfabd218624175f8b991a3a7",
+    "request_body": {
+      "contents": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "GrayBench capability probe. This is not a benchmark task. Reply with READY."
+            }
+          ]
+        }
+      ]
+    },
+    "request_content_sha256": "ca9bece65683b2313832a5d1499ec3e26c4c64419fa5d5e004540b13deab950f",
+    "request_content_bytes": 127,
+    "request_public_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "content-type": "application/json",
+      "user-agent": "python-httpx"
+    },
+    "request_public_headers_sha256": "8a48caadaad33aff4c190ca9cc5966c4d072b7b51608f043e81c9e0ced533f0b",
+    "request_httpx_headers": {
+      "accept": "application/json",
+      "accept-encoding": "identity",
+      "connection": "keep-alive",
+      "content-length": "127",
+      "content-type": "application/json",
+      "host": "generativelanguage.googleapis.com",
+      "user-agent": "python-httpx"
+    },
+    "request_httpx_headers_sha256": "11a80bfdde1dd56288d428a60bda1fbd333c7605a32d50a84cbbbd0cd1c08ea1",
+    "request_accept_encoding": "identity",
+    "response_capture_version": "encoded_entity_v2",
+    "credential_scope_id": "google/project/gen-lang-client-0719580231",
+    "auth_header_names": [
+      "x-goog-api-key"
+    ],
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "path": "/models/gemini-3.8-flash:generateContent",
+    "method": "POST",
+    "response_headers": {
+      "content-type": "application/json; charset=UTF-8",
+      "date": "Tue, 06 Oct 2026 03:39:18 GMT"
+    },
+    "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"READY\",\n            \"thoughtSignature\": \"ErsDCrgDAWkUfRMnHDg6UNj22+jKqrW8O4VBSKyRqjGm1SXnzKpG52PdCRRJRoanrR2u7eA9Ln3HOhA36F+nGJ2MaMIZYkjvmEmGEi3oKckWLauID8ERIpIV4pKG5ewtaDyo/EJuzFoZDKNRYaoNCZCm0flXvU0PgfpeUsXefs4nSb0mZ4jIPYMFgtPFVLi8LeHnvTYLu8bAftxGRHEF0Q60JWfA0dHGY1hI5FzsKKg3XQUtuXY1c4XZBvOejNKNvr2IFpWGESRKRI+Z251IpaHU/ge0g1OdL+UAsnklyKs7BaDblsfawY3bbpZ2lOiPchWaH6LUS81wZdpnMmP6fLgpI95tEM4TmxYQGi3bhNkQUdu+XoPMEGLacRkUNdGXANFmR7cE3mlq5ZPFWbqiHLaC4aV08b13w6BOkkjUdPbTxg5xgTeRQ5rUkiLYmTvGueDuMzmq75dstDH/d2mOFZbC4FGR6xRgGYSuZbeWdKFseW5TpT8EjWvkMtBnsEOj8MkAlNijE5VYehnG6vsAv0CiDH699YgZwnwHkRY4g5NyoKPn/hAwgvfJhJgrzjYNWLx3jjqAno6p1p4vzPg=\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 17,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 89,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 17\n      }\n    ],\n    \"thoughtsTokenCount\": 71,\n    \"serviceTier\": \"standard\"\n  },\n  \"modelVersion\": \"gemini-3.8-flash\",\n  \"responseId\": \"ZG3EavPBKIPUjMcP3ZGzqAI\"\n}\n",
+    "billing": "unknown",
+    "wire_sha256": "7c16b8e28c5198cc52dd51ab8c89bdcb8d0d59db36c522c6771b308552485fdb",
+    "decoded_body_sha256": "7c16b8e28c5198cc52dd51ab8c89bdcb8d0d59db36c522c6771b308552485fdb",
+    "latency_seconds": 1.9409350999994786,
+    "wire_bytes": 1209,
+    "response_bytes": 1209
+  },
+  "generation": {
+    "text": "READY",
+    "returned_model": "gemini-3.8-flash",
+    "response_id": "ZG3EavPBKIPUjMcP3ZGzqAI",
+    "finish_reason": "STOP",
+    "usage": {
+      "promptTokenCount": 17,
+      "candidatesTokenCount": 1,
+      "totalTokenCount": 89,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 17
+        }
+      ],
+      "thoughtsTokenCount": 71,
+      "serviceTier": "standard"
+    },
+    "effective_settings": {},
+    "metadata": {
+      "thoughts": [],
+      "safetyRatings": null,
+      "promptFeedback": null
+    }
+  },
+  "recorded_at": "2026-10-06T03:39:21.245955+00:00"
+}
