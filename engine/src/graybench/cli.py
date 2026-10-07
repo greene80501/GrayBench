@@ -47,6 +47,7 @@ from graybench.reference_scan import (
     run_native_reference_scan,
     run_reference_scan,
 )
+from graybench.run_abandonment import AbandonmentPlan, abandon_run, plan_abandonment
 from graybench.sample_metrics import (
     SampleMetricsPlan,
     make_metrics_plan,
@@ -139,6 +140,17 @@ def main():
     parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor", help="Record relevant runtime and source provenance")
+    abandonment_plan = commands.add_parser(
+        "abandonment-plan", help="Freeze an incomplete ledger snapshot for terminal abandonment"
+    )
+    abandonment_plan.add_argument("ledger", type=Path)
+    abandonment_plan.add_argument("run_id")
+    abandonment_plan.add_argument("output", type=Path)
+    abandonment_plan.add_argument("--reason", required=True)
+    abandonment_plan.add_argument("--workers-stopped", action="store_true", required=True)
+    abandon = commands.add_parser("abandon-run", help="Commit a frozen terminal abandonment")
+    abandon.add_argument("ledger", type=Path)
+    abandon.add_argument("plan", type=Path)
     metrics_plan = commands.add_parser(
         "metrics-plan", help="Freeze equal-task pass@1 and requested pass@k opportunity metrics"
     )
@@ -422,6 +434,33 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command in ("abandonment-plan", "abandon-run"):
+        if not args.ledger.is_file():
+            raise StateError("Abandonment ledger must already exist")
+        if args.command == "abandonment-plan" and args.output.exists():
+            raise FileExistsError(args.output)
+        plan = (
+            AbandonmentPlan.model_validate_json(canonical(load_binary_json(args.plan.read_bytes())))
+            if args.command == "abandon-run"
+            else None
+        )
+        book = Ledger(args.ledger, readonly=args.command == "abandonment-plan")
+        try:
+            if args.command == "abandonment-plan":
+                plan = plan_abandonment(
+                    book, args.run_id, reason=args.reason, workers_stopped=args.workers_stopped
+                )
+                with args.output.open("xb") as stream:
+                    stream.write(canonical(plan.model_dump(mode="json")))
+                result = {
+                    "plan_digest": plan.digest,
+                    "output": str(args.output),
+                    "publication_eligible": False,
+                }
+            else:
+                result = abandon_run(book, plan)
+        finally:
+            book.close()
     elif args.command == "metrics-plan":
         setup = _comparison_setup(args.setup.read_bytes())
         tasks = _comparison_tasks(setup, args.cache)

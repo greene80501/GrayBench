@@ -272,6 +272,11 @@ to this 151-task condition are recorded in the
 `campaign-create` saves the validated setup without generating answers.
 `campaign-step` performs at most one scheduled generation or protected judgment;
 it may make a billable request. `campaign-observe` records provider metadata.
+`abandonment-plan` and `abandon-run` provide an explicit terminal path for
+incomplete runs after workers have stopped. They preserve the frozen snapshot
+and all original evidence, block subsequent execution and keep scores withheld.
+See [run abandonment](../docs/reliability-evidence/run-abandonment.md) for the
+operator declaration, irreversible closure and historical verification limits.
 `native-plan` freezes one pinned normal or hard suite, an immutable image,
 exclusions, extraction policy, requests and judge limits. Its default
 `offline_143` population excludes the eight known external-service tasks;

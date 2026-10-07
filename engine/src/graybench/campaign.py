@@ -27,6 +27,9 @@ class GenerationRunner:
         self.requests, self.transport = dict(requests), transport
 
     def step(self) -> dict:
+        self.ledger.verify()
+        if self.ledger.abandonment(self.run_id) is not None:
+            return {"state": "stopped", "reason": "run_abandoned"}
         protocol = self.ledger.protocol(self.run_id)
         if source_manifest()["digest"] != protocol.generation_code_digest:
             raise StateError("Generation source differs from frozen experiment")

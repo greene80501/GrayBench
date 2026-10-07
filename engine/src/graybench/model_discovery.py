@@ -7,6 +7,7 @@ from graybench.providers import adapter, model_metadata_path
 
 
 def observe_run(ledger, run_id, transport, *, attempt_id=None, post_token=None):
+    ledger.require_run_open(run_id)
     protocol = ledger.protocol(run_id)
     ledger.require_protocol_serialization_stable(run_id, protocol)
     spec = protocol.model

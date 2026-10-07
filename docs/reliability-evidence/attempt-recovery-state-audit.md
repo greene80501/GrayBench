@@ -61,3 +61,10 @@ Subsequent work added a narrow `recover-post-check` command for a committed
 protocol-3.3 post observation missing only its timing check. It records the
 actual recovery time and preserves a late violation; the other pending states
 in this audit still need explicit adjudication.
+
+The subsequent [terminal abandonment workflow](run-abandonment.md) supplies an
+explicit close path for an incomplete run after workers have stopped. It retains
+the exact pre-closure snapshot and every original record, blocks further
+execution and keeps all scores withheld. It does not restore a lost observation,
+retry an uncertain delivery or rerun an interrupted oracle. The audit above
+remains historical evidence of its named source.

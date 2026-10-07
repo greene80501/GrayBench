@@ -122,6 +122,10 @@ CREATE TABLE IF NOT EXISTS events (
  seq INTEGER PRIMARY KEY, previous TEXT NOT NULL, digest TEXT NOT NULL UNIQUE,
  payload TEXT NOT NULL REFERENCES blobs(digest)
 );
+CREATE TABLE IF NOT EXISTS run_abandonments (
+ run_id TEXT PRIMARY KEY REFERENCES runs(id),
+ content TEXT NOT NULL REFERENCES blobs(digest), recorded_at TEXT NOT NULL
+);
 """
 
 
@@ -162,6 +166,7 @@ class Ledger:
             "judgments",
             "judgment_claims",
             "events",
+            "run_abandonments",
         ):
             for operation in ("UPDATE", "DELETE"):
                 self.db.execute(
@@ -172,6 +177,28 @@ class Ledger:
 
     def close(self) -> None:
         self.db.close()
+
+    def abandonment(self, run_id: str) -> dict | None:
+        # Historical read-only ledgers need no schema migration to be inspected.
+        if not self.db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='run_abandonments'"
+        ).fetchone():
+            return None
+        row = self.db.execute(
+            "SELECT content FROM run_abandonments WHERE run_id=?", (run_id,)
+        ).fetchone()
+        return self.blob(row[0]) if row else None
+
+    def require_run_open(self, run_id: str) -> None:
+        self.protocol(run_id)  # Also reject unknown runs.
+        if self.abandonment(run_id) is not None:
+            raise StateError("Run is terminally abandoned")
+
+    def _require_sample_open(self, sample_id: str) -> None:
+        row = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
+        if row is None:
+            raise StateError("Unscheduled sample")
+        self.require_run_open(row[0])
 
     @contextlib.contextmanager
     def transaction(self):
@@ -269,6 +296,7 @@ class Ledger:
             raise StateError("Discovery observation belongs to a different model specification")
         reject_model_credential(protocol.model, observation, "model observation")
         with self.transaction():
+            self.require_run_open(run_id)
             if attempt_id is not None:
                 attempt = self.db.execute(
                     "SELECT s.run_id,d.attempt_id AS delivered FROM attempts a "
@@ -339,6 +367,7 @@ class Ledger:
             ).fetchone()
             if row is None:
                 raise StateError("Unknown attempt")
+            self.require_run_open(row["run_id"])
             protocol = self.protocol(row["run_id"])
             self.require_protocol_serialization_stable(row["run_id"], protocol)
             if protocol.schema_version != "3.3":
@@ -562,6 +591,7 @@ class Ledger:
             sample = self.db.execute("SELECT * FROM samples WHERE id=?", (sample_id,)).fetchone()
             if not sample:
                 raise StateError("Unscheduled sample")
+            self.require_run_open(sample["run_id"])
             protocol = self.protocol(sample["run_id"])
             self.require_protocol_serialization_stable(sample["run_id"], protocol)
             reject_model_credential(
@@ -670,6 +700,8 @@ class Ledger:
         sample = self.db.execute("SELECT * FROM samples WHERE id=?", (sample_id,)).fetchone()
         if sample is None:
             raise StateError("Unscheduled sample")
+        if self.abandonment(sample["run_id"]) is not None:
+            return {"state": "abandoned"}
         if self.db.execute("SELECT 1 FROM generations WHERE sample_id=?", (sample_id,)).fetchone():
             return {"state": "returned"}
         prior = self.db.execute(
@@ -725,6 +757,7 @@ class Ledger:
                 "SELECT run_id FROM samples WHERE id=?", (attempt["sample_id"],)
             ).fetchone()["run_id"]
             protocol = self.protocol(run_id)
+            self.require_run_open(run_id)
             self.require_protocol_serialization_stable(run_id, protocol)
             request = PreparedRequest.model_validate_json(canonical(self.blob(attempt["request"])))
             try:
@@ -763,6 +796,7 @@ class Ledger:
         if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
             raise StateError("Judge must have a content identity")
         with self.transaction():
+            self._require_sample_open(sample_id)
             self._require_native_judge_claim(sample_id, judge_digest)
             self._require_model_observation_for_judgment(sample_id)
             row = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
@@ -809,6 +843,7 @@ class Ledger:
         if len(judge_digest) != 64 or any(c not in "0123456789abcdef" for c in judge_digest):
             raise StateError("Judge must have a content identity")
         with self.transaction():
+            self._require_sample_open(sample_id)
             self._require_native_judge_identity(sample_id, judge_digest)
             self._require_model_observation_for_judgment(sample_id)
             if self.db.execute(
@@ -970,6 +1005,9 @@ class Ledger:
         attempt_observations = self.attempt_observation_status(run_id)
         analysis_source = source_manifest()["digest"]
         blockers = []
+        abandonment = self.abandonment(run_id)
+        if abandonment is not None:
+            blockers.append("run_abandoned")
         if recorded_protocol_digest != protocol.digest:
             blockers.append("protocol_serialization_drift")
         if analysis_source != protocol.analysis_digest:
@@ -1052,6 +1090,7 @@ class Ledger:
                 else {}
             ),
             "planned_samples": len(expected),
+            **({"run_abandonment": abandonment} if abandonment is not None else {}),
             "observed_samples": len(rows),
             "returned_samples": sum(r["content"] is not None for r in rows),
             "judged_samples": sum(o is not None for o in outcomes),

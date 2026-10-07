@@ -63,6 +63,9 @@ class JudgmentRunner:
         self.ledger, self.run_id, self.tasks, self.judge = ledger, run_id, tasks, judge
 
     def step(self) -> dict:
+        self.ledger.verify()
+        if self.ledger.abandonment(self.run_id) is not None:
+            return {"state": "stopped", "reason": "run_abandoned"}
         protocol = self.ledger.protocol(self.run_id)
         binding = validate_cohort(protocol, self.tasks, self.judge)
         self.ledger.verify()
@@ -151,6 +154,9 @@ class UpstreamCampaign:
         self.generations = GenerationRunner(ledger, run_id, requests, transport)
 
     def step(self):
+        self.generations.ledger.verify()
+        if self.generations.ledger.abandonment(self.generations.run_id) is not None:
+            return {"state": "stopped", "reason": "run_abandoned"}
         # Validate before either stage, including before the first billable request.
         if (
             self.generations.ledger.model_identity(self.generations.run_id)["status"]

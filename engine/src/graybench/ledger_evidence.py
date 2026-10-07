@@ -41,6 +41,8 @@ def event_records(db, event):
         return one("runs", id=event["run_id"], manifest=event["manifest"])
     if kind == "run_context_recorded":
         return one("run_contexts", run_id=event["run_id"], content=event["context"])
+    if kind == "run_abandoned":
+        return one("run_abandonments", run_id=event["run_id"], content=event["content"])
     if kind == "model_observed":
         result = one(
             "model_observations",
@@ -118,7 +120,15 @@ def event_records(db, event):
 
 
 def verify_records(db, events):
-    observed = {table: Counter() for table in TABLES}
+    has_abandonments = (
+        db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='run_abandonments'"
+        ).fetchone()
+        and db.execute("SELECT 1 FROM run_abandonments LIMIT 1").fetchone()
+    )
+    tables = (*TABLES, "run_abandonments") if has_abandonments else TABLES
+    observed = {table: Counter() for table in tables}
+    abandoned = set()
     runs, attempts, returned, claimed, aborted, post_observed, post_checked = (
         set(),
         set(),
@@ -141,15 +151,75 @@ def verify_records(db, events):
         (row["sample_id"], row["judge_digest"])
         for row in db.execute("SELECT * FROM judgment_claims")
     }
-    for event in events:
+    for offset, event in enumerate(events):
         if "records" not in event:
             raise ValueError("Legacy event lacks exact row bindings; use its original engine")
         records = event_records(db, event)
         if records != event["records"]:
             raise ValueError("Event row binding mismatch")
         kind = event["kind"]
+        if kind in {"run_created", "run_context_recorded", "model_observed", "run_abandoned"}:
+            event_run = event["run_id"]
+        elif kind in {"attempt_started", "judgment_started", "judgment_recorded"}:
+            event_run = samples[event["sample_id"]]["run_id"]
+        else:
+            event_run = db.execute(
+                "SELECT s.run_id FROM attempts a JOIN samples s ON s.id=a.sample_id WHERE a.id=?",
+                (event["attempt_id"],),
+            ).fetchone()[0]
+        if event_run in abandoned:
+            raise ValueError("Event appends execution evidence after run abandonment")
         if kind == "run_created":
             runs.add(event["run_id"])
+        elif kind == "run_abandoned":
+            from graybench.run_abandonment import AbandonmentRecord
+
+            row = records["run_abandonments"][0]
+            record = json.loads(
+                db.execute(
+                    "SELECT content FROM blobs WHERE digest=?", (row["content"],)
+                ).fetchone()[0]
+            )
+            typed = AbandonmentRecord.model_validate_json(json.dumps(record))
+            plan = typed.plan
+            manifest = db.execute("SELECT manifest FROM runs WHERE id=?", (event_run,)).fetchone()
+            previous = db.execute("SELECT digest FROM events WHERE seq=?", (offset,)).fetchone()
+            # Closed-run sample rows cannot subsequently change. These direct counts
+            # can be checked without pretending to replay an unavailable old engine.
+            cohort = db.execute(
+                "SELECT g.content,j.outcome FROM samples s "
+                "LEFT JOIN generations g ON g.sample_id=s.id "
+                "LEFT JOIN judgments j ON j.sample_id=s.id AND j.judge_digest=? "
+                "WHERE s.run_id=?",
+                (protocols[event_run].judge_digest, event_run),
+            ).fetchall()
+            if (
+                event_run not in runs
+                or plan.run_id != event_run
+                or plan.protocol_digest != manifest[0]
+                or plan.digest != record["plan_digest"]
+                or record["state"] != "abandoned"
+                or record["publication_eligible"] is not False
+                or record["recorded_at"] != row["recorded_at"]
+                or plan.snapshot["complete"] is not False
+                or plan.snapshot["pass_at_1"] is not None
+                or plan.snapshot["run_id"] != event_run
+                or plan.snapshot["protocol_digest"] != plan.protocol_digest
+                or plan.snapshot["analysis_identity"]["observed"] != plan.analysis_source
+                or plan.snapshot["planned_samples"]
+                != len(protocols[event_run].task_keys) * protocols[event_run].repeats
+                or plan.snapshot["observed_samples"] != len(cohort)
+                or plan.snapshot["returned_samples"]
+                != sum(row["content"] is not None for row in cohort)
+                or plan.snapshot["judged_samples"]
+                != sum(row["outcome"] is not None for row in cohort)
+                or plan.snapshot["passes"] != sum(row["outcome"] == "pass" for row in cohort)
+                or plan.snapshot["ledger_integrity"]["events"] != offset
+                or plan.snapshot["ledger_integrity"]["chain_head"]
+                != (previous[0] if previous else "0" * 64)
+            ):
+                raise ValueError("Abandonment does not bind its incomplete prior snapshot")
+            abandoned.add(event_run)
         elif kind == "model_observed":
             if event["run_id"] not in runs:
                 raise ValueError("Model observation precedes run creation")
@@ -307,8 +377,8 @@ def verify_records(db, events):
                 )
         for table, rows in records.items():
             observed[table].update(identity(row) for row in rows)
-    for table in TABLES:
+    for table in tables:
         expected = Counter(identity(dict(row)) for row in db.execute(f"SELECT * FROM {table}"))
         if observed[table] != expected:
             raise ValueError("Missing or duplicate event binding for " + table)
-    return {"status": "verified", "tables": list(TABLES), "version": 1}
+    return {"status": "verified", "tables": list(tables), "version": 1}

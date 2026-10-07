@@ -219,6 +219,9 @@ class NativeCampaign:
         )
 
     def step(self):
+        self.ledger.verify()
+        if self.ledger.abandonment(self.run_id) is not None:
+            return {"state": "stopped", "reason": "run_abandoned"}
         self.setup.validate_for_run(
             self.cache, self.ledger.protocol(self.run_id), tasks=self.tasks, docker=self.docker
         )
