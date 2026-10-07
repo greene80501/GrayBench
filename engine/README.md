@@ -5,6 +5,12 @@ This engine is under development and is **not certified for model ranking**.
 The root-level V2 package and its pilot results remain historical evidence.
 Engine version 3 and graph protocol 4 are different version identifiers.
 
+The source-bound [Task 11 state-action condition](../docs/reliability-evidence/task11-statevector-action-development.md)
+is selected explicitly with `qhe11-statevector-action-graph-v1`. It checks varied
+unitary input circuits against independently derived states and permits equivalent
+phase and input mutation. The original fixed-example false pass remains archived;
+this development condition still needs isolated qualification and independent admission.
+
 New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
 The runner, ledger writer and report verifier bind each verdict to its stored
 answer and frozen task/judge cohort, and check declared trusted terminal captures.

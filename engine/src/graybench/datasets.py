@@ -82,6 +82,7 @@ KNOWN_FINDINGS_V2 = MappingProxyType(
 )
 KNOWN_FINDINGS = {
     **{number: list(findings) for number, findings in KNOWN_FINDINGS_V2.items()},
+    11: ["Upstream accepts an input-independent statevector for its single supplied circuit"],
     12: [
         "Upstream requires an unstated Bell preparation operator "
         "and rejects other phi-plus preparations"

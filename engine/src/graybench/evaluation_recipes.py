@@ -9,6 +9,7 @@ from graybench.file_judge import QpyFileJudge
 from graybench.gate_semantics import GateSemanticsJudge
 from graybench.matrix_semantics import CircuitMatrixJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
+from graybench.task11_revision import StatevectorActionJudge
 from graybench.task50_revision import RemoveInstructionJudge
 from graybench.task108_revision import ChoiValuesJudge
 from graybench.task117_revision import UnitaryBasisJudge
@@ -37,6 +38,7 @@ EvaluationRecipe = Literal[
     "qhe116-evolution-graph-v2",
     "qhe120-diagonal-graph-v2",
     "qhe125-gate-action-graph-v1",
+    "qhe11-statevector-action-graph-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -54,6 +56,7 @@ def recipe_output_limit(recipe):
             "qhe116-evolution-graph-v2",
             "qhe120-diagonal-graph-v2",
             "qhe125-gate-action-graph-v1",
+            "qhe11-statevector-action-graph-v1",
         }
         else 1024 * 1024
     )
@@ -82,6 +85,7 @@ class RevisionJudge:
             "qhe116-evolution-graph-v2",
             "qhe120-diagonal-graph-v2",
             "qhe125-gate-action-graph-v1",
+            "qhe11-statevector-action-graph-v1",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -134,6 +138,8 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = MostCommonBitstringJudge(**kwargs)
     elif recipe == "qhe50-remove-position-graph-v1":
         inner = RemoveInstructionJudge(**kwargs)
+    elif recipe == "qhe11-statevector-action-graph-v1":
+        inner = StatevectorActionJudge(**kwargs)
     elif recipe == "qhe108-choi-values-graph-v1":
         inner = ChoiValuesJudge(**kwargs)
     elif recipe in ("qhe117-unitary-basis-graph-v1", "qhe117-unitary-basis-graph-v2"):

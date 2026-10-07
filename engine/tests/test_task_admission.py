@@ -367,11 +367,11 @@ def test_cli_refreshes_historical_findings_without_overwriting(
     saved = AdmissionInventory.model_validate_json(output.read_bytes())
     assert saved.schema_version == "3"
     assert result["inventory_digest"] == saved.digest
-    assert result["new_finding_card_count"] == 6
+    assert result["new_finding_card_count"] == 8
     assert all(
         "known_findings_unresolved" in admission_blockers(saved.cards[offset + number])
         for offset in (0, 151)
-        for number in (12, 41)
+        for number in (11, 12, 41)
     )
     assert result["publication_eligible"] is False
     with pytest.raises(FileExistsError):

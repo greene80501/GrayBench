@@ -8,6 +8,8 @@ The [complete normal/hard pair audit](docs/reliability-evidence/artifacts/qhe-pa
 records a contradictory task-41 prompt and undisclosed judge requirements; task admission remains unfinished.
 The [full contract review queue](docs/reliability-evidence/qhe-full-contract-review-queue-2026-10-07.md)
 tracks public obligations, unresolved choices and proposed controls for all 151 families.
+The [Task 11 state-action condition](docs/reliability-evidence/task11-statevector-action-development.md)
+rejects a fixed-example shortcut under a separate source-bound development contract.
 
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
