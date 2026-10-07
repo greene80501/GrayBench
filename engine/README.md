@@ -440,19 +440,27 @@ currently use the Python API described in the delta document. Output files are
 reserved exclusively and are never overwritten. A pending invocation needs
 adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
 
+The [loopback campaign checks](../docs/reliability-evidence/loopback-campaign-verification.md)
+exercise all five adapters through real HTTP, persisted setup reconstruction,
+authored value judgment and ledger/report verification in normal and hard.
+They use fixed local fixtures and synthetic credentials, and do not qualify
+live providers or container isolation.
+
 For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
 Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
 Without the image setting, Docker tests skip. On source-manifest digest
 `ea0f22f9f5b30d12fe8f6cb8fa5b23dc1fa174c230489604e8580c302390655d`,
 the complete pinned-image regression before adding four graph-integrity controls
-had 1,130 passed, one experimental skip and two expected failures. The current
-focused task-2 protected suite has 18 passed and six expected failures; the
-current offline suite has 912 passed and 225 protected skips. These expected
+had 1,130 passed, one experimental skip and two expected failures. An earlier
+focused task-2 protected suite had 18 passed and six expected failures; its
+offline suite had 912 passed and 225 protected skips. These historical expected
 failures preserve [known encoder integrity defects](../docs/reliability-evidence/protected-worker-encoder-integrity.md),
-not a release-ready score. Green controls do not establish every benchmark
-requirement.
+not a release-ready score. They do not qualify the current source. Current
+offline evidence is recorded in source-bound development bundles such as the
+[evolution value calibration](../docs/reliability-evidence/artifacts/evolution-value-calibration-2026-10-07/README.md).
+Green controls do not establish every benchmark requirement.
 
-The latest complete graph reference scan, at `77f29ff`, records **122 pass,
+The most recent complete graph reference scan is historical: at `77f29ff`, it records **122 pass,
 19 unsupported, one fail and one infrastructure error in normal**, and **123
 pass, 19 unsupported and one infrastructure error in hard**. The extra hard
 pass is task 63's unstable canonical answer, not a compatibility gain. See the
