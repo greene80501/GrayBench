@@ -1,0 +1,175 @@
+"""Explicit fixed evaluation recipes; no implicit fallback to a different oracle."""
+
+from typing import Literal, get_args
+
+from graybench.bb84_batch_revision import BB84BatchJudge
+from graybench.bb84_revision import BB84Judge
+from graybench.bell_revision import BellStatevectorJudge
+from graybench.file_judge import QpyFileJudge
+from graybench.gate_semantics import GateSemanticsJudge
+from graybench.matrix_semantics import CircuitMatrixJudge
+from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
+from graybench.task11_revision import StatevectorActionJudge
+from graybench.task12_revision import BellOperatorJudge
+from graybench.task41_revision import PauliSubsystemJudge
+from graybench.task50_revision import RemoveInstructionJudge
+from graybench.task66_revision import WMeasurementJudge
+from graybench.task108_revision import ChoiValuesJudge
+from graybench.task117_revision import UnitaryBasisJudge
+from graybench.task149_revision import MostCommonBitstringJudge
+from graybench.upstream import UpstreamJudge
+
+EvaluationRecipe = Literal[
+    "upstream",
+    "upstream-graph-v4",
+    "upstream-graph-delta-v1",
+    "qhe0-size-domain-v1",
+    "qhe2-bell-statevector-v1",
+    "task82-file-semantic-v1",
+    "task82-file-semantic-v2",
+    "qhe141-pauli-group-anticommutator-v1",
+    "qhe113-barrier-metrics-v1",
+    "qhe116-evolution-semantics-v1",
+    "qhe120-diagonal-semantics-v1",
+    "qhe63-explicit-bases-v1",
+    "qhe63-explicit-bases-v2",
+    "qhe149-most-common-bitstring-v1",
+    "qhe50-remove-position-graph-v1",
+    "qhe108-choi-values-graph-v1",
+    "qhe117-unitary-basis-graph-v1",
+    "qhe117-unitary-basis-graph-v2",
+    "qhe116-evolution-graph-v2",
+    "qhe120-diagonal-graph-v2",
+    "qhe125-gate-action-graph-v1",
+    "qhe11-statevector-action-graph-v1",
+    "qhe12-explicit-bell-operator-values-v1",
+    "qhe41-explicit-pauli-subsystems-values-v1",
+    "qhe66-symmetric-w-measurement-graph-v1",
+]
+RECIPES = get_args(EvaluationRecipe)
+
+
+def recipe_output_limit(recipe):
+    """Freeze the same recipe default during planning and reconstruction."""
+    return (
+        16 * 1024 * 1024
+        if recipe
+        in {
+            "qhe63-explicit-bases-v2",
+            "qhe108-choi-values-graph-v1",
+            "qhe117-unitary-basis-graph-v1",
+            "qhe117-unitary-basis-graph-v2",
+            "qhe116-evolution-graph-v2",
+            "qhe120-diagonal-graph-v2",
+            "qhe125-gate-action-graph-v1",
+            "qhe11-statevector-action-graph-v1",
+            "qhe66-symmetric-w-measurement-graph-v1",
+        }
+        else 1024 * 1024
+    )
+
+
+class RevisionJudge:
+    track = "strengthened"
+
+    def __init__(self, recipe, inner, image):
+        self.recipe, self.inner, self.image = recipe, inner, image
+
+    def revise(self, task):
+        if self.recipe in (
+            "qhe141-pauli-group-anticommutator-v1",
+            "qhe113-barrier-metrics-v1",
+            "qhe116-evolution-semantics-v1",
+            "qhe120-diagonal-semantics-v1",
+            "qhe63-explicit-bases-v1",
+            "qhe63-explicit-bases-v2",
+            "qhe2-bell-statevector-v1",
+            "qhe149-most-common-bitstring-v1",
+            "qhe50-remove-position-graph-v1",
+            "qhe108-choi-values-graph-v1",
+            "qhe117-unitary-basis-graph-v1",
+            "qhe117-unitary-basis-graph-v2",
+            "qhe116-evolution-graph-v2",
+            "qhe120-diagonal-graph-v2",
+            "qhe125-gate-action-graph-v1",
+            "qhe11-statevector-action-graph-v1",
+            "qhe12-explicit-bell-operator-values-v1",
+            "qhe41-explicit-pauli-subsystems-values-v1",
+            "qhe66-symmetric-w-measurement-graph-v1",
+        ):
+            return self.inner.revise(task)
+        self.inner.configuration(task)  # Reject unsupported families before freezing requests.
+        return task
+
+    def configuration(self, task):
+        return self.inner.configuration(task)
+
+    def evaluate(self, task, completion):
+        return self.inner.evaluate(task, completion)
+
+
+def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
+    kwargs.setdefault("timeout", 120.0)
+    if parser_image is not None and recipe not in (
+        "task82-file-semantic-v1",
+        "task82-file-semantic-v2",
+    ):
+        raise ValueError("parser_image is only valid for task 82 file recipes")
+    if recipe in ("upstream-graph-v4", "upstream-graph-delta-v1"):
+        if kwargs.pop("protocol", 4) != 4:
+            raise ValueError("Graph recipe cannot select another protocol")
+        transport = "delta-v1" if recipe == "upstream-graph-delta-v1" else "snapshot-v1"
+        if kwargs.pop("graph_transport", transport) != transport:
+            raise ValueError("Graph recipe cannot select another transport")
+        return UpstreamJudge(protocol=4, graph_transport=transport, **kwargs)
+    if recipe == "upstream":
+        return UpstreamJudge(**kwargs)
+    if recipe == "qhe0-size-domain-v1":
+        inner = CircuitSizeJudge(**kwargs)
+    elif recipe == "qhe2-bell-statevector-v1":
+        inner = BellStatevectorJudge(**kwargs)
+    elif recipe == "qhe141-pauli-group-anticommutator-v1":
+        inner = PauliAnticommutatorJudge(**kwargs)
+    elif recipe == "qhe113-barrier-metrics-v1":
+        inner = BarrierMetricsJudge(**kwargs)
+    elif recipe in ("qhe116-evolution-semantics-v1", "qhe120-diagonal-semantics-v1"):
+        inner = GateSemanticsJudge(recipe, **kwargs)
+    elif recipe in (
+        "qhe116-evolution-graph-v2",
+        "qhe120-diagonal-graph-v2",
+        "qhe125-gate-action-graph-v1",
+    ):
+        inner = CircuitMatrixJudge(recipe, **kwargs)
+    elif recipe == "qhe63-explicit-bases-v1":
+        inner = BB84Judge(**kwargs)
+    elif recipe == "qhe63-explicit-bases-v2":
+        inner = BB84BatchJudge(**kwargs)
+    elif recipe == "qhe149-most-common-bitstring-v1":
+        inner = MostCommonBitstringJudge(**kwargs)
+    elif recipe == "qhe50-remove-position-graph-v1":
+        inner = RemoveInstructionJudge(**kwargs)
+    elif recipe == "qhe11-statevector-action-graph-v1":
+        inner = StatevectorActionJudge(**kwargs)
+    elif recipe == "qhe12-explicit-bell-operator-values-v1":
+        inner = BellOperatorJudge(**kwargs)
+    elif recipe == "qhe41-explicit-pauli-subsystems-values-v1":
+        inner = PauliSubsystemJudge(**kwargs)
+    elif recipe == "qhe66-symmetric-w-measurement-graph-v1":
+        inner = WMeasurementJudge(**kwargs)
+    elif recipe == "qhe108-choi-values-graph-v1":
+        inner = ChoiValuesJudge(**kwargs)
+    elif recipe in ("qhe117-unitary-basis-graph-v1", "qhe117-unitary-basis-graph-v2"):
+        inner = UnitaryBasisJudge(track=recipe, **kwargs)
+    elif recipe in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
+        inner = QpyFileJudge(
+            track=recipe, parser_timeout=parser_timeout, parser_image=parser_image, **kwargs
+        )
+    else:
+        raise ValueError("Unknown evaluation recipe")
+    return RevisionJudge(recipe, inner, kwargs["image"])
+
+
+def revised_tasks(tasks, judge):
+    return (
+        tuple(judge.revise(task) for task in tasks) if isinstance(judge, RevisionJudge) else tasks
+    )

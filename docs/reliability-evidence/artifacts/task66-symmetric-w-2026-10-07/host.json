@@ -1,0 +1,3086 @@
+{
+  "candidate_encoder_integrity_qualified": false,
+  "controls": [
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "canonical",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 8,
+          "list": 12,
+          "ndarray_owner": 1,
+          "public_singleton": 1,
+          "python_instruction": 2,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "amplitudes",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": "Retained Python operation requires another component codec",
+        "oracle": null,
+        "support": "unsupported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "initialize",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 7,
+          "circuit_data": 2,
+          "circuit_scope": 2,
+          "dict": 14,
+          "list": 17,
+          "ndarray_owner": 1,
+          "public_singleton": 3,
+          "python_instruction": 2,
+          "qiskit_bit": 14,
+          "qiskit_frozen_list": 3,
+          "qiskit_register": 7,
+          "quantum_circuit": 2,
+          "tuple": 8
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "reset-prefix",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "global-phase",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 16,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 53,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 32,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 16,
+          "quantum_circuit": 9,
+          "tuple": 17
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "wire-permutation",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 8,
+          "list": 12,
+          "ndarray_owner": 1,
+          "public_singleton": 1,
+          "python_instruction": 2,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "householder",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 16,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 48,
+          "public_singleton": 9,
+          "qiskit_bit": 32,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 16,
+          "quantum_circuit": 8,
+          "tuple": 17
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "named-registers",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "metadata",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "bound-parameter",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 48,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "post-measure-barriers",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 7,
+          "list": 11,
+          "public_singleton": 1,
+          "python_instruction": 1,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "zero",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 7,
+          "circuit_data": 2,
+          "circuit_scope": 2,
+          "dict": 12,
+          "list": 16,
+          "public_singleton": 2,
+          "python_instruction": 1,
+          "qiskit_bit": 14,
+          "qiskit_frozen_list": 2,
+          "qiskit_register": 7,
+          "quantum_circuit": 2,
+          "tuple": 8
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "single-excitation",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 7,
+          "circuit_data": 2,
+          "circuit_scope": 2,
+          "dict": 12,
+          "list": 16,
+          "public_singleton": 2,
+          "python_instruction": 1,
+          "qiskit_bit": 14,
+          "qiskit_frozen_list": 2,
+          "qiskit_register": 7,
+          "quantum_circuit": 2,
+          "tuple": 8
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "product",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 8,
+          "circuit_data": 3,
+          "circuit_scope": 3,
+          "dict": 18,
+          "list": 21,
+          "public_singleton": 4,
+          "python_instruction": 1,
+          "qiskit_bit": 16,
+          "qiskit_frozen_list": 4,
+          "qiskit_register": 8,
+          "quantum_circuit": 3,
+          "tuple": 9
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "ghz",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 8,
+          "list": 12,
+          "ndarray_owner": 1,
+          "public_singleton": 1,
+          "python_instruction": 2,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "unequal-populations",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-i",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "orthogonal-phases",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 46,
+          "public_singleton": 9,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Expected three final measurements",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Expected three final measurements",
+        "outcome": "fail"
+      },
+      "id": "missing-measurement",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 46,
+          "public_singleton": 9,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Measured qubits differ",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Measured qubits differ",
+        "outcome": "fail"
+      },
+      "id": "duplicate-qubit",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 46,
+          "public_singleton": 9,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Classical measurement bits reused",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Classical measurement bits reused",
+        "outcome": "fail"
+      },
+      "id": "shared-classical-bit",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Expected three final measurements",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Expected three final measurements",
+        "outcome": "fail"
+      },
+      "id": "repeated-measurement",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Preparation after first measurement",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Preparation after first measurement",
+        "outcome": "fail"
+      },
+      "id": "identity-after-measurement",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 47,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Preparation after first measurement",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Preparation after first measurement",
+        "outcome": "fail"
+      },
+      "id": "reset-after-measurement",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 48,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Unsupported preparation operation",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Unsupported preparation operation",
+        "outcome": "fail"
+      },
+      "id": "delay",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Unbound parameters",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Unbound parameters",
+        "outcome": "fail"
+      },
+      "id": "unbound",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 8,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 7,
+          "list": 13,
+          "public_singleton": 1,
+          "python_instruction": 1,
+          "qiskit_bit": 16,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 8,
+          "quantum_circuit": 1,
+          "tuple": 9
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Expected three qubits",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Expected three qubits",
+        "outcome": "fail"
+      },
+      "id": "four-qubits",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 76,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 108,
+          "public_singleton": 9,
+          "qiskit_bit": 152,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 76,
+          "quantum_circuit": 8,
+          "tuple": 77
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Classical bit count outside declared bounds",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Classical bit count outside declared bounds",
+        "outcome": "fail"
+      },
+      "id": "too-many-bits",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 11,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 41,
+          "list": 43,
+          "public_singleton": 8,
+          "qiskit_bit": 22,
+          "qiskit_frozen_list": 8,
+          "qiskit_register": 11,
+          "quantum_circuit": 8,
+          "tuple": 12
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Classical bit count outside declared bounds",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Classical bit count outside declared bounds",
+        "outcome": "fail"
+      },
+      "id": "no-bits",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 48,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Missing preparation definition",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Missing preparation definition",
+        "outcome": "fail"
+      },
+      "id": "missing-definition",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 1067,
+          "list": 1071,
+          "public_singleton": 9,
+          "python_instruction": 1025,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Instruction expansion exceeds declared bound",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Instruction expansion exceeds declared bound",
+        "outcome": "fail"
+      },
+      "id": "instruction-bound",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-minus-0",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-minus-1",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-minus-2",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "controlled-0-phase-0",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "controlled-0-phase-0.37",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "controlled-1-phase-0",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "controlled-1-phase-0.37",
+      "suite": "normal"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 19,
+          "circuit_data": 10,
+          "circuit_scope": 10,
+          "dict": 54,
+          "list": 62,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 38,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 19,
+          "quantum_circuit": 10,
+          "tuple": 20
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Instruction expansion exceeds declared bound",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Instruction expansion exceeds declared bound",
+        "outcome": "fail"
+      },
+      "id": "controlled-instruction-bound",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 17,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 55,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 34,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 17,
+          "quantum_circuit": 9,
+          "tuple": 18
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "generic-gate",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 17,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 55,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 34,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 17,
+          "quantum_circuit": 9,
+          "tuple": 18
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "generic-instruction",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 20,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 58,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 40,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 20,
+          "quantum_circuit": 9,
+          "tuple": 21
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "nested-measurements",
+      "suite": "normal"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "canonical",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 8,
+          "list": 12,
+          "ndarray_owner": 1,
+          "public_singleton": 1,
+          "python_instruction": 2,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "amplitudes",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": "Retained Python operation requires another component codec",
+        "oracle": null,
+        "support": "unsupported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "initialize",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 7,
+          "circuit_data": 2,
+          "circuit_scope": 2,
+          "dict": 14,
+          "list": 17,
+          "ndarray_owner": 1,
+          "public_singleton": 3,
+          "python_instruction": 2,
+          "qiskit_bit": 14,
+          "qiskit_frozen_list": 3,
+          "qiskit_register": 7,
+          "quantum_circuit": 2,
+          "tuple": 8
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "reset-prefix",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "global-phase",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 16,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 53,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 32,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 16,
+          "quantum_circuit": 9,
+          "tuple": 17
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "wire-permutation",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 8,
+          "list": 12,
+          "ndarray_owner": 1,
+          "public_singleton": 1,
+          "python_instruction": 2,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "householder",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 16,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 48,
+          "public_singleton": 9,
+          "qiskit_bit": 32,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 16,
+          "quantum_circuit": 8,
+          "tuple": 17
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "named-registers",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "metadata",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "bound-parameter",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 48,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "post-measure-barriers",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 7,
+          "list": 11,
+          "public_singleton": 1,
+          "python_instruction": 1,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "zero",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 7,
+          "circuit_data": 2,
+          "circuit_scope": 2,
+          "dict": 12,
+          "list": 16,
+          "public_singleton": 2,
+          "python_instruction": 1,
+          "qiskit_bit": 14,
+          "qiskit_frozen_list": 2,
+          "qiskit_register": 7,
+          "quantum_circuit": 2,
+          "tuple": 8
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "single-excitation",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 7,
+          "circuit_data": 2,
+          "circuit_scope": 2,
+          "dict": 12,
+          "list": 16,
+          "public_singleton": 2,
+          "python_instruction": 1,
+          "qiskit_bit": 14,
+          "qiskit_frozen_list": 2,
+          "qiskit_register": 7,
+          "quantum_circuit": 2,
+          "tuple": 8
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "product",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 8,
+          "circuit_data": 3,
+          "circuit_scope": 3,
+          "dict": 18,
+          "list": 21,
+          "public_singleton": 4,
+          "python_instruction": 1,
+          "qiskit_bit": 16,
+          "qiskit_frozen_list": 4,
+          "qiskit_register": 8,
+          "quantum_circuit": 3,
+          "tuple": 9
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "ghz",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 6,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 8,
+          "list": 12,
+          "ndarray_owner": 1,
+          "public_singleton": 1,
+          "python_instruction": 2,
+          "qiskit_bit": 12,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 6,
+          "quantum_circuit": 1,
+          "tuple": 7
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "unequal-populations",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-i",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "orthogonal-phases",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 46,
+          "public_singleton": 9,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Expected three final measurements",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Expected three final measurements",
+        "outcome": "fail"
+      },
+      "id": "missing-measurement",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 46,
+          "public_singleton": 9,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Measured qubits differ",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Measured qubits differ",
+        "outcome": "fail"
+      },
+      "id": "duplicate-qubit",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 46,
+          "public_singleton": 9,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Classical measurement bits reused",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Classical measurement bits reused",
+        "outcome": "fail"
+      },
+      "id": "shared-classical-bit",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Expected three final measurements",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Expected three final measurements",
+        "outcome": "fail"
+      },
+      "id": "repeated-measurement",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Preparation after first measurement",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Preparation after first measurement",
+        "outcome": "fail"
+      },
+      "id": "identity-after-measurement",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 47,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Preparation after first measurement",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Preparation after first measurement",
+        "outcome": "fail"
+      },
+      "id": "reset-after-measurement",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 48,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Unsupported preparation operation",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Unsupported preparation operation",
+        "outcome": "fail"
+      },
+      "id": "delay",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 43,
+          "list": 47,
+          "public_singleton": 9,
+          "python_instruction": 1,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Unbound parameters",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Unbound parameters",
+        "outcome": "fail"
+      },
+      "id": "unbound",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 8,
+          "circuit_data": 1,
+          "circuit_scope": 1,
+          "dict": 7,
+          "list": 13,
+          "public_singleton": 1,
+          "python_instruction": 1,
+          "qiskit_bit": 16,
+          "qiskit_frozen_list": 1,
+          "qiskit_register": 8,
+          "quantum_circuit": 1,
+          "tuple": 9
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Expected three qubits",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Expected three qubits",
+        "outcome": "fail"
+      },
+      "id": "four-qubits",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 76,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 42,
+          "list": 108,
+          "public_singleton": 9,
+          "qiskit_bit": 152,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 76,
+          "quantum_circuit": 8,
+          "tuple": 77
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Classical bit count outside declared bounds",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Classical bit count outside declared bounds",
+        "outcome": "fail"
+      },
+      "id": "too-many-bits",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 11,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 41,
+          "list": 43,
+          "public_singleton": 8,
+          "qiskit_bit": 22,
+          "qiskit_frozen_list": 8,
+          "qiskit_register": 11,
+          "quantum_circuit": 8,
+          "tuple": 12
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Classical bit count outside declared bounds",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Classical bit count outside declared bounds",
+        "outcome": "fail"
+      },
+      "id": "no-bits",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 44,
+          "list": 48,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Missing preparation definition",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Missing preparation definition",
+        "outcome": "fail"
+      },
+      "id": "missing-definition",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 14,
+          "circuit_data": 8,
+          "circuit_scope": 8,
+          "dict": 1067,
+          "list": 1071,
+          "public_singleton": 9,
+          "python_instruction": 1025,
+          "qiskit_bit": 28,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 14,
+          "quantum_circuit": 8,
+          "tuple": 15
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Instruction expansion exceeds declared bound",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Instruction expansion exceeds declared bound",
+        "outcome": "fail"
+      },
+      "id": "instruction-bound",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-minus-0",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-minus-1",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 15,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 52,
+          "public_singleton": 10,
+          "python_instruction": 1,
+          "qiskit_bit": 30,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 15,
+          "quantum_circuit": 9,
+          "tuple": 16
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "relative-minus-2",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "controlled-0-phase-0",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "controlled-0-phase-0.37",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "controlled-1-phase-0",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 22,
+          "circuit_data": 11,
+          "circuit_scope": 11,
+          "dict": 58,
+          "list": 69,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 44,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 22,
+          "quantum_circuit": 11,
+          "tuple": 23
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Incorrect symmetric W state",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Incorrect symmetric W state",
+        "outcome": "fail"
+      },
+      "id": "controlled-1-phase-0.37",
+      "suite": "hard"
+    },
+    {
+      "expectation": "fail",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 19,
+          "circuit_data": 10,
+          "circuit_scope": 10,
+          "dict": 54,
+          "list": 62,
+          "public_singleton": 10,
+          "python_instruction": 3,
+          "qiskit_bit": 38,
+          "qiskit_frozen_list": 10,
+          "qiskit_register": 19,
+          "quantum_circuit": 10,
+          "tuple": 20
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": "Instruction expansion exceeds declared bound",
+          "outcome": "fail"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": "Instruction expansion exceeds declared bound",
+        "outcome": "fail"
+      },
+      "id": "controlled-instruction-bound",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 17,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 55,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 34,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 17,
+          "quantum_circuit": 9,
+          "tuple": 18
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "generic-gate",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 17,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 55,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 34,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 17,
+          "quantum_circuit": 9,
+          "tuple": 18
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "generic-instruction",
+      "suite": "hard"
+    },
+    {
+      "expectation": "pass",
+      "graph": {
+        "detail": null,
+        "expanded_snapshot_within_state_limit": true,
+        "node_kinds": {
+          "bit_locations": 20,
+          "circuit_data": 9,
+          "circuit_scope": 9,
+          "dict": 48,
+          "list": 58,
+          "public_singleton": 9,
+          "python_instruction": 2,
+          "qiskit_bit": 40,
+          "qiskit_frozen_list": 9,
+          "qiskit_register": 20,
+          "quantum_circuit": 9,
+          "tuple": 21
+        },
+        "oracle": {
+          "calls": 1,
+          "detail": null,
+          "outcome": "pass"
+        },
+        "request_within_wire_limit": true,
+        "response_within_wire_limit": true,
+        "support": "supported"
+      },
+      "host": {
+        "calls": 1,
+        "detail": null,
+        "outcome": "pass"
+      },
+      "id": "nested-measurements",
+      "suite": "hard"
+    }
+  ],
+  "density_oracle_entry_mutants_rejected": 128,
+  "density_oracle_global_phase_samples": [
+    -3.141592653589793,
+    -3.043417883165112,
+    -2.945243112740431,
+    -2.84706834231575,
+    -2.748893571891069,
+    -2.650718801466388,
+    -2.552544031041707,
+    -2.454369260617026,
+    -2.356194490192345,
+    -2.2580197197676637,
+    -2.1598449493429825,
+    -2.061670178918302,
+    -1.9634954084936207,
+    -1.8653206380689396,
+    -1.7671458676442586,
+    -1.6689710972195777,
+    -1.5707963267948966,
+    -1.4726215563702154,
+    -1.3744467859455345,
+    -1.2762720155208536,
+    -1.1780972450961724,
+    -1.0799224746714913,
+    -0.9817477042468106,
+    -0.8835729338221294,
+    -0.7853981633974483,
+    -0.6872233929727671,
+    -0.589048622548086,
+    -0.4908738521234053,
+    -0.39269908169872414,
+    -0.294524311274043,
+    -0.1963495408493623,
+    -0.09817477042468115,
+    0.0,
+    0.09817477042468115,
+    0.1963495408493623,
+    0.294524311274043,
+    0.39269908169872414,
+    0.4908738521234053,
+    0.589048622548086,
+    0.6872233929727671,
+    0.7853981633974483,
+    0.883572933822129,
+    0.9817477042468106,
+    1.0799224746714913,
+    1.178097245096172,
+    1.2762720155208536,
+    1.3744467859455343,
+    1.4726215563702159,
+    1.5707963267948966,
+    1.6689710972195773,
+    1.7671458676442588,
+    1.8653206380689396,
+    1.9634954084936211,
+    2.061670178918302,
+    2.1598449493429825,
+    2.258019719767664,
+    2.356194490192345,
+    2.4543692606170255,
+    2.552544031041707,
+    2.650718801466388,
+    2.7488935718910685,
+    2.84706834231575,
+    2.945243112740431,
+    3.0434178831651124,
+    3.141592653589793
+  ],
+  "engine_source_digest": "016511529b067cd0e9c390e981d271ef80b89d8c7557dcb219f16a2290710b4d",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "qiskit": "2.4.2",
+      "scipy": "1.18.1"
+    },
+    "python": "3.12.14"
+  },
+  "graph_outcomes": {
+    "fail": 52,
+    "pass": 30
+  },
+  "graph_support": {
+    "supported": 82,
+    "unsupported": 2
+  },
+  "host_outcomes": {
+    "fail": 52,
+    "pass": 32
+  },
+  "independent_human_admission": false,
+  "kind": "graybench_task66_state_host_verification_v1",
+  "limitations": [
+    "Same-process trusted authored host probes, not isolated execution or arbitrary model code",
+    "Graph replay binds the declared projection; raw envelopes and autogenerated SDK identities are not retained",
+    "SDK evolution/graph codecs still need independent qualification",
+    "65 state-vector phase and 128 entry probes calibrate oracle arithmetic, not full-circuit semantic mutations",
+    "Unsupported correct constructions remain blockers; no fallback or exclusion",
+    "No sampler, Docker or API calls; no sampling execution or native provenance is attested"
+  ],
+  "model_generations": 0,
+  "plan_digest": "9062f4654e4933e8b4930cb08ea9220a7d2ae11ea596952d4e92eab56d08b516",
+  "release_eligible": false,
+  "runtime_qualified": false
+}

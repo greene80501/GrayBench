@@ -1,0 +1,54 @@
+{
+  "purpose": "Specification/oracle review evidence, not model scores",
+  "records": [
+    {
+      "task": 14,
+      "finding": "Oracle accepts two results despite public requirement for 100 shots",
+      "mutant_result": [
+        "00",
+        "11"
+      ],
+      "upstream_accepts": true,
+      "prompt": "from qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import Sampler\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\ndef bell_each_shot() -> list[str]:\n    \"\"\" Run a phi plus Bell circuit using Qiskit Sampler with the Aer simulator as backend for 100 shots and return measurement results for each shots. To do so, transpile the circuit using a pass manager with optimization level as 1.\n    \"\"\"",
+      "severity": "missing explicit requirement"
+    },
+    {
+      "task": 9,
+      "finding": "Current oracle accepts a parameter-count-matched RX-only circuit without EfficientSU2 entanglement",
+      "upstream_accepts": true,
+      "mutant_instructions": {
+        "rx": 12,
+        "barrier": 1
+      },
+      "parameter_count": 12,
+      "prompt": "from qiskit.circuit.library import efficient_su2\ndef create_efficientSU2():\n    \"\"\" Generate an EfficientSU2 circuit with 3 qubits, 1 reps and make insert_barriers true.\n    \"\"\"",
+      "severity": "missing semantics; distinct from historical closed issue23"
+    },
+    {
+      "task": 32,
+      "finding": "Reference computes a signed sum with coefficient -1 for YY that is not disclosed in the prompt",
+      "bell_expectations": {
+        "II": 0.9999999999999998,
+        "XX": 0.9999999999999998,
+        "YY": -0.9999999999999998,
+        "ZZ": 0.9999999999999998
+      },
+      "unweighted_sum": 1.9999999999999996,
+      "reference_signed_sum": 3.999999999999999,
+      "oracle_expected": 4.0,
+      "prompt": "from numpy import float64\nfrom qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import Estimator\nfrom qiskit.quantum_info import SparsePauliOp\ndef estimator_qiskit() -> float64:\n    \"\"\" Run a Bell circuit on Qiskit Estimator and return expectation values for the bases II, XX, YY, ZZ.\n    \"\"\"",
+      "severity": "ambiguous or mismatched specification"
+    },
+    {
+      "task": 35,
+      "finding": "Reference samples circuit parameters using RNG seed1234; neither parameter values nor this seed are disclosed, but oracle requires expectation0.33 +-0.06",
+      "hidden_reference_parameter_lines": [
+        "rng = np.random.default_rng(1234)",
+        "params = rng.uniform(-np.pi, np.pi, size=circuit.num_parameters)"
+      ],
+      "prompt": "from qiskit.circuit.library import efficient_su2\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler import CouplingMap\nimport numpy as np\nfrom qiskit_ibm_runtime import Estimator, EstimatorOptions\nfrom qiskit.primitives.primitive_job import PrimitiveJob\nfrom qiskit_ibm_runtime.fake_provider import FakeAuckland\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\ndef run_circuit_with_dd_trex() -> PrimitiveJob:\n    \"\"\"\n    Run an EfficientSU2 circuit with 5 qubits, 2 repetitions, and pairwise entanglement on the FakeAuckland backend.\n    The circuit should be transpiled with an optimization level of 1 and a transpiler seed of 789. Use 1*Z_-1 observable to calculate the expectation value.\n    \"\"\"",
+      "severity": "underdetermined output"
+    }
+  ],
+  "review_status": "reproduced locally; full independent specification review pending"
+}

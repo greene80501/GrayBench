@@ -1,0 +1,5 @@
+# Task-62 protected value admission evidence binding
+
+The new protected task-62 control log is presently separate from the 302-card admission inventory. A successor bundle should attach its normal and hard source-bound public contract and exact protected judge to the corresponding cards, link authored positive and wrong-answer controls to a public BB84 amplitude requirement, and retain all previous cards, findings and logs. It must not claim independent review or resolve the native fixed-oracle finding. The historical task-2/20 logs belong to older judge source revisions; preserve them byte-for-byte and state their historical status.
+
+The new bundle reuses the schema-3 frozen finding registry and schema-5 audit. Its four logs and inventory/audit are byte-pinned in a manifest and verified by the existing `admission-bundle-verify` command against the pinned dataset cache. A deterministic local builder reconstructs the current task-62 judge manifests and the eight authored control identities per suite before writing. It rejects any unexpected control outcome. There is no model score, no admission, and no GitHub Actions run.

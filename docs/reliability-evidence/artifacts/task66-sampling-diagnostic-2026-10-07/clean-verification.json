@@ -1,0 +1,69 @@
+{
+  "checkout_unchanged": true,
+  "commit": "c9c16d1a2a4b31a286f1b15d1c4d1a7a8b5f516f",
+  "diagnostic_exact_recreation": true,
+  "engine_source_digest": "3b137cbcf666d377d0347ba0eca6a77b9d07e06eaf712e93cb514764c9bae91e",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "pytest": "9.1.1",
+      "qiskit": "2.4.2",
+      "ruff": "0.16.7"
+    },
+    "python": "3.12.14"
+  },
+  "imports_from_clean_checkout": true,
+  "independent_human_admission": false,
+  "kind": "graybench_task66_clean_reproduction_v1",
+  "limitations": [
+    "Same host with separately installed locked dependencies and shared verified cache",
+    "Selected diagnostic tests, not a full clean suite",
+    "No actual sampler, isolated runtime, full native false pass or human admission"
+  ],
+  "main_clean_and_git_bytes_match": {
+    "docs/reliability-evidence/artifacts/task66-sampling-diagnostic-2026-10-07/plan.json": {
+      "bytes": 14644,
+      "sha256": "46e88a0be7a91f17151f214a1d5992c221105c8eae44d00e15b62541dec93c0e"
+    },
+    "docs/reliability-evidence/artifacts/task66-sampling-diagnostic-2026-10-07/related.xml": {
+      "bytes": 3100,
+      "sha256": "77bda1e8feea25c9721f7b6feca2059b833ccbeb16bb101ed071d7a8a88e59b5"
+    },
+    "docs/reliability-evidence/artifacts/task66-sampling-diagnostic-2026-10-07/report.json": {
+      "bytes": 40858,
+      "sha256": "d1f41d14ab593759192d2ec7ada7e77cdd8fb94465de932215c08fa258e43362"
+    },
+    "docs/reliability-evidence/artifacts/task66-sampling-diagnostic-2026-10-07/verification.json": {
+      "bytes": 12840,
+      "sha256": "3875195c452e6c3c83d8ea300d28506e2cf38eb8659636f68b4e3d061fbee587"
+    },
+    "docs/reliability-evidence/task66_sampling_diagnostic.py": {
+      "bytes": 13258,
+      "sha256": "a2b8b8a1664bc46b492f3a8c9d34f02f4c0db7e7edf770db31b23c21bcec8920"
+    },
+    "engine/tests/test_task66_sampling_diagnostic.py": {
+      "bytes": 4241,
+      "sha256": "585ae46f6537a2d899817ca12b8a0bcb9a8c2e67b3c1b94004043c6d970f7e03"
+    },
+    "engine/uv.lock": {
+      "bytes": 68888,
+      "sha256": "b0789c7a994abdd96b3172563ae58a420c60e80c33ba05447257e1d35174524d"
+    }
+  },
+  "publication_eligible": false,
+  "runtime_qualified": false,
+  "static_checks": {
+    "format": "253 files passed",
+    "lint": "passed"
+  },
+  "tests": {
+    "bytes": 3100,
+    "errors": 0,
+    "failures": 0,
+    "junit_seconds": 4.43,
+    "passed": 20,
+    "sha256": "aac4094c355cf626db2fed64bedc03d6ec5c943fdad5ba4bbaed3db4334f55a8",
+    "skipped": 0,
+    "wall_seconds": 4.47
+  }
+}

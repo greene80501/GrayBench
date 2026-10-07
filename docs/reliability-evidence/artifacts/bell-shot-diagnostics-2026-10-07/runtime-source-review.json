@@ -1,0 +1,45 @@
+{
+  "kind": "graybench_bell_runtime_source_review_v1",
+  "native_sampler_executed": false,
+  "publication_eligible": false,
+  "retrieved_utc_date": "2026-10-07",
+  "root_runtime_lock": {
+    "bytes": 56218,
+    "path": "requirements.lock",
+    "sha256": "8d1493d90947b1266a23c251039e50a30fca1f303937c0045904ff395366f906"
+  },
+  "scope": "Source review only; general documentation is not proof of local defaults or seeded execution",
+  "sources": [
+    {
+      "bytes": 1922,
+      "commit": "10aea649ca998ff7924f0561e41142550aa07242",
+      "immutable_source_url": "https://raw.githubusercontent.com/Qiskit/qiskit-ibm-runtime/10aea649ca998ff7924f0561e41142550aa07242/qiskit_ibm_runtime/options/sampler_options.py",
+      "path": "qiskit_ibm_runtime/options/sampler_options.py",
+      "repository": "Qiskit/qiskit-ibm-runtime",
+      "sha256": "07997199a74cfba20dff808de6db644e5abe1a9197263add320629a296a6fb47",
+      "source_observation": "Generic SamplerOptions documents default 4096",
+      "tag": "0.45.0"
+    },
+    {
+      "bytes": 10403,
+      "commit": "10aea649ca998ff7924f0561e41142550aa07242",
+      "immutable_source_url": "https://raw.githubusercontent.com/Qiskit/qiskit-ibm-runtime/10aea649ca998ff7924f0561e41142550aa07242/qiskit_ibm_runtime/fake_provider/local_service.py",
+      "path": "qiskit_ibm_runtime/fake_provider/local_service.py",
+      "repository": "Qiskit/qiskit-ibm-runtime",
+      "sha256": "332fefbe008f308d1c1e7242d293c0b8933434815f95510655b722a551b618dc",
+      "source_observation": "Local service delegates to BackendSamplerV2 and sets default_shots only when supplied",
+      "tag": "0.45.0"
+    },
+    {
+      "bytes": 12377,
+      "commit": "5a1cf3159aedad954767956d6a5c81a06d043d71",
+      "immutable_source_url": "https://raw.githubusercontent.com/Qiskit/qiskit/5a1cf3159aedad954767956d6a5c81a06d043d71/qiskit/primitives/backend_sampler_v2.py",
+      "path": "qiskit/primitives/backend_sampler_v2.py",
+      "repository": "Qiskit/qiskit",
+      "sha256": "a160ad1acfdc7cbbcd2838bc6c36f34696ac6e35c3cc08ba0657d4d5d17e541f",
+      "source_observation": "BackendSamplerV2 default_shots is 1024",
+      "tag": "2.4.2"
+    }
+  ],
+  "task31_seeded_behavior_attested": false
+}

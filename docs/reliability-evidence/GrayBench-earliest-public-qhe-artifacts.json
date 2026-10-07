@@ -1,0 +1,20 @@
+{
+  "kind": "graybench_earliest_public_qhe_artifacts_v1",
+  "scope": "Pinned official public artifacts; not the 101-task paper dataset",
+  "script_sha256": "834a1938e536a6ee951a38f7f761c6f8897f91887a4f35931209a8b23cf30e36",
+  "github_commit": "7c84727243d7851e3f5e9f90af66ebd5d6f054de",
+  "github_url": "https://raw.githubusercontent.com/qiskit-community/qiskit-human-eval/7c84727243d7851e3f5e9f90af66ebd5d6f054de/dataset/dataset_qiskit_test_human_eval.json",
+  "github_json_sha256": "496ce82372744e685ee7dd1891f58fb8e2b976b53a5a82208ae3a9994541938e",
+  "github_task_count": 151,
+  "hugging_face_commit": "025a2fb7e8192d12eba7951786929b7e73020749",
+  "hugging_face_parquet_sha256": "e6ef2b6e576cc66a77ddd4ac6b9bb39bd3cfb5f50baad1bcd414931e2b28d64d",
+  "hugging_face_task_count": 151,
+  "same_task_ids": true,
+  "decoded_field_mismatches": {
+    "prompt": 0,
+    "canonical_solution": 0,
+    "test": 0,
+    "entry_point": 0,
+    "difficulty_scale": 0
+  }
+}

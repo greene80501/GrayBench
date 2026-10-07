@@ -1,0 +1,130 @@
+{
+  "kind": "graybench_task147_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "2cf3b1d170ca29e2bb0f1b14723aeb7963f74c0c00e9e106e33593a535c48e11",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "1b9325ba2ee2ff8031361e07b3f7e4de68fe776e1f25119c59e2db9edd2e4b79",
+      "case": "reference",
+      "candidate_sha256": "769291a5452e5b10ab0b01d747f24fd600621e44ad96895b00145a611602a92b",
+      "outcome": "pass",
+      "detail": null,
+      "alternate_input_witness": {
+        "input_gate": "x on qubit 5",
+        "expected_input_preserved": true
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "1b9325ba2ee2ff8031361e07b3f7e4de68fe776e1f25119c59e2db9edd2e4b79",
+      "case": "equivalent_decomposition",
+      "candidate_sha256": "0ac3777b32163f41989b005b7e83871c65ccbbf47a9943284cc8ab7e41a0d51f",
+      "outcome": "pass",
+      "detail": null,
+      "alternate_input_witness": {
+        "input_gate": "x on qubit 5",
+        "expected_input_preserved": true
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "1b9325ba2ee2ff8031361e07b3f7e4de68fe776e1f25119c59e2db9edd2e4b79",
+      "case": "fixed_prebuilt",
+      "candidate_sha256": "a835cbdbde23146b3625223b55a9209c9b264006be4240009f57537c71b08c48",
+      "outcome": "pass",
+      "detail": null,
+      "alternate_input_witness": {
+        "input_gate": "x on qubit 5",
+        "expected_input_preserved": false
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "1b9325ba2ee2ff8031361e07b3f7e4de68fe776e1f25119c59e2db9edd2e4b79",
+      "case": "unchanged_control",
+      "candidate_sha256": "95248cca61b6b272c0cf61725bc326d46ef877526dd56e77623b3a1de554595b",
+      "outcome": "fail",
+      "detail": "Operators are not equivalent",
+      "alternate_input_witness": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "1b9325ba2ee2ff8031361e07b3f7e4de68fe776e1f25119c59e2db9edd2e4b79",
+      "case": "wrong_y_control",
+      "candidate_sha256": "7a71203617c0f55dff004da3521eb9811565705113f3a05e35919b24e0f07168",
+      "outcome": "fail",
+      "detail": "Operators are not equivalent",
+      "alternate_input_witness": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "a772dd35663e20eadf098642391966244db139646c1a4b34628f4d89ea9db278",
+      "case": "reference",
+      "candidate_sha256": "f3ff8dc1f9e1865be04b03c81168915c2d7bc617c4a6dd0bc4a01c75f9a30367",
+      "outcome": "pass",
+      "detail": null,
+      "alternate_input_witness": {
+        "input_gate": "x on qubit 5",
+        "expected_input_preserved": true
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "a772dd35663e20eadf098642391966244db139646c1a4b34628f4d89ea9db278",
+      "case": "equivalent_decomposition",
+      "candidate_sha256": "e06774f4994dc0235b36ba28c4489232c7d7248edce5d0be09ea42ebd69170f8",
+      "outcome": "pass",
+      "detail": null,
+      "alternate_input_witness": {
+        "input_gate": "x on qubit 5",
+        "expected_input_preserved": true
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "a772dd35663e20eadf098642391966244db139646c1a4b34628f4d89ea9db278",
+      "case": "fixed_prebuilt",
+      "candidate_sha256": "9860d7f1a0020e3d95c8a86cd98ff4117ad56102a71f43df3816a52c43cee547",
+      "outcome": "pass",
+      "detail": null,
+      "alternate_input_witness": {
+        "input_gate": "x on qubit 5",
+        "expected_input_preserved": false
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "a772dd35663e20eadf098642391966244db139646c1a4b34628f4d89ea9db278",
+      "case": "unchanged_control",
+      "candidate_sha256": "ef6e1167285f0c76698bbb272153b4c6a577e94b7a7be710b273468737d6bf3c",
+      "outcome": "fail",
+      "detail": "Operators are not equivalent",
+      "alternate_input_witness": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "a772dd35663e20eadf098642391966244db139646c1a4b34628f4d89ea9db278",
+      "case": "wrong_y_control",
+      "candidate_sha256": "704f652d4573ca10d879a9184cfbe738528e33f5bae49b1c056d5627a947cf10",
+      "outcome": "fail",
+      "detail": "Operators are not equivalent",
+      "alternate_input_witness": null
+    }
+  ]
+}

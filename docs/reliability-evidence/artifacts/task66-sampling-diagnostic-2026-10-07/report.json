@@ -1,0 +1,1902 @@
+{
+  "controls": [
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "id": "canonical_gates",
+      "observed_symmetric_w_fidelity": 1.0000000000000004,
+      "probabilities": [
+        0.0,
+        0.3333333333333334,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 4.440892098500626e-16,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896258,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": true
+    },
+    {
+      "circuit_operations": [
+        [
+          "state_preparation",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "id": "independent_amplitude_preparation",
+      "observed_symmetric_w_fidelity": 1.0,
+      "probabilities": [
+        8.076605859255355e-34,
+        0.3333333333333333,
+        0.33333333333333315,
+        8.109933640670058e-33,
+        0.33333333333333354,
+        9.065411615965026e-33,
+        1.9404601024203643e-32,
+        1.6813089639835944e-63
+      ],
+      "sdk_fidelity_error": 0.0,
+      "sdk_probability_error": 2.220446049250313e-16,
+      "statevector": [
+        [
+          -6.106439893312731e-18,
+          -2.7755575615628914e-17
+        ],
+        [
+          0.5773502691896257,
+          -2.220446049250313e-16
+        ],
+        [
+          0.5773502691896256,
+          -2.7755575615628914e-17
+        ],
+        [
+          -8.567124174958107e-17,
+          -2.7755575615628914e-17
+        ],
+        [
+          0.577350269189626,
+          5.551115123125783e-17
+        ],
+        [
+          9.107710820074455e-17,
+          -2.7755575615628914e-17
+        ],
+        [
+          1.3877787807814462e-16,
+          1.2054110515972125e-17
+        ],
+        [
+          1.771855548836257e-32,
+          3.697785493223493e-32
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": true
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "swap",
+          [
+            0,
+            2
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "id": "symmetric_wire_permutation",
+      "observed_symmetric_w_fidelity": 1.0,
+      "probabilities": [
+        0.0,
+        0.3333333333333333,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333334,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 0.0,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896258,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": true
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "id": "global_phase",
+      "observed_symmetric_w_fidelity": 1.0000000000000004,
+      "probabilities": [
+        0.0,
+        0.33333333333333354,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 4.440892098500626e-16,
+      "sdk_probability_error": 2.220446049250313e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5382794439584934,
+          0.20877876698809364
+        ],
+        [
+          0.5382794439584933,
+          0.20877876698809356
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5382794439584933,
+          0.20877876698809356
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": true
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "z",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 9,
+        "numerator": 1
+      },
+      "id": "relative_pi_q0",
+      "observed_symmetric_w_fidelity": 0.1111111111111111,
+      "probabilities": [
+        0.0,
+        0.3333333333333334,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 0.0,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          -0.5773502691896258,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": false
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "z",
+          [
+            1
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 9,
+        "numerator": 1
+      },
+      "id": "relative_pi_q1",
+      "observed_symmetric_w_fidelity": 0.11111111111111117,
+      "probabilities": [
+        0.0,
+        0.3333333333333334,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 6.938893903907228e-17,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896258,
+          0.0
+        ],
+        [
+          -0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": false
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "z",
+          [
+            2
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 9,
+        "numerator": 1
+      },
+      "id": "relative_pi_q2",
+      "observed_symmetric_w_fidelity": 0.11111111111111117,
+      "probabilities": [
+        0.0,
+        0.3333333333333334,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 6.938893903907228e-17,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896258,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          -0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": false
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "s",
+          [
+            1
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 9,
+        "numerator": 5
+      },
+      "id": "relative_i_q1",
+      "observed_symmetric_w_fidelity": 0.5555555555555557,
+      "probabilities": [
+        0.0,
+        0.3333333333333334,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 1.1102230246251565e-16,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896258,
+          0.0
+        ],
+        [
+          0.0,
+          0.5773502691896257
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896257,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": false
+    },
+    {
+      "circuit_operations": [
+        [
+          "ry",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "ch",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "p",
+          [
+            1
+          ],
+          []
+        ],
+        [
+          "p",
+          [
+            2
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0,
+            1,
+            2
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      ],
+      "counts": {
+        "balanced": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "inclusive_boundary": {
+          "hard": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          },
+          "normal": {
+            "detail": null,
+            "exception": null,
+            "outcome": "pass"
+          }
+        },
+        "incorrect_total": {
+          "hard": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Expected 1024, got 1023",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "lower_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        },
+        "outside_support": {
+          "hard": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          },
+          "normal": {
+            "detail": "'QuantumCircuit' object has no attribute 'keys'",
+            "exception": "AttributeError",
+            "outcome": "error"
+          }
+        },
+        "upper_tail": {
+          "hard": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          },
+          "normal": {
+            "detail": "Value outside expected range",
+            "exception": "AssertionError",
+            "outcome": "fail"
+          }
+        }
+      },
+      "expected_symmetric_w_fidelity": {
+        "denominator": 1,
+        "numerator": 0
+      },
+      "id": "relative_cube_roots",
+      "observed_symmetric_w_fidelity": 6.162975822039156e-33,
+      "probabilities": [
+        0.0,
+        0.3333333333333334,
+        0.3333333333333333,
+        0.0,
+        0.3333333333333334,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sdk_fidelity_error": 6.162975822039156e-33,
+      "sdk_probability_error": 1.1102230246251565e-16,
+      "statevector": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5773502691896258,
+          0.0
+        ],
+        [
+          -0.28867513459481275,
+          0.5
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          -0.28867513459481314,
+          -0.4999999999999999
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "symmetric_w_up_to_global_phase": false
+    }
+  ],
+  "engine_source_digest": "3b137cbcf666d377d0347ba0eca6a77b9d07e06eaf712e93cb514764c9bae91e",
+  "environment": {
+    "numpy": "2.2.4",
+    "python": "3.12.14",
+    "qiskit": "2.4.2"
+  },
+  "hypothetical_independent_20_replays_any_rejection_approximation": 0.1442154978657784,
+  "ideal_acceptance": {
+    "denominator": 1536591970127654500135636848497393367182756283060633776751592311613493994309733544156352629377794144940200679281611008881105872652642637278112556942316087190593381681457870703451880740543030470310995135971385519706985197224352543260660976536611418648638487188160684095168456362381031227508867463129654058445994023898941278115821099008184182104744106145733959431772611617397196416400958281381634008170721479326818626600082192950645707876128627672004932212752054626322126794488486970001467,
+    "numerator": 1524673247974974337689326289110463521119505995989962464607423325515268546878042171373111774546521623072912564919970998761600229604331297156733512317056778543338609962135127607162135398577179280307998594538875837675881303041413958917428278023176737484553188569075118090154849693610135594605570156430970065550087876723039353541096767178977912297169884963435226376060766769309279093766799235975424800976619739962685446544571930351292434221942502356491743021831271484682544523928288616628000
+  },
+  "ideal_rejection": {
+    "denominator": 1536591970127654500135636848497393367182756283060633776751592311613493994309733544156352629377794144940200679281611008881105872652642637278112556942316087190593381681457870703451880740543030470310995135971385519706985197224352543260660976536611418648638487188160684095168456362381031227508867463129654058445994023898941278115821099008184182104744106145733959431772611617397196416400958281381634008170721479326818626600082192950645707876128627672004932212752054626322126794488486970001467,
+    "numerator": 11918722152680162446310559386929846063250287070671312144168986098225447431691372783240854831272521867288114361640010119505643048311340121379044625259308647254771719322743096289745341965851190002996541432509682031103894182938584343232698513434681164085298619085566005013606668770895632903297306698683992895906147175901924574724331829206269807574221182298733055711844848087917322634159045406209207194101739364133180055510262599353273654186125315513189190920783141639582270560198353373467
+  },
+  "ideal_rejection_approximation": 0.007756595364539097,
+  "independent_human_admission": false,
+  "isolated_sampler_executed": false,
+  "kind": "graybench_task66_sampling_diagnostic_v1",
+  "limitations": [
+    "Exact probability is conditional on the ideal iid multinomial assumption, not observed sampler behavior.",
+    "Assertion slices exclude candidate invocation, sampler/import/transpiler pipeline and do not prove a full native false pass.",
+    "Relative-phase fixtures are not the explicit symmetric W state; original wording omits a phase convention, so a revised contract needs adjudication.",
+    "Global phase is physically irrelevant; relative phase is invisible to computational-basis probabilities.",
+    "No replacement threshold, strengthened judge, isolated execution or task admission is supplied."
+  ],
+  "model_generations": 0,
+  "plan_digest": "76720dbf945aa574f298f45d687830ffae1e10899023be9b3e9f56fa82f8d1bf",
+  "publication_eligible": false,
+  "runtime_qualified": false,
+  "sampling_assumption": "1024 independent ideal equal-probability shots",
+  "script_sha256": "a2b8b8a1664bc46b492f3a8c9d34f02f4c0db7e7edf770db31b23c21bcec8920"
+}

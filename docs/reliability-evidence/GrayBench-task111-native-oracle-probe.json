@@ -1,0 +1,190 @@
+{
+  "kind": "graybench_task111_native_oracle_probe_v1",
+  "scope": "Authored exact pinned-test diagnostic, not a model score",
+  "script_sha256": "5e123db05fa28e1e6c66ee8c62171573c89b2d9c7f7c8fe2ee35d99d31649ee5",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "parameter_grid": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.5707963267948966
+    ],
+    [
+      0.0,
+      3.141592653589793
+    ],
+    [
+      1.5707963267948966,
+      0.0
+    ],
+    [
+      1.5707963267948966,
+      1.5707963267948966
+    ],
+    [
+      1.5707963267948966,
+      3.141592653589793
+    ],
+    [
+      3.141592653589793,
+      0.0
+    ],
+    [
+      3.141592653589793,
+      1.5707963267948966
+    ],
+    [
+      3.141592653589793,
+      3.141592653589793
+    ]
+  ],
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "18f195c725222fdb59d0875308f91b3089bf92a30c5b37c08dcfc7b732aa30a9",
+      "case": "reference",
+      "candidate_sha256": "c6f2d990d8dc9f51fab37822926c24f1753395fb728f287a7883a5e37bb449ee",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 1,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 5,
+        "max_excited_population_on_grid": 1.0
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "18f195c725222fdb59d0875308f91b3089bf92a30c5b37c08dcfc7b732aa30a9",
+      "case": "valid_ry_rz",
+      "candidate_sha256": "55fd8fd155c9698fff5dacb079e17e2a61a250f66bc8914f8b696eb86e756cfa",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 1,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 5,
+        "max_excited_population_on_grid": 1.0
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "18f195c725222fdb59d0875308f91b3089bf92a30c5b37c08dcfc7b732aa30a9",
+      "case": "rz_only",
+      "candidate_sha256": "2303bf244a06b2f62b39f9cfd3c4db2131dc1e4ab2371e697bf55ad70649c425",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 1,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 1,
+        "max_excited_population_on_grid": 0.0
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "18f195c725222fdb59d0875308f91b3089bf92a30c5b37c08dcfc7b732aa30a9",
+      "case": "two_qubits",
+      "candidate_sha256": "cb0bd305bdf02455199561a9a4e413308d6729ddfccc69b779c5ce4dc872edd4",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 2,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 3,
+        "max_excited_population_on_grid": null
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "18f195c725222fdb59d0875308f91b3089bf92a30c5b37c08dcfc7b732aa30a9",
+      "case": "one_parameter_control",
+      "candidate_sha256": "9d52c2920655f55754873f1688c7b55fe793a1a4fd7b3046e714236cd81a9a81",
+      "pinned_test_outcome": "fail",
+      "witness": {
+        "qubits": 1,
+        "parameters": 1,
+        "distinct_physical_states_on_grid": 3,
+        "max_excited_population_on_grid": 1.0
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dd12d078bfd40c4caad53cc5ace2e52e6331bca4e3f0cd5f333209a0b74fa970",
+      "case": "reference",
+      "candidate_sha256": "714f12a1b33acb5183c061ed530419f3e174346a69eff30fcb3cae050e784b0a",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 1,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 5,
+        "max_excited_population_on_grid": 1.0
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dd12d078bfd40c4caad53cc5ace2e52e6331bca4e3f0cd5f333209a0b74fa970",
+      "case": "valid_ry_rz",
+      "candidate_sha256": "7b803e5e47863cdec611331e5cb4e642be0a1d5551c1a97a08b51c5d96a788a5",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 1,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 5,
+        "max_excited_population_on_grid": 1.0
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dd12d078bfd40c4caad53cc5ace2e52e6331bca4e3f0cd5f333209a0b74fa970",
+      "case": "rz_only",
+      "candidate_sha256": "d9cda8f48a5da9977773ca9b28269a27bab263bf82b178548825b7b8dda2bb7c",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 1,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 1,
+        "max_excited_population_on_grid": 0.0
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dd12d078bfd40c4caad53cc5ace2e52e6331bca4e3f0cd5f333209a0b74fa970",
+      "case": "two_qubits",
+      "candidate_sha256": "5eda92dea134ca54071d4306366a02c2bb0890ff2179bae7405b40377361c21d",
+      "pinned_test_outcome": "pass",
+      "witness": {
+        "qubits": 2,
+        "parameters": 2,
+        "distinct_physical_states_on_grid": 3,
+        "max_excited_population_on_grid": null
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dd12d078bfd40c4caad53cc5ace2e52e6331bca4e3f0cd5f333209a0b74fa970",
+      "case": "one_parameter_control",
+      "candidate_sha256": "ed84ff4e89a62bb838497a874142fc0ca07487436062dbc8b3dd03c1162c823f",
+      "pinned_test_outcome": "fail",
+      "witness": {
+        "qubits": 1,
+        "parameters": 1,
+        "distinct_physical_states_on_grid": 3,
+        "max_excited_population_on_grid": 1.0
+      }
+    }
+  ]
+}

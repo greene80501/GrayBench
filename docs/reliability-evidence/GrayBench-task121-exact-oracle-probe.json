@@ -1,0 +1,132 @@
+{
+  "kind": "graybench_task121_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "ef2a81a64599f57329dfd6e1638a9ad1b2a002361933eef118bb3dd2f2119c15",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "3bca5f10d515a75c2f5de91df64c12a0a834fc52f8ee5e400056b7f8d8136260",
+      "case": "reference",
+      "candidate_sha256": "6a6c683587b382d20347aec5b23a15e13d772a893e6d4dcf59562a73c86d49e0",
+      "outcome": "pass",
+      "assertion": null,
+      "ops": {
+        "measure": 2,
+        "h": 1,
+        "if_else": 1
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "3bca5f10d515a75c2f5de91df64c12a0a834fc52f8ee5e400056b7f8d8136260",
+      "case": "unconditional_reset",
+      "candidate_sha256": "5dc242c7e8a42d115cca41c15471c8797d3d7fdfa9cb44a2100e142e073b106c",
+      "outcome": "pass",
+      "assertion": null,
+      "ops": {
+        "measure": 2,
+        "h": 1,
+        "if_else": 1,
+        "reset": 1
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "3bca5f10d515a75c2f5de91df64c12a0a834fc52f8ee5e400056b7f8d8136260",
+      "case": "no_first_measure",
+      "candidate_sha256": "6fe9fe940f907419f7987fe6acdbdaf099ea5b09d6210199f2df668cf81cec2f",
+      "outcome": "pass",
+      "assertion": null,
+      "ops": {
+        "h": 1,
+        "barrier": 1,
+        "if_else": 1,
+        "reset": 1,
+        "measure": 1
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "3bca5f10d515a75c2f5de91df64c12a0a834fc52f8ee5e400056b7f8d8136260",
+      "case": "uncorrected_control",
+      "candidate_sha256": "14f4a03ace9d140f983d79971b0c8242d2d45e4f07147b48256dff3fbe3b4e9f",
+      "outcome": "fail",
+      "assertion": "Assertion condition not met",
+      "ops": {
+        "measure": 2,
+        "h": 1,
+        "if_else": 1
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "0f4e98777a457f12db2cb6006750676cf7e2d6cf1240b7a334cf7466eb67cc64",
+      "case": "reference",
+      "candidate_sha256": "890431d6f15bc05dcdbb354ff2c80ec23cd2b74a4445d26e59a9ff9d54560a63",
+      "outcome": "pass",
+      "assertion": null,
+      "ops": {
+        "measure": 2,
+        "h": 1,
+        "if_else": 1
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "0f4e98777a457f12db2cb6006750676cf7e2d6cf1240b7a334cf7466eb67cc64",
+      "case": "unconditional_reset",
+      "candidate_sha256": "c2712297e0681e4a6bac320710d6c82bf58c0645b1a550eb72a94ba7588a6466",
+      "outcome": "pass",
+      "assertion": null,
+      "ops": {
+        "measure": 2,
+        "h": 1,
+        "if_else": 1,
+        "reset": 1
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "0f4e98777a457f12db2cb6006750676cf7e2d6cf1240b7a334cf7466eb67cc64",
+      "case": "no_first_measure",
+      "candidate_sha256": "c6e39f440cacc09d127e86de19a2aed69c0c5422bcb21c2871338524f9fa045d",
+      "outcome": "pass",
+      "assertion": null,
+      "ops": {
+        "h": 1,
+        "barrier": 1,
+        "if_else": 1,
+        "reset": 1,
+        "measure": 1
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "0f4e98777a457f12db2cb6006750676cf7e2d6cf1240b7a334cf7466eb67cc64",
+      "case": "uncorrected_control",
+      "candidate_sha256": "17bc13e2fbfbcb8e41d0bbb23953892d778ab9db479c9ba7d07e2eba895a8e31",
+      "outcome": "fail",
+      "assertion": "Assertion condition not met",
+      "ops": {
+        "measure": 2,
+        "h": 1,
+        "if_else": 1
+      }
+    }
+  ]
+}

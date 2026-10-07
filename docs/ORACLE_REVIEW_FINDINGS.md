@@ -1,0 +1,126 @@
+# Reproduced specification and oracle findings
+
+These findings are development evidence, not model scores or a completed task review.
+The original upstream track must retain its pinned tests; corrected contracts and stronger
+oracles belong to a separately versioned track with the same public requirements for all models.
+
+| Task | Evidence | Required resolution |
+| --- | --- | --- |
+| 11 | Both original checks accept a fixed Statevector for their single U-plus-CX input. It is wrong for the valid two-qubit X0 circuit. | The [separate state-action condition](reliability-evidence/task11-statevector-action-development.md) freezes the domain and tests varied independently derived states; complete isolated controls and independent admission before scoring it. |
+| 63 | Both protected suites and the new native track accept constant `"1"`. A [full-cohort native control](reliability-evidence/native-constant-one-screen.md) confirms the same false pass in normal and hard; its other 284 cases fail. For the actual ideal circuit, only 2 of 32 independent uniform receiver bases produce that key; the private seed affects a separate protected judge, while native execution shares the test process. | Publish a coherent randomness/output contract and test varied behavior without sharing private RNG state. See [protected constants and exhaustive basis witnesses](reliability-evidence/task63-oracle-review.md) and the [native calibration](reliability-evidence/native-reference-calibration.md). |
+| 2 | Both pinned native upstream tests accept a non-state object that claims equivalence and a `Statevector` subclass with wrong amplitudes that overrides `equiv`. This has not been reproduced through the protected bridge. | Keep upstream history unchanged; validate the [separate amplitude-checking development recipe](reliability-evidence/task2-statevector-revision.md) under the protected judge and complete task admission. See the [14-case native probe](reliability-evidence/task2-statevector-oracle-review.md). |
+| 108 | Both exact pinned tests accept a first `Choi` unrelated to `data1` and a composition that ignores `data2`; they test only identical identity inputs and compare only the adjoint data. | Exercise distinct valid channel pairs and compare all three returned values under a separate public value contract. See the [eight-case native diagnostic](reliability-evidence/task108-choi-oracle-review.md). |
+| 109 | Both suites accept a fixed plus state and a parameter that changes only global phase through all 1,000 checks. The test checks polar angle but never equatorial coverage. | Specify the parameter/resource contract and test physical state variation; parameter count alone is insufficient. See [exact-test native diagnostic](reliability-evidence/task109-oracle-review.md). |
+| 111 | Both exact pinned tests accept a two-parameter RZ circuit that prepares only the starting physical state and a two-qubit circuit for a single-qubit Bloch-sphere ansatz. They check only parameter count. | Define whether the contract scores state coverage or an actual sampled distribution; check one-qubit width and physical states, and specify a sampling measure before claiming equal distribution. See the [ten-case native diagnostic](reliability-evidence/task111-bloch-oracle-review.md). |
+| 116 / 120 | Both normal and hard upstream tests accept fixed circuits that ignore all function arguments and match only the single tested example. | Exercise varied Pauli strings, times, widths and diagonal phases against independent semantic expectations. See [protected evidence](reliability-evidence/numeric-gate-transport.md). Hamiltonian/diagonal transport support does not repair these tests. |
+| 114 | Both exact upstream tests accept physical qubit 8 instead of the requested isolated qubit 7, because they check only node count. | Verify physical-qubit identities as well as directed edges. Graph transport also needs mutation/cache fidelity; see [diagnostic evidence](reliability-evidence/task114-graph-review.md). |
+| 115 | Both exact upstream tests accept zero error properties, wrong UGate parameter names and constant UGate angles, despite the public requirements. | Check positive finite properties and symbolic parameters in a separately versioned contract; see the [12-case native diagnostic](reliability-evidence/task115-target-oracle-review.md). Target transport and worker integrity are still unresolved. |
+| 117 | Both exact upstream tests accept an input-independent CX circuit and even a circuit with measurement for a requested unitary decomposition. The random unitary is never compared with the returned circuit. | Compare the circuit operator to the supplied unitary across declared valid inputs, reject nonunitary circuits, and test an independently correct implementation. See the [10-case native diagnostic](reliability-evidence/task117-unitary-oracle-review.md). |
+| 119 | Both exact upstream tests accept an adder implementation that raises on `half` and on widths other than three, although the public function accepts the kind and width. | Exercise `full`, `half`, and `fixed` at multiple valid widths, compare semantics, and retain independent correct alternatives. See the [10-case native diagnostic](reliability-evidence/task119-adder-oracle-review.md). |
+| 121 | Both exact upstream tests accept an unconditional reset in place of conditional X correction, and even accept a circuit with no first measurement. | Check the conditional branch and both measurement outcomes under a versioned public contract; see the [8-case native diagnostic](reliability-evidence/task121-conditional-oracle-review.md). |
+| 122 | Static inspection of both pinned tests finds only a `QuantumCircuit` type assertion. The IBM transpiler service is called, but its result is never compared with the candidate result. No IBM service call was made in this audit. | Keep this service-dependent task out of the offline denominator. Qualify service access and a versioned semantic comparison before admission; see the [pinned source review](reliability-evidence/task122-ai-transpiler-oracle-review.md). |
+| 123 | Both exact upstream tests accept a five-axis `Figure` with the expected title and no plotted data, instead of the requested FakeBelemV2 error map. | Validate backend error content in a separately versioned oracle without requiring one rendering style; see the [8-case native diagnostic](reliability-evidence/task123-error-map-oracle-review.md). |
+| 125 | Both exact upstream tests accept an unrelated three-qubit `Gate` for the first circuit because they assert only type and dimensions there. The second input checks a Z-equivalent action. | Compare gate and input actions across varied valid circuits in a separately versioned oracle, while accepting independently correct conversions. See the [10-case native diagnostic](reliability-evidence/task125-gate-conversion-oracle-review.md). |
+| 126 | Both pinned suites accept `return 1.0` without constructing Hadamard operators or calculating process fidelity. The no-argument task's requested global-phase pair always has fidelity one, so an output-only check cannot identify the computation method. | State whether the release scores only the output or redesign a separately versioned task with varied operator pairs, including non-global-phase controls. See the [six-case protected-bridge probe](reliability-evidence/task126-fidelity-oracle-review.md). |
+| 128 | Both exact upstream tests accept a four-qubit conditional circuit with no Hadamard gates on the first three qubits. The measured all-zero branch satisfies the checked XOR relation, so 1,024 shots do not establish the required preparation. | Check the declared preparation and conditional behavior across all branches, with a public policy for structural versus equivalent gate implementations. See the [8-case native diagnostic](reliability-evidence/task128-conditional-preparation-oracle-review.md). |
+| 130 | Both exact upstream tests call `inv_circuit` only with `n=5`. A function that always creates a five-qubit circuit passes, but returns five qubits when asked for a valid `n=6`. | Exercise varied valid widths and compare the requested inverse behavior without unnecessarily requiring one implementation order. See the [16-case paired native diagnostic](reliability-evidence/task130-131-parameter-oracle-review.md). |
+| 131 | Both exact upstream tests call `backend_info` only with FakeCairoV2. A fixed Cairo lookup passes, but returns 27 qubits when asked for FakeBelemV2, which has five. | Exercise multiple local fake backends and compare all declared dictionary fields for each name. See the [16-case paired native diagnostic](reliability-evidence/task130-131-parameter-oracle-review.md). |
+| 136 | Both pinned suites accept ten copies of a fixed near-pure state with entropy approximately 0.0051 because they call `pure_states` only at `ε=0.01`. That implementation ignores `ε` and fails the same public requirement at valid `ε=0.001`. | Declare the positive-tolerance domain and test multiple supplied tolerances without requiring randomness or distinctness. See the [ten-case protected-bridge diagnostic](reliability-evidence/task136-tolerance-oracle-review.md). |
+| 137 / 138 | Both prompts ask for a dataset/list of qualifying density matrices without specifying a count, but both tests require exactly ten. A three-element list of valid Bell density matrices fails. Task 138 additionally says mutual information must be strictly greater than tolerance, while its test accepts equality at tolerance 1.0. | Declare list length and valid tolerance domain before generation; enforce the chosen inequality and accept independently valid matrices. See the [12-case protected-bridge diagnostic](reliability-evidence/task137-138-density-oracle-review.md). |
+| 132 | Both exact upstream tests accept two fixed count dictionaries returned without generating, optimizing or executing any circuits. The canonical answer also passes offline; the test cannot establish Batch execution from its return value. | Publish an observable output contract or a separately versioned, independently verified execution-evidence contract; do not infer Batch use from matching fixed counts. See the [8-case native diagnostic](reliability-evidence/task132-batch-oracle-review.md). |
+| 139 | Both exact upstream tests accept an empty list and a single fixed Schmidt term for every input. They inspect only the terms returned; they never require a complete decomposition or compare its reconstruction with the input state. | Require a nonempty, properly normalized decomposition and verify reconstruction of varied input statevectors and partitions, allowing equivalent Schmidt phases and degeneracies. See the [10-case native diagnostic](reliability-evidence/task139-schmidt-oracle-review.md). |
+| 140 | Both exact upstream tests accept ten 16-entry vectors of `0.1`, each summing to `1.6` rather than `1`, because they check length and Qiskit's entropy result but never validate probability mass. | Validate finite, nonnegative, normalized probabilities and entropy at varied public tolerances in a separately versioned contract. See the [10-case native diagnostic](reliability-evidence/task140-probability-oracle-review.md). |
+| 142 | Both exact upstream tests accept ten two-qubit density matrices although the prompt requires one-qubit matrices. They also accept maximally mixed one-qubit states with purity exactly `0.5`, despite the prompt's strict `> 0.5` requirement. | Validate one-qubit dimensions and the stated strict purity boundary, with positive and negative controls. See the [22-case paired native diagnostic](reliability-evidence/task142-143-dimension-oracle-review.md). |
+| 143 | Both exact upstream tests accept ten pairs of identical two-qubit statevectors although the prompt requires one-qubit pairs. | Validate each state's one-qubit dimension and the stated fidelity relation without requiring a particular random generation method. See the [22-case paired native diagnostic](reliability-evidence/task142-143-dimension-oracle-review.md). |
+| 147 | Both exact upstream tests accept a prebuilt six-qubit circuit that discards the supplied circuit and happens to match the single tested input. It fails to preserve a second valid input with an X on qubit 5; the reference and an independently correct decomposition preserve it. | Test varied valid input circuits, checking that the returned operator represents the input followed by the requested controlled-Y. See the [10-case native diagnostic](reliability-evidence/task147-input-oracle-review.md). |
+| 148 | Both exact upstream tests accept a routed circuit that moves a single-qubit operation to a different wire: the coupling-map check and gate-count comparison both pass. The mutant changed a gate in every randomized call across two repeated probes; a fixed X-on-qubit-4 witness emerged as X-on-qubit-0 and changed the operator. | Validate logical gate placement and parameters through the inserted-SWAP mapping, as well as routing and gate multiset. See the [6-case native diagnostic](reliability-evidence/task148-routing-oracle-review.md). |
+| 150 | Both exact upstream tests accept a loop whose conditional branch contains `cx` instead of `break_loop`, a loop that breaks on measured `0` instead of `1`, and a function fixed to two iterations that ignores valid `n=3`. The tests inspect only the first-level loop shape at `n=2`. | Inspect the nested condition and break operation, and exercise varied valid `n` while checking the declared per-iteration gates. See the [12-case native diagnostic](reliability-evidence/task150-loop-oracle-review.md). |
+| 113 | Both suites accept a constant plain dictionary ignoring the input, while the PropertySet reference was initially unsupported by the bridge. The transport follow-up now passes the reference but leaves the false accept intact. | Preserve the required return type and test varied inputs including cases where removing barriers changes depth; see [protected evidence](reliability-evidence/task113-contract-review.md). Do not confuse transport support with oracle correctness. |
+| 37 | Both suites accept fabricated PrimitiveResult data with a non-bit string and no algorithm execution. The canonical answer returns 00000 for input 1111. | Specify output/register semantics and validate recovered strings and result consistency; see [protected evidence](reliability-evidence/primitive-containers.md). Returned data alone cannot prove backend execution. |
+| 46 | Both suites accept a fixed three-qubit identity LinearFunction that ignores the requested width and seed. | Check parameter/seed behavior and the declared generation method; see [protected replay](reliability-evidence/linear-functions.md). |
+| 50 / 110 | Task 50 tests only removal at position zero, so a function that always removes the first gate passes both suites and fails a valid position-one witness. Its canonical in-place mutation passes native tests but is `unsupported` across the current protected bridge. Task 110 accepts `[]` for `n=10` because its checks run only inside a loop over returned values. | Exercise varied valid positions and preserve or explicitly contract mutation behavior for task 50; assert list length before checking every item for task 110. See the [paired protected/native diagnostic](reliability-evidence/task50-110-oracle-review.md). |
+| 86 | Both suites accept identity blocks with the expected block counts but no requested CX-chain behavior. | Check circuit semantics and declared block constraints together; do not impose the reference's undisclosed extra H gate. |
+| 3 | Both upstream suites accept a blank Matplotlib Figure alongside the circuit. They also accept measuring only qubit 0; the prompt does not clearly specify measurement coverage. | Validate that the drawing represents the returned circuit, and clarify measurement coverage before adding stricter requirements. Faithful Figure transport alone does not repair this oracle. |
+| 26 | Both suites accept a Bell pair on qubits 1 and 2, although the prompt specifies 0 and 1. They reject the requested unmeasured pair because they require an undisclosed measurement and depth 3. | Specify measurement semantics and verify Bell-pair placement/coherence. Avoid incidental reference gate-count/depth requirements. |
+| 9 | Twelve parameterized RX gates plus a barrier pass the current EfficientSU2 oracle despite having no entangling gates. This is distinct from the historical issue already fixed upstream. | Check the requested ansatz semantics using explicit parameter correspondence and equivalent positive implementations. Parameter count alone is insufficient. |
+| 14 | The public prompt requires 100 shots, but the test accepts the two-item list `["00", "11"]`. | Enforce the declared shot count and document what aspects of execution can actually be verified from the returned data. |
+| 20 | An empty circuit with the correct layout passes upstream. The independent GHZ behavioral check rejects it, a product superposition, an incomplete Bell state and a relative-phase mutant while accepting two equivalent positive constructions. | Complete the task review; the behavioral check does not prove which pass-manager algorithm was used. |
+| 32 | Bell-state expectations for II, XX, YY, ZZ are +1, +1, -1, +1. The reference uses an undisclosed -1 coefficient for YY and the test requires the resulting signed sum 4. The prompt asks for the expectation values without specifying that weighting. | Resolve the public output contract before strengthening the test. Do not quietly score an undisclosed signed observable as the only valid interpretation. |
+| 141 | Both upstream suites accept ten zero SparsePauliOp objects because their anticommutators are zero multiples of identity. Zero is not a Pauli operator. | Check the permitted Pauli family as well as the anticommutator relation; disclose phase conventions without imposing the reference's random construction. See [protected probe](reliability-evidence/sparse-operators.md). |
+| 145 | Both pinned suites accept a one-qubit return for `n=0`: the test's zero-width assertion raises `AssertionError` inside a broad `except Exception` and is swallowed. The prompt does not define whether zero is valid. | Declare the allowed width domain and zero-width behavior, then test it without catching assertion failures. See the [pinned protected-bridge probe](reliability-evidence/task145-zero-width-oracle-review.md). |
+| 149 | Both pinned suites accept an implementation that returns the first `BitArray` string, because all three tested count dictionaries put the most frequent string first. Reversing count order makes that implementation wrong. | A separate [development recipe](reliability-evidence/task149-most-common-revision.md) now tests varied counts and orders with a public unique-maximum domain. Host checks pass; protected controls and independent review remain open. The [pinned protected-bridge probe](reliability-evidence/task149-most-common-oracle-review.md) remains historical evidence. |
+| 35 | The reference chooses variational parameters using a hidden RNG seed 1234 and a uniform distribution. The prompt specifies neither those parameter values nor that sampling rule, but the test requires an expectation near 0.33. | Declare the parameter preparation in a corrected public contract or revise the observable behavior being tested. Do not silently supply the reference values only to selected models. |
+
+The concrete local observations and public prompts are retained in
+[additional oracle evidence](reliability-evidence/GrayBench-v3-additional-oracle-findings.json).
+The protected reference-interface scan is summarized separately in
+[interface evidence](reliability-evidence/GrayBench-v3-reference-interface-summary.json).
+Every task's full specification, positive-alternative and mutation review remains pending.
+
+Task 141 now has a separately versioned [public-contract revision](reliability-evidence/task141-pauli-revision.md).
+Protected replays accept both references and valid phase/matrix alternatives while
+rejecting the zero-operator counterexample. It remains release-ineligible and does
+not replace historical upstream scores.
+
+The [task 3/26 review](reliability-evidence/task3-26-review.md) includes exact pinned-test
+results for 14 trusted authored fixtures in a separate diagnostic container. The latest
+[complete graph offline reference scan](reliability-evidence/reference-scan-38db7fa.md) records
+113 passes, 28 unsupported interfaces, one failure and one file-boundary error per suite. Reference
+compatibility is not task admission or proof of oracle adequacy.
+
+A later [complete source-guarded replay](reliability-evidence/reference-scan-77f29ff.md)
+records nine additional unsupported-to-pass references per suite. Its observed
+hard task-63 pass is unstable: 20 fresh canonical replays per suite passed once
+in normal and never in hard. Both task-63 variants remain release-ineligible;
+the new aggregate is interface evidence, not a fair model score.
+
+A separately named [explicit receiver-bases revision](reliability-evidence/task63-explicit-bases-revision.md)
+now supplies the missing basis input in the public contract and uses a new
+protected checker. Its 14 authored control runs matched their predeclared
+outcomes across normal and hard, but it remains a development recipe; the
+upstream task and its historical results are unchanged.
+
+Tasks 116 and 120 now have separately selected [behavioral revisions](reliability-evidence/gate-semantics-revisions.md).
+They retain historical upstream results and make the changed scoring contract
+public before generation. Finite semantic checks do not certify internal methods.
+
+Task 144 has [paired positive and negative concurrence controls](reliability-evidence/task144-concurrence-oracle-review.md)
+for both pinned variants. The 12 protected-bridge outcomes match the public
+count, type, and zero-concurrence requirements on those fixtures. This is a
+promising oracle boundary, not completed task admission or proof of numerical
+stability and native parity.
+
+
+## Bell preparation operator gap
+
+Task 12 has a separate [operator specification diagnostic](reliability-evidence/artifacts/task12-operator-ambiguity-2026-10-07/README.md).
+Both public variants ask for a unitary of a phi-plus Bell circuit without
+declaring its gate sequence. Two authored alternative phi-plus preparations
+are rejected by both exact pinned check functions, which compare the full
+operator with H0 then CX(0,1). A state does not specify all columns of its
+preparation unitary. Both task-12 cards now retain this unresolved finding;
+the original task, checks and historical evidence remain unchanged. A
+strengthened revision must disclose its operator/preparation choice.
+
+## Normal/hard specification mismatch
+
+The [complete pinned pair audit](reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/README.md)
+finds a task-41 wording mismatch: normal requests both XZ and `Pauli('YX')`,
+while hard requests YX. Both upstream judges additionally require the
+undisclosed positions `[0, 2]`. Four fixed authored operator examples reproduce
+the resulting acceptance/rejection differences in the exact pinned check
+functions. The current finding registry flags both cards without changing the
+original tasks or historical registry snapshots. A strengthened revision must
+declare the Pauli and positions before generation. The paired audit does not
+establish semantic adequacy for the other 150 families.
+
+## Object-identity fidelity blocker
+
+Six [native-versus-protected identity probes](reliability-evidence/alias-boundary.md)
+reproduce one false acceptance and five false rejections caused by value-only
+transport. This affects identity-sensitive behavior even without a visible value
+mutation. The opt-in [protected graph protocol](reliability-evidence/protected-graph-development.md)
+now repairs those six fixtures. Historical protocol 3 retains these defects and
+is not an automatic fallback. Full SDK coverage and calibration remain unfinished;
+release-ineligible status remains necessary. Passing these controls does not
+certify every interface or the adequacy of the upstream tests.

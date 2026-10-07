@@ -1,0 +1,132 @@
+{
+  "kind": "graybench_task125_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "3db4907f84cc2ea42f2f211e94686dcd51ed41b0ff5ad24049db0f44063bb69a",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "c841a3d4c550728239b15f4925deda88fb4434943373aa2ced2eea07ac662d9e",
+      "case": "reference",
+      "candidate_sha256": "3a185cac51723a2facef62c0ab69171f2a1d5287e5c2068fb5547fe4da5d2066",
+      "outcome": "pass",
+      "assertion": null,
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": true
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c841a3d4c550728239b15f4925deda88fb4434943373aa2ced2eea07ac662d9e",
+      "case": "independent_to_gate",
+      "candidate_sha256": "6c40a80e54b0c973cb3ebda4d4faa90d2e32b82c0cc5ce4576fd40834c70a5fb",
+      "outcome": "pass",
+      "assertion": null,
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": true
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c841a3d4c550728239b15f4925deda88fb4434943373aa2ced2eea07ac662d9e",
+      "case": "fixed_shape_wrong_action",
+      "candidate_sha256": "3fcef3faf96816eb980aa61d64656e2dda9024e214fa0243e91ed3bcdff37ae2",
+      "outcome": "pass",
+      "assertion": null,
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": false
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c841a3d4c550728239b15f4925deda88fb4434943373aa2ced2eea07ac662d9e",
+      "case": "wrong_first_width_control",
+      "candidate_sha256": "0a8dffbd3e277add8094b69340de8392d89debe8c197473b1b789afb6baf617e",
+      "outcome": "fail",
+      "assertion": "Expected 3 qubits, got 2",
+      "first_gate_type": "Gate",
+      "first_gate_width": 2,
+      "first_action_matches_input": false
+    },
+    {
+      "suite": "normal",
+      "task_digest": "c841a3d4c550728239b15f4925deda88fb4434943373aa2ced2eea07ac662d9e",
+      "case": "wrong_second_operator_control",
+      "candidate_sha256": "9f186c4053071714fc18cbb1f1aa4240c6f44340d673cea6cce96c8336ebd0cf",
+      "outcome": "fail",
+      "assertion": "Quantum states or operators are not equivalent",
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": false
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8af190241144f88d18bb8520425d0e18f6ba8d909b08a003af3ad58981069a4e",
+      "case": "reference",
+      "candidate_sha256": "385d4873ddc074197c90327e6b5b4fda97040131ec3257271df6b92ce63b753f",
+      "outcome": "pass",
+      "assertion": null,
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": true
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8af190241144f88d18bb8520425d0e18f6ba8d909b08a003af3ad58981069a4e",
+      "case": "independent_to_gate",
+      "candidate_sha256": "a597820ec4de1030b3552f3a97285994522074f90a631ab6339b98b6cd356a3b",
+      "outcome": "pass",
+      "assertion": null,
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": true
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8af190241144f88d18bb8520425d0e18f6ba8d909b08a003af3ad58981069a4e",
+      "case": "fixed_shape_wrong_action",
+      "candidate_sha256": "0cb3b287fd16e02716956fb3973814f42d5dbe1ca96c4e7f8aebffd199ebb312",
+      "outcome": "pass",
+      "assertion": null,
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": false
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8af190241144f88d18bb8520425d0e18f6ba8d909b08a003af3ad58981069a4e",
+      "case": "wrong_first_width_control",
+      "candidate_sha256": "cd848d2bc20004beb7f75b51ca9555ad6898a3262aa888a84e0ab8544b97c2ff",
+      "outcome": "fail",
+      "assertion": "Expected 3 qubits, got 2",
+      "first_gate_type": "Gate",
+      "first_gate_width": 2,
+      "first_action_matches_input": false
+    },
+    {
+      "suite": "hard",
+      "task_digest": "8af190241144f88d18bb8520425d0e18f6ba8d909b08a003af3ad58981069a4e",
+      "case": "wrong_second_operator_control",
+      "candidate_sha256": "3c892edf32e0cd29e731677ed58efe9d8e76f14ea1b0f3f14e0df0f55c6163d5",
+      "outcome": "fail",
+      "assertion": "Quantum states or operators are not equivalent",
+      "first_gate_type": "Gate",
+      "first_gate_width": 3,
+      "first_action_matches_input": false
+    }
+  ]
+}

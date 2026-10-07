@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "graybench-engine"
+version = "3.0.0a1"
+description = "Auditable LLM experiments with independent generation and judgment"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "docker>=7.1,<8",
+    "httpx>=0.28,<0.29",
+    "pydantic>=2.11,<3",
+    "pywin32>=308 ; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+dataset = ["pyarrow>=19", "huggingface-hub>=0.30"]
+qiskit = ["qiskit==2.4.2", "numpy==2.2.4"]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.12"]
+
+[project.scripts]
+graybench = "graybench.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/graybench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

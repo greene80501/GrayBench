@@ -1,0 +1,153 @@
+{
+  "all_engine_source_bytes_match_main_clean_git": 113,
+  "candidate_encoder_integrity_qualified": false,
+  "checkout_unchanged": true,
+  "commands": [
+    {
+      "command": [
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-clean-20261007\\Scripts\\python.exe",
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-src-20261007\\docs\\reliability-evidence\\bell_sampling_diagnostic.py",
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\2026-09-13\\https-github-com-greene80501-graybench-https\\outputs\\pinned-qhe-cache",
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\2026-09-13\\https-github-com-greene80501-graybench-https\\work\\GrayBench\\docs\\reliability-evidence\\artifacts\\bell-shot-diagnostics-2026-10-07\\report.json",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "{\"control_outcomes\": {\"error\": 6, \"fail\": 26, \"pass\": 28}, \"exact_count_vectors\": 20820, \"publication_eligible\": false, \"recreated\": true}"
+    },
+    {
+      "command": [
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-clean-20261007\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "--config",
+        "pyproject.toml",
+        "src",
+        "tests",
+        "../docs/reliability-evidence/task12_controls.py",
+        "../docs/reliability-evidence/task12_local_verification.py",
+        "../docs/reliability-evidence/task41_controls.py",
+        "../docs/reliability-evidence/task41_local_verification.py",
+        "../docs/reliability-evidence/task66_sampling_diagnostic.py",
+        "../docs/reliability-evidence/task66_state_controls.py",
+        "../docs/reliability-evidence/task66_state_verification.py",
+        "../docs/reliability-evidence/bell_sampling_diagnostic.py"
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!"
+    },
+    {
+      "command": [
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-clean-20261007\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "--config",
+        "pyproject.toml",
+        "src",
+        "tests",
+        "../docs/reliability-evidence/task12_controls.py",
+        "../docs/reliability-evidence/task12_local_verification.py",
+        "../docs/reliability-evidence/task41_controls.py",
+        "../docs/reliability-evidence/task41_local_verification.py",
+        "../docs/reliability-evidence/task66_sampling_diagnostic.py",
+        "../docs/reliability-evidence/task66_state_controls.py",
+        "../docs/reliability-evidence/task66_state_verification.py",
+        "../docs/reliability-evidence/bell_sampling_diagnostic.py"
+      ],
+      "exit_code": 0,
+      "output": "261 files already formatted"
+    }
+  ],
+  "commit": "34445e9afdf650268c150611e9dd18222328eeac",
+  "diagnostic_exact_recreation": true,
+  "engine_source_digest": "cb27140691d9c4e5fbd794cc9d02bc701790d7eacb46ec06d42353a8dcc3181d",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "pytest": "9.1.1",
+      "qiskit": "2.4.2",
+      "ruff": "0.16.7",
+      "scipy": "1.18.1"
+    },
+    "python": "3.12.14"
+  },
+  "imports_from_clean_checkout": true,
+  "independent_human_admission": false,
+  "isolated_sampler_executed": false,
+  "kind": "graybench_bell_sampling_clean_reproduction_v1",
+  "limitations": [
+    "Same Windows host with separately installed locked dependencies and shared verified cache",
+    "Selected related tests,not a full clean-suite or independent-machine reproduction",
+    "No isolated runtime,adversarial encoder or independent human admission"
+  ],
+  "main_clean_and_git_bytes_match": {
+    "docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/focused.xml": {
+      "bytes": 4165,
+      "sha256": "fa12ea4f18440e834ca696cce3ad098fdf51a97e3c2317227c39988906ff81ce"
+    },
+    "docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/full.xml": {
+      "bytes": 405234,
+      "sha256": "8c84b98a3afca91e956820346175b68499e4a6e4b8a3e314c67cd4782fd3ea71"
+    },
+    "docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/plan.json": {
+      "bytes": 29046,
+      "sha256": "94ac79b85a0c9e209166d6b03356ae4b166ff43e5abf7d9e1bb41d8ff45ed33c"
+    },
+    "docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/report.json": {
+      "bytes": 116097,
+      "sha256": "ad5ac8584c39bc819e2ecc7625685ebc2bb51c88024931babc52b2da1019b857"
+    },
+    "docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/runtime-source-review.json": {
+      "bytes": 2210,
+      "sha256": "494aa593bb2530a859d8b037834b57ac7ca5749f9f83853fdff35b0b25205fd1"
+    },
+    "docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/verification.json": {
+      "bytes": 4475,
+      "sha256": "fd07683d7eadb2424ecc2881b60fbcc9082a5fb79681e274aebc043ca3e8ae30"
+    },
+    "docs/reliability-evidence/bell_sampling_diagnostic.py": {
+      "bytes": 16113,
+      "sha256": "3e65c5f87c762938c9935589bc9d1b2415fd742a41643882e3547bb27f786209"
+    },
+    "docs/reliability-evidence/qhe_pair_audit.py": {
+      "bytes": 10166,
+      "sha256": "b2e06042e31e5f5c7c45f56964ad140f6fb9284d13006aefe287f26e7609dcb9"
+    },
+    "engine/tests/test_bell_sampling_diagnostic.py": {
+      "bytes": 6647,
+      "sha256": "c749951009fce48d852b0cff5b9999fda153b3cd284a10a794f628ef57fc6cd3"
+    },
+    "engine/tests/test_qhe_pair_audit.py": {
+      "bytes": 5574,
+      "sha256": "443a34815a1c6a93ab723c3753c9f9caeff9cc334bc39bb81b0f280f6ce42311"
+    },
+    "engine/tests/test_task66_sampling_diagnostic.py": {
+      "bytes": 4241,
+      "sha256": "585ae46f6537a2d899817ca12b8a0bcb9a8c2e67b3c1b94004043c6d970f7e03"
+    },
+    "engine/uv.lock": {
+      "bytes": 68888,
+      "sha256": "b0789c7a994abdd96b3172563ae58a420c60e80c33ba05447257e1d35174524d"
+    }
+  },
+  "model_generations": 0,
+  "release_eligible": false,
+  "runtime_qualified": false,
+  "selected_test_files": [
+    "tests/test_bell_sampling_diagnostic.py",
+    "tests/test_task66_sampling_diagnostic.py",
+    "tests/test_qhe_pair_audit.py"
+  ],
+  "tests": {
+    "bytes": 5285,
+    "errors": 0,
+    "failures": 0,
+    "junit_seconds": 7.461,
+    "passed": 36,
+    "sha256": "03d0734e2d08ecd59db0263f78bda3c11ad8b9e4d03df43dd8192253c95cf390",
+    "skipped": 0,
+    "tests": 36
+  }
+}

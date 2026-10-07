@@ -1,0 +1,19 @@
+# Experimental build only. Apt/build dependencies must be locked before admission.
+# Builder must verify this local tag resolves to the preserved 2fc74bd3dd29 image.
+FROM graybench-native-base:2fc74bd3dd29
+USER 0
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential gfortran libopenblas-dev pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /native-build
+COPY scipy-1.18.1.tar.gz /native-build/
+RUN echo '52c4b7422442aba924d03ad4019852b08a92e64ea187b933135687bfe2747307  scipy-1.18.1.tar.gz' | sha256sum -c - \
+    && tar -xzf scipy-1.18.1.tar.gz
+COPY patch_scipy.py registered_storage.h /native-build/
+RUN python patch_scipy.py /native-build/scipy-1.18.1
+RUN python -m pip wheel --no-deps --wheel-dir /native-build/wheels /native-build/scipy-1.18.1
+RUN python -m pip install --no-deps --force-reinstall /native-build/wheels/scipy-*.whl \
+    && python -m pip freeze > /native-build/installed-packages.txt \
+    && dpkg-query -W > /native-build/system-packages.txt \
+    && sha256sum /native-build/wheels/*.whl > /native-build/wheel-sha256.txt
+WORKDIR /work
+USER 65534:65534

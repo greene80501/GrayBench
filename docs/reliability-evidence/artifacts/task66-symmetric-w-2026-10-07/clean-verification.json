@@ -1,0 +1,146 @@
+{
+  "all_engine_source_bytes_match_main_clean_git": 113,
+  "candidate_encoder_integrity_qualified": false,
+  "checkout_unchanged": true,
+  "commands": [
+    {
+      "command": [
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-clean-20261007\\Scripts\\python.exe",
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-src-20261007\\docs\\reliability-evidence\\task66_state_verification.py",
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\2026-09-13\\https-github-com-greene80501-graybench-https\\outputs\\pinned-qhe-cache",
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\2026-09-13\\https-github-com-greene80501-graybench-https\\work\\GrayBench\\docs\\reliability-evidence\\artifacts\\task66-symmetric-w-2026-10-07\\host.json",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "{\"graph_outcomes\": {\"fail\": 52, \"pass\": 30}, \"graph_support\": {\"supported\": 82, \"unsupported\": 2}, \"host_outcomes\": {\"fail\": 52, \"pass\": 32}, \"release_eligible\": false}"
+    },
+    {
+      "command": [
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-clean-20261007\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "--config",
+        "pyproject.toml",
+        "src",
+        "tests",
+        "../docs/reliability-evidence/task12_controls.py",
+        "../docs/reliability-evidence/task12_local_verification.py",
+        "../docs/reliability-evidence/task41_controls.py",
+        "../docs/reliability-evidence/task41_local_verification.py",
+        "../docs/reliability-evidence/task66_sampling_diagnostic.py",
+        "../docs/reliability-evidence/task66_state_controls.py",
+        "../docs/reliability-evidence/task66_state_verification.py"
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!"
+    },
+    {
+      "command": [
+        "C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-judge-clean-20261007\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "--config",
+        "pyproject.toml",
+        "src",
+        "tests",
+        "../docs/reliability-evidence/task12_controls.py",
+        "../docs/reliability-evidence/task12_local_verification.py",
+        "../docs/reliability-evidence/task41_controls.py",
+        "../docs/reliability-evidence/task41_local_verification.py",
+        "../docs/reliability-evidence/task66_sampling_diagnostic.py",
+        "../docs/reliability-evidence/task66_state_controls.py",
+        "../docs/reliability-evidence/task66_state_verification.py"
+      ],
+      "exit_code": 0,
+      "output": "258 files already formatted"
+    }
+  ],
+  "commit": "d564d98a40a71fd5ace487a3e3ccf0cbd2b4d18b",
+  "engine_source_digest": "016511529b067cd0e9c390e981d271ef80b89d8c7557dcb219f16a2290710b4d",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "pytest": "9.1.1",
+      "qiskit": "2.4.2",
+      "ruff": "0.16.7",
+      "scipy": "1.18.1"
+    },
+    "python": "3.12.14"
+  },
+  "host_report_exact_projected_recreation": true,
+  "imports_from_clean_checkout": true,
+  "independent_human_admission": false,
+  "kind": "graybench_task66_state_clean_reproduction_v1",
+  "limitations": [
+    "Same Windows host with separately installed locked dependencies and shared verified cache",
+    "Selected related tests,not a full clean-suite or independent-machine reproduction",
+    "No isolated runtime,adversarial encoder or independent human admission"
+  ],
+  "main_clean_and_git_bytes_match": {
+    "docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/focused.xml": {
+      "bytes": 6197,
+      "sha256": "b681d1f5fd2b819b6d7ed39ce3cf23eac9358bb362da58126e6ed862c13b3e55"
+    },
+    "docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/full.xml": {
+      "bytes": 398706,
+      "sha256": "2166710126b159d573c79556dff0ec5fd5fd2f9b4720109eca4466479b864f58"
+    },
+    "docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/host-plan.json": {
+      "bytes": 35230,
+      "sha256": "1bf2a2096cc645ba9b5f2f0cd1db369abc28d0b551596539b7862871be570e0e"
+    },
+    "docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/host.json": {
+      "bytes": 80896,
+      "sha256": "618982192d5a274f69cd63a94eff196641bc57a4fa441d69a4a106e75d994e20"
+    },
+    "docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/verification.json": {
+      "bytes": 15272,
+      "sha256": "d52acaf5858eeca590e8aacc7f9e3ac5644a8e9edb499513cf8f56d4981ee70e"
+    },
+    "docs/reliability-evidence/task66_state_controls.py": {
+      "bytes": 12080,
+      "sha256": "68b37fe755b50f5684eba14598c62f12159acd4ee48c15d272a1be6dc39d608f"
+    },
+    "docs/reliability-evidence/task66_state_verification.py": {
+      "bytes": 10411,
+      "sha256": "189d7367e87526854b0d6595e9a7978aa90bd394dedd97927192c3e4d13ae326"
+    },
+    "engine/tests/test_task66_revision.py": {
+      "bytes": 16962,
+      "sha256": "c7ea6f5509a26f4bb7473ae8229f7d7be9792a5c496afbad643103227f462da9"
+    },
+    "engine/uv.lock": {
+      "bytes": 68888,
+      "sha256": "b0789c7a994abdd96b3172563ae58a420c60e80c33ba05447257e1d35174524d"
+    }
+  },
+  "release_eligible": false,
+  "runtime_qualified": false,
+  "selected_test_files": [
+    "tests/test_task66_revision.py",
+    "tests/test_task66_sampling_diagnostic.py",
+    "tests/test_task12_revision.py",
+    "tests/test_task41_revision.py",
+    "tests/test_evaluation_recipes.py",
+    "tests/test_campaign_plan.py",
+    "tests/test_campaign_judgment_binding.py",
+    "tests/test_graph_instructions.py",
+    "tests/test_graph_controlled.py",
+    "tests/test_graph_delta.py",
+    "tests/test_oracle_review.py"
+  ],
+  "tests": {
+    "bytes": 32962,
+    "errors": 0,
+    "failures": 0,
+    "junit_seconds": 32.251,
+    "passed": 218,
+    "sha256": "4db160f5a0f1a138cd65b31564aa09a2048b585e49f14b7fdd87f047f247a084",
+    "skipped": 7,
+    "tests": 225,
+    "wall_seconds": 32.26
+  }
+}

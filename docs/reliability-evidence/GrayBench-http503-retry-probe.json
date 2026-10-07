@@ -1,0 +1,13 @@
+{
+  "kind": "graybench_http503_retry_probe_v1",
+  "scope": "Local mock transport and synthetic accepted marker only",
+  "script_sha256": "e24154d03db554b5121c57b27f98d8f1e81a9d2a57497a6b00c15a84e0962e73",
+  "first_http_status": 503,
+  "first_delivery_kind": "rejected",
+  "first_response_body_recorded": true,
+  "first_generation_recorded": false,
+  "default_policy_allows_503_retry": true,
+  "same_request_bytes_on_second_call": true,
+  "second_delivery_kind": "returned",
+  "second_generation_recorded": true
+}

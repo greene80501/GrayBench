@@ -1,0 +1,107 @@
+{
+  "kind": "graybench_protected_graph_snapshot_probe_v1",
+  "scope": "Authored pinned task-2 diagnostic; not model behavior or a released score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "script_sha256": "72499da118b9bfa259665136b2fd1b9217f014a8335ad7861a5ed0fffef0c48f",
+  "source_manifest_digest": "ea0f22f9f5b30d12fe8f6cb8fa5b23dc1fa174c230489604e8580c302390655d",
+  "cases": [
+    {
+      "suite": "normal",
+      "transport": "snapshot-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "revised_task_digest": "5c39825648bedce73631647080ec48968d886b9e902bd233bbe9085654b7b262",
+      "case": "ordinary_wrong_state",
+      "completion_sha256": "50f60f23e1cf969ae143602fcc8ec9d445e30f1a5305066968a43415d26bd7d5",
+      "outcome": "fail",
+      "judge_digest": "a055e786313d1f0b433963f3a1b4b9778493e6c80ca2a2659fc81052d39f8096",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "normal",
+      "transport": "snapshot-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "revised_task_digest": "5c39825648bedce73631647080ec48968d886b9e902bd233bbe9085654b7b262",
+      "case": "candidate_snapshot_substitution",
+      "completion_sha256": "af7afb078f696031767c01a4bacd1f86e5a90f67d348d58a9f4c0bb6fbe8f901",
+      "outcome": "pass",
+      "judge_digest": "a055e786313d1f0b433963f3a1b4b9778493e6c80ca2a2659fc81052d39f8096",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "normal",
+      "transport": "delta-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "revised_task_digest": "5c39825648bedce73631647080ec48968d886b9e902bd233bbe9085654b7b262",
+      "case": "ordinary_wrong_state",
+      "completion_sha256": "50f60f23e1cf969ae143602fcc8ec9d445e30f1a5305066968a43415d26bd7d5",
+      "outcome": "fail",
+      "judge_digest": "7f5e3cca7142bd391bb2f851ca36c259cbed856290d7c7947e3bd784ebcc11ca",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "normal",
+      "transport": "delta-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "a78bfe9a998849b69a9fb0b4e781a2a1d3299e2b89948eae7842d9594f4a429f",
+      "revised_task_digest": "5c39825648bedce73631647080ec48968d886b9e902bd233bbe9085654b7b262",
+      "case": "candidate_snapshot_substitution",
+      "completion_sha256": "af7afb078f696031767c01a4bacd1f86e5a90f67d348d58a9f4c0bb6fbe8f901",
+      "outcome": "pass",
+      "judge_digest": "7f5e3cca7142bd391bb2f851ca36c259cbed856290d7c7947e3bd784ebcc11ca",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "hard",
+      "transport": "snapshot-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "revised_task_digest": "5056e3d0244d20ee18e70620799639ec7ae876f4ed230059bb97d28e22b9c157",
+      "case": "ordinary_wrong_state",
+      "completion_sha256": "50f60f23e1cf969ae143602fcc8ec9d445e30f1a5305066968a43415d26bd7d5",
+      "outcome": "fail",
+      "judge_digest": "892a2e31af20376f1f6ba1d4828a85b9510c98a9fd1a2b62dc7e699334c57e55",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "hard",
+      "transport": "snapshot-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "revised_task_digest": "5056e3d0244d20ee18e70620799639ec7ae876f4ed230059bb97d28e22b9c157",
+      "case": "candidate_snapshot_substitution",
+      "completion_sha256": "af7afb078f696031767c01a4bacd1f86e5a90f67d348d58a9f4c0bb6fbe8f901",
+      "outcome": "pass",
+      "judge_digest": "892a2e31af20376f1f6ba1d4828a85b9510c98a9fd1a2b62dc7e699334c57e55",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "hard",
+      "transport": "delta-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "revised_task_digest": "5056e3d0244d20ee18e70620799639ec7ae876f4ed230059bb97d28e22b9c157",
+      "case": "ordinary_wrong_state",
+      "completion_sha256": "50f60f23e1cf969ae143602fcc8ec9d445e30f1a5305066968a43415d26bd7d5",
+      "outcome": "fail",
+      "judge_digest": "982dc660cfdc19106f5e862794302db95cd077ed84a0cc9ce15b8b84954dc96f",
+      "manifest_release_eligible": false
+    },
+    {
+      "suite": "hard",
+      "transport": "delta-v1",
+      "task_id": "qiskitHumanEval/2",
+      "original_task_digest": "3eade3264d5638c1bd66d1a9630d9388137498b2b98e202066c3ddeb49784d88",
+      "revised_task_digest": "5056e3d0244d20ee18e70620799639ec7ae876f4ed230059bb97d28e22b9c157",
+      "case": "candidate_snapshot_substitution",
+      "completion_sha256": "af7afb078f696031767c01a4bacd1f86e5a90f67d348d58a9f4c0bb6fbe8f901",
+      "outcome": "pass",
+      "judge_digest": "982dc660cfdc19106f5e862794302db95cd077ed84a0cc9ce15b8b84954dc96f",
+      "manifest_release_eligible": false
+    }
+  ]
+}

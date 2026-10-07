@@ -1,0 +1,59 @@
+{
+  "verified": [
+    {
+      "complete": true,
+      "pending_task": null,
+      "planned": 6,
+      "results": {
+        "normal/qiskitHumanEval/78": "unsupported",
+        "normal/qiskitHumanEval/101": "unsupported",
+        "normal/qiskitHumanEval/145": "unsupported",
+        "hard/qiskitHumanEval/78": "unsupported",
+        "hard/qiskitHumanEval/101": "unsupported",
+        "hard/qiskitHumanEval/145": "unsupported"
+      },
+      "chain_head": "f6cf0cde2b5ac55afa533cd45234bd25a8ca410411e2d4c61f78bdb106782a90",
+      "purpose": "reference interface calibration; not model scoring",
+      "file_sha256": "58f69d44af1f6410a02d9725b494aadc2567d59ccf47aa906f71c6f5e23983c9"
+    },
+    {
+      "complete": true,
+      "pending_task": null,
+      "planned": 6,
+      "results": {
+        "normal/qiskitHumanEval/78": "pass",
+        "normal/qiskitHumanEval/101": "pass",
+        "normal/qiskitHumanEval/145": "pass",
+        "hard/qiskitHumanEval/78": "pass",
+        "hard/qiskitHumanEval/101": "pass",
+        "hard/qiskitHumanEval/145": "pass"
+      },
+      "chain_head": "cda42e52a707f3e52085d3568bdc44664a2f17dc8fa1f837825aa42e128333ab",
+      "purpose": "reference interface calibration; not model scoring",
+      "file_sha256": "be245065d503abb1a73653f1ee87d2223a453fcdf4615f298f3c491d6cc144cb"
+    },
+    {
+      "complete": true,
+      "pending_task": null,
+      "planned": 6,
+      "results": {
+        "normal/qiskitHumanEval/78": "pass",
+        "normal/qiskitHumanEval/101": "pass",
+        "normal/qiskitHumanEval/145": "pass",
+        "hard/qiskitHumanEval/78": "pass",
+        "hard/qiskitHumanEval/101": "pass",
+        "hard/qiskitHumanEval/145": "pass"
+      },
+      "chain_head": "e66c78f91146ea94cc4b25b108624fddd63a5454b55141e5ce01f70c2a0333b6",
+      "purpose": "reference interface calibration; not model scoring",
+      "file_sha256": "4233593db0f4fe1f5ff98b030a13d5cb4d34f65fbfa3e58c9c4c4fd248130007"
+    }
+  ],
+  "same_task_selection_completion": true,
+  "changed_runtime_files": [
+    "graph_instruction.py",
+    "graph_quantum_circuit.py"
+  ],
+  "final_source_matches": true,
+  "pre_final_difference": "Ruff import ordering in graph_quantum_circuit.py; intermediate evidence preserved"
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "experimental_native_storage_v1",
+  "image": "sha256:46097c2b63d5fc0c605641424d65eb3eac6782b9a7aa2ac9ed96d12fc13422d4",
+  "header_sha256": "050d8638a262446f0fc1a151f2e9b2ee12446dec297424310b3e06997482c21e",
+  "patch_sha256": "516dc7ca1a91e8f525cc801b914ab5297dfb1aa71e7d9ecf018faa4723ef680b",
+  "cases": [
+    {
+      "script": "check_registered_factory.py",
+      "script_sha256": "04dbc42b43c9c4a28489b81a61e33514e1ffa8a2f03369b7be9ca14f9ce6efcb",
+      "returncode": 0,
+      "stdout": "Registered native factory contract passed\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_registered_storage.py",
+      "script_sha256": "e9ad5b1524fd15af09055edb2a49a9a5080fd786eae96314ed305d247414d076",
+      "returncode": 0,
+      "stdout": "Retained capsule survives root deletion; unregistered DLPack capsule rejected\nRegistered storage contract passed\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_capsule_metadata.py",
+      "script_sha256": "1bf14f0750143a641ad07c58bc31972bf9eeab7996279d3b5cfe763a0e811439",
+      "returncode": 0,
+      "stdout": "All four modified capsule fields rejected by info/read/write\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_reentrant_cleanup.py",
+      "script_sha256": "8e8e06fbaa7ae21b793b27ae67dc9528a22c3c738d3bf2b0c2055ddef8d7565c",
+      "returncode": 0,
+      "stdout": "100 nested cleanup callbacks completed with valid surviving allocations\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_registry_reentry_asan.py",
+      "script_sha256": "42cfb2425def3cb4ec05e11bea955746ab9bc7f0cbb0ec9f364737feb2c0f42f",
+      "harness_sha256": "3b6311ec740ee1c157217469424a5aa7840bce334d248a01d60ac33beaf62c79",
+      "returncode": 0,
+      "stdout": "ASan nested cleanup regression passed\n",
+      "stderr": "In file included from /usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarraytypes.h:1913,\n                 from /usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarrayobject.h:12,\n                 from /usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/arrayobject.h:5,\n                 from /native/tests/registry_harness.c:3:\n/usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/npy_1_7_deprecated_api.h:17:2: warning: #warning \"Using deprecated NumPy API, disable it with \" \"#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION\" [-Wcpp]\n   17 | #warning \"Using deprecated NumPy API, disable it with \" \\\n      |  ^~~~~~~\n"
+    }
+  ],
+  "scope": "standalone native checks only; no graph or benchmark admission"
+}

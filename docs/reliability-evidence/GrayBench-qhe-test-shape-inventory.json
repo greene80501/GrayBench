@@ -1,0 +1,37 @@
+{
+  "kind": "graybench_qhe_test_shape_inventory_v1",
+  "scope": "Static pinned-test AST audit, not execution or task admission",
+  "script_sha256": "2498ce83d127908970028723e6dc4bb784a7724ee958202597f79945c93efd0c",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "suites": {
+    "normal": {
+      "task_count": 151,
+      "dataset_digest": "b50337fe92ad9ebfe84ac4369e83e67fc46288d258a1f91cd44709c05d4ed810",
+      "shape_records_digest": "356303f21563a4b9d430f7373845a1b49a575f3006978c00f1644fd1b853f5e7",
+      "expected_shape_count": 151,
+      "check_assertions_min": 1,
+      "check_assertions_max": 11,
+      "anomalies": []
+    },
+    "hard": {
+      "task_count": 151,
+      "dataset_digest": "3cad4e041e837a092c7347c79b770c9911ade6eeb542926cf8cad44cd0988af2",
+      "shape_records_digest": "ddd4e07a00bd6797ff9455a77d30a43b39492b798aa7c31c8952194911f5c7d6",
+      "expected_shape_count": 151,
+      "check_assertions_min": 1,
+      "check_assertions_max": 11,
+      "anomalies": []
+    }
+  }
+}

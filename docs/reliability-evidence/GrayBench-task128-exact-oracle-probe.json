@@ -1,0 +1,110 @@
+{
+  "kind": "graybench_task128_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "87801a504bafbf4e43affb7135b8beeb8722eef7eadadd4eacb30276bcb3abbd",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "3cb50bd75513b3141794de913b79c24beec24ea2f692ed274900857ce0d94e9c",
+      "case": "reference",
+      "candidate_sha256": "026dbec330dee15878bcdc959a567ec2d071bbef17feff117ca1a4593b309966",
+      "outcome": "pass",
+      "assertion": null,
+      "first_three_h_count": 3,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "normal",
+      "task_digest": "3cb50bd75513b3141794de913b79c24beec24ea2f692ed274900857ce0d94e9c",
+      "case": "independent_explicit_h",
+      "candidate_sha256": "ecc440285da1f3465f328bab2524b40ea2b2df558090278c2fea022186ea43ab",
+      "outcome": "pass",
+      "assertion": null,
+      "first_three_h_count": 3,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "normal",
+      "task_digest": "3cb50bd75513b3141794de913b79c24beec24ea2f692ed274900857ce0d94e9c",
+      "case": "no_h_preparation",
+      "candidate_sha256": "14133f0cbae240933ab905c936926ab643b708034e083a891adf911b678dcc2e",
+      "outcome": "pass",
+      "assertion": null,
+      "first_three_h_count": 0,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "normal",
+      "task_digest": "3cb50bd75513b3141794de913b79c24beec24ea2f692ed274900857ce0d94e9c",
+      "case": "wrong_conditional_action_control",
+      "candidate_sha256": "6106e0d2c7cb98acbff385da718134db58784b139bea709b53a24c9172a32379",
+      "outcome": "fail",
+      "assertion": "Expected 1, got 0",
+      "first_three_h_count": 3,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "hard",
+      "task_digest": "26259c45e7dadcfcacf5c1db4883c2cb8d412c9f12fdc2c4b998b84b931cca1a",
+      "case": "reference",
+      "candidate_sha256": "21ccab9e694e56821a953e9983a71a75dd75209794e13b00a5d74efee74ba588",
+      "outcome": "pass",
+      "assertion": null,
+      "first_three_h_count": 3,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "hard",
+      "task_digest": "26259c45e7dadcfcacf5c1db4883c2cb8d412c9f12fdc2c4b998b84b931cca1a",
+      "case": "independent_explicit_h",
+      "candidate_sha256": "5485ee0b5f0f59fb1fb360efbcfd4036023ce8d40aaf76d57b2236fd47a40cf7",
+      "outcome": "pass",
+      "assertion": null,
+      "first_three_h_count": 3,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "hard",
+      "task_digest": "26259c45e7dadcfcacf5c1db4883c2cb8d412c9f12fdc2c4b998b84b931cca1a",
+      "case": "no_h_preparation",
+      "candidate_sha256": "a5e9da38583ebd71c0bcc2086c79cef61a3ebeba6c519daa4299b47530cfb4c9",
+      "outcome": "pass",
+      "assertion": null,
+      "first_three_h_count": 0,
+      "measurement_count": 4,
+      "if_else_count": 1
+    },
+    {
+      "suite": "hard",
+      "task_digest": "26259c45e7dadcfcacf5c1db4883c2cb8d412c9f12fdc2c4b998b84b931cca1a",
+      "case": "wrong_conditional_action_control",
+      "candidate_sha256": "a9b6e7b9c6d7a16a5469e439a7fd1f0bfcea6f206861441c089df4c0ffd28651",
+      "outcome": "fail",
+      "assertion": "Expected 1, got 0",
+      "first_three_h_count": 3,
+      "measurement_count": 4,
+      "if_else_count": 1
+    }
+  ]
+}

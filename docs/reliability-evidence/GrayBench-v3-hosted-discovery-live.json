@@ -1,0 +1,116 @@
+{
+  "purpose": "Real read-only hosted metadata integration, no model generations or scored tasks",
+  "source": {
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+      "campaign_setup.py": "ef893aec71ab935054d726840a8c57c9d04761859bb0504f9908e7ed738c28df",
+      "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+      "cli.py": "f94c43e891e3bf38bd6d6f0ba6514cd75185d167d9063f14f9dc50e8fdb86f89",
+      "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "03da30c84e58f3e6c390eb67bec75635771e28b789017fe58d9f4b76ec1ae74e",
+      "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+      "evaluation_campaign.py": "c56f9f137fec4abeb052aa27ec29e4aa4d91e6d7fe07541dcebaff75ff4a2c82",
+      "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+      "file_judge.py": "339c7772457405571f201197c7224f2a18159d76980393d40ce6865cfd4bab87",
+      "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+      "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+      "judge.py": "486aeabb82004d419e4e1623bd4ef8a3e879c5e6d3e713810dfe7e8da8118831",
+      "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+      "ledger.py": "96ee5c92599178c44950f31f01de78b18dab5d87ce8a1f39323b06a7523e1904",
+      "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+      "model_discovery.py": "dd01981f881d262dfb4991826131d34d4558a8668f82e40ea78dde0c4e965c86",
+      "oracle_review.py": "ff30c71459f1fc6901a8474dc92f525f56a2dfe5d95933e29e7d0c5b47c8e0ed",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "9d55bc0da1276e32f546c65400332e8dd4f27341becaa81b22a7dc5d7617e218",
+      "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+      "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+      "sandbox.py": "34c5a01d22c352e877d8176edf734b514d0493926e481c8cf946e7ecbc873506",
+      "scientific_wire.py": "ba37f8c22051db2a9db28342fc60dd53939342fa371058b9832e7ef893657d37",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "transport.py": "759fb63fe8577d85c933d0e75c42a4263cca2f2858fdc04188a3e99277df7381",
+      "upstream.py": "3601a40f852b0ad3bcacc7e669aec7ff5248ca17e4e237f6ef156af63138b051",
+      "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+      "value_wire.py": "95a6529973c9f52c83d7f5787fd9cde0bd962939965cf2027c50fda34c9f5530",
+      "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+    },
+    "digest": "b838bb3218b3e6ef4b3e4a15671a13241236a87dfdc9f31a434a045009a2ff6d"
+  },
+  "results": [
+    {
+      "adapter": "openai-chat",
+      "model": "gpt-4o-mini-2024-07-18",
+      "run_id": "77bf3987b08043fcba70103f7dec57a0",
+      "observations": [
+        {
+          "status": "stable_observed",
+          "observations": 1,
+          "digest": "9cc7774fc801d654db55fdac259988bac8cde371548bef5f25d0460b7eef09a9"
+        },
+        {
+          "status": "stable_observed",
+          "observations": 2,
+          "digest": "9cc7774fc801d654db55fdac259988bac8cde371548bef5f25d0460b7eef09a9"
+        }
+      ]
+    },
+    {
+      "adapter": "openai-responses",
+      "model": "gpt-4o-mini-2024-07-18",
+      "run_id": "1aae8c9a629a4ce28c17565b214568f0",
+      "observations": [
+        {
+          "status": "stable_observed",
+          "observations": 1,
+          "digest": "2caf8ac439a5cfa7366246fcec5200c45cf42ae65d72b910baa3b7f1992dedbf"
+        },
+        {
+          "status": "stable_observed",
+          "observations": 2,
+          "digest": "2caf8ac439a5cfa7366246fcec5200c45cf42ae65d72b910baa3b7f1992dedbf"
+        }
+      ]
+    },
+    {
+      "adapter": "gemini",
+      "model": "gemini-2.5-flash",
+      "run_id": "f0c4471148c3438bb964417167adc863",
+      "observations": [
+        {
+          "status": "stable_observed",
+          "observations": 1,
+          "digest": "5f79df81716b9afd10df801fee0600911168c82e7fd84bfd493aa6d4b22cfde0"
+        },
+        {
+          "status": "stable_observed",
+          "observations": 2,
+          "digest": "5f79df81716b9afd10df801fee0600911168c82e7fd84bfd493aa6d4b22cfde0"
+        }
+      ]
+    }
+  ],
+  "ledger_verification": {
+    "events": 9,
+    "chain_head": "60580d6012e4f235dcfd43da07bc677f824ced7ae64624b72e9b6418c23fa791",
+    "integrity": "verified",
+    "external_anchor": "not_checked",
+    "row_bindings": {
+      "status": "verified",
+      "tables": [
+        "runs",
+        "run_contexts",
+        "model_observations",
+        "attempts",
+        "deliveries",
+        "generations",
+        "judgments",
+        "judgment_claims"
+      ],
+      "version": 1
+    }
+  }
+}

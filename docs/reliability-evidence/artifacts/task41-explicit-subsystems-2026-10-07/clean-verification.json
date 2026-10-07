@@ -1,0 +1,86 @@
+{
+  "checkout_unchanged": true,
+  "commit": "27ee1f1fca56b82387d0f6b29863c1eaaa571631",
+  "engine_source_digest": "3b137cbcf666d377d0347ba0eca6a77b9d07e06eaf712e93cb514764c9bae91e",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "pytest": "9.1.1",
+      "qiskit": "2.4.2",
+      "ruff": "0.16.7",
+      "scipy": "1.18.1"
+    },
+    "python": "3.12.14"
+  },
+  "host_report_exact_recreation": true,
+  "imports_from_clean_checkout": true,
+  "independent_human_admission": false,
+  "kind": "graybench_task41_clean_reproduction_v1",
+  "limitations": [
+    "Same host with a separately installed locked dependency environment and shared verified cache",
+    "Selected related tests, not a full clean suite",
+    "No isolated runtime, adversarial encoder or independent human qualification"
+  ],
+  "main_clean_and_git_bytes_match": {
+    "docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/focused.xml": {
+      "bytes": 3313,
+      "sha256": "9e3cde9647a89b2e755a2cc667238eaad4c7250241aff09b3e9ce517bfc144c1"
+    },
+    "docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/full.xml": {
+      "bytes": 391321,
+      "sha256": "913e56054be65074033ac761eb8681a122269f28569304ec062fff4166611e05"
+    },
+    "docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/host-plan.json": {
+      "bytes": 67952,
+      "sha256": "4638e007fc552a118e8c720dea93d69f3cf0975eeeab985b79157cd9162fb146"
+    },
+    "docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/host.json": {
+      "bytes": 260930,
+      "sha256": "98f0eedcafe5d0623378d5680a0a32790bfd93521d1c248659c95ca9095dd67f"
+    },
+    "docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/verification.json": {
+      "bytes": 13673,
+      "sha256": "5f47eb548db19a505f244f71693647257da379e13c408249211f45d09948085e"
+    },
+    "docs/reliability-evidence/task41_controls.py": {
+      "bytes": 10276,
+      "sha256": "cd80e6e767db97af04f981e81adc32ed7267014fd57357c4125984d329da689f"
+    },
+    "docs/reliability-evidence/task41_local_verification.py": {
+      "bytes": 11503,
+      "sha256": "e3b5b10e5160409ecd476c069607ae2b87b62c201265e6248c3b86859a3b6be7"
+    },
+    "engine/src/graybench/evaluation_recipes.py": {
+      "bytes": 6862,
+      "sha256": "8f2e92b062babbcb78a4a617152058e443e92f41d7510db2afce898cdfb3da47"
+    },
+    "engine/src/graybench/task41_revision.py": {
+      "bytes": 7306,
+      "sha256": "ebbeb1ee2e33310b16ca7b9940ff690422c7bfb3346a70202d4896ceef7eb599"
+    },
+    "engine/tests/test_task41_revision.py": {
+      "bytes": 11000,
+      "sha256": "4e8dcfb4eef02ef1ff97058fa77af146882b8c6faa90a2e2a75fcfce9fc6a38b"
+    },
+    "engine/uv.lock": {
+      "bytes": 68888,
+      "sha256": "b0789c7a994abdd96b3172563ae58a420c60e80c33ba05447257e1d35174524d"
+    }
+  },
+  "release_eligible": false,
+  "runtime_qualified": false,
+  "static_checks": {
+    "format": "251 files passed",
+    "lint": "passed"
+  },
+  "tests": {
+    "bytes": 22402,
+    "errors": 0,
+    "failures": 0,
+    "junit_seconds": 13.179,
+    "passed": 147,
+    "sha256": "563682d684fa87c279a592e55b742e58c76f14758ea25e2aba600fd399c87ea4",
+    "skipped": 7,
+    "wall_seconds": 13.18
+  }
+}

@@ -1,0 +1,1128 @@
+"""Inspection commands for the replacement engine; campaign release gates remain explicit."""
+
+import argparse
+import hashlib
+import json
+from contextlib import ExitStack
+from pathlib import Path
+
+from graybench.admission_bundle import verify_admission_bundle
+from graybench.binary_comparison import (
+    BinaryComparisonPlan,
+    BinaryContrast,
+    BinaryStudyPlan,
+    BinaryStudyRun,
+    compare_binary_study,
+    load_binary_json,
+    make_binary_plan,
+    make_binary_study,
+    verify_binary_study,
+)
+from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
+from graybench.capability_probe import CapabilityProbe, capture_probe, verify_accepted_probe
+from graybench.comparison import ComparisonPlan, compare_runs, make_plan
+from graybench.contracts import ModelObservationTiming, ModelSpec, Protocol
+from graybench.datasets import EXTERNAL_IDS, inventory, load_suite
+from graybench.evaluation_campaign import UpstreamCampaign
+from graybench.evaluation_recipes import RECIPES
+from graybench.extraction import EXTRACTION_POLICIES
+from graybench.identity import canonical, identity
+from graybench.ledger import Ledger, StateError
+from graybench.model_discovery import observe_run
+from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
+from graybench.native_cohort import NATIVE_EXCEPTION_POLICIES, freeze_native_cohort, task_key
+from graybench.oracle_review import inspect_oracle_review
+from graybench.protected_campaign import (
+    ProtectedCampaign,
+    ProtectedCampaignSetup,
+    build_protected_setup,
+    freeze_protected_cohort,
+)
+from graybench.protected_oracle_review import run_protected_review
+from graybench.protected_task_registry import VALUE_TASKS, revised_value_task
+from graybench.provenance import environment
+from graybench.providers import adapter
+from graybench.reference_scan import (
+    inspect_reference_scan,
+    run_native_reference_scan,
+    run_reference_scan,
+)
+from graybench.run_abandonment import AbandonmentPlan, abandon_run, plan_abandonment
+from graybench.sample_metrics import (
+    SampleMetricsPlan,
+    make_metrics_plan,
+    sample_metrics_report,
+    verify_sample_metrics,
+)
+from graybench.task_admission import (
+    AdmissionInventory,
+    admission_blockers,
+    audit_control_coverage,
+    build_pending_inventory,
+    refresh_finding_registry,
+)
+from graybench.transport import Transport
+from graybench.upstream import UpstreamJudge
+
+
+def _comparison_setup(payload: bytes):
+    track = json.loads(payload).get("protocol", {}).get("track")
+    setup_type = {
+        "qhe-pinned-native-v1": NativeCampaignSetup,
+        "graybench-protected-semantic-v1": ProtectedCampaignSetup,
+    }.get(track, CampaignSetup)
+    return setup_type.model_validate_json(payload)
+
+
+def _comparison_tasks(setup, cache: Path):
+    if isinstance(setup, NativeCampaignSetup):
+        tasks = setup.tasks(cache)
+        setup.validate_for_run(cache, setup.protocol, tasks=tasks)
+        return tasks
+    if isinstance(setup, ProtectedCampaignSetup):
+        setup.validate_for_run(cache, setup.protocol)
+        return setup.tasks
+    return setup.tasks(cache)
+
+
+def _comparison_ledger_tasks(plan, left, left_run, right, right_run, cache):
+    tasks = _run_tasks(plan.left, left, left_run, cache)
+    _run_tasks(plan.right, right, right_run, cache)
+    return tasks
+
+
+def _run_tasks(protocol, ledger, run, cache):
+    if protocol.track == "upstream":
+        return tuple(
+            task
+            for suite in ("normal", "hard")
+            for task in load_suite(suite, cache)
+            if f"{suite}/{task.public.task_id}" in protocol.task_keys
+        )
+    setup = _comparison_setup(canonical(ledger.context(run)["setup"]))
+    if setup.protocol != protocol:
+        raise StateError("Stored setup differs from frozen analysis protocol")
+    return _comparison_tasks(setup, cache)
+
+
+def _binary_study_analysis(plan, run_file, cache, report=...):
+    raw = load_binary_json(run_file.read_bytes())
+    if not isinstance(raw, dict) or set(raw) != {c.contrast_id for c in plan.contrasts}:
+        raise StateError("Study requires every planned contrast and no extras")
+    runs = {key: BinaryStudyRun.model_validate_json(canonical(value)) for key, value in raw.items()}
+    paths = {
+        key: tuple(
+            (run_file.parent / value).resolve() for value in (run.left_ledger, run.right_ledger)
+        )
+        for key, run in runs.items()
+    }
+    if any(not path.is_file() for pair in paths.values() for path in pair):
+        raise StateError("Comparison ledgers must already exist")
+    # Resolve all declared files before opening; never initialize or write evidence ledgers.
+    with ExitStack() as stack:
+        books = {}
+        for path in {path for pair in paths.values() for path in pair}:
+            books[path] = Ledger(path, readonly=True)
+            stack.callback(books[path].close)
+        inputs, tasks = {}, {}
+        for contrast in plan.contrasts:
+            key = contrast.contrast_id
+            run = runs[key]
+            left, right = (books[path] for path in paths[key])
+            inputs[key] = (left, run.left_run, right, run.right_run)
+            tasks[key] = _comparison_ledger_tasks(contrast.plan, *inputs[key], cache)
+        if report is not ...:
+            return verify_binary_study(report, plan, inputs, tasks=tasks)
+        return compare_binary_study(plan, inputs, tasks=tasks)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
+    commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("doctor", help="Record relevant runtime and source provenance")
+    abandonment_plan = commands.add_parser(
+        "abandonment-plan", help="Freeze an incomplete ledger snapshot for terminal abandonment"
+    )
+    abandonment_plan.add_argument("ledger", type=Path)
+    abandonment_plan.add_argument("run_id")
+    abandonment_plan.add_argument("output", type=Path)
+    abandonment_plan.add_argument("--reason", required=True)
+    abandonment_plan.add_argument("--workers-stopped", action="store_true", required=True)
+    abandon = commands.add_parser("abandon-run", help="Commit a frozen terminal abandonment")
+    abandon.add_argument("ledger", type=Path)
+    abandon.add_argument("plan", type=Path)
+    metrics_plan = commands.add_parser(
+        "metrics-plan", help="Freeze equal-task pass@1 and requested pass@k opportunity metrics"
+    )
+    for name in ("setup", "cache", "output"):
+        metrics_plan.add_argument(name, type=Path)
+    metrics_plan.add_argument(
+        "--k",
+        type=int,
+        action="append",
+        help="Distinct requested k, repeatable; pass@1 is always included",
+    )
+    for name, help_text in (
+        ("metrics", "Report all frozen repeated samples from a read-only ledger"),
+        ("metrics-verify", "Replay a frozen repeated-sample metric report"),
+    ):
+        command = commands.add_parser(name, help=help_text)
+        command.add_argument("plan", type=Path)
+        command.add_argument("ledger", type=Path)
+        command.add_argument("run_id")
+        command.add_argument("cache", type=Path)
+        command.add_argument("report", type=Path)
+    comparison_plan = commands.add_parser(
+        "comparison-plan", help="Freeze an explicit paired family analysis"
+    )
+    comparison_plan.add_argument("left_setup", type=Path)
+    comparison_plan.add_argument("right_setup", type=Path)
+    comparison_plan.add_argument("cache", type=Path)
+    comparison_plan.add_argument("output", type=Path)
+    comparison_plan.add_argument("--seed", type=int, required=True)
+    comparison_plan.add_argument("--resamples", type=int, default=10000)
+    comparison_plan.add_argument("--confidence", type=float, default=0.95)
+    comparison_plan.add_argument("--configuration-comparison", required=True)
+    comparison = commands.add_parser(
+        "compare", help="Compare complete frozen cohorts; development only"
+    )
+    comparison.add_argument("plan", type=Path)
+    comparison.add_argument("left_ledger", type=Path)
+    comparison.add_argument("left_run")
+    comparison.add_argument("right_ledger", type=Path)
+    comparison.add_argument("right_run")
+    comparison.add_argument("cache", type=Path)
+    comparison.add_argument("output", type=Path)
+    binary_plan = commands.add_parser(
+        "binary-comparison-plan", help="Freeze one sample per independent task family"
+    )
+    for name in ("left_setup", "right_setup", "cache", "output"):
+        binary_plan.add_argument(name, type=Path)
+    binary_plan.add_argument("--configuration-comparison", required=True)
+    binary_plan.add_argument(
+        "--independence-basis",
+        required=True,
+        help="Declare justification for pairing, independence and the conditional discordance null",
+    )
+    binary_study_plan = commands.add_parser(
+        "binary-study-plan", help="Freeze all planned exact binary contrasts and Holm alpha"
+    )
+    binary_study_plan.add_argument("contrasts", type=Path)
+    binary_study_plan.add_argument("output", type=Path)
+    binary_study_plan.add_argument("--purpose", required=True)
+    binary_study_plan.add_argument("--alpha", type=float, default=0.05)
+    for name, help_text in (
+        ("binary-study", "Analyze every planned contrast from read-only ledgers"),
+        ("binary-study-verify", "Recompute and verify a saved complete binary study"),
+    ):
+        command = commands.add_parser(name, help=help_text)
+        for argument in ("plan", "runs", "cache", "report"):
+            command.add_argument(argument, type=Path)
+    reference = commands.add_parser(
+        "reference-scan", help="Calibrate pinned references; never a model score"
+    )
+    reference.add_argument("cache", type=Path)
+    reference.add_argument("output", type=Path)
+    reference.add_argument("--image", required=True)
+    reference.add_argument("--docker", default="docker")
+    reference.add_argument("--bridge-protocol", type=int, choices=(3, 4), default=3)
+    reference.add_argument("--suite", choices=("normal", "hard", "both"), default="both")
+    reference.add_argument(
+        "--offline", action="store_true", help="Explicitly omit known external-service tasks"
+    )
+    native_reference = commands.add_parser(
+        "native-reference-scan",
+        help="Calibrate canonical answers in the native track; no model score",
+    )
+    native_reference.add_argument("cache", type=Path)
+    native_reference.add_argument("output", type=Path)
+    native_reference.add_argument("--suite", choices=("normal", "hard"), required=True)
+    native_reference.add_argument("--image", required=True)
+    native_reference.add_argument("--docker", default="docker")
+    native_reference.add_argument("--extraction", choices=EXTRACTION_POLICIES, required=True)
+    native_reference.add_argument(
+        "--exception-policy",
+        choices=NATIVE_EXCEPTION_POLICIES,
+        default="conservative_unattributed_v1",
+    )
+    native_reference.add_argument("--task", action="append", default=[])
+    native_reference.add_argument("--include-external", action="store_true")
+    inspect_scan = commands.add_parser(
+        "reference-inspect", help="Verify reference evidence and identify incomplete invocations"
+    )
+    inspect_scan.add_argument("path", type=Path)
+    inspect_oracle = commands.add_parser(
+        "oracle-review-inspect", help="Check local oracle controls against pinned task bytes"
+    )
+    inspect_oracle.add_argument("path", type=Path)
+    inspect_oracle.add_argument("cache", type=Path)
+    protected_controls = commands.add_parser(
+        "protected-oracle-review",
+        help="Run predeclared local controls for selected value revisions; never a model score",
+    )
+    protected_controls.add_argument("cache", type=Path)
+    protected_controls.add_argument("output", type=Path)
+    protected_controls.add_argument("--suite", choices=("normal", "hard", "both"), required=True)
+    protected_controls.add_argument("--image", required=True)
+    protected_controls.add_argument(
+        "--task", choices=("2", "20", "62", "116", "139"), action="append"
+    )
+    protected_controls.add_argument("--docker", default="docker")
+    protected_controls.add_argument("--timeout", type=float, default=120.0)
+    validate = commands.add_parser(
+        "validate-protocol", help="Validate a frozen experiment contract"
+    )
+    validate.add_argument("path", type=Path)
+    verify = commands.add_parser("verify-ledger", help="Verify artifact hashes and event chain")
+    verify.add_argument("path", type=Path)
+    summary = commands.add_parser("summary", help="Report completeness before computing a score")
+    summary.add_argument("path", type=Path)
+    summary.add_argument("run_id")
+    discover = commands.add_parser("discover", help="Read model/server metadata without generation")
+    discover.add_argument("model_spec", type=Path)
+    probe = commands.add_parser(
+        "capability-probe", help="Make one non-benchmark provider request and save its evidence"
+    )
+    probe.add_argument("model_spec", type=Path)
+    probe.add_argument("output", type=Path)
+    observe = commands.add_parser(
+        "campaign-observe", help="Save provider metadata and establish a discovery baseline"
+    )
+    observe.add_argument("ledger", type=Path)
+    observe.add_argument("run_id")
+    recover_post = commands.add_parser(
+        "recover-post-check", help="Record a missing protocol 3.3 post-observation timing check"
+    )
+    recover_post.add_argument("ledger", type=Path)
+    recover_post.add_argument("attempt_id")
+    catalog = commands.add_parser(
+        "inventory", help="Import both pinned suites and emit review cards"
+    )
+    catalog.add_argument("cache", type=Path)
+    catalog.add_argument("--download", action="store_true")
+    admission = commands.add_parser(
+        "admission-inventory", help="Write all 302 pinned task cards as pending review"
+    )
+    admission.add_argument("cache", type=Path)
+    admission.add_argument("output", type=Path)
+    admission_refresh = commands.add_parser(
+        "admission-refresh-findings",
+        help="Carry historical task reviews into the current frozen finding registry",
+    )
+    admission_refresh.add_argument("inventory", type=Path)
+    admission_refresh.add_argument("cache", type=Path)
+    admission_refresh.add_argument("output", type=Path)
+    admission_controls = commands.add_parser(
+        "admission-control-audit", help="Join locally checked oracle controls to all task cards"
+    )
+    admission_controls.add_argument("inventory", type=Path)
+    admission_controls.add_argument("cache", type=Path)
+    admission_controls.add_argument("output", type=Path)
+    admission_controls.add_argument("review_logs", type=Path, nargs="+")
+    admission_bundle = commands.add_parser(
+        "admission-bundle-verify",
+        help="Verify exact committed local-control evidence and recompute its audit",
+    )
+    admission_bundle.add_argument("bundle", type=Path)
+    admission_bundle.add_argument("cache", type=Path)
+    plan = commands.add_parser(
+        "campaign-plan", help="Freeze selected tasks and requests offline; no generations"
+    )
+    plan.add_argument("model_spec", type=Path)
+    plan.add_argument("cache", type=Path)
+    plan.add_argument("output", type=Path)
+    plan.add_argument("--image", required=True)
+    plan.add_argument("--parser-image", help="Immutable task82 QPY parser image digest")
+    plan.add_argument("--name", required=True)
+    plan.add_argument("--evaluation-recipe", choices=RECIPES, default="upstream")
+    plan.add_argument(
+        "--extraction",
+        choices=EXTRACTION_POLICIES,
+        default="raw_or_single_python_fence_v1",
+    )
+    plan.add_argument("--repeats", type=int, default=1)
+    plan.add_argument("--protocol-version", choices=("3.1", "3.2", "3.3"), default="3.1")
+    plan.add_argument("--max-pre-observation-age", type=float)
+    plan.add_argument("--max-post-observation-delay", type=float)
+    plan.add_argument("--system-prompt", type=Path)
+    plan.add_argument("--capability-probe", action="append", type=Path, default=[])
+    selection = plan.add_mutually_exclusive_group(required=True)
+    selection.add_argument(
+        "--task", action="append", help="Exact suite/task key; repeat for multiple tasks"
+    )
+    selection.add_argument("--suite", choices=("normal", "hard", "both"))
+    create = commands.add_parser(
+        "campaign-create", help="Validate and save a development campaign; no generations"
+    )
+    create.add_argument("setup", type=Path)
+    create.add_argument("cache", type=Path)
+    create.add_argument("ledger", type=Path)
+    step = commands.add_parser(
+        "campaign-step", help="Perform at most one generation or protected judgment"
+    )
+    step.add_argument("ledger", type=Path)
+    step.add_argument("run_id")
+    step.add_argument("cache", type=Path)
+    step.add_argument("--docker", default="docker")
+    native_plan = commands.add_parser(
+        "native-plan", help="Freeze one pinned native QHE suite; development only"
+    )
+    native_plan.add_argument("model_spec", type=Path)
+    native_plan.add_argument("cache", type=Path)
+    native_plan.add_argument("output", type=Path)
+    native_plan.add_argument("--name", required=True)
+    native_plan.add_argument("--label", required=True)
+    native_plan.add_argument("--suite", choices=("normal", "hard"), required=True)
+    native_plan.add_argument(
+        "--population", choices=("offline_143", "custom_development"), default="offline_143"
+    )
+    native_plan.add_argument("--image", required=True)
+    native_plan.add_argument(
+        "--task", action="append", help="Exact suite/task key for a custom cohort"
+    )
+    native_plan.add_argument(
+        "--extraction", choices=EXTRACTION_POLICIES, default="raw_or_single_python_fence_v1"
+    )
+    native_plan.add_argument(
+        "--exception-policy",
+        choices=NATIVE_EXCEPTION_POLICIES,
+        default="conservative_unattributed_v1",
+    )
+    native_plan.add_argument("--repeats", type=int, default=1)
+    native_plan.add_argument("--system-prompt", type=Path)
+    native_plan.add_argument("--capability-probe", action="append", type=Path, default=[])
+    native_create = commands.add_parser(
+        "native-create", help="Create a frozen native development run"
+    )
+    native_create.add_argument("setup", type=Path)
+    native_create.add_argument("cache", type=Path)
+    native_create.add_argument("ledger", type=Path)
+    native_step = commands.add_parser(
+        "native-step", help="Perform one native generation or judgment"
+    )
+    native_step.add_argument("ledger", type=Path)
+    native_step.add_argument("run_id")
+    native_step.add_argument("cache", type=Path)
+    native_step.add_argument("--docker", default="docker")
+    protected_plan = commands.add_parser(
+        "protected-plan", help="Freeze development value tasks and all exclusions"
+    )
+    protected_plan.add_argument("model_spec", type=Path)
+    protected_plan.add_argument("cache", type=Path)
+    protected_plan.add_argument("output", type=Path)
+    protected_plan.add_argument("--name", required=True)
+    protected_plan.add_argument("--label", required=True)
+    protected_plan.add_argument("--suite", choices=("normal", "hard"), required=True)
+    protected_plan.add_argument("--task", action="append", required=True)
+    protected_plan.add_argument("--image", required=True)
+    protected_plan.add_argument("--repeats", type=int, default=1)
+    protected_plan.add_argument("--system-prompt", type=Path)
+    protected_plan.add_argument("--capability-probe", action="append", type=Path, default=[])
+    protected_create = commands.add_parser(
+        "protected-create", help="Create a frozen protected development run"
+    )
+    protected_create.add_argument("setup", type=Path)
+    protected_create.add_argument("cache", type=Path)
+    protected_create.add_argument("ledger", type=Path)
+    protected_step = commands.add_parser(
+        "protected-step", help="Perform one protected generation or judgment"
+    )
+    protected_step.add_argument("ledger", type=Path)
+    protected_step.add_argument("run_id")
+    protected_step.add_argument("cache", type=Path)
+    protected_step.add_argument("--docker", default="docker")
+    args = parser.parse_args()
+    if args.command == "doctor":
+        result = environment()
+    elif args.command in ("abandonment-plan", "abandon-run"):
+        if not args.ledger.is_file():
+            raise StateError("Abandonment ledger must already exist")
+        if args.command == "abandonment-plan" and args.output.exists():
+            raise FileExistsError(args.output)
+        plan = (
+            AbandonmentPlan.model_validate_json(canonical(load_binary_json(args.plan.read_bytes())))
+            if args.command == "abandon-run"
+            else None
+        )
+        book = Ledger(args.ledger, readonly=args.command == "abandonment-plan")
+        try:
+            if args.command == "abandonment-plan":
+                plan = plan_abandonment(
+                    book, args.run_id, reason=args.reason, workers_stopped=args.workers_stopped
+                )
+                with args.output.open("xb") as stream:
+                    stream.write(canonical(plan.model_dump(mode="json")))
+                result = {
+                    "plan_digest": plan.digest,
+                    "output": str(args.output),
+                    "publication_eligible": False,
+                }
+            else:
+                result = abandon_run(book, plan)
+        finally:
+            book.close()
+    elif args.command == "metrics-plan":
+        setup = _comparison_setup(args.setup.read_bytes())
+        tasks = _comparison_tasks(setup, args.cache)
+        plan = make_metrics_plan(setup.protocol, tasks, ks=tuple(args.k or (1,)))
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "ks": plan.ks,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command in ("metrics", "metrics-verify"):
+        plan = SampleMetricsPlan.model_validate_json(
+            canonical(load_binary_json(args.plan.read_bytes()))
+        )
+        if not args.ledger.is_file():
+            raise StateError("Metric ledger must already exist")
+        if args.command == "metrics" and args.report.exists():
+            raise FileExistsError(args.report)
+        book = Ledger(args.ledger, readonly=True)
+        try:
+            tasks = _run_tasks(plan.protocol, book, args.run_id, args.cache)
+            if args.command == "metrics-verify":
+                result = verify_sample_metrics(
+                    load_binary_json(args.report.read_bytes()), plan, book, args.run_id, tasks=tasks
+                )
+            else:
+                report = sample_metrics_report(plan, book, args.run_id, tasks=tasks)
+                with args.report.open("xb") as stream:
+                    stream.write(canonical(report))
+                result = {
+                    "output": str(args.report),
+                    "status": report["status"],
+                    "metrics": report["metrics"],
+                    "publication_eligible": False,
+                }
+        finally:
+            book.close()
+    elif args.command == "binary-comparison-plan":
+        left = _comparison_setup(args.left_setup.read_bytes())
+        right = _comparison_setup(args.right_setup.read_bytes())
+        tasks = _comparison_tasks(left, args.cache)
+        _comparison_tasks(right, args.cache)
+        plan = make_binary_plan(
+            left.protocol,
+            right.protocol,
+            tasks,
+            configuration_comparison=args.configuration_comparison,
+            independence_basis=args.independence_basis,
+        )
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command == "binary-study-plan":
+        raw = load_binary_json(args.contrasts.read_bytes())
+        if (
+            not isinstance(raw, dict)
+            or not 1 <= len(raw) <= 100
+            or any(not isinstance(value, str) for value in raw.values())
+        ):
+            raise StateError("Contrasts must map planned IDs to binary plan filenames")
+        contrasts = [
+            BinaryContrast(
+                contrast_id=key,
+                plan=BinaryComparisonPlan.model_validate_json(
+                    canonical(load_binary_json((args.contrasts.parent / value).read_bytes()))
+                ),
+            )
+            for key, value in raw.items()
+        ]
+        plan = make_binary_study(contrasts, purpose=args.purpose, alpha=args.alpha)
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command in ("binary-study", "binary-study-verify"):
+        plan = BinaryStudyPlan.model_validate_json(
+            canonical(load_binary_json(args.plan.read_bytes()))
+        )
+        if args.command == "binary-study-verify":
+            result = _binary_study_analysis(
+                plan, args.runs, args.cache, load_binary_json(args.report.read_bytes())
+            )
+        else:
+            if args.report.exists():
+                raise FileExistsError(args.report)
+            report = _binary_study_analysis(plan, args.runs, args.cache)
+            with args.report.open("xb") as stream:
+                stream.write(canonical(report))
+            result = {
+                "output": str(args.report),
+                "status": report["status"],
+                "holm": report["holm"],
+                "publication_eligible": False,
+            }
+    elif args.command == "comparison-plan":
+        left = _comparison_setup(args.left_setup.read_bytes())
+        right = _comparison_setup(args.right_setup.read_bytes())
+        tasks = _comparison_tasks(left, args.cache)
+        _comparison_tasks(right, args.cache)
+        plan = make_plan(
+            left.protocol,
+            right.protocol,
+            tasks,
+            seed=args.seed,
+            resamples=args.resamples,
+            confidence=args.confidence,
+            configuration_comparison=args.configuration_comparison,
+        )
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command == "compare":
+        plan = ComparisonPlan.model_validate_json(args.plan.read_bytes())
+        tasks = ()
+        if plan.left.track == "upstream":
+            tasks = tuple(
+                task
+                for suite in ("normal", "hard")
+                for task in load_suite(suite, args.cache)
+                if f"{suite}/{task.public.task_id}" in plan.left.task_keys
+            )
+        if not args.left_ledger.is_file() or not args.right_ledger.is_file():
+            parser.error("Comparison ledgers must already exist")
+        left, right = Ledger(args.left_ledger), Ledger(args.right_ledger)
+        try:
+            if plan.left.track != "upstream":
+                setups = [
+                    _comparison_setup(canonical(book.context(run)["setup"]))
+                    for book, run in ((left, args.left_run), (right, args.right_run))
+                ]
+                for setup, expected in zip(setups, (plan.left, plan.right), strict=True):
+                    if setup.protocol != expected:
+                        parser.error("Stored setup differs from comparison protocol")
+                    _comparison_tasks(setup, args.cache)
+                tasks = _comparison_tasks(setups[0], args.cache)
+            report = compare_runs(plan, left, args.left_run, right, args.right_run, tasks=tasks)
+        finally:
+            left.close()
+            right.close()
+        with args.output.open("xb") as stream:
+            stream.write(canonical(report))
+        result = {
+            "output": str(args.output),
+            "status": report["status"],
+            "comparison": report["comparison"],
+        }
+    elif args.command == "reference-inspect":
+        result = inspect_reference_scan(args.path)
+    elif args.command == "oracle-review-inspect":
+        result = inspect_oracle_review(args.path, args.cache)
+    elif args.command == "reference-scan":
+        all_tasks = tuple(
+            task
+            for suite in ("normal", "hard")
+            if args.suite in (suite, "both")
+            for task in load_suite(suite, args.cache)
+        )
+        excluded = {
+            f"{t.public.suite}/{t.public.task_id}": t.digest
+            for t in all_tasks
+            if args.offline and int(t.public.task_id.rsplit("/", 1)[1]) in EXTERNAL_IDS
+        }
+        tasks = tuple(
+            t for t in all_tasks if f"{t.public.suite}/{t.public.task_id}" not in excluded
+        )
+        result = run_reference_scan(
+            tasks,
+            UpstreamJudge(image=args.image, docker=args.docker, protocol=args.bridge_protocol),
+            args.output,
+            selection={"offline": args.offline, "excluded": excluded},
+        )
+    elif args.command == "native-reference-scan":
+        result = run_native_reference_scan(
+            args.cache,
+            args.output,
+            suite=args.suite,
+            image=args.image,
+            extraction=args.extraction,
+            exception_policy=args.exception_policy,
+            task_keys=tuple(args.task),
+            include_external=args.include_external,
+            docker=args.docker,
+        )
+    elif args.command == "campaign-observe":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            transport = Transport(ledger.protocol(args.run_id).model)
+            try:
+                result = observe_run(ledger, args.run_id, transport)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "recover-post-check":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            result = ledger.recover_post_observation_check(args.attempt_id)
+        finally:
+            ledger.close()
+    elif args.command == "capability-probe":
+        spec = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        provider = adapter(spec.adapter)
+        # Reserve the evidence path before any billable call. A failed invocation
+        # remains visible and is never silently retried into the same artifact.
+        with args.output.open("x", encoding="utf-8") as output:
+            record = capture_probe(spec, provider)
+            output.write(record.model_dump_json(indent=2) + "\n")
+        qualification_error = None
+        try:
+            verify_accepted_probe(record, spec, provider)
+        except ValueError as exc:
+            qualification_error = str(exc)
+        result = {
+            "probe_digest": record.digest,
+            "delivery_kind": record.delivery_kind,
+            "http_status": record.status,
+            "qualifies_for_probe_accepted": qualification_error is None,
+            "qualification_error": qualification_error,
+        }
+    elif args.command == "campaign-plan":
+        if args.protocol_version != "3.3" and (
+            args.max_pre_observation_age is not None or args.max_post_observation_delay is not None
+        ):
+            parser.error("Model-observation timing bounds require protocol 3.3")
+        model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        all_tasks = tuple(
+            task for suite in ("normal", "hard") for task in load_suite(suite, args.cache)
+        )
+        if args.task:
+            if len(set(args.task)) != len(args.task):
+                parser.error("Duplicate task selection")
+            keyed = {f"{t.public.suite}/{t.public.task_id}": t for t in all_tasks}
+            if set(args.task) - keyed.keys():
+                parser.error("Unknown task selection")
+            tasks = tuple(keyed[key] for key in args.task)
+        else:
+            tasks = tuple(
+                t for t in all_tasks if args.suite == "both" or t.public.suite == args.suite
+            )
+        setup = build_setup(
+            args.name,
+            model,
+            tasks,
+            args.image,
+            repeats=args.repeats,
+            evaluation_recipe=args.evaluation_recipe,
+            extraction=args.extraction,
+            protocol_version=args.protocol_version,
+            model_observation_timing=(
+                ModelObservationTiming(
+                    max_pre_age_seconds=args.max_pre_observation_age
+                    if args.max_pre_observation_age is not None
+                    else 30.0,
+                    max_post_delay_seconds=args.max_post_observation_delay
+                    if args.max_post_observation_delay is not None
+                    else 120.0,
+                )
+                if args.protocol_version == "3.3"
+                else None
+            ),
+            parser_image=args.parser_image,
+            system_prompt=args.system_prompt.read_text(encoding="utf-8")
+            if args.system_prompt
+            else None,
+            capability_probes=tuple(
+                CapabilityProbe.model_validate_json(path.read_bytes())
+                for path in args.capability_probe
+            ),
+        )
+        # Exclusive creation preserves an existing experiment instead of silently rewriting it.
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(setup.model_dump_json(indent=2) + "\n")
+        result = {
+            "setup_digest": setup.digest,
+            "evaluation_recipe": setup.evaluation_recipe,
+            "planned_samples": len(tasks) * args.repeats,
+            "certification": "not_certified",
+            "purpose": "development",
+            "external_task_keys": [
+                f"{t.public.suite}/{t.public.task_id}"
+                for t in tasks
+                if int(t.public.task_id.rsplit("/", 1)[1]) in EXTERNAL_IDS
+            ],
+        }
+    elif args.command == "campaign-create":
+        setup = CampaignSetup.model_validate_json(args.setup.read_bytes())
+        setup.tasks(args.cache)
+        context = execution_context(setup)
+        ledger = Ledger(args.ledger)
+        try:
+            result = {
+                "run_id": ledger.create_run(setup.protocol, context),
+                "evaluation_recipe": setup.evaluation_recipe,
+                "certification": "not_certified",
+            }
+        finally:
+            ledger.close()
+    elif args.command == "campaign-step":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            context = ledger.context(args.run_id)
+            setup = CampaignSetup.model_validate_json(canonical(context["setup"]))
+            if setup.protocol != ledger.protocol(args.run_id):
+                parser.error("Stored setup does not match the run protocol")
+            validate_host(context)
+            tasks = setup.tasks(args.cache)
+            transport = Transport(
+                setup.protocol.model,
+                timeout_seconds=setup.http_timeout,
+                max_response_bytes=setup.response_limit,
+            )
+            try:
+                result = UpstreamCampaign(
+                    ledger, args.run_id, tasks, setup.judge(args.docker), transport
+                ).step()
+                result["summary"] = ledger.summary(args.run_id)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "native-plan":
+        if args.population == "offline_143" and args.task:
+            parser.error("The offline_143 population cannot have a custom task selection")
+        if args.population == "custom_development" and not args.task:
+            parser.error("Custom native cohorts require at least one --task")
+        all_tasks = load_suite(args.suite, args.cache)
+        selected = set(args.task or ())
+        valid = {task_key(task) for task in all_tasks}
+        if len(selected) != len(args.task or ()) or selected - valid:
+            parser.error("Native task selection must contain unique keys from one pinned suite")
+        if args.population == "offline_143":
+            selected = {
+                task_key(task)
+                for task in all_tasks
+                if int(task.public.task_id.rsplit("/", 1)[1]) not in EXTERNAL_IDS
+            }
+        tasks = tuple(task for task in all_tasks if task_key(task) in selected)
+        excluded = {
+            task_key(task): (
+                "external_service"
+                if args.population == "offline_143"
+                else "out_of_scope_development"
+            )
+            for task in all_tasks
+            if task_key(task) not in selected
+        }
+        cohort = freeze_native_cohort(
+            tasks,
+            cache=args.cache,
+            suite=args.suite,
+            population=args.population,
+            image=args.image,
+            extraction=args.extraction,
+            exception_policy=args.exception_policy,
+            label=args.label,
+            excluded=excluded,
+        )
+        model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        setup = build_native_setup(
+            args.name,
+            model,
+            cohort,
+            tasks,
+            cache=args.cache,
+            repeats=args.repeats,
+            system_prompt=args.system_prompt.read_text(encoding="utf-8")
+            if args.system_prompt
+            else None,
+            capability_probes=tuple(
+                CapabilityProbe.model_validate_json(path.read_bytes())
+                for path in args.capability_probe
+            ),
+        )
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(setup.model_dump_json(indent=2) + "\n")
+        result = {
+            "setup_digest": setup.digest,
+            "track": setup.protocol.track,
+            "suite": cohort.suite,
+            "population": cohort.population,
+            "extraction_policy": cohort.extraction,
+            "exception_policy": cohort.exception_policy,
+            "planned_samples": len(tasks) * args.repeats,
+            "publication_eligible": False,
+            "output": str(args.output),
+        }
+    elif args.command == "native-create":
+        setup = NativeCampaignSetup.model_validate_json(args.setup.read_bytes())
+        setup.validate_for_run(args.cache, setup.protocol)
+        context = execution_context(setup)
+        ledger = Ledger(args.ledger)
+        try:
+            result = {
+                "run_id": ledger.create_run(setup.protocol, context),
+                "track": setup.protocol.track,
+                "suite": setup.cohort.suite,
+                "population": setup.cohort.population,
+                "extraction_policy": setup.cohort.extraction,
+                "exception_policy": setup.cohort.exception_policy,
+                "publication_eligible": False,
+            }
+        finally:
+            ledger.close()
+    elif args.command == "native-step":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            context = ledger.context(args.run_id)
+            setup = NativeCampaignSetup.model_validate_json(canonical(context["setup"]))
+            validate_host(context)
+            setup.validate_for_run(args.cache, ledger.protocol(args.run_id), docker=args.docker)
+            transport = Transport(
+                setup.protocol.model,
+                timeout_seconds=setup.http_timeout,
+                max_response_bytes=setup.response_limit,
+            )
+            try:
+                result = NativeCampaign(
+                    ledger, args.run_id, setup, args.cache, transport, docker=args.docker
+                ).step()
+                result["summary"] = ledger.summary(args.run_id)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "protected-plan":
+        requested = set(args.task)
+        available = {f"{args.suite}/{task_id}" for task_id in VALUE_TASKS}
+        if len(requested) != len(args.task) or not requested <= available:
+            parser.error("Each --task must be a distinct available development value task")
+        pinned = load_suite(args.suite, args.cache)
+        tasks = tuple(
+            revised_value_task(source)
+            for source in pinned
+            if f"{args.suite}/{source.public.task_id}" in requested
+        )
+        if len(tasks) != len(requested):
+            parser.error("Requested protected tasks are missing from the pinned suite")
+        excluded = {
+            f"{args.suite}/qiskitHumanEval/{number}": (
+                "external_service_unqualified"
+                if number in EXTERNAL_IDS
+                else "unreviewed_or_unsupported"
+            )
+            for number in range(151)
+            if f"{args.suite}/qiskitHumanEval/{number}" not in requested
+        }
+        cohort = freeze_protected_cohort(
+            tasks,
+            cache=args.cache,
+            suite=args.suite,
+            image=args.image,
+            label=args.label,
+            excluded=excluded,
+        )
+        model = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        setup = build_protected_setup(
+            args.name,
+            model,
+            cohort,
+            tasks,
+            cache=args.cache,
+            repeats=args.repeats,
+            system_prompt=args.system_prompt.read_text(encoding="utf-8")
+            if args.system_prompt
+            else None,
+            capability_probes=tuple(
+                CapabilityProbe.model_validate_json(path.read_bytes())
+                for path in args.capability_probe
+            ),
+        )
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(setup.model_dump_json(indent=2) + "\n")
+        result = {
+            "setup_digest": setup.digest,
+            "track": setup.protocol.track,
+            "suite": cohort.suite,
+            "population": cohort.population,
+            "planned_samples": len(cohort.task_keys) * args.repeats,
+            "excluded": cohort.excluded,
+            "publication_eligible": False,
+            "output": str(args.output),
+        }
+    elif args.command == "protected-create":
+        setup = ProtectedCampaignSetup.model_validate_json(args.setup.read_bytes())
+        setup.validate_for_run(args.cache, setup.protocol)
+        context = execution_context(setup)
+        ledger = Ledger(args.ledger)
+        try:
+            result = {
+                "run_id": ledger.create_run(setup.protocol, context),
+                "track": setup.protocol.track,
+                "suite": setup.cohort.suite,
+                "population": setup.cohort.population,
+                "publication_eligible": False,
+            }
+        finally:
+            ledger.close()
+    elif args.command == "protected-step":
+        if not args.ledger.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.ledger)
+        try:
+            ledger.verify()
+            context = ledger.context(args.run_id)
+            setup = ProtectedCampaignSetup.model_validate_json(canonical(context["setup"]))
+            validate_host(context)
+            setup.validate_for_run(args.cache, ledger.protocol(args.run_id), docker=args.docker)
+            transport = Transport(
+                setup.protocol.model,
+                timeout_seconds=setup.http_timeout,
+                max_response_bytes=setup.response_limit,
+            )
+            try:
+                result = ProtectedCampaign(
+                    ledger, args.run_id, setup, args.cache, transport, docker=args.docker
+                ).step()
+                result["summary"] = ledger.summary(args.run_id)
+            finally:
+                transport.close()
+        finally:
+            ledger.close()
+    elif args.command == "admission-inventory":
+        admission_inventory = build_pending_inventory(args.cache)
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(admission_inventory.model_dump_json(indent=2) + "\n")
+        result = {
+            "inventory_digest": admission_inventory.digest,
+            "task_count": len(admission_inventory.cards),
+            "pending_cards": sum(
+                bool(admission_blockers(card)) for card in admission_inventory.cards
+            ),
+            "external_service_cards": sum(
+                card.external_service for card in admission_inventory.cards
+            ),
+            "publication_eligible": admission_inventory.publication_eligible,
+            "output": str(args.output),
+        }
+    elif args.command == "admission-refresh-findings":
+        historical = AdmissionInventory.model_validate_json(args.inventory.read_bytes())
+        refreshed = refresh_finding_registry(historical, args.cache)
+        with args.output.open("x", encoding="utf-8") as output:
+            output.write(refreshed.model_dump_json(indent=2) + "\n")
+        result = {
+            "source_inventory_digest": historical.digest,
+            "inventory_digest": refreshed.digest,
+            "new_finding_card_count": sum(
+                old.known_findings != new.known_findings
+                for old, new in zip(historical.cards, refreshed.cards, strict=True)
+            ),
+            "publication_eligible": refreshed.publication_eligible,
+            "output": str(args.output),
+        }
+    elif args.command == "protected-oracle-review":
+        task_ids = (
+            tuple(f"qiskitHumanEval/{number}" for number in args.task)
+            if args.task
+            else ("qiskitHumanEval/2", "qiskitHumanEval/20")
+        )
+        report = run_protected_review(
+            args.cache,
+            args.output,
+            suite=args.suite,
+            image=args.image,
+            task_ids=task_ids,
+            docker=args.docker,
+            timeout=args.timeout,
+        )
+        result = {
+            "file_sha256": report["file_sha256"],
+            "control_count": report["control_count"],
+            "controls_matching_expectation": report["controls_matching_expectation"],
+            "task_keys": report["task_keys"],
+            "publication_eligible": False,
+            "output": str(args.output),
+        }
+    elif args.command == "admission-control-audit":
+        inventory_record = AdmissionInventory.model_validate_json(args.inventory.read_bytes())
+        report = audit_control_coverage(inventory_record, args.cache, tuple(args.review_logs))
+        payload = canonical(report)
+        with args.output.open("xb") as output:
+            output.write(payload)
+        result = {
+            "report_digest": hashlib.sha256(payload).hexdigest(),
+            "covered_task_count": report["covered_task_count"],
+            "uncovered_task_count": report["uncovered_task_count"],
+            "control_count": report["control_count"],
+            "declared_frozen_judge_control_count": report["declared_frozen_judge_control_count"],
+            "unexpected_outcome_count": report["unexpected_outcome_count"],
+            "false_pass_count": report["false_pass_count"],
+            "false_rejection_count": report["false_rejection_count"],
+            "other_mismatch_count": report["other_mismatch_count"],
+            "publication_eligible": False,
+            "output": str(args.output),
+        }
+    elif args.command == "admission-bundle-verify":
+        result = verify_admission_bundle(args.bundle, args.cache)
+    elif args.command == "validate-protocol":
+        payload = args.path.read_bytes()
+        raw = json.loads(payload)
+        protocol = Protocol.model_validate_json(payload)
+        recorded_digest = identity(raw)
+        result = {
+            "valid": True,
+            "protocol_digest": recorded_digest,
+            "interpreted_protocol_digest": protocol.digest,
+            "serialization_stable": recorded_digest == protocol.digest,
+            "release_validation": "not_performed",
+        }
+    elif args.command in {"verify-ledger", "summary"}:
+        if not args.path.is_file():
+            parser.error("Ledger does not exist")
+        ledger = Ledger(args.path)
+        try:
+            result = (
+                ledger.verify() if args.command == "verify-ledger" else ledger.summary(args.run_id)
+            )
+        finally:
+            ledger.close()
+    elif args.command == "discover":
+        spec = ModelSpec.model_validate_json(args.model_spec.read_bytes())
+        transport = Transport(spec)
+        try:
+            result = {
+                "model": spec.model_dump(mode="json"),
+                "observations": [
+                    o.model_dump(mode="json") for o in transport.discover(adapter(spec.adapter))
+                ],
+            }
+        finally:
+            transport.close()
+    else:
+        tasks = load_suite("normal", args.cache, download=args.download) + load_suite(
+            "hard", args.cache, download=args.download
+        )
+        result = inventory(tasks)
+    print(json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False))
+
+
+if __name__ == "__main__":
+    main()

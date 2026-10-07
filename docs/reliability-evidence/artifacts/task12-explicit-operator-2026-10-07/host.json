@@ -1,0 +1,1715 @@
+{
+  "authored_controls": [
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "canonical",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "literal-tensor",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "indexed-basis",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "equivalent-gates",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "global-phase",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "W+bX6p0Y5T8lTuuRZl3QP1vm1+qdGOU/JU7rkWZd0D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAW+bX6p0Y5T8lTuuRZl3QP1vm1+qdGOW/JU7rkWZd0L8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFvm1+qdGOU/JU7rkWZd0D9b5tfqnRjlPyVO65FmXdA/W+bX6p0Y5T8lTuuRZl3QP1vm1+qdGOW/JU7rkWZd0L8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "readonly",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "strided",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 232,
+      "name": "real-array",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j/MO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j/MO39mnqDmvwAAAAAAAAAAAAAAAAAAAADMO39mnqDmP8w7f2aeoOY/zDt/Zp6g5j/MO39mnqDmvwAAAAAAAAAAAAAAAAAAAAA=",
+        "dtype": "<f8",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "external-buffer",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "dtype-metadata",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "large-backing",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "big-endian",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "P+agnmZ/O8wAAAAAAAAAAD/moJ5mfzvMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+agnmZ/O8wAAAAAAAAAAL/moJ5mfzvMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/moJ5mfzvMAAAAAAAAAAA/5qCeZn87zAAAAAAAAAAAP+agnmZ/O8wAAAAAAAAAAL/moJ5mfzvMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": ">c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "negative-strides",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 232,
+      "name": "complex64-phase",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "AAAAPwAAAD8AAAA/AAAAPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwAAAD8AAAC/AAAAvwAAAAAAAAAAAAAAAAAAAAAAAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAC/AAAAvwAAAAAAAAAAAAAAAAAAAAA=",
+        "dtype": "<c8",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "phase-tolerance-boundary",
+      "outcome": "pass",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j9GjsJm/FLXPcw7f2aeoOY/Ro7CZvxS170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j9GjsJm/FLXPcw7f2aeoOa/Ro7CZvxS1z0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Missing operator overlap",
+      "logical_value_bytes": 405,
+      "name": "mirrored-preparation",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmvwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmvwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Missing operator overlap",
+      "logical_value_bytes": 405,
+      "name": "initial-z",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOa/AAAAAAAAAADMO39mnqDmvwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "column-phase",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "first-column-only",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "identity",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Invalid real entries",
+      "logical_value_bytes": 405,
+      "name": "scaled",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g9j8AAAAAAAAAAMw7f2aeoPY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g9j8AAAAAAAAAAMw7f2aeoPa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoPY/AAAAAAAAAADMO39mnqD2PwAAAAAAAAAAzDt/Zp6g9j8AAAAAAAAAAMw7f2aeoPa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "transpose",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOa/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect operator shape",
+      "logical_value_bytes": 405,
+      "name": "wrong-shape",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          2,
+          8
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Expected a plain NumPy ndarray",
+      "logical_value_bytes": 955,
+      "name": "nested-list",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "items": [
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              }
+            ],
+            "kind": "list"
+          },
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": -0.7071067811865475
+              }
+            ],
+            "kind": "list"
+          },
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              }
+            ],
+            "kind": "list"
+          },
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": -0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              }
+            ],
+            "kind": "list"
+          }
+        ],
+        "kind": "list"
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Unsupported or oversized numeric array",
+      "logical_value_bytes": null,
+      "name": "object-dtype",
+      "outcome": "unsupported",
+      "suite": "normal",
+      "wire_value": null
+    },
+    {
+      "calls": 1,
+      "detail": "Nonfinite operator entries",
+      "logical_value_bytes": 405,
+      "name": "nan",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "AAAAAAAA+H8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Nonfinite operator entries",
+      "logical_value_bytes": 405,
+      "name": "infinity",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "AAAAAAAA8H8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Invalid real entries",
+      "logical_value_bytes": 405,
+      "name": "huge-finite",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhfw==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Missing operator overlap",
+      "logical_value_bytes": 405,
+      "name": "bell-minus",
+      "outcome": "fail",
+      "suite": "normal",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "canonical",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "literal-tensor",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "indexed-basis",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "equivalent-gates",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "global-phase",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "W+bX6p0Y5T8lTuuRZl3QP1vm1+qdGOU/JU7rkWZd0D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAW+bX6p0Y5T8lTuuRZl3QP1vm1+qdGOW/JU7rkWZd0L8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFvm1+qdGOU/JU7rkWZd0D9b5tfqnRjlPyVO65FmXdA/W+bX6p0Y5T8lTuuRZl3QP1vm1+qdGOW/JU7rkWZd0L8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "readonly",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "strided",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 232,
+      "name": "real-array",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j/MO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j/MO39mnqDmvwAAAAAAAAAAAAAAAAAAAADMO39mnqDmP8w7f2aeoOY/zDt/Zp6g5j/MO39mnqDmvwAAAAAAAAAAAAAAAAAAAAA=",
+        "dtype": "<f8",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "external-buffer",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "dtype-metadata",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "large-backing",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "big-endian",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "P+agnmZ/O8wAAAAAAAAAAD/moJ5mfzvMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+agnmZ/O8wAAAAAAAAAAL/moJ5mfzvMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/moJ5mfzvMAAAAAAAAAAA/5qCeZn87zAAAAAAAAAAAP+agnmZ/O8wAAAAAAAAAAL/moJ5mfzvMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": ">c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "negative-strides",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 232,
+      "name": "complex64-phase",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "AAAAPwAAAD8AAAA/AAAAPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwAAAD8AAAC/AAAAvwAAAAAAAAAAAAAAAAAAAAAAAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAC/AAAAvwAAAAAAAAAAAAAAAAAAAAA=",
+        "dtype": "<c8",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": null,
+      "logical_value_bytes": 405,
+      "name": "phase-tolerance-boundary",
+      "outcome": "pass",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j9GjsJm/FLXPcw7f2aeoOY/Ro7CZvxS170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j9GjsJm/FLXPcw7f2aeoOa/Ro7CZvxS1z0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Missing operator overlap",
+      "logical_value_bytes": 405,
+      "name": "mirrored-preparation",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmvwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMO39mnqDmvwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Missing operator overlap",
+      "logical_value_bytes": 405,
+      "name": "initial-z",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOa/AAAAAAAAAADMO39mnqDmvwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "column-phase",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "first-column-only",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "identity",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Invalid real entries",
+      "logical_value_bytes": 405,
+      "name": "scaled",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g9j8AAAAAAAAAAMw7f2aeoPY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g9j8AAAAAAAAAAMw7f2aeoPa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoPY/AAAAAAAAAADMO39mnqD2PwAAAAAAAAAAzDt/Zp6g9j8AAAAAAAAAAMw7f2aeoPa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect full operator",
+      "logical_value_bytes": 405,
+      "name": "transpose",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOa/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Incorrect operator shape",
+      "logical_value_bytes": 405,
+      "name": "wrong-shape",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          2,
+          8
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Expected a plain NumPy ndarray",
+      "logical_value_bytes": 955,
+      "name": "nested-list",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "items": [
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              }
+            ],
+            "kind": "list"
+          },
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": -0.7071067811865475
+              }
+            ],
+            "kind": "list"
+          },
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              }
+            ],
+            "kind": "list"
+          },
+          {
+            "items": [
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": -0.7071067811865475
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              },
+              {
+                "imag": 0.0,
+                "kind": "complex_v1",
+                "real": 0.0
+              }
+            ],
+            "kind": "list"
+          }
+        ],
+        "kind": "list"
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Unsupported or oversized numeric array",
+      "logical_value_bytes": null,
+      "name": "object-dtype",
+      "outcome": "unsupported",
+      "suite": "hard",
+      "wire_value": null
+    },
+    {
+      "calls": 1,
+      "detail": "Nonfinite operator entries",
+      "logical_value_bytes": 405,
+      "name": "nan",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "AAAAAAAA+H8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Nonfinite operator entries",
+      "logical_value_bytes": 405,
+      "name": "infinity",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "AAAAAAAA8H8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Invalid real entries",
+      "logical_value_bytes": 405,
+      "name": "huge-finite",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhf6DI64XzzOF/oMjrhfPM4X+gyOuF88zhfw==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    },
+    {
+      "calls": 1,
+      "detail": "Missing operator overlap",
+      "logical_value_bytes": 405,
+      "name": "bell-minus",
+      "outcome": "fail",
+      "suite": "hard",
+      "wire_value": {
+        "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5r8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "dtype": "<c16",
+        "kind": "ndarray_v1",
+        "shape": [
+          4,
+          4
+        ]
+      }
+    }
+  ],
+  "calibration": {
+    "accepted_phase_angles": [
+      -3.141592653589793,
+      -3.117048960983623,
+      -3.0925052683774528,
+      -3.067961575771282,
+      -3.043417883165112,
+      -3.018874190558942,
+      -2.9943304979527716,
+      -2.9697868053466014,
+      -2.945243112740431,
+      -2.9206994201342606,
+      -2.8961557275280905,
+      -2.8716120349219203,
+      -2.84706834231575,
+      -2.82252464970958,
+      -2.7979809571034093,
+      -2.773437264497239,
+      -2.748893571891069,
+      -2.724349879284899,
+      -2.6998061866787286,
+      -2.675262494072558,
+      -2.650718801466388,
+      -2.6261751088602177,
+      -2.6016314162540475,
+      -2.5770877236478773,
+      -2.552544031041707,
+      -2.5280003384355365,
+      -2.5034566458293663,
+      -2.478912953223196,
+      -2.454369260617026,
+      -2.4298255680108554,
+      -2.405281875404685,
+      -2.380738182798515,
+      -2.356194490192345,
+      -2.3316507975861747,
+      -2.3071071049800045,
+      -2.2825634123738343,
+      -2.2580197197676637,
+      -2.2334760271614935,
+      -2.2089323345553233,
+      -2.184388641949153,
+      -2.1598449493429825,
+      -2.1353012567368124,
+      -2.110757564130642,
+      -2.086213871524472,
+      -2.061670178918302,
+      -2.0371264863121317,
+      -2.0125827937059615,
+      -1.9880391010997909,
+      -1.9634954084936207,
+      -1.9389517158874505,
+      -1.9144080232812801,
+      -1.88986433067511,
+      -1.8653206380689396,
+      -1.8407769454627694,
+      -1.8162332528565992,
+      -1.7916895602504288,
+      -1.7671458676442586,
+      -1.7426021750380885,
+      -1.718058482431918,
+      -1.6935147898257479,
+      -1.6689710972195777,
+      -1.6444274046134073,
+      -1.6198837120072371,
+      -1.5953400194010667,
+      -1.5707963267948966,
+      -1.5462526341887264,
+      -1.521708941582556,
+      -1.4971652489763858,
+      -1.4726215563702154,
+      -1.4480778637640452,
+      -1.423534171157875,
+      -1.3989904785517047,
+      -1.3744467859455345,
+      -1.3499030933393643,
+      -1.325359400733194,
+      -1.3008157081270237,
+      -1.2762720155208536,
+      -1.2517283229146832,
+      -1.227184630308513,
+      -1.2026409377023426,
+      -1.1780972450961724,
+      -1.1535535524900022,
+      -1.129009859883832,
+      -1.1044661672776614,
+      -1.0799224746714913,
+      -1.055378782065321,
+      -1.030835089459151,
+      -1.0062913968529807,
+      -0.9817477042468106,
+      -0.95720401164064,
+      -0.9326603190344698,
+      -0.9081166264282996,
+      -0.8835729338221294,
+      -0.8590292412159592,
+      -0.8344855486097886,
+      -0.8099418560036185,
+      -0.7853981633974483,
+      -0.7608544707912781,
+      -0.7363107781851079,
+      -0.7117670855789373,
+      -0.6872233929727671,
+      -0.662679700366597,
+      -0.6381360077604268,
+      -0.6135923151542566,
+      -0.589048622548086,
+      -0.5645049299419158,
+      -0.5399612373357456,
+      -0.5154175447295755,
+      -0.4908738521234053,
+      -0.4663301595172351,
+      -0.4417864669110645,
+      -0.4172427743048943,
+      -0.39269908169872414,
+      -0.36815538909255396,
+      -0.3436116964863838,
+      -0.31906800388021317,
+      -0.294524311274043,
+      -0.2699806186678728,
+      -0.24543692606170264,
+      -0.22089323345553247,
+      -0.1963495408493623,
+      -0.17180584824319167,
+      -0.1472621556370215,
+      -0.12271846303085132,
+      -0.09817477042468115,
+      -0.07363107781851097,
+      -0.04908738521234035,
+      -0.024543692606170175,
+      0.0,
+      0.024543692606170175,
+      0.04908738521234035,
+      0.07363107781851097,
+      0.09817477042468115,
+      0.12271846303085132,
+      0.1472621556370215,
+      0.17180584824319167,
+      0.1963495408493623,
+      0.22089323345553247,
+      0.24543692606170264,
+      0.2699806186678728,
+      0.294524311274043,
+      0.31906800388021317,
+      0.3436116964863838,
+      0.36815538909255396,
+      0.39269908169872414,
+      0.4172427743048943,
+      0.4417864669110645,
+      0.4663301595172351,
+      0.4908738521234053,
+      0.5154175447295755,
+      0.5399612373357456,
+      0.5645049299419158,
+      0.589048622548086,
+      0.6135923151542566,
+      0.6381360077604268,
+      0.662679700366597,
+      0.6872233929727671,
+      0.7117670855789373,
+      0.7363107781851079,
+      0.7608544707912781,
+      0.7853981633974483,
+      0.8099418560036185,
+      0.8344855486097886,
+      0.8590292412159588,
+      0.883572933822129,
+      0.9081166264282992,
+      0.9326603190344702,
+      0.9572040116406404,
+      0.9817477042468106,
+      1.0062913968529807,
+      1.030835089459151,
+      1.055378782065321,
+      1.0799224746714913,
+      1.1044661672776614,
+      1.1290098598838316,
+      1.1535535524900018,
+      1.178097245096172,
+      1.202640937702343,
+      1.2271846303085132,
+      1.2517283229146834,
+      1.2762720155208536,
+      1.3008157081270237,
+      1.325359400733194,
+      1.349903093339364,
+      1.3744467859455343,
+      1.3989904785517044,
+      1.4235341711578746,
+      1.4480778637640457,
+      1.4726215563702159,
+      1.497165248976386,
+      1.5217089415825562,
+      1.5462526341887264,
+      1.5707963267948966,
+      1.5953400194010667,
+      1.619883712007237,
+      1.644427404613407,
+      1.6689710972195773,
+      1.6935147898257474,
+      1.7180584824319185,
+      1.7426021750380887,
+      1.7671458676442588,
+      1.791689560250429,
+      1.8162332528565992,
+      1.8407769454627694,
+      1.8653206380689396,
+      1.8898643306751097,
+      1.91440802328128,
+      1.93895171588745,
+      1.9634954084936211,
+      1.9880391010997913,
+      2.0125827937059615,
+      2.0371264863121317,
+      2.061670178918302,
+      2.086213871524472,
+      2.110757564130642,
+      2.1353012567368124,
+      2.1598449493429825,
+      2.1843886419491527,
+      2.208932334555323,
+      2.233476027161494,
+      2.258019719767664,
+      2.2825634123738343,
+      2.3071071049800045,
+      2.3316507975861747,
+      2.356194490192345,
+      2.380738182798515,
+      2.405281875404685,
+      2.4298255680108554,
+      2.4543692606170255,
+      2.4789129532231957,
+      2.5034566458293668,
+      2.528000338435537,
+      2.552544031041707,
+      2.5770877236478773,
+      2.6016314162540475,
+      2.6261751088602177,
+      2.650718801466388,
+      2.675262494072558,
+      2.699806186678728,
+      2.7243498792848984,
+      2.7488935718910685,
+      2.7734372644972396,
+      2.7979809571034098,
+      2.82252464970958,
+      2.84706834231575,
+      2.8716120349219203,
+      2.8961557275280905,
+      2.9206994201342606,
+      2.945243112740431,
+      2.969786805346601,
+      2.994330497952771,
+      3.0188741905589422,
+      3.0434178831651124,
+      3.0679615757712826,
+      3.0925052683774528,
+      3.117048960983623,
+      3.141592653589793
+    ],
+    "basis_value": {
+      "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "dtype": "<c16",
+      "kind": "ndarray_v1",
+      "shape": [
+        4,
+        4
+      ]
+    },
+    "max_entry_error": 0.0,
+    "rejected_entry_mutants": [
+      {
+        "column": 0,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 0
+      },
+      {
+        "column": 0,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 0
+      },
+      {
+        "column": 1,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 0
+      },
+      {
+        "column": 1,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 0
+      },
+      {
+        "column": 2,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 0
+      },
+      {
+        "column": 2,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 0
+      },
+      {
+        "column": 3,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 0
+      },
+      {
+        "column": 3,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 0
+      },
+      {
+        "column": 0,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 1
+      },
+      {
+        "column": 0,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 1
+      },
+      {
+        "column": 1,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 1
+      },
+      {
+        "column": 1,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 1
+      },
+      {
+        "column": 2,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 1
+      },
+      {
+        "column": 2,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 1
+      },
+      {
+        "column": 3,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 1
+      },
+      {
+        "column": 3,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 1
+      },
+      {
+        "column": 0,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 2
+      },
+      {
+        "column": 0,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 2
+      },
+      {
+        "column": 1,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 2
+      },
+      {
+        "column": 1,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 2
+      },
+      {
+        "column": 2,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 2
+      },
+      {
+        "column": 2,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 2
+      },
+      {
+        "column": 3,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 2
+      },
+      {
+        "column": 3,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 2
+      },
+      {
+        "column": 0,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 3
+      },
+      {
+        "column": 0,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 3
+      },
+      {
+        "column": 1,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 3
+      },
+      {
+        "column": 1,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 3
+      },
+      {
+        "column": 2,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 3
+      },
+      {
+        "column": 2,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 3
+      },
+      {
+        "column": 3,
+        "delta": [
+          1e-06,
+          0.0
+        ],
+        "row": 3
+      },
+      {
+        "column": 3,
+        "delta": [
+          0.0,
+          1e-06
+        ],
+        "row": 3
+      }
+    ],
+    "sdk_value": {
+      "bytes": "zDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOY/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMw7f2aeoOY/AAAAAAAAAADMO39mnqDmPwAAAAAAAAAAzDt/Zp6g5j8AAAAAAAAAAMw7f2aeoOa/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "dtype": "<c16",
+      "kind": "ndarray_v1",
+      "shape": [
+        4,
+        4
+      ]
+    }
+  },
+  "environment": {
+    "numpy": "2.2.4",
+    "python": "3.12.14",
+    "qiskit": "2.4.2"
+  },
+  "independent_human_admission": false,
+  "kind": "graybench_task12_host_verification_v1",
+  "plan_digest": "6a668fee271b0d8f2512316c1bfcb4691d727bfead5eb55f277c932a25a4d693",
+  "release_eligible": false,
+  "runtime_qualified": false,
+  "scope": "Host semantic and value-codec evidence only; candidate encoder integrity and sandbox isolation are unverified"
+}

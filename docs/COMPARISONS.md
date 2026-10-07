@@ -26,6 +26,44 @@ Numbers below are **published results, not scores produced by this overhaul**. T
 
 [The original QHE paper, v1](https://arxiv.org/html/2406.14712v1) reports greedy decoding on **101 tasks**. Comparing those percentages directly against the current 151-task suite, or a credential-free subset, is invalid. This is one concrete explanation for apparently conflicting benchmark numbers.
 
+The paper's printed BB84 example for task 63 expects `"11"`; the currently
+pinned normal and hard records expect `"1"`. The latter records also fail their
+own canonical solution in 39 of 40 independent protected replays. This is a
+specific task-level warning against treating a shared task ID as a frozen test,
+not evidence that either historical score can be repaired by changing the
+expected string. See the [paper's example](https://arxiv.org/pdf/2406.14712)
+and [local protected repeat](reliability-evidence/reference-scan-77f29ff.md).
+
+## QSpark: mixed 101-task and 151-task figures
+
+The [QSpark paper](https://arxiv.org/pdf/2507.12642) reports QHE pass@1 under
+greedy decoding for its ORPO model as 56.29% (85/151) and GRPO model as 49.00%
+(74/151). It explicitly says its evaluation used 151 public tasks and a custom
+script because the original evaluator was unavailable. The paper's same table
+copies the older baseline percentages, including Granite-8B-Code-QK's 46.53%,
+from the original **101-task** paper. Its difficulty table likewise places
+78/68/5-task results beside older 54/45/2-task results. Therefore the table's
+cross-model percentage differences do not identify a controlled model effect.
+
+QSpark reports that even its canonical references passed only 134/151 under its
+runtime (69/78 basic, 63/68 intermediate, 2/5 advanced), and notes version
+sensitivity. Our pinned normal and hard files each contain 151 tasks, but their
+recorded difficulty labels are 79 basic, 67 intermediate and 5 difficult.
+The currently pinned normal file is SHA-256
+`1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6`;
+the hard file is SHA-256
+`3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9`.
+We have not established that QSpark used either exact file or a matching runtime,
+request format and scoring path. Its 134/151 reference count cannot be directly
+compared to our protected bridge's pass/unsupported/failure partition.
+
+At [public QSPARK commit 48295f8](https://github.com/TMUDeV/QSPARK/blob/48295f8dfd38007b171fe038bde8ce570f7e4833/qiskit_benchmark_evaluation.py),
+the named evaluation script reads saved completions, looks for a top-level
+`QuantumCircuit`, and reports compile rate, simulation rate, fidelity and depth.
+It does not invoke each QHE task's unit test or compute the paper's pass@1 table.
+That inspected script cannot by itself reproduce the paper's percentages; this
+does not establish that the authors did not use another script for those figures.
+
 ## Historical GrayBench Kimi run
 
 The repository's `kimiK25/e86b3315_*` export reports 58/151 passes (38.41%) on the hard suite. Its 34 empty completions all have `finish_reason="length"`. Its configuration records a 4,096-token cap and nominal temperature 0/top-p 1, whereas the adapter's Kimi K2.5 request uses temperature 1/top-p .95. This discrepancy prevents the stored run configuration alone from reproducing the generation settings. The old runner also retried empty completions and retained only the final attempt's accounting.
@@ -50,3 +88,22 @@ Direct comparison of ScienceEval's committed dataset at `f90e004468a1b18fcb71f4d
 5. Attribute disagreements to a verified setting or report them as unresolved. Never change tests merely to make percentages agree.
 
 Sources accessed 2026-09-13. A broad HumanEval score advertised on a model card is a different benchmark from Qiskit HumanEval and is not a valid QHE reference.
+
+## Reproducibility recheck, 2026-09-19
+
+The [IBM table](https://quantum.cloud.ibm.com/docs/en/guides/qiskit-code-assistant)
+still reports the four normal/hard pairs above and model-specific system prompts.
+Its installation examples are not complete benchmark run manifests. In particular,
+the Mistral model listing describes Qiskit 2.1 training while the table names 2.2;
+neither establishes the precise evaluator dependency lock.
+
+Pinned primary model cards inspected:
+
+- [Mistral, revision 0c541958](https://huggingface.co/Qiskit/mistral-small-3.2-24b-qiskit/blob/0c541958022de04bd7c200b14a4b7a58977ae751/README.md).
+- [Qwen, revision 9dbc517d](https://huggingface.co/Qiskit/Qwen2.5-Coder-14B-Qiskit/blob/9dbc517d40b6baa7c20bfa0d7ca1a988c99fba2a/README.md).
+
+Their inference examples use a 512-token generation cap. This is not evidence that
+the published evaluation used that cap. Exact dataset revisions, evaluation
+dependency locks, decoding settings and per-task outputs remain unverified for
+these table rows. Native-template replication and shared-prompt comparison remain
+separate experiments; no local score has been certified against either reference.

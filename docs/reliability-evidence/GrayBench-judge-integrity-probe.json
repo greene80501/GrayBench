@@ -1,0 +1,26 @@
+{
+  "kind": "synthetic_judge_integrity_probe",
+  "evaluator": "f4c5019a253874d7b37a19c69bb1f8f6e2928eb2dc7add06e4a6b4557cef1a4e",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "results": [
+    {
+      "case": "correct",
+      "expected_passed": true,
+      "observed_passed": true,
+      "outcome": "pass"
+    },
+    {
+      "case": "wrong",
+      "expected_passed": false,
+      "observed_passed": false,
+      "outcome": "fail_assertion"
+    },
+    {
+      "case": "forged_success",
+      "expected_passed": false,
+      "observed_passed": true,
+      "outcome": "pass"
+    }
+  ],
+  "scope": "Synthetic controls only; no model generations and no official scores changed."
+}

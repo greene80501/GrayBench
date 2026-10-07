@@ -1,0 +1,753 @@
+{
+  "cases": [
+    {
+      "completion_sha256": "bdfc5955039a650f491a0b794a84c6ebc91170fdd1b7675a3750ad9dc6451a3e",
+      "id": "canonical",
+      "rationale": "Exact original canonical construction",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "7832d0a71eea7f67a41bf004cc37469bdcaa658f36472ad0c5ed7cb61a44ba24",
+      "id": "amplitudes",
+      "rationale": "Independent amplitude preparation",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "a026c798b2c0c007283cda3568f16a1849bb32c4a3b8283227372b3a0b7ce296",
+      "id": "initialize",
+      "rationale": "Deterministic initialization is allowed",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "373b4e5d049ce4538bd5fb02546749406a683a6458fdec28c731674aacf7ad40",
+      "id": "reset-prefix",
+      "rationale": "Reset before preparing the target is allowed",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "647d9a5ae01080780b511dcb94ad505e837b49e74a12a9188aa7d9f1488906f5",
+      "id": "global-phase",
+      "rationale": "Global phase does not change the density matrix",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "22b076e2c9e16987bd920013e0aae3bb562e117efae9133e9fe07c7517d45a45",
+      "id": "wire-permutation",
+      "rationale": "The symmetric state is invariant under wire permutation",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "e7d75bfa0ef55456f670542adedb0269cf7fb0f9bf3ca08cd6ebd4e305bdbfb9",
+      "id": "householder",
+      "rationale": "Independent full unitary mapping zero to W",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "a4d3ba63b0204fe298c9d1aa6f17e3bea0686537732c3e1ff008fad3c61b25ea",
+      "id": "named-registers",
+      "rationale": "Arbitrary register names and bit mapping",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "38509990d2d735c466a4d084812511ca940da6b8b787728e9f666e1f92cd52ae",
+      "id": "metadata",
+      "rationale": "Names and metadata do not affect the contract",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "f8a8cba5c64c18ab82f69626d7c9b66bdb48f05ea6d16064b9e26d0ca67001d9",
+      "id": "bound-parameter",
+      "rationale": "A fully bound identity rotation is allowed",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "cdbcbc66eaecfb2169514c8b2043c7dc1d11cdb5505cdd5d38fe08592ae29274",
+      "id": "post-measure-barriers",
+      "rationale": "Barriers after measurement are allowed",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "d7819fa79fd99bb4fbf6096b2a3b0d217c17b967b655c3f9567bb6659b85e29b",
+      "id": "zero",
+      "rationale": "Wrong prepared state",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "04440a0346742161213810cf8d397db97120df4ee480d2cd1787d039536628ef",
+      "id": "single-excitation",
+      "rationale": "Only one excitation location populated",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "f530921b5d7449a5df77b84c070841c95251872d02b3e85565171dbfb7cc007e",
+      "id": "product",
+      "rationale": "Product superposition has wrong density",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "85f88f49edede617d1a1b43ee863717c00bd8f8e4b88d4ad3d7414ca39a43690",
+      "id": "ghz",
+      "rationale": "Wrong entangled state",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "2a2b000cd5e0e67be2464352d04245e88769aa51bfa84b7366eb97e9cdb4212d",
+      "id": "unequal-populations",
+      "rationale": "Wrong relative amplitudes",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "f7a279b7a4865cbf67b4b48cf474fd5e84bb1deacc18a4a5848d2219cb956e60",
+      "id": "relative-i",
+      "rationale": "Wrong relative phase despite correct probabilities",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "662ef5b41d6df8000e49cbd8662d6cbac1d839ff06a4b5437ca3e0b5931e5477",
+      "id": "orthogonal-phases",
+      "rationale": "Orthogonal state with the same populations",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "ddb03c0e47422c9667c8c96dbf432706b3111b5823b77c9b118980ee45d67d46",
+      "id": "missing-measurement",
+      "rationale": "One qubit is not measured",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "09be0000a8234dfb8308739cb21aa73c142508e67791946bc3d2ecec8df8a101",
+      "id": "duplicate-qubit",
+      "rationale": "One qubit measured twice, another omitted",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "0c2c31b325c6fa068f7bc38b11340725879d8c8836413b783c96141d6cdb558a",
+      "id": "shared-classical-bit",
+      "rationale": "Two qubits write the same classical bit",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "9c8696136aacef7cf634d57db09b98eeff9ed1542fe54c720c878067d2d33280",
+      "id": "repeated-measurement",
+      "rationale": "Four rather than three measurements",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "169aa4da0efe6fd51ee15764691c5ae9cd7597ae133c2ff3c5825630443574b3",
+      "id": "identity-after-measurement",
+      "rationale": "Preparation operations after measurement are forbidden even if net identity",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "c84d7448af2e0c42248dc6dd409a0dbfba5477143366ea329911504e38d5dc5d",
+      "id": "reset-after-measurement",
+      "rationale": "Reset after measuring is forbidden",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "944e8f20e053a362f54ec6d0ca8e3ef28138154f4c442a9b3fd8840248afbce2",
+      "id": "delay",
+      "rationale": "Timing instructions are outside the admitted prefix",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "b1209d7eda1020aa1beb259965aee48a2af28e247c1c9d854ce6f6af0bbe7482",
+      "id": "unbound",
+      "rationale": "An unbound rotation does not specify the target",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "7ca3172717f6473c68fd90852a80ff4ae9f05e03b7fccd17a95ff9a40f89cb9c",
+      "id": "four-qubits",
+      "rationale": "Wrong circuit width",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "a33f23ebf915bf09ccb3aef3c2330621224c0497ba908248fb899168c893bd1c",
+      "id": "too-many-bits",
+      "rationale": "Declared classical resource bound exceeded",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "70bc98b58dc7ea54e97ba3cd2e26fa43d8e1035fccdceee158fccb98d381c78c",
+      "id": "no-bits",
+      "rationale": "No measurements or classical bits",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "ce3157c3e78a52a0c2b55de5bc10f80a0ea51e3f1c1238cedb80ee3acb0e7b0a",
+      "id": "missing-definition",
+      "rationale": "Generic instruction with no permitted definition",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "1bd500ff260032d2c5a8a6304356d35aa3fcc596662d1868da594c3865406f5c",
+      "id": "instruction-bound",
+      "rationale": "More than 1024 visited instruction entries",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "8ae8ed735db965a5607a78ddd974a2f2d1e6753bdef083bdea38d2918a8b7daf",
+      "id": "relative-minus-0",
+      "rationale": "Wrong relative phase with unchanged populations",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "7e6d41608f9f575a1c7e6ca11ebf2770ae230e991a1c5f5de15c00e42c8b65ab",
+      "id": "relative-minus-1",
+      "rationale": "Wrong relative phase with unchanged populations",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "4b0655170e28afe7714bdcd174e57c52cac64eb3c0c5a2a4616ed91c0b75ec9b",
+      "id": "relative-minus-2",
+      "rationale": "Wrong relative phase with unchanged populations",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "6afb0862c7844400bf2211817ee6fe6eb3a57772b8dbe7b34acec10b7e51f001",
+      "id": "controlled-0-phase-0",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "309e808165733697acffc4f0baa1208d0c01c54c76b6de359fd30555c3a5bb77",
+      "id": "controlled-0-phase-0.37",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "d8ac72fa2fdd6e27b044dd5fc5d41f084cf5091d465f9fb756d985d33d6537bc",
+      "id": "controlled-1-phase-0",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "c1eb7ff71d1b5b2d312bfcbce3f62c2b2ddc5ea3ee68a897552dfbbd2089fe23",
+      "id": "controlled-1-phase-0.37",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "810a7d424aba801a16932ecd345060f79eb784f00f929a4462763ebce8de1959",
+      "id": "controlled-instruction-bound",
+      "rationale": "Generic ControlledGate cannot hide more than 1024 definition entries",
+      "semantic_expectation": "fail",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "821628b5c5b4a91072e506b278ba0efccfda0353b7f98cb7b1b9384a9800a99a",
+      "id": "generic-gate",
+      "rationale": "Explicit composite definition preserves the contract",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "4f8365ac3fef2c71ec32a762e5ff5beeb07230d3e48abd532e0b2b10c1d138ee",
+      "id": "generic-instruction",
+      "rationale": "Explicit composite definition preserves the contract",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "70e70ed75837aa23a3383ad6fa9da197e4fecca0dbf949a0448746bd40c9b919",
+      "id": "nested-measurements",
+      "rationale": "Explicit composite definition preserves the contract",
+      "semantic_expectation": "pass",
+      "suite": "normal"
+    },
+    {
+      "completion_sha256": "032024182a233d68a91fb58b714e968cd82947731eb66ee8592455f2ea1c1cd1",
+      "id": "canonical",
+      "rationale": "Exact original canonical construction",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "db9dc7119f6de61f72696ead77f7cabdfbeca8393aa8c560c1cfe9c5a5933604",
+      "id": "amplitudes",
+      "rationale": "Independent amplitude preparation",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "207791b51db872d006f69c899e581da9060de13984f4636d7c7e4cab8948a7db",
+      "id": "initialize",
+      "rationale": "Deterministic initialization is allowed",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "a0aaae65f4cfc5e75443a8dd4774f59978c2e028da1db9df420ad2f76af38075",
+      "id": "reset-prefix",
+      "rationale": "Reset before preparing the target is allowed",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "fb5a417facb358fdf083314d7c049604457f4c31c76b0a00286e41f2cb880845",
+      "id": "global-phase",
+      "rationale": "Global phase does not change the density matrix",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "6ba24ee7df0894c9042f2aa2cc92ff37fcf9b18aa13faae6f3d6a8358aaef9c2",
+      "id": "wire-permutation",
+      "rationale": "The symmetric state is invariant under wire permutation",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "f666bfd356501cd2cfcde27c9fd0cf819fd593e5f3008a22a3376e81d018ddee",
+      "id": "householder",
+      "rationale": "Independent full unitary mapping zero to W",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "ba4b770aaaa3535b39ec925e315903a21915a042d57e33aa0b5d7e6ee9d1499c",
+      "id": "named-registers",
+      "rationale": "Arbitrary register names and bit mapping",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "ba79c3daec361bea519e80086f44f659a3ecc508319ab839b924235e5672f6fc",
+      "id": "metadata",
+      "rationale": "Names and metadata do not affect the contract",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "4b6bd4daf004b69189ea9174d7bb1f4d29d9ccb98ff219cae970dc5b7f401165",
+      "id": "bound-parameter",
+      "rationale": "A fully bound identity rotation is allowed",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "6a182135057268fce6227677da979e42c5ab862fe3b9a4a796eca52e8734d4f3",
+      "id": "post-measure-barriers",
+      "rationale": "Barriers after measurement are allowed",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "f1c8ef6c9de4ac9ef48a5942b607f3f0facddcba1c3f6c20395c5a2d1fef76ba",
+      "id": "zero",
+      "rationale": "Wrong prepared state",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "9767af07f2c2e659c0457ec3d79c1e0d0f3623335d678cfab348721ba4287122",
+      "id": "single-excitation",
+      "rationale": "Only one excitation location populated",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "f2ff0c184a5aef413272c243980722dbaf4094792380d6ef445d6b7f85b52b39",
+      "id": "product",
+      "rationale": "Product superposition has wrong density",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "730aee05c09a72964570c83df466230b38986503cd13c3c6f4b8319d4e245236",
+      "id": "ghz",
+      "rationale": "Wrong entangled state",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "76377663c3063ea079969a7006f3125225db1d734451cea6589dfbced6832fb6",
+      "id": "unequal-populations",
+      "rationale": "Wrong relative amplitudes",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "73aeef1484c84db72c0895fefbf49fb1625f345e24a26836ff13883736ea40f5",
+      "id": "relative-i",
+      "rationale": "Wrong relative phase despite correct probabilities",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "39c9ac3798deb7e1316e37d86d1ebe9ddc08a70985ddc9083535d6af55b549e9",
+      "id": "orthogonal-phases",
+      "rationale": "Orthogonal state with the same populations",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "2bbfdfa5ead5c6815da921088548d364e45acd5e25626419d4f9d2b09d20c213",
+      "id": "missing-measurement",
+      "rationale": "One qubit is not measured",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "1f08f16e85d74df67ac0ff50c92a1469490543fdf40a079c88734608eddb1934",
+      "id": "duplicate-qubit",
+      "rationale": "One qubit measured twice, another omitted",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "3faad7d7059bf418ea70fc2f87d1ce8a7c04ed428f27aa4395528b655e94d6c6",
+      "id": "shared-classical-bit",
+      "rationale": "Two qubits write the same classical bit",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "8b7b39222156f6ee38cdb14a18b8a19024e5c5779a5dd3768cd07272ca68664c",
+      "id": "repeated-measurement",
+      "rationale": "Four rather than three measurements",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "a9ed46f80e648d0273ee406fac429abf94ef842f768cc6128379aafb14f8bd57",
+      "id": "identity-after-measurement",
+      "rationale": "Preparation operations after measurement are forbidden even if net identity",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "4cfd129561ce2a5ab918e2e9e8c01ce934fc354c9d8f727c09bda381772d24df",
+      "id": "reset-after-measurement",
+      "rationale": "Reset after measuring is forbidden",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "af07fe39fd4c3137bc019520ee341beeed585188171d83730069ee171c8da4b5",
+      "id": "delay",
+      "rationale": "Timing instructions are outside the admitted prefix",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "9aa88d2bd0909a6c853a30bae0656b5a04cf407ebc04fb85e2611d63f596aae9",
+      "id": "unbound",
+      "rationale": "An unbound rotation does not specify the target",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "b5e4145cc1bbebf83f31d5f7ef7c55e62bc3d04f01d10aa530b5330b0971d1fd",
+      "id": "four-qubits",
+      "rationale": "Wrong circuit width",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "16f8ee6f71644d1bd8cdbe931fdf42935da9f39ac92c992c2d60cdceb36691d8",
+      "id": "too-many-bits",
+      "rationale": "Declared classical resource bound exceeded",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "0e489b9b981e07d1bd88439fdb700260f17068a8decb2fad562f07e62c6cd5d5",
+      "id": "no-bits",
+      "rationale": "No measurements or classical bits",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "fa424c4acb7e5fa2a1e104b1dee48c675dc8f34f037e2353503df16dafe19941",
+      "id": "missing-definition",
+      "rationale": "Generic instruction with no permitted definition",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "0b0ee1fdd36524956dae2b44e8bb07f354c7fbe5b9e8d6fd74e1c42b3830ab77",
+      "id": "instruction-bound",
+      "rationale": "More than 1024 visited instruction entries",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "79d917f69ab4d635b681c43831c31c952629f2bf616314355c1f29162e29adb3",
+      "id": "relative-minus-0",
+      "rationale": "Wrong relative phase with unchanged populations",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "3c74f4fe5b75bdf0dbb48ef6e7e472a6f39ede0d220411dd954bac946d87c428",
+      "id": "relative-minus-1",
+      "rationale": "Wrong relative phase with unchanged populations",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "822f1fcc395238aa8f20dc197a849e5410f4866e66b7831ea07f7264e6d14423",
+      "id": "relative-minus-2",
+      "rationale": "Wrong relative phase with unchanged populations",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "319514985fc22958dc8648a18a70c2c0e3c1549852a839162a68a831fc2402ce",
+      "id": "controlled-0-phase-0",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "c65ba0b9396eb78df6abd6788a7d3d8c268660bc5f9e56881e2543debc79928c",
+      "id": "controlled-0-phase-0.37",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "aa05ef27fee4e66fbca8179b663b8c34b6fdb56e4833d02aa1c4dd881c86632c",
+      "id": "controlled-1-phase-0",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "22190c860cb3c1f1dca02de5cc97d4899086e9ac9063308fdc4119c0b0ff4e3e",
+      "id": "controlled-1-phase-0.37",
+      "rationale": "Base global phase becomes relative under quantum control",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "9cd8dd4d67500c60e34c714e57eeb86bb98e8ea208c35c9191bcc09172bca72c",
+      "id": "controlled-instruction-bound",
+      "rationale": "Generic ControlledGate cannot hide more than 1024 definition entries",
+      "semantic_expectation": "fail",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "63fe521f81721b8aac5917a0259ff4937a8631acfa895668519d1c15b71a12c5",
+      "id": "generic-gate",
+      "rationale": "Explicit composite definition preserves the contract",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "8252f965f760ddf79a9e0bddc555f746d4a8e4cced2f52a2a5ecd32d626c0618",
+      "id": "generic-instruction",
+      "rationale": "Explicit composite definition preserves the contract",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    },
+    {
+      "completion_sha256": "0bbe85c28e193526aeb680852b94059839e90340bfd5997d612b31dd002d9d62",
+      "id": "nested-measurements",
+      "rationale": "Explicit composite definition preserves the contract",
+      "semantic_expectation": "pass",
+      "suite": "hard"
+    }
+  ],
+  "checker_sha256": "bf68a7e4ab4475dcba1b7a25302f1ebe41e7e59a453ffad6b56ea418c81db6e4",
+  "dataset_pins": {
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    },
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    }
+  },
+  "engine_source": {
+    "digest": "cb27140691d9c4e5fbd794cc9d02bc701790d7eacb46ec06d42353a8dcc3181d",
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "adapter_provenance.py": "baf6bcbc2c62cc322aec59b095214f9c977860336e2a46d65c237682f18737ea",
+      "admission_bundle.py": "69883a1dadf27a7460020fa5d5b2c59f5515f9e5f91398ed5a5934122b0b9623",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "bb84_batch_revision.py": "4719b3bace8b445010bfa33e4da980adfa9fad3ade6fd0cbe37507a263636b0c",
+      "bb84_revision.py": "e0e529a1da3908f7d19384c7e972b737f30e21da511e1b36b3d2c76859ee4344",
+      "bell_revision.py": "d7ab07d7cef1eb9012f0ab33d978e9b4477af071a0843adbfda36a44153294d2",
+      "binary_comparison.py": "85e5ff1784a4dcbc540784acca370664abe96d35f72d64d6d0aeb37fa4c73564",
+      "campaign.py": "476aa74a14c42ae1113b931eb2568aa822c2d55038e11e49e4c1eb0c7dd42bfd",
+      "campaign_setup.py": "7709f6a92b85c9d3534267cc06a17fa863ad3f2d971042aa2c1fb8de632e80ff",
+      "capability_probe.py": "c65eac2f48fd74b6f34f9a98712125e19de89a046b51a571214e304101306b5c",
+      "circuit_wire.py": "22df31fcdd81c05d7976e2dd61519921ae0d608bfde1f843906271bd3e90c178",
+      "cli.py": "a361576c9cca74958ee4e1d497e6686d9bdd43f9c656ca4bd78bb069f50dd157",
+      "comparison.py": "b3b99319e6b1427427f582bbc1e1d164642865106a1f4f7af212674aa7c0aa07",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "715aa7d0229f84ceb183672f1a57209746fd62f760576756801aff707f776ff6",
+      "datasets.py": "9ae2bc719d915a112b090b657019a7fe981fbd078da45a3baac417ccaf0446d7",
+      "evaluation_campaign.py": "bbd890a8b76bffa37d883c44823697b808e2c5c031141dd0e2339a809c84a0ee",
+      "evaluation_recipes.py": "676870c5259c6be233d592adc9d2c2585cd211a9642665d2074c4b9972b5605e",
+      "evolution_value.py": "c4ca4ce58f600b9977009277d25240ab876bc400437e2b2a781f5f4774f3dd2c",
+      "extraction.py": "f3556169c48e56a793a6c41694d7cd1d0afa5dfc97f946ddd07950de9025662a",
+      "file_judge.py": "9d249219d2d279efe47b31ab9b1e4abf5ba56baa956e7948e6db8661f77d0408",
+      "fs_paths.py": "82471a173939fd070b845f574fbd80672f1b449d8539e9b4e923dad4d83b46b5",
+      "gate_semantics.py": "faeda2a1e8f7084584e7bccf9f2f8cdd1d2e4826c72c51efbdfbfc5733cd592f",
+      "graph_anchor_bindings.py": "fdf562866df92092a71dab8e6304c2466fa59ee16170ca1ef4338292acce9ccc",
+      "graph_anchors.py": "82b41296b54898897bfc20c8384d0e2313cb80f0a181b663efac5f672715ed58",
+      "graph_circuit.py": "f1514d8b9ff015c13a00a66ac733ad5d0703f311e11d83fbc44644bca8e62078",
+      "graph_circuit_data.py": "7f90dc0fdda3d317edf87a0a265d342293aed3bc9c4aa6cbfde92b363cd373ae",
+      "graph_classical.py": "67a554b91bbdca06a4f090bf314d7f5e856a6bdb6c7516fb9f67c7fc5d3ae1d7",
+      "graph_control_flow.py": "30717bf5bc99d71c1d4e5a5525e2b3c950b0ec79525b3eb9128d1503a984cd6e",
+      "graph_delta.py": "db059f24489c3d88222bb0503395b04e036b984a548502cc96740355f8ec6846",
+      "graph_expressions.py": "1d26c6a7b5acbe6594de7047827aa2ff191174afc43506da6b49250b429a4a5a",
+      "graph_instruction.py": "d66b8de2f90595c93f5eca4e204ad16e5f38a9188d1be6f0d8a707ad1b122364",
+      "graph_limits.py": "6c5d9adbdddd23afb23f6c81191fc34fa10175cb900d3b6890915a205dfc7325",
+      "graph_loops.py": "bf648fef060474ca9c01fcd45d2ba78dfb1326fefd7b1fc4de9c99bb4f329796",
+      "graph_native.py": "3c9e689a170faf1e76f7fb7a6add64ccb4292b5033b847fb30a2d063f7e2433c",
+      "graph_numeric.py": "a89de85966771203b172e37a3a1207f0f75435a7313e8a0de134187cbade63b4",
+      "graph_object_arrays.py": "00d539bd78574ff20a8f161a6584a546af85c7548aefb0baefe7d1d620113139",
+      "graph_owned.py": "b4352a2df3c96f439daae00a4df4667bd1d702b4a51a4f915abae6e77083a5a3",
+      "graph_packed.py": "b16a949a07a928b6094b637c9837694adc6078d179ca6307102467c4cc8467ce",
+      "graph_primitive.py": "93e00a01ca82db28e2406f0e4547e01a4a18eff8ad550598217fb53755a920b5",
+      "graph_python_ops.py": "90c26709dd6a539676b25ff6a250a8e2b3d39de1bdd51febd8c252333d2afff9",
+      "graph_quantum_circuit.py": "3e165ea9b86d54d1148c94590a062e3690428d9bf7fcaa26bffd10b8dd3cbc94",
+      "graph_rpc.py": "bc4907cf431176de72bebacc50c05f2d823c64a45bc7e0f9188924fadbd2dda8",
+      "graph_runtime.py": "2558807726eb596c1fdc2c6bfa114b99ea5cb31c4a40678374fd7f3641c461de",
+      "graph_scientific.py": "4a6e6ec2cde102332172995755994b8330a4cba0290cc7d45f9cc90d21de4ede",
+      "graph_singleton.py": "6cc416d0a7fee03ed08e846d62d74ac05df931e859116ae1bfb6ef197a4de3e5",
+      "graph_symbolic.py": "1ad6203955c88aad849c861962e6058d652c05a2168617cd8b6a28ce69bf87aa",
+      "graph_types.py": "390fcc8591892d2857d2f2d4082fb8e5e111649e1598272c2ff87796d9566900",
+      "graph_wire.py": "c65781f0d15168e08d0196e7c9e8654edb334a1cc3f5411e15fc88aa66019654",
+      "graph_worker.py": "0b98e6766668ae1da4571de74af855d9b02d9a79088a90e4a82f52775a7c29e4",
+      "identity.py": "586bd50a3047355d86f3d4e68733b28e0beb1c01ae3161fa1f2b6124edba3e9f",
+      "instruction_wire.py": "1473e89c76bdf8344cb23dbfd76fb7a920966dc60ec09e8c181e0489ea218e3c",
+      "judge.py": "711384c4f35baebb8f4e127815e322d912b528756d29ac2951a4edb087a335c3",
+      "judge_process.py": "b85b373a96de296c172f72710da2365a16213e2a93f47ffb257cb2aa08b43f3a",
+      "judgment_evidence.py": "3f5cae7e147e5955e9b1bae8f849b1a42c6b946aad28e0c5b9cdf186afc288d0",
+      "ledger.py": "5c1044cb8d467066ae11adbab938c6473211e488ee113041bc2d5f84abe7b3fa",
+      "ledger_evidence.py": "e80c30ad1471d8693dec9a88dc2a6854000117dd35048fc36be6c550c5eb9e1f",
+      "matrix_semantics.py": "36262051ed2c827d345523884e7ef3f946625b460b01525d6ace702ec348548a",
+      "matrix_task_sources.py": "8a4f8757975cdf598554cf18012fea33db9682b026d144b66685e2907787c35c",
+      "model_discovery.py": "293067c88b2b67912253065f0c4c5d093441c9af305b71e05df681e3f805ff06",
+      "native_assembly.py": "204980637747c878bb6fb039a890e8b8f2c8c037afc22b536e827f03ac806031",
+      "native_campaign.py": "5cc76db74cc5503b80324693ab9d06dadd90b536334069fd08e4fc6e9ea7f85b",
+      "native_cohort.py": "96843ffa85822234497a26998b12d276dd0bfdac2baa6466349684163afd6329",
+      "native_judge.py": "13fb152c1d3e5fb2f1eed1c57e64e52dc4d5dc935ec3004ba6c3651b1993f93e",
+      "native_worker.py": "31a2d22ed0ace4c6a3ea83a18c6d8e922c8ab8f9928489228dfeb2e34d0d2a72",
+      "operator_wire.py": "d94dda29d683afaa60df8040ad395f050cd8bc74bf9f4f2debc8afcfffac7f72",
+      "oracle_review.py": "b0e4cd4aee5ecafb5953c0acf49c52f81088135fb53ae8b201c8dba88648c8da",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "primitive_wire.py": "291bf8d84fb95cdd74577de83ec8adcb93a05fa14750fec1e914e2c343e91d52",
+      "protected_campaign.py": "ab8df8784e9ab109242da7265b11d4b3312e5c8a14146e782f2157769850dc81",
+      "protected_evolution_controls.py": "b69a4fdde5ce10309eb5f4811646730ff9abb07685a44b493bb9713ea1fdc8d7",
+      "protected_oracle_review.py": "ecaca426b111a2e30baa108c1b63aa92b9c983b976cc0b045f500abd07cff96f",
+      "protected_semantic_judge.py": "869b3ba89aa6d154bf05a686d524eb1a502ba0380c69825bc1f92efe2866df94",
+      "protected_task116.py": "b64d3d866c7421208971cc4d24b5b14368d06df0ea6861abf855e0b2b29a7cf5",
+      "protected_task139.py": "a7db8a796d488202daf99d7f475fcc0066f7229040a306d43e6f7fa0a62ac745",
+      "protected_task2.py": "6936610fda667534786fdb896f814c067db41b408012ecc47576babb6ff844c6",
+      "protected_task20.py": "719a3f7b38e1e8560f95793ab89ccad27c925ecea4c5aa7d8e8ff994d56f061b",
+      "protected_task62.py": "f3d0f7c1792a8b93c134874fc29b20efb975106f40344d78f52adda6e6d7323d",
+      "protected_task_registry.py": "5f125b14e468547d6727b947a82b72f3b4b674cb4776609afdf5bf7fe6fd5f2f",
+      "protected_value_contract.py": "9b077cd97a2b389ac7a341592036efd0b917a1401d1a0e1842aaea1e25bfc597",
+      "protected_value_runner.py": "7622f30fc6443b3fd2460d4abc5fba39f0eabfd1dda24d20af05e8cee2cd3aa9",
+      "protected_value_worker.py": "824f1a14b87e35a47a5354bb1b9360dc7209ba0a5501aa22b1fd6ef8e88f7e1e",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "b1fc00823db5b850ad9fb160b75cb2c3e3850d2a3efc934c81362e9a27e56140",
+      "qpy_decoder.py": "888a52301ac06029f600cc81e9c5cf034f60490ff970fa88c73b6057e290abc6",
+      "reference_scan.py": "cfd70148beacd8b6d4d729695ef3d0de80ed36e122b754a38d831414108d3fdd",
+      "request_evidence.py": "a10ad7d24555f05675ab150d17217e343d5c9793475978fdc2affb85a3976f58",
+      "request_headers.py": "53713473e055d6a4cdf9b0160853ff4780080dac5cdf5240a20b55e1381d5194",
+      "run_abandonment.py": "db8624575908d8f3fc52fd24c1741db1e280b2360cdb1bb74d6aac43d5dd0ee4",
+      "sample_metrics.py": "bb6327c2a77834a08ed990f3cd56959848b67a46424f3bb1757fd0b64e280e11",
+      "sandbox.py": "74833b142c5168cd4dce810be839ba58712bbd3b92d9e57f6cba4d248254819a",
+      "scientific_wire.py": "c720b11bfa459cd312f4e7dea085bf40a7236de2fb2f0bdac70c7c5db45063a1",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "task108_revision.py": "0a3268a9d4e05197911ff0e618d9d655172c4fd9a530f25c2547f6c2f678652e",
+      "task117_revision.py": "22e5dd8d5c0a3f393932401643169f6c2a5b858ed28e612157423878ec2a50f7",
+      "task11_revision.py": "c0705cebe83502e0f6868450b5a805327bbee342b88aeff957670f47f694cbf1",
+      "task11_sources.py": "01301b60c861188292a119dfe92142eaa53e5d472c8009481e3e0c41818d0059",
+      "task12_revision.py": "70796c79a802bf94d6f8610cfdd701c920da69fe32488201fa4b29af0120461f",
+      "task149_revision.py": "e8dc98d48469f3048b83b35fb909943cd4d9d12c46f5037910600551a44fa9ba",
+      "task41_revision.py": "ebbeb1ee2e33310b16ca7b9940ff690422c7bfb3346a70202d4896ceef7eb599",
+      "task50_revision.py": "64f2a200d1ba226f349836399a1ad0baf92723aaa80043ac2055cce3e263944f",
+      "task66_revision.py": "c91649894a1c9280b59684bd8c948ab3953287b4d59cecccfa1bbe50074e8050",
+      "task66_sources.py": "9b8ffdfc757af5aede11f5fd251af4adf7ac0be17d8a7292f1dfc3874133e42f",
+      "task_admission.py": "6d74981080635e22a833cc4c66c31d03846f49f0acc2be45ad92f980903948e3",
+      "transport.py": "e4e1bbc8c8930a7fdb58cbc5d4de7d1c5b882b1f81e020e97c7fa34b6289c6f1",
+      "upstream.py": "19a0d016fdea4ef4132dcf7c547281ef97517abdc993190b4767ca1cea38f32c",
+      "upstream_evidence.py": "342f1ab9f2294109a828faeba020c9bdfc7bbabee781abb36684a4d70efd1fd1",
+      "upstream_graph_process.py": "343d649dc9187cc5364f97dfbe6c2eaa56a0fb7e2ac073e7fd9e6390be3a1c8e",
+      "upstream_process.py": "b6582742fbfc4b90137b40a190c2b580622b6a6940f171eee31ba5975cc00d16",
+      "value_wire.py": "a11eeff9a9635bdc63c5779015c92ca118e4ec3baa14a71f01b0432300c80211",
+      "worker.py": "da22781001f0d7ad7f23c193a4ff04365caa861784f7e95d3453c99edc50016b"
+    }
+  },
+  "global_phase_samples": 65,
+  "graph_expectation": "Measure encoding support without fallback; encoder WireError is separate from semantic correctness. Decode/protocol errors abort verification.",
+  "graph_limits": {
+    "array_bytes": 524288,
+    "depth": 128,
+    "edges": 100000,
+    "matrix_bytes": 524288,
+    "message_bytes": 16777216,
+    "nodes": 100000
+  },
+  "kind": "graybench_task66_state_plan_v1",
+  "matrix_entry_mutants": 128,
+  "public_tasks": [
+    "9d8b6eeb3b24ca560bc15ea671e365782172cc5c501287deb03211872e275ed4",
+    "59d7e661f23b3e0ddaac988db9bd5eeee5bb6ec0eebac119fa3cc1c67d7c4856"
+  ],
+  "recorded_graph_projection": "Node-kind counts, resource-bound booleans and verdicts; autogenerated SDK names/UUIDs and raw graph bytes are not replay-bound",
+  "requirement_sha256": "060e76b061967756fbafba63a7e67b9f3be3dfd9eade77617b75cdc206bb6bd5",
+  "revised_tasks": [
+    "de21fe906d1e9f4a2ddd1923b0f380d133d68f818144ba8996602a436198f829",
+    "820f12b34e7b9345d6f7d445389d4ea8c174efedc25c646062be7e2bcc30a03d"
+  ],
+  "scripts": {
+    "task66_state_controls.py": "68b37fe755b50f5684eba14598c62f12159acd4ee48c15d272a1be6dc39d608f",
+    "task66_state_verification.py": "189d7367e87526854b0d6595e9a7978aa90bd394dedd97927192c3e4d13ae326"
+  },
+  "source_tasks": [
+    "bae918da0932fdcc5522fdfff18a9a4c2b4092c0e02cf6896c4778edd32ea211",
+    "d5e8ffe3c153b6147ff2a24533653cbcddf815ab43bc157d5e10704d274db6be"
+  ]
+}

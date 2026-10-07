@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "source_revision": "22a5f1ac9ae29e855242ddd2b7a59062e31b604b",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "plan_sha256": "04d67f997a637cebe8376e13294dcf4c85e50825e4f84e261476406a821b6055",
+  "archive": {
+    "path": "results.jsonl.gz",
+    "bytes": 2397198,
+    "sha256": "db10b31202993cef79d81d81765f5ad0647b491133d4102e8d6cd7e7ed7fdb8e"
+  },
+  "raw_log": {
+    "bytes": 40030553,
+    "sha256": "a7bbefeb705f6b9d578ee4ee1ef4b1bddb7493ee13cb1ee5adc9f528040e8f69",
+    "chain_head": "5ec82240dd3dbc4fa7570716535eb886849306c61931d99e8bfcb226d2d240fc",
+    "recorded_controls": 16,
+    "outcomes": {
+      "pass": 6,
+      "fail": 8,
+      "candidate_error": 2
+    }
+  },
+  "publication_eligible": false
+}

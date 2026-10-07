@@ -1,0 +1,42 @@
+{
+  "kind": "graybench_worker_encoder_integrity_probe_v1",
+  "purpose": "Local worker-integrity diagnostic; not protected judgment or model scoring",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "script_sha256": "adb2b71fc42ec89a6fa8a0a437429508467bfe0e3f39fcb5204efcd3ef9c9a41",
+  "source_manifest_digest": "3ec20f5052a6fbdb048796c119a9774bc529814b4c16e3874f13116eaadee880",
+  "cases": {
+    "ordinary_wrong_state": {
+      "raw_candidate_amplitudes": [
+        "0j",
+        "(1+0j)",
+        "0j",
+        "0j"
+      ],
+      "reconstructed_amplitudes": [
+        "0j",
+        "(1+0j)",
+        "0j",
+        "0j"
+      ],
+      "trusted_reconstructed_value_check": "fail",
+      "wire_value_sha256": "bc0d0835cb24d47b093d20d917193528787fb3409055e59cbef3e1f3215aaaf1"
+    },
+    "patched_encoder": {
+      "raw_candidate_amplitudes": [
+        "0j",
+        "(1+0j)",
+        "0j",
+        "0j"
+      ],
+      "reconstructed_amplitudes": [
+        "(0.7071067811865476+0j)",
+        "0j",
+        "0j",
+        "(0.7071067811865476+0j)"
+      ],
+      "trusted_reconstructed_value_check": "pass",
+      "wire_value_sha256": "59eca2c052c00dfe7aefeca7ef8bf6a9845d1a1190464b4151283765ce286da6"
+    }
+  }
+}

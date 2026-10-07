@@ -1,0 +1,34 @@
+{
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "exit_code": 0,
+  "stdout": "{\"checks_passed\": [\"overlap_owner_and_in_place_return\", \"writable_view_of_readonly_owner\", \"numeric_type_int32\", \"numeric_type_uint32\", \"numeric_type_int64\", \"numeric_type_float32\", \"misaligned_storage\", \"malformed_storage_rejected\"], \"numpy\": \"2.2.4\", \"probe_sha256\": \"24c9b5f2e27bb154b45833eb84649b75a30ce40f1639b09a063a3abb3d25c64a\", \"production_bridge_integrated\": false, \"python\": \"3.12.14\", \"qiskit\": \"2.4.2\", \"scope\": \"standalone_graph_development_probe\", \"source_sha256\": {\"circuit_wire.py\": \"9cf4c9449d01bf441d985514af21e692ff63008203d88aaf77a9af321bfcc8ec\", \"graph_numeric.py\": \"c3b4bb82ecc4f58cff19c32c23702fb1ac8329e25c2ede99df744cd8cdd9e02a\", \"graph_types.py\": \"f5c4016ce29f00d76c145bd512b0d9486bd4b3333011a270a27933077dec2525\", \"graph_wire.py\": \"0f2c398402609aea5238e1b0e1d54cef6a9d5d03ef53c4a3f5536f5a1b7f630b\", \"scientific_wire.py\": \"99816e5ecd495f470e4168a2dbabd1db0e24bdcaa1d93fde1feec0c81d22d61d\"}, \"system\": \"Linux\"}\n",
+  "stderr": "",
+  "mount_scope": "five numeric graph dependency modules plus trusted probe, readonly",
+  "candidate_generations": 0,
+  "result": {
+    "checks_passed": [
+      "overlap_owner_and_in_place_return",
+      "writable_view_of_readonly_owner",
+      "numeric_type_int32",
+      "numeric_type_uint32",
+      "numeric_type_int64",
+      "numeric_type_float32",
+      "misaligned_storage",
+      "malformed_storage_rejected"
+    ],
+    "numpy": "2.2.4",
+    "probe_sha256": "24c9b5f2e27bb154b45833eb84649b75a30ce40f1639b09a063a3abb3d25c64a",
+    "production_bridge_integrated": false,
+    "python": "3.12.14",
+    "qiskit": "2.4.2",
+    "scope": "standalone_graph_development_probe",
+    "source_sha256": {
+      "circuit_wire.py": "9cf4c9449d01bf441d985514af21e692ff63008203d88aaf77a9af321bfcc8ec",
+      "graph_numeric.py": "c3b4bb82ecc4f58cff19c32c23702fb1ac8329e25c2ede99df744cd8cdd9e02a",
+      "graph_types.py": "f5c4016ce29f00d76c145bd512b0d9486bd4b3333011a270a27933077dec2525",
+      "graph_wire.py": "0f2c398402609aea5238e1b0e1d54cef6a9d5d03ef53c4a3f5536f5a1b7f630b",
+      "scientific_wire.py": "99816e5ecd495f470e4168a2dbabd1db0e24bdcaa1d93fde1feec0c81d22d61d"
+    },
+    "system": "Linux"
+  }
+}

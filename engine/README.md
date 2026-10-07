@@ -1,0 +1,535 @@
+# GrayBench replacement engine
+
+A Python 3.12 implementation of the [reliability plan](../docs/RELIABILITY_PLAN.md).
+This engine is under development and is **not certified for model ranking**.
+The root-level V2 package and its pilot results remain historical evidence.
+Engine version 3 and graph protocol 4 are different version identifiers.
+
+The source-bound [Task 11 state-action condition](../docs/reliability-evidence/task11-statevector-action-development.md)
+is selected explicitly with `qhe11-statevector-action-graph-v1`. It checks varied
+unitary input circuits against independently derived states and permits equivalent
+phase and input mutation. The original fixed-example false pass remains archived;
+this development condition still needs isolated qualification and independent admission.
+
+The separate [Task 12 complete-operator condition](../docs/reliability-evidence/task12-explicit-operator.md)
+resolves an ambiguous Bell-preparation prompt with an explicit full-matrix contract.
+It uses logical numeric values without hidden array-ownership requirements and
+publicly specifies phase alignment. Host controls pass; isolated qualification
+and independent admission remain pending, so it is release-ineligible.
+
+The separate [Task 41 subsystem condition](../docs/reliability-evidence/task41-explicit-subsystems.md)
+resolves conflicting Pauli labels and a previously undisclosed qubit placement.
+It checks the complete operator and dimensions under a public value contract;
+its host evidence passes, while isolated qualification and independent admission
+remain pending.
+
+The separate [Task 66 symmetric-state condition](../docs/reliability-evidence/task66-symmetric-w.md)
+is selected with `qhe66-symmetric-w-measurement-graph-v1`. It checks the complete
+W-state density and terminal measurement map under a public contract. Its authored
+host controls now all transfer and agree with direct judgments, including both
+correct initialization constructions. See the [initialization transport evidence](../docs/reliability-evidence/initialize-transport.md).
+Isolated qualification and independent admission remain pending.
+
+The [Bell-shot diagnostic](../docs/reliability-evidence/bell-shot-diagnostics.md)
+quantifies shot-count sensitivity and missing obligations in Tasks 1, 14, 15 and
+31. It runs source-bound checks on trusted data, preserves original tasks, and
+does not attest sampler execution or seeded runtime behavior.
+
+New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
+The runner, ledger writer and report verifier bind each verdict to its stored
+answer and frozen task/judge cohort, and check declared trusted terminal captures.
+An inconsistent returned verdict remains an unscored infrastructure error with
+its rejected evidence preserved. Historical bare judgments stay visibly unbound;
+this consistency check does not certify an oracle or authenticate a ledger owner.
+
+## Start here
+
+Run from this directory:
+
+```sh
+uv sync --locked --extra dataset --extra qiskit
+uv run graybench doctor
+uv run graybench inventory ../data/datasets
+uv run graybench --help
+```
+
+`inventory` imports the pinned 151 normal and 151 hard records and emits review
+cards. Loading records or passing their reference tests does not admit them for
+publication. The offline cohort excludes eight explicit service-dependent
+families per suite, leaving 143 tasks each. See the
+[complete graph reference scan](../docs/reliability-evidence/reference-scan-38db7fa.md).
+`admission-inventory CACHE OUTPUT` writes a separate, content-addressed
+protected-track review artifact with all 302 records pending. It keeps pinned
+task ancestry, known findings, external-service status, and slots for revised
+public contracts, positive and wrong-answer controls, and two independent
+reviews. An empty structural checklist is not external verification;
+`publication_eligible` remains false.
+
+`oracle-review-inspect REVIEW.jsonl CACHE` checks a completed local authored
+control run against the pinned task bytes. It verifies the event chain, case
+identities, recorded expectations, source-manifest digest, and consistency of
+the recorded judgments. Unexpected outcomes are listed rather than discarded.
+Its `locally_verified` field means only internal consistency with pinned task
+ancestry. A holder can rewrite an unsigned chain; the command cannot establish
+semantic adequacy, reviewer identity, independence, or publication eligibility.
+For the revised task-2 and task-20 value contracts, run the predeclared local
+controls against an immutable Docker image:
+
+```sh
+uv run graybench protected-oracle-review CACHE REVIEW.jsonl --suite both --image sha256:IMAGE_DIGEST
+uv run graybench oracle-review-inspect REVIEW.jsonl CACHE
+```
+
+The header freezes each source-bound protected judge manifest before any
+candidate control executes. Inspection verifies every observed judgment against
+that declaration. A failed or changed judge leaves an incomplete log. These
+controls exercise numeric value semantics only, never native-object behavior.
+The separate [task-62 BB84 value revision](../docs/reliability-evidence/protected-task62-bb84-value.md)
+uses explicit selection and its own source-bound [control bundle](../docs/reliability-evidence/artifacts/task62-protected-value-2026-09-28/README.md):
+
+```sh
+uv run --locked graybench protected-oracle-review CACHE TASK62.jsonl --suite both --task 62 --image sha256:IMAGE_DIGEST
+uv run --locked graybench oracle-review-inspect TASK62.jsonl CACHE
+```
+
+The task-62 result is a protected amplitude-value condition, not a native
+`QuantumCircuit` score. It remains development-only and publication-ineligible.
+
+The separate [task-116 evolution matrix-value condition](../docs/reliability-evidence/protected-task116-evolution-value.md)
+supports explicit `--task 116` control selection in both suites and task-116
+selection in protected plans. It checks complex matrix values while permitting
+equivalent algorithms; it changes the original circuit-return contract and
+does not attest native objects or synthesis routines. Its authored local
+controls and mathematical calibration are development evidence. Isolated
+qualification and independent admission remain pending.
+
+Inventories written now use schema 3: they freeze the known-finding registry
+and its digest alongside the historical creator-source digest. Validation
+re-reads exact pinned task bytes and checks every card against that frozen
+registry. Historical schema-2 inventories remain readable against their
+original findings, while schema 1 retains its original current-source check.
+To carry review work forward after a new finding, use
+`admission-refresh-findings OLD_INVENTORY CACHE NEW_INVENTORY`; it refuses to
+erase a historical finding. A legacy JSON inventory that omits
+`schema_version` remains schema 1. To inspect local authored controls against
+the entire inventory, run:
+
+```sh
+uv run graybench admission-control-audit INVENTORY.json CACHE AUDIT.json REVIEW1.jsonl REVIEW2.jsonl
+```
+
+The exclusive, content-addressed audit lists all 302 task cards, including
+those with no controls, and names each control's artifact, case, task, expected
+and actual outcome, and judge digest. It does not fill requirement evidence or
+review attestations, infer semantic adequacy, or admit tasks. The saved control
+logs must be available separately to reverify the audit.
+The [committed local evidence bundle](../docs/reliability-evidence/artifacts/admission-2026-09-28/README.md)
+includes its inventory, three control logs, and exact schema-5 audit. With a
+pinned dataset cache, `admission-bundle-verify BUNDLE CACHE` checks file hashes,
+re-inspects every log, and recomputes the saved audit byte for byte. A matching
+bundle is reproducible local evidence, not independent attestation.
+The verifier reports separately how many declared-judge controls match the
+inventory's engine source and how many come from a different engine source.
+It also says whether the inventory source matches the engine running the
+verification command. A bound historical control is preserved as evidence;
+it is not a current-source control merely because its judge digest matches.
+The summary separates authored wrong controls that passed, authored correct
+controls that failed, and other mismatches such as timeouts.
+Report schema 5 verifies any recorded judge manifest against its digest and
+requires a judge manifest predeclared in the log header, plus an exact
+card-bound protected judge digest, before a control can support a requirement.
+The judge identity includes the oracle and private cases, so an earlier oracle
+cannot qualify merely because it shares a public contract. A matching
+declaration is local, unsigned evidence, not independent attestation.
+The [task-62 admission successor](../docs/reliability-evidence/artifacts/admission-task62-protected-2026-09-28/README.md)
+adds two protected value cards and a fourth source-bound control log. It
+retains unresolved native findings and independent-review blockers; its
+58 controls on ten cards are still development evidence, not a ranking.
+The later [one-source protected-control successor](../docs/reliability-evidence/artifacts/admission-current-controls-2026-09-28/README.md)
+replays tasks 2, 20 and 62 under one engine source. Its verifier separates
+42 inventory-source bound controls from the historical upstream observations;
+it still admits no task and publishes no score.
+
+## Execution conditions
+
+| Selection | Behavior | Current limitation |
+|---|---|---|
+| `upstream` (default) | Historical protocol-3 value transport and exact pinned tests | Known object-identity verdict defects; retained for explicit historical conditions |
+| `upstream-graph-v4` | Protected protocol-4 judge with complete graph snapshots | Incomplete SDK coverage and resource calibration; candidate snapshot substitution is not attested |
+| `upstream-graph-delta-v1` | Same graph validation with changed-record transport | Reduces wire traffic; still cannot attest a candidate's native return object |
+| Named semantic revision | Explicitly revised task contract/test, frozen before generation | Development-only; not an upstream score or complete task certification |
+| `qhe-pinned-native-v1` | Candidate and original pinned test run in one isolated Python/Qiskit process | Preserves native semantics, but same-process candidate code can inspect or tamper with tests; development-only |
+
+There is no automatic fallback between these conditions. Semantic revisions
+currently cover tasks 0, 2, 50, 63, 82, 108, 113, 116, 117, 120, 141 and 149. See
+[evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md),
+[gate revisions](../docs/reliability-evidence/gate-semantics-revisions.md), and
+[the registry](src/graybench/evaluation_recipes.py) for exact names and family checks.
+
+The [task-50 circuit editing condition](../docs/reliability-evidence/task50-position-removal-development.md)
+freezes the revised public requirement before generation, permits both copied
+and modified input circuits, and tests every position across 25 authored inputs.
+It uses graph protocol 4 and remains development-only pending isolated controls
+and independent admission; it does not replace the pinned native test.
+
+The [task-108 Choi condition](../docs/reliability-evidence/task108-protected-graph-design.md)
+checks all three returned matrices across 19 input pairs, with independently
+computed channel adjoints and compositions. Its public numerical rules and
+resource bounds are frozen before requests. It retains full graph history,
+uses delta transport, and remains development-only pending isolated controls
+and independent admission. Select `qhe108-choi-values-graph-v1` explicitly.
+
+The [task-117 unitary condition](../docs/reliability-evidence/task117-unitary-basis-development.md)
+checks the supplied operator and expanded CX basis across 15 inputs, permits
+global phase and equivalent decompositions, and does not require CX for identity.
+Its 48 authored controls include an independent QR/Givens implementation. The
+judge evaluates supplied definitions without synthesizing opaque two-qubit
+matrix instructions. Select `qhe117-unitary-basis-graph-v1` explicitly; isolated
+controls, resource calibration and independent admission remain pending.
+
+The separate [task-117 v2 resource condition](../docs/reliability-evidence/task117-nesting-resource-condition.md)
+keeps the same task and checker while freezing graph depth 128 to carry the
+declared circuit nesting. V1 retains its historical depth ceiling of 32.
+Select `qhe117-unitary-basis-graph-v2` explicitly; resource conditions have
+different judge identities and cannot be combined in one score.
+
+The [source-bound matrix conditions](../docs/reliability-evidence/matrix-semantics-development.md)
+cover Pauli evolution, diagonal action and circuit-to-Gate action under explicit
+contracts. Select `qhe116-evolution-graph-v2`, `qhe120-diagonal-graph-v2` or
+`qhe125-gate-action-graph-v1` separately. Canonical evolution's native matrix
+storage still requires runtime qualification; these conditions remain development-only.
+
+The graph bridge is implemented and opt-in. It uses separate persistent arenas in
+candidate and trusted judge containers; the host relays bounded data without
+constructing candidate-supplied Qiskit objects. Its retained references, cycles,
+mutation and selected SDK cache/owner semantics repair the six preserved identity
+fixtures from the value-only bridge. Candidate code still shares a process with
+its graph snapshot encoder and can substitute the serialized value; the
+[protected task-2 probe](../docs/reliability-evidence/protected-worker-encoder-integrity.md)
+reproduces that false pass. Thus graph transport does not establish arbitrary
+Python or Qiskit equivalence or native-object integrity. See
+[protected graph scope](../docs/reliability-evidence/protected-graph-development.md),
+[delta transport](../docs/reliability-evidence/graph-delta-transport-development.md),
+and [live capture validation](../docs/reliability-evidence/graph-live-capture-development.md).
+
+Protected-track candidates have no private tests or reference answers mounted.
+Native-track candidates share a process with the pinned test; this limitation is
+recorded in each judgment. Neither track mounts credentials or the Docker socket.
+Runtime images must use immutable local `sha256:...` IDs. Protected candidate
+processes freeze between calls. Bootstrap and active-wall-time accounting are
+explicit; resource ceilings remain subject to calibration. Candidate output has
+no verdict authority. Unsupported interfaces and judge infrastructure failures
+remain unscored blockers. Basic exception type/argument transport is bounded;
+arbitrary exception metadata is not supported.
+The [runtime reproduction recipe](runtime/README.md) freezes Debian packages
+and checks a rebuilt image against the historical evaluator's installed-package
+fingerprint. Matching that fingerprint does not certify benchmark scores.
+
+## Campaigns and provenance
+
+Adapters cover Ollama, OpenAI Chat Completions, OpenAI Responses, Gemini and a
+development-only OpenAI-compatible Chat route. The latter has no assumed
+metadata endpoint, requires an explicit unverified-discovery exception and
+endpoint verification for any requested settings, and remains
+publication-ineligible; see the
+[compatibility route](../docs/reliability-evidence/openai-compatible-development.md).
+OpenAI-compatible endpoints have explicit base URLs and model IDs; additional
+native adapters use the `graybench.adapters` entry-point group. This is an
+extension mechanism, not verified support for every model. Exact endpoint/model
+settings need evidence. An accepted request setting is not proof the provider
+honored it. No default helpful prompt, answer repair or hidden retry is added.
+For a new API-backed campaign, the model specification must also declare a
+public `credential_scope_id` such as `openai/project/graybench-evaluation`.
+This is an operator label, not a credential or an independently authenticated
+account ID. Use a provider/namespace/label form; a loaded key cannot occur
+inside the label. Keep the key only in
+`credential_env`. The transport records the
+scope and a digest and length of the exact JSON bytes passed to HTTPX, while
+recording only the names of authentication headers. New campaign plans freeze
+one dispatch per sample; ambiguous 5xx responses stop the run without an
+automatic replay. Historical manifests remain readable with their earlier
+retry policy and without a scope label. New native and protected runs also
+reject hand-edited retry policies at ledger creation. Older development tracks
+retain their frozen retry conditions and cannot be reported as either new track.
+When that environment variable is loaded, validation rejects its value in
+public campaign setups, protocols, run contexts, prepared requests and paths,
+model observations, deliveries and judgments before any ledger write or model
+dispatch. Keep credentials out of public task inputs and adapter settings;
+this check applies to the credential named by the model spec.
+For response evidence, the transport separately hashes bounded encoded HTTP
+entity bytes and decoded JSON bytes. It requests identity encoding and also
+accepts bounded gzip and deflate responses. Already-decoded injected responses
+cannot claim an encoded hash. See the
+[response capture audit](../docs/reliability-evidence/response-entity-capture.md).
+Successful provider responses and discovery metadata with duplicate JSON keys
+remain recorded but are operationally ambiguous; they cannot become answers or
+observed model identities. Capability-probe replay applies the same rule.
+The transport also uses the supplied adapter instance for authentication and
+discovery; see the [adapter consistency audit](../docs/reliability-evidence/adapter-instance-consistency.md).
+New prepared requests freeze the non-secret headers GrayBench sends and the
+names of supported credential fields. The transport checks HTTPX's built
+request before network dispatch and records its non-secret headers; see the
+[request-header audit](../docs/reliability-evidence/public-request-headers.md).
+New requests and campaign protocols also bind a local adapter-code manifest;
+see the [adapter provenance audit](../docs/reliability-evidence/adapter-code-provenance.md).
+
+`campaign-plan` freezes selected tasks, requests, an explicit evaluation recipe
+and `--extraction`. The default `raw_or_single_python_fence_v1` is retained.
+The separate `unique_entrypoint_fence_v2` development condition can select
+the sole Python block defining the public entry point from a multi-block
+answer; duplicate alternatives and malformed fences reject. The selected
+method and exact judge policy are retained in judgment evidence and cohort
+identity. This is a labeled formatting-sensitivity condition, not an
+automatic retry or repair. See the [extraction policy evidence](../docs/reliability-evidence/extraction-protocol-v2-development.md).
+The separately versioned `unique_entrypoint_fence_v3` also recognizes
+zero-to-three-space-indented backtick fences; its ambiguity controls and
+[development evidence](../docs/reliability-evidence/extraction-protocol-v3-development.md)
+remain distinct from both earlier policies. A small
+[hosted provider check](../docs/reliability-evidence/hosted-generation-conformance-2026-09-27.md)
+records real OpenAI and Google attempts without a certified score.
+The [Ollama provider check](../docs/reliability-evidence/ollama-generation-conformance-2026-09-27.md)
+records a separately frozen local run with the same task family and release
+limitations.
+Published 101-task Qiskit HumanEval results and why they cannot yet be compared
+to this 151-task condition are recorded in the
+[external baseline review](../docs/reliability-evidence/external-baseline-comparability.md).
+`campaign-create` saves the validated setup without generating answers.
+`campaign-step` performs at most one scheduled generation or protected judgment;
+it may make a billable request. `campaign-observe` records provider metadata.
+`abandonment-plan` and `abandon-run` provide an explicit terminal path for
+incomplete runs after workers have stopped. They preserve the frozen snapshot
+and all original evidence, block subsequent execution and keep scores withheld.
+See [run abandonment](../docs/reliability-evidence/run-abandonment.md) for the
+operator declaration, irreversible closure and historical verification limits.
+`native-plan` freezes one pinned normal or hard suite, an immutable image,
+exclusions, extraction policy, requests and judge limits. Its default
+`offline_143` population excludes the eight known external-service tasks;
+`custom_development` requires explicit `--task` keys and cannot be labeled a
+143-task score. `native-create` saves the run without generation, and
+`native-step` performs at most one generation or native judgment. A step may
+make a billable model request. Run `campaign-observe` with the native ledger to
+record provider metadata. For example:
+
+```sh
+uv run graybench native-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'pinned normal offline' --suite normal --image sha256:IMAGE_ID
+uv run graybench native-create SETUP.json CACHE LEDGER.sqlite
+uv run graybench campaign-observe LEDGER.sqlite RUN_ID
+uv run graybench native-step LEDGER.sqlite RUN_ID CACHE
+uv run graybench summary LEDGER.sqlite RUN_ID
+```
+
+The default `raw_or_single_python_fence_v1` extraction accepts a raw normal
+function-body suffix or a complete replacement function (and one Python code
+fence). For a **normal-suite exact prompt suffix** condition, add
+`--extraction exact_prompt_suffix_v1` to `native-plan`. That condition
+concatenates the public prompt and raw response without choosing a code block
+or replacing the prefix. Valid top-level helpers and replacement definitions
+remain possible when they form valid Python, as with ordinary code completion.
+It is unavailable for hard tasks, whose
+public contract requests a standalone function. Plans and reports expose the
+policy, and comparisons reject different policies; see the
+[answer-format evidence](../docs/reliability-evidence/native-answer-format-conditions.md).
+
+Native plans also freeze an exception policy. The default
+`conservative_unattributed_v1` preserves historical behavior: when a pinned
+test raises a non-assertion exception after the candidate returns, the outcome
+is `infrastructure_error` and the run remains unscored. Add
+`--exception-policy test_exception_is_failure_v1` to count a completed
+test-phase exception as a failed candidate answer. Candidate-code exceptions
+remain `candidate_error`; Docker, timeout, missing-result and result-integrity
+failures retain their separate outcomes. The selected policy is bound in the
+cohort, protocol and judge manifest, shown in summaries, and cannot be mixed
+in paired comparisons. Both conditions remain development-only. The
+[286-case diagnostic](../docs/reliability-evidence/native-null-return-screen.md)
+shows why the distinction matters; task admission must still establish oracle
+adequacy and stability before either condition can support publication. The
+[policy record](../docs/reliability-evidence/native-exception-policy.md)
+defines both outcomes and their limits.
+
+`native-reference-scan` runs pinned canonical answers through the same native
+judge without making model requests or scores. It writes a new append-only,
+source-bound evidence file; an existing path is never overwritten. By default
+it scans the 143 offline tasks in one suite. Use repeated `--task` keys for a
+declared subset, or `--include-external` to deliberately include the eight
+service-dependent tasks. The extraction policy must be supplied explicitly.
+Use `--exception-policy` to calibrate the same exception condition as a native
+plan; omission selects the historical conservative condition.
+Normal exact-suffix and hard standalone conditions
+remain separate:
+
+```sh
+uv run graybench native-reference-scan CACHE NORMAL.jsonl --suite normal --image sha256:IMAGE_ID --extraction exact_prompt_suffix_v1
+uv run graybench native-reference-scan CACHE HARD.jsonl --suite hard --image sha256:IMAGE_ID --extraction raw_or_single_python_fence_v1
+uv run graybench reference-inspect NORMAL.jsonl
+```
+
+One canonical pass establishes only that the pinned test can execute that
+reference once in the specified image. It does not establish test stability,
+oracle adequacy, or publication eligibility. See the
+[native calibration evidence](../docs/reliability-evidence/native-reference-calibration.md).
+
+The native report names exactly one suite, population and denominator. It never
+combines normal and hard, and `publication_eligible` remains false until task
+admission and independent reproduction are complete.
+
+`protected-plan` supports separately versioned value contracts for task 2
+(Bell amplitudes) and task 20 (GHZ amplitudes) as development examples. One or
+both may be selected with repeated `--task` arguments in a single normal or
+hard suite. It freezes the revised public contracts, private semantic cases, a
+pinned image, exact provider requests, and an explicit exclusion for every
+unscheduled task before generation. The candidate returns bounded numeric
+values; the trusted host checks them without treating them as proof of native
+Qiskit objects or construction steps. `protected-create` records the plan
+without a model request, and `protected-step` performs at most one generation
+or judgment. A generation step may be billable. For example:
+
+New task-20 plans select the `task20-seven-qubit-ghz-amplitudes-all-layouts-v2`
+oracle. It tests all 210 ordered layouts allowed by the public value contract.
+The earlier three-layout v1 oracle remains separately identifiable for saved
+development evidence; its score is not interchangeable with v2. See the
+[versioned control replay](../docs/reliability-evidence/task20-all-layouts.md).
+
+```sh
+uv run graybench protected-plan MODEL_SPEC.json CACHE SETUP.json --name trial --label 'two value tasks' --suite normal --task normal/qiskitHumanEval/2 --task normal/qiskitHumanEval/20 --image sha256:IMAGE_ID
+uv run graybench protected-create SETUP.json CACHE LEDGER.sqlite
+uv run graybench campaign-observe LEDGER.sqlite RUN_ID
+uv run graybench protected-step LEDGER.sqlite RUN_ID CACHE
+uv run graybench summary LEDGER.sqlite RUN_ID
+```
+
+This example has a two-task `custom_development` denominator, not an unchanged
+QHE or 143/151-task score. Selecting only one task gives a one-task denominator.
+All 302 pinned source cards remain pending independent admission review; see
+the [task-2](../docs/reliability-evidence/protected-task2-value-development.md)
+and [task-20](../docs/reliability-evidence/protected-task20-value-development.md)
+development evidence.
+Use each command's `--help` for required arguments. See
+[model discovery](../docs/reliability-evidence/model-discovery.md) and
+[evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md).
+For task 82's explicit `task82-file-semantic-v1` or `task82-file-semantic-v2`
+recipe, `campaign-plan --parser-image sha256:...`
+freezes a separate patched QPY parser runtime while candidate and oracle use
+`--image`. This remains a development-only recipe; see the
+[task 82 evidence](../docs/reliability-evidence/task82-semantic-track.md).
+
+The append-only ledger binds schedules, requests, returned answers, judgments,
+artifacts and event history. Source, environment, image and configuration
+identities are recorded. Ambiguous dispatch or interrupted judgment blocks
+automatic replay. Provider name and discovery checks detect specified metadata
+changes; they cannot verify proprietary model weights. Development discovery is
+required before campaign dispatch for adapters with metadata endpoints. An
+adapter without one may use a frozen, reasoned `unverified_development` exception;
+those runs retain a publication blocker. Live capability calibration remains
+required for release.
+
+Model specs may include an exact-model `capability_profile` with dated
+documentation, request-probe digests, declared control support and token
+limits. Its digest travels with new prepared requests. Reports distinguish
+this operator evidence from effective settings, which remain unattested by a
+successful request alone. See the
+[capability evidence contract](../docs/reliability-evidence/provider-capability-evidence.md).
+`capability-probe MODEL_SPEC OUTPUT` makes one non-benchmark provider request
+and saves a non-secret record. All three plan commands accept repeated
+`--capability-probe PATH` arguments and embed every cited accepted probe in
+their setup. A bare digest cannot qualify a new campaign. The local record
+verifies request acceptance and consistency, not effective decoding or provider
+weight identity.
+
+`verify-ledger` validates retained evidence. `summary` reports completeness and
+score blockers before accuracy. `comparison-plan` and `compare` accept matched
+historical, native, or protected-semantic setup files and retain paired task
+families during resampling. They reject mixed tracks, suites, populations,
+exclusions, judge conditions and incomplete source/request ancestry. Results
+remain development-only and do not certify equivalent provider settings. See
+[report integrity](../docs/reliability-evidence/summary-integrity.md),
+[row bindings](../docs/reliability-evidence/event-row-bindings.md), and
+[comparisons](../docs/reliability-evidence/paired-comparisons.md) and the
+[dual-track comparison audit](../docs/reliability-evidence/dual-track-comparison.md).
+`metrics-plan`, `metrics` and `metrics-verify` freeze and replay repeated-sample
+reports, keeping pass@1 distinct from pass@k opportunity metrics. They require
+enough planned samples for every k and withhold all scores for incomplete
+cohorts. Global averages use equal task weights; descriptive family breakdowns
+retain actual record counts. See
+[repeated-sample metrics](../docs/reliability-evidence/repeated-sample-metrics.md)
+for assumptions, exact arithmetic, separate-track behavior and input commands.
+The opt-in `binary-comparison-plan`, `binary-study-plan`, `binary-study` and
+`binary-study-verify` commands add exact conditional McNemar tests and planned
+Holm correction. They require one sample and one task per independently declared
+family, retain every planned contrast, withhold corrected results if any contrast
+is incomplete, and replay reports from read-only ledgers. Repeats and related
+normal/hard records require cluster-aware analysis. See
+[exact binary comparisons](../docs/reliability-evidence/exact-binary-comparisons.md)
+for assumptions, computational bounds and input formats. These reports do not
+establish independence, preregistration timing or publication eligibility.
+Ledger verification requires each stored artifact's exact canonical JSON bytes;
+a duplicate-key or differently encoded blob cannot pass by hashing to the
+same parsed value.
+Hashes and SQLite append rules are not external authenticity guarantees.
+
+If a protocol 3.3 attempt has a saved post-request model observation but its
+timing check was interrupted, run
+`graybench recover-post-check LEDGER.sqlite ATTEMPT_ID`. The command verifies
+the ledger, appends one timing check using the current clock, and does not call
+the model or repeat the answer. A late or
+backward-clock check remains a timing violation and cannot yield a score.
+Missing post observations and unresolved deliveries require separate
+adjudication; this command cannot synthesize them.
+
+## Reference and regression checks
+
+```sh
+uv run graybench reference-scan CACHE NEW_OUTPUT --image sha256:IMAGE_ID --offline --bridge-protocol 4
+uv run graybench reference-inspect NEW_OUTPUT
+uv run --extra qiskit --extra dataset pytest
+uv run ruff check src tests
+uv run ruff format --check src tests
+```
+
+Replace the uppercase placeholders. Add `--docker PATH` when Docker is not on PATH.
+The reference CLI selects full snapshots for protocol 4; delta reference probes
+currently use the Python API described in the delta document. Output files are
+reserved exclusively and are never overwritten. A pending invocation needs
+adjudication, not an automatic rerun. Reference calibration is not LLM accuracy.
+
+The [loopback campaign checks](../docs/reliability-evidence/loopback-campaign-verification.md)
+exercise all five adapters through real HTTP, persisted setup reconstruction,
+authored value judgment and ledger/report verification in normal and hard.
+They use fixed local fixtures and synthetic credentials, and do not qualify
+live providers or container isolation.
+
+For protected regression tests, set `GRAYBENCH_TEST_IMAGE` to the inspected immutable
+Python 3.12 evaluation image and, if needed, `GRAYBENCH_DOCKER` to its executable.
+Without the image setting, Docker tests skip. On source-manifest digest
+`ea0f22f9f5b30d12fe8f6cb8fa5b23dc1fa174c230489604e8580c302390655d`,
+the complete pinned-image regression before adding four graph-integrity controls
+had 1,130 passed, one experimental skip and two expected failures. An earlier
+focused task-2 protected suite had 18 passed and six expected failures; its
+offline suite had 912 passed and 225 protected skips. These historical expected
+failures preserve [known encoder integrity defects](../docs/reliability-evidence/protected-worker-encoder-integrity.md),
+not a release-ready score. They do not qualify the current source. Current
+offline evidence is recorded in source-bound development bundles such as the
+[evolution value calibration](../docs/reliability-evidence/artifacts/evolution-value-calibration-2026-10-07/README.md).
+Green controls do not establish every benchmark requirement.
+
+The most recent complete graph reference scan is historical: at `77f29ff`, it records **122 pass,
+19 unsupported, one fail and one infrastructure error in normal**, and **123
+pass, 19 unsupported and one infrastructure error in hard**. The extra hard
+pass is task 63's unstable canonical answer, not a compatibility gain. See the
+[complete comparison](../docs/reliability-evidence/reference-scan-77f29ff.md)
+for source, task identities, exclusions, raw outcomes and unresolved cases.
+
+## Remaining admission work
+
+- Complete SDK/interface fidelity and uniform resource calibration, including long
+  repeated-call workloads. No object-history dropping to manufacture a pass.
+- Audit every public requirement with valid alternatives and meaningful mutants.
+  [Known oracle defects](../docs/ORACLE_REVIEW_FINDINGS.md) remain separate from
+  transport compatibility. Task 63's private RNG assumption and task 82's file
+  boundary need explicit conditions or revisions.
+- Validate live provider capabilities, effective settings and model provenance;
+  freeze assistance, budgets, sampling and recovery before a campaign.
+- Complete fresh holdout design, independent reproduction, external release
+  signing and requirement-by-requirement review. Preserve all earlier evidence.
+
+Green tests and passing canonical solutions do not make a benchmark fair or its
+oracles adequate. Publication eligibility remains false until those gates pass.

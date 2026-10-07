@@ -1,0 +1,30 @@
+# Task 62: separate protected BB84 value revision
+
+The [pinned native task-62 probe](artifacts/task62-fixed-oracle-2026-09-28/README.md) demonstrates a concrete false pass: normal and hard tests accept a five-qubit circuit hard-coded for their seeded input even though it ignores both public arguments. The original task and that evidence remain intact. This revision asks for a JSON-compatible amplitude vector instead of a `QuantumCircuit`, under the explicit oracle name `task62-bb84-sender-amplitudes-v1`. It is a different benchmark condition and cannot be represented as a corrected native score.
+
+The public function `bb84_sender_amplitudes(state, basis)` accepts equal-length binary lists of width 1 through 5. For qubit `i`, Z-basis bit 0 or 1 denotes `|0⟩` or `|1⟩`; X-basis bit 0 or 1 denotes `|+⟩` or `|−⟩`. It returns `2**width` `[real, imaginary]` pairs in Qiskit's little-endian amplitude order. The host computes the ideal tensor-product state without using the candidate's implementation. It requires finite components in `[-1,1]`, unit norm, and phase-aligned maximum amplitude error at most `1e-10` with zero relative tolerance. A common global phase is accepted. The normal suite uses a function-completion prefix; hard uses a standalone-function prompt. Qiskit use is allowed, but the protected judge attests only the value, never a circuit object, gate sequence or construction method.
+
+The frozen 124-case set exhausts all 84 binary `state`/`basis` combinations at widths 1–3, includes 32 declared width-4 combinations and eight width-5 combinations. The validator requires the exact ordered case IDs and calls. The source task digest, revised public contract, private case digest, oracle source, runner and worker sources, resource limits, and immutable Python 3.12 runtime image enter the predeclared judge manifest. Candidate code runs in a separate isolated container; the expected values and judge code remain host-side.
+
+A [case-coverage probe](task62-case-coverage-gap.md) now demonstrates an
+input-specific wrong answer that passes all 124 frozen cases but fails on a
+valid omitted width-4 input. The current condition remains development-only;
+the probe does not alter its cases or any recorded verdict.
+
+The separately named `task62-bb84-sender-amplitudes-all-inputs-v2` condition
+keeps the exact public value contract and tests all 1,364 valid binary
+state/basis inputs of widths 1 through 5, ordered by width, state, then basis.
+It is now the default development revision; v1 remains explicitly selectable
+for historical reconstruction. The [v2 control bundle](artifacts/task62-protected-exhaustive-2026-09-28/README.md)
+records 18/18 expected outcomes under the pinned isolated runtime: three
+correct styles pass and six wrong styles fail per suite. The mutant that
+exposed the omitted v1 input fails in normal and hard v2. Complete coverage
+of this finite value domain removes that case-set hole but does not establish
+native-circuit semantics, adequate runtime limits for every correct program,
+independent oracle review, or release eligibility.
+
+The [preserved control bundle](artifacts/task62-protected-value-2026-09-28/README.md) records eight predeclared authored probes per suite under image `sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd`. An independent analytic tensor construction, a Qiskit circuit-derived `Statevector`, and a global-phase variant passed in both suites. Fixed-output, ignored-state, ignored-basis, reversed-wire-order and incorrect X-sign mutants failed in both suites. The source-bound log has SHA-256 `0e000f7129cc724acdbc08e50709b0a64807b1d36f3408e9d46b7c8f426c4d55` and reports 16/16 expected outcomes, six passes and ten failures. These are tests of this declared value contract, not a measured model success rate.
+
+The revision is available for explicit development selection, with `release_eligible: false`. The task-62 admission finding remains unresolved for the pinned native task; this new condition also lacks independent fixture and oracle reviews, full-domain proof, and release authorization. Finite authored controls can find mistakes but cannot establish 100% semantic accuracy. The prior task-2/20 control logs bind their historical judge source, which differs from this source revision, and are not silently promoted to current task-62 evidence.
+
+The state and basis convention follows [IBM Quantum's BB84 module](https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-key-distribution); amplitude index ordering follows [IBM's Qiskit bit-ordering guide](https://quantum.cloud.ibm.com/docs/en/guides/bit-ordering). These sources establish the stated conventions, not GrayBench's release readiness.

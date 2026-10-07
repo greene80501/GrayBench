@@ -1,0 +1,30 @@
+{
+  "purpose": "native DAG allocator semantics; not model scoring",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "probe_sha256": "b72f9dba38cb6dec8972fb4f28a0503551a15f358c618eedca0f689754479a47",
+  "observations": [
+    {
+      "removal_order": [
+        0,
+        2
+      ],
+      "next_node_ids": {
+        "original": 4,
+        "state_rebuilt": 2,
+        "native_copy": 4
+      }
+    },
+    {
+      "removal_order": [
+        2,
+        0
+      ],
+      "next_node_ids": {
+        "original": 2,
+        "state_rebuilt": 2,
+        "native_copy": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+"""Rehearse native owner transitions privately before resolving live child aliases."""
+
+from dataclasses import dataclass
+
+from graybench.circuit_wire import WireError
+
+
+class GraphReconstructionError(WireError):
+    """Validated state could not be reproduced; this is not a model verdict."""
+
+
+@dataclass(frozen=True)
+class OwnedCommitPlan:
+    records: dict
+    previous_records: dict
+    roots: dict
+    singleton_refs: bool = False
+
+
+def has_owned(records):
+    from graybench.graph_types import REGISTRY
+
+    return any(hasattr(REGISTRY[r["kind"]], "owner_children") for r in records.values())
+
+
+def execute_owned(plan, existing_objects, materialize, *, codecs=None):
+    from graybench.graph_types import REGISTRY, SCALAR_MISSING, scalar_record, token_value
+
+    registry = REGISTRY if codecs is None else codecs
+    objects = dict(existing_objects)
+    owners = []
+    claims = {}
+    for handle, record in plan.records.items():
+        codec = registry[record["kind"]]
+        if not hasattr(codec, "owner_children"):
+            continue
+        state = record["state"]
+        # One slot per handle, and one native owner per child.
+        tokens = list(codec.owned_tokens(state))
+        for token in tokens:
+            child = token["ref"]
+            if child in claims:
+                raise WireError("Two owner slots claim one cache handle")
+            claims[child] = handle
+        owners.append((handle, codec, state))
+
+    for handle, codec, state in owners:
+        if handle not in objects:
+            objects[handle] = codec.allocate(state, plan.records)
+        else:
+            codec.transition_owner(
+                objects[handle], plan.previous_records[handle]["state"], state, plan.records
+            )
+
+    for handle, codec, state in owners:
+        for child, actual in codec.owner_children(objects[handle], state).items():
+            if child in objects and objects[child] is not actual:
+                raise GraphReconstructionError(
+                    "Cannot bind an existing graph object to a different owner cache"
+                )
+            objects[child] = actual
+
+    objects, updates = materialize(plan.records, objects)
+    if len({id(value) for value in objects.values()}) != len(objects):
+        raise WireError("Different graph IDs resolved to one owner object")
+    for codec, target, prepared in updates:
+        codec.apply(target, prepared)
+    for handle, codec, state in owners:
+        if hasattr(codec, "finalize_owner"):
+            codec.finalize_owner(objects[handle], state, objects.__getitem__)
+    for handle, codec, state in owners:
+        if any(
+            objects[child] is not actual
+            for child, actual in codec.owner_children(objects[handle], state).items()
+        ):
+            raise GraphReconstructionError("Owner reconstruction invalidated bound cache objects")
+    from graybench.graph_wire import wire_bytes
+
+    identities = {id(value): handle for handle, value in objects.items()}
+
+    def reference(value):
+        scalar = scalar_record(value)
+        return {"ref": identities[id(value)]} if scalar is SCALAR_MISSING else scalar
+
+    reference.singleton_refs = plan.singleton_refs
+
+    for handle, codec, state in owners:
+        try:
+            actual = codec.state(objects[handle], reference)
+        except KeyError as exc:
+            raise GraphReconstructionError(
+                "Owner reconstruction exposed an unbound cache object"
+            ) from exc
+        if wire_bytes(actual) != wire_bytes(state):
+            raise GraphReconstructionError("Native owner reconstruction changed the declared state")
+    roots = {key: token_value(token, objects.__getitem__) for key, token in plan.roots.items()}
+    return objects, roots
+
+
+def rehearse(records, previous_records, roots, materialize):
+    previous = OwnedCommitPlan(previous_records, {}, {})
+    staging, _ = execute_owned(previous, {}, materialize)
+    plan = OwnedCommitPlan(records, previous_records, roots)
+    execute_owned(plan, staging, materialize)
+    return plan

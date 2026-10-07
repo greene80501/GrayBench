@@ -1,0 +1,102 @@
+{
+  "kind": "graybench_task139_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "f1fa22a59fe08b57c7b98be1cff8972a9be7cf00f318bcbf5ea19fbfe0281379",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "a50601a7a1d7082bf18e6ed1f7da0668d576337110eb05efccf5532909c5b843",
+      "case": "reference",
+      "candidate_sha256": "a7d610613617695914c4d6f94f79199f8881d85ef5b6eadc5397260c4f412836",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "a50601a7a1d7082bf18e6ed1f7da0668d576337110eb05efccf5532909c5b843",
+      "case": "empty_decomposition",
+      "candidate_sha256": "f15411044fa6b50a0569ca4d80c575c037ce45dd4c920afd2a04c404dc34ab1b",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "a50601a7a1d7082bf18e6ed1f7da0668d576337110eb05efccf5532909c5b843",
+      "case": "fabricated_term",
+      "candidate_sha256": "226ff39a380bcd84bb4704aa709378225a2f55350de3f7637e8c2cc62225b336",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "a50601a7a1d7082bf18e6ed1f7da0668d576337110eb05efccf5532909c5b843",
+      "case": "negative_coefficient_control",
+      "candidate_sha256": "07b47e6f30212a0a1bb36d36ee705aee100e8e7ecc85ec4b5757b26da0c30b03",
+      "outcome": "fail",
+      "detail": "Schmidt coefficients must be real"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "a50601a7a1d7082bf18e6ed1f7da0668d576337110eb05efccf5532909c5b843",
+      "case": "wrong_dimension_control",
+      "candidate_sha256": "50f671b2a55a6173064e9706f7efcf08aaa8290123b7516b6688e7b5b4c842d9",
+      "outcome": "fail",
+      "detail": "The dimension of the first subsystem doesn't match"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "15d406b88ab2513fd0e084cb28ec284399e1fd58668e4ed3b497267693956cd6",
+      "case": "reference",
+      "candidate_sha256": "a039aa7981596f3411d1a35d1c0d703497daf81bd791409adcde732e0f5c3bff",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "15d406b88ab2513fd0e084cb28ec284399e1fd58668e4ed3b497267693956cd6",
+      "case": "empty_decomposition",
+      "candidate_sha256": "701f26b07ad97612d737b34fd38a692a10a8410d0128528b456915156b1b2c2c",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "15d406b88ab2513fd0e084cb28ec284399e1fd58668e4ed3b497267693956cd6",
+      "case": "fabricated_term",
+      "candidate_sha256": "6a85bbeac672c831db5e3b3bee547c1d6ce969353da162e586aeb336e14df8f2",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "15d406b88ab2513fd0e084cb28ec284399e1fd58668e4ed3b497267693956cd6",
+      "case": "negative_coefficient_control",
+      "candidate_sha256": "4e03aace0d60e0285c759be8f16eecc66af14a567a84d6d66d8878ef8831e3e8",
+      "outcome": "fail",
+      "detail": "Schmidt coefficients must be real"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "15d406b88ab2513fd0e084cb28ec284399e1fd58668e4ed3b497267693956cd6",
+      "case": "wrong_dimension_control",
+      "candidate_sha256": "10719481c13be27ef7b66f93d613254eecb6e2d74eb49a0c15f2c3814953b0b2",
+      "outcome": "fail",
+      "detail": "The dimension of the first subsystem doesn't match"
+    }
+  ]
+}

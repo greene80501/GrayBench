@@ -1,0 +1,82 @@
+{
+  "kind": "experimental_native_graph_storage_v2",
+  "image": "sha256:d56e465c7f6a885fe885351ab255c123f878970006f940a22377fd27f5a2d3b0",
+  "wheel_sha256": "9d150fecaa0f6fc1c410eb73914c32c6ca916ec218c46b9b0601790273de9a76",
+  "header_sha256": "cd56e388112a29a7e9ab960871d7e4e29a60bd8187f40a1d751bfbbe6e9d5062",
+  "patch_sha256": "f83f55abbf6914eef0b3898a578bc45d611187378bfdaf65dd5501a0d5d198a0",
+  "source_tree_sha256": "c8db84014b0be1d014f59bb677b4c68633269af91a936e17e5b9d94ee0d6d823",
+  "cases": [
+    {
+      "script": "check_registered_factory.py",
+      "script_sha256": "04dbc42b43c9c4a28489b81a61e33514e1ffa8a2f03369b7be9ca14f9ce6efcb",
+      "returncode": 0,
+      "stdout": "Registered native factory contract passed\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_registered_storage.py",
+      "script_sha256": "e9ad5b1524fd15af09055edb2a49a9a5080fd786eae96314ed305d247414d076",
+      "returncode": 0,
+      "stdout": "Retained capsule survives root deletion; unregistered DLPack capsule rejected\nRegistered storage contract passed\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_capsule_metadata.py",
+      "script_sha256": "1bf14f0750143a641ad07c58bc31972bf9eeab7996279d3b5cfe763a0e811439",
+      "returncode": 0,
+      "stdout": "All four modified capsule fields rejected by info/read/write\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_reentrant_cleanup.py",
+      "script_sha256": "8e8e06fbaa7ae21b793b27ae67dc9528a22c3c738d3bf2b0c2055ddef8d7565c",
+      "returncode": 0,
+      "stdout": "100 nested cleanup callbacks completed with valid surviving allocations\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_registered_descriptor.py",
+      "script_sha256": "e5a00a76755066def8acce84cc21c8dbc92adf596050cc539e5357229fc05320",
+      "returncode": 0,
+      "stdout": "Registered capsule origin survives array mutation and deletion\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_registered_view.py",
+      "script_sha256": "37a517a3302e58dfc98b84a77e599fa0b976eb04dd598c2993b29ce7f6441ca5",
+      "returncode": 139,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "script": "check_graph_native_contract.py",
+      "script_sha256": "6e2533bfa7a3289534989d0134d1145f6d538bf1e141b55c3a4b442623e68da6",
+      "returncode": 0,
+      "stdout": "Registered native graph root, capsule and alias contract passed\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_graph_native_rejection.py",
+      "script_sha256": "5aa48cce0ff22d22be5634c0db388edae46350c59dda5c0e12bea2151b7caff4",
+      "returncode": 0,
+      "stdout": "Eight forged native graph states rejected before reconstruction\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_hamiltonian_graph.py",
+      "script_sha256": "9b3b35573b9357a6af9399155dda7e4081240e766fd2b5eb2b0a27d24ea129f0",
+      "returncode": 0,
+      "stdout": "Hamiltonian cached definition and native matrix aliases passed\n",
+      "stderr": ""
+    },
+    {
+      "script": "check_registry_reentry_asan.py",
+      "script_sha256": "42cfb2425def3cb4ec05e11bea955746ab9bc7f0cbb0ec9f364737feb2c0f42f",
+      "harness_sha256": "19ad04c678f0c0f842c6a1a666248d75aa64ae7e6858cf98325b08b092463380",
+      "returncode": 0,
+      "stdout": "ASan nested cleanup regression passed\n",
+      "stderr": "In file included from /usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarraytypes.h:1913,\n                 from /usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarrayobject.h:12,\n                 from /usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/arrayobject.h:5,\n                 from /native/tests/registry_harness.c:3:\n/usr/local/lib/python3.12/site-packages/numpy/_core/include/numpy/npy_1_7_deprecated_api.h:17:2: warning: #warning \"Using deprecated NumPy API, disable it with \" \"#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION\" [-Wcpp]\n   17 | #warning \"Using deprecated NumPy API, disable it with \" \\\n      |  ^~~~~~~\n"
+    }
+  ],
+  "scope": "native and graph diagnostic checks only; no benchmark admission"
+}

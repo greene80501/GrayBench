@@ -1,0 +1,150 @@
+{
+  "purpose": "converter-field interface calibration; not model scoring",
+  "evidence": {
+    "before": {
+      "complete": true,
+      "pending_task": null,
+      "planned": 12,
+      "results": {
+        "normal/qiskitHumanEval/90": "unsupported",
+        "normal/qiskitHumanEval/91": "unsupported",
+        "normal/qiskitHumanEval/112": "unsupported",
+        "normal/qiskitHumanEval/119": "unsupported",
+        "normal/qiskitHumanEval/120": "unsupported",
+        "normal/qiskitHumanEval/125": "unsupported",
+        "hard/qiskitHumanEval/90": "unsupported",
+        "hard/qiskitHumanEval/91": "unsupported",
+        "hard/qiskitHumanEval/112": "unsupported",
+        "hard/qiskitHumanEval/119": "unsupported",
+        "hard/qiskitHumanEval/120": "unsupported",
+        "hard/qiskitHumanEval/125": "unsupported"
+      },
+      "chain_head": "d46baa62497aeda08cb311238d49041d8e582e1883fdf25a5f749b529006cb6e",
+      "purpose": "reference interface calibration; not model scoring",
+      "file_sha256": "aa5bf01f1d487681cc3d85c293e96a8e48d6a43849199a24668bdaef331c993b"
+    },
+    "after": {
+      "complete": true,
+      "pending_task": null,
+      "planned": 12,
+      "results": {
+        "normal/qiskitHumanEval/90": "pass",
+        "normal/qiskitHumanEval/91": "pass",
+        "normal/qiskitHumanEval/112": "pass",
+        "normal/qiskitHumanEval/119": "pass",
+        "normal/qiskitHumanEval/120": "unsupported",
+        "normal/qiskitHumanEval/125": "pass",
+        "hard/qiskitHumanEval/90": "pass",
+        "hard/qiskitHumanEval/91": "pass",
+        "hard/qiskitHumanEval/112": "pass",
+        "hard/qiskitHumanEval/119": "pass",
+        "hard/qiskitHumanEval/120": "unsupported",
+        "hard/qiskitHumanEval/125": "pass"
+      },
+      "chain_head": "fa5294941075fa668f8eedadd9e6c05346c1772976cb0c4ca684bd438276b2c8",
+      "purpose": "reference interface calibration; not model scoring",
+      "file_sha256": "ccffffa3b53750ef7b71386cc7f103d57eb43a095df69ccb07b9dd779c2620e2"
+    }
+  },
+  "same_task_selection_and_completions": true,
+  "changed_runtime_bytes": [
+    "graph_instruction.py",
+    "graph_limits.py",
+    "graph_quantum_circuit.py",
+    "graph_wire.py"
+  ],
+  "newline_only_differences": [
+    "graph_limits.py",
+    "graph_quantum_circuit.py",
+    "graph_wire.py"
+  ],
+  "semantic_runtime_changes": [
+    "graph_instruction.py"
+  ],
+  "transitions": [
+    {
+      "task": "normal/qiskitHumanEval/90",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "normal/qiskitHumanEval/91",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "normal/qiskitHumanEval/112",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "normal/qiskitHumanEval/119",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "normal/qiskitHumanEval/120",
+      "before": "unsupported",
+      "after": "unsupported",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": "WireError: Retained Python operation requires another component codec"
+    },
+    {
+      "task": "normal/qiskitHumanEval/125",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "hard/qiskitHumanEval/90",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "hard/qiskitHumanEval/91",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "hard/qiskitHumanEval/112",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "hard/qiskitHumanEval/119",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    },
+    {
+      "task": "hard/qiskitHumanEval/120",
+      "before": "unsupported",
+      "after": "unsupported",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": "WireError: Retained Python operation requires another component codec"
+    },
+    {
+      "task": "hard/qiskitHumanEval/125",
+      "before": "unsupported",
+      "after": "pass",
+      "before_detail": "WireError: Extra or missing instruction fields require another codec",
+      "after_detail": null
+    }
+  ]
+}

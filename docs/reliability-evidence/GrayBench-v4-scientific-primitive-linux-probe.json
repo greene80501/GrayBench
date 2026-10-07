@@ -1,0 +1,41 @@
+{
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "exit_code": 0,
+  "stdout": "{\"checks_passed\": [\"overlap_owner_and_in_place_return\", \"writable_view_of_readonly_owner\", \"numeric_type_int32\", \"numeric_type_uint32\", \"numeric_type_int64\", \"numeric_type_float32\", \"misaligned_storage\", \"malformed_storage_rejected\", \"scientific_instance_dictionary_and_data\", \"invalid_physical_value_not_repaired\", \"primitive_result_lists_metadata_and_cycles\", \"clifford_tableau_identity\"], \"numpy\": \"2.2.4\", \"probe_sha256\": \"55ae1596b5de1b7e2c7e8ed9370e2a68ed25ef69a22e90022dc03291a65b18f1\", \"production_bridge_integrated\": false, \"python\": \"3.12.14\", \"qiskit\": \"2.4.2\", \"scope\": \"standalone_graph_development_probe\", \"source_sha256\": {\"circuit_wire.py\": \"9cf4c9449d01bf441d985514af21e692ff63008203d88aaf77a9af321bfcc8ec\", \"graph_numeric.py\": \"d05e8e8198aa677c7793c7f2b501ef398be86a882c077641b9c406d291d84386\", \"graph_primitive.py\": \"9f34a28254069bcd9413a5ecf89274d70986808f07ab1d9b91e754f0e35a9089\", \"graph_scientific.py\": \"429fbfe1c8e4fafa5c08998b9c9697efaefcc7f624870c83c857c310ce365c5a\", \"graph_types.py\": \"73e47157e1a07dfcf5ccb8856a26cb762045e48815c75fa2c754b7cc26ea8432\", \"graph_wire.py\": \"df77ed62e33ff6677ee397aa590b52c13a958d7358c1bdb9b58845a50a2c1bed\", \"primitive_wire.py\": \"291bf8d84fb95cdd74577de83ec8adcb93a05fa14750fec1e914e2c343e91d52\", \"scientific_wire.py\": \"99816e5ecd495f470e4168a2dbabd1db0e24bdcaa1d93fde1feec0c81d22d61d\"}, \"system\": \"Linux\"}\n",
+  "stderr": "",
+  "mount_scope": "eight explicit graph dependency modules plus trusted fixture, readonly",
+  "candidate_generations": 0,
+  "result": {
+    "checks_passed": [
+      "overlap_owner_and_in_place_return",
+      "writable_view_of_readonly_owner",
+      "numeric_type_int32",
+      "numeric_type_uint32",
+      "numeric_type_int64",
+      "numeric_type_float32",
+      "misaligned_storage",
+      "malformed_storage_rejected",
+      "scientific_instance_dictionary_and_data",
+      "invalid_physical_value_not_repaired",
+      "primitive_result_lists_metadata_and_cycles",
+      "clifford_tableau_identity"
+    ],
+    "numpy": "2.2.4",
+    "probe_sha256": "55ae1596b5de1b7e2c7e8ed9370e2a68ed25ef69a22e90022dc03291a65b18f1",
+    "production_bridge_integrated": false,
+    "python": "3.12.14",
+    "qiskit": "2.4.2",
+    "scope": "standalone_graph_development_probe",
+    "source_sha256": {
+      "circuit_wire.py": "9cf4c9449d01bf441d985514af21e692ff63008203d88aaf77a9af321bfcc8ec",
+      "graph_numeric.py": "d05e8e8198aa677c7793c7f2b501ef398be86a882c077641b9c406d291d84386",
+      "graph_primitive.py": "9f34a28254069bcd9413a5ecf89274d70986808f07ab1d9b91e754f0e35a9089",
+      "graph_scientific.py": "429fbfe1c8e4fafa5c08998b9c9697efaefcc7f624870c83c857c310ce365c5a",
+      "graph_types.py": "73e47157e1a07dfcf5ccb8856a26cb762045e48815c75fa2c754b7cc26ea8432",
+      "graph_wire.py": "df77ed62e33ff6677ee397aa590b52c13a958d7358c1bdb9b58845a50a2c1bed",
+      "primitive_wire.py": "291bf8d84fb95cdd74577de83ec8adcb93a05fa14750fec1e914e2c343e91d52",
+      "scientific_wire.py": "99816e5ecd495f470e4168a2dbabd1db0e24bdcaa1d93fde1feec0c81d22d61d"
+    },
+    "system": "Linux"
+  }
+}

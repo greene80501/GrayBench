@@ -1,0 +1,107 @@
+{
+  "kind": "graybench_task117_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "b05693e76788ac25d7427d48bd0db9419b870027ee90f997c28dc8ad69ef6014",
+  "semantic_controls": {
+    "fixed_cx_equiv_identity_input": false,
+    "measured_circuit_operator": "QiskitError",
+    "canonical_identity_decomposition_cx_count": 0
+  },
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "371457d27064cad6b3ae9890a2dec222b21ed1504b71cffea37338d46582a635",
+      "case": "reference",
+      "candidate_sha256": "64c084626461837117a536eb138514d94bcff2753de1cc28a466097462e9a49f",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "371457d27064cad6b3ae9890a2dec222b21ed1504b71cffea37338d46582a635",
+      "case": "constant_cx",
+      "candidate_sha256": "130ba49169f7e5825cc3201f3f87b38583aaea35243ba19a3ebcb578461d2916",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "371457d27064cad6b3ae9890a2dec222b21ed1504b71cffea37338d46582a635",
+      "case": "nonunitary_measurement",
+      "candidate_sha256": "955c6e0865273374857357f8043bd725136077ef7c126034b3f9abe0127f85bc",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "371457d27064cad6b3ae9890a2dec222b21ed1504b71cffea37338d46582a635",
+      "case": "no_cx_control",
+      "candidate_sha256": "4ed14bdcdb3b70cba4a03e2fea6e813d6af4d2d431474da2ae569f787e949336",
+      "outcome": "fail",
+      "assertion": "Expected 0 > 0"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "371457d27064cad6b3ae9890a2dec222b21ed1504b71cffea37338d46582a635",
+      "case": "wrong_width_control",
+      "candidate_sha256": "79665e5156a1a8f34be3b93bc45b4ec7efdafef06c495d365e2607ce5fbad0ef",
+      "outcome": "fail",
+      "assertion": "Expected 2 qubits, got 3"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "5592fbd731478c12c3e870d4daef0ecf88f4d873e2f17c72d196b5f2afb66a07",
+      "case": "reference",
+      "candidate_sha256": "4eb56cabdaae4248cfe8504bb6b22e49f53ddadf1eeded5fa6b7dd646ab70731",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "5592fbd731478c12c3e870d4daef0ecf88f4d873e2f17c72d196b5f2afb66a07",
+      "case": "constant_cx",
+      "candidate_sha256": "69e56f5570d5f22e982920d34b1c5bbf1dfac84c6d81c510d7cd40e035f9de37",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "5592fbd731478c12c3e870d4daef0ecf88f4d873e2f17c72d196b5f2afb66a07",
+      "case": "nonunitary_measurement",
+      "candidate_sha256": "8dbffcb545c6e82e8518e015e8de6644d03d4d52161ffa101ad025166034240b",
+      "outcome": "pass",
+      "assertion": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "5592fbd731478c12c3e870d4daef0ecf88f4d873e2f17c72d196b5f2afb66a07",
+      "case": "no_cx_control",
+      "candidate_sha256": "fda8d0fc815c710da5d60b182bd35cc7d192b1a1991ccaaf897e8b75e8c7f626",
+      "outcome": "fail",
+      "assertion": "Expected 0 > 0"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "5592fbd731478c12c3e870d4daef0ecf88f4d873e2f17c72d196b5f2afb66a07",
+      "case": "wrong_width_control",
+      "candidate_sha256": "86f3ef4fe6797c380110ede2bb9273863124f705bb63b35187940706d33a8292",
+      "outcome": "fail",
+      "assertion": "Expected 2 qubits, got 3"
+    }
+  ]
+}

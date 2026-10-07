@@ -1,0 +1,911 @@
+{
+  "purpose": "Reference interface calibration, not model scoring or task admission",
+  "source_commit": "8399f3d67e7e66f5d33cb85ceea3a09db932bc71",
+  "source": {
+    "digest": "202b37b5533d3ef7145aa0cabe7ec62cc5cb617f91f3a7fdd4d2a211565c871e",
+    "files": {
+      "__init__.py": "3e0198e35807647d1b50e9460f4ae4f87dc4f44481fdd63dda18fc3434a97d82",
+      "artifacts.py": "18e3fbb7ff714b084d87e3cf27194d07b13f991bdabe1507d4c081e1c901aac1",
+      "campaign.py": "5f1f1d582bfefec1f8c7d01bb485e48d267f26b03c270f84c2ceaf348b68ab10",
+      "campaign_setup.py": "ef893aec71ab935054d726840a8c57c9d04761859bb0504f9908e7ed738c28df",
+      "circuit_wire.py": "a7ce12cc45e6b880ef582eaf1cffb3e0a49472e1e14c3ba2dc38e04cc90ffef1",
+      "cli.py": "f94c43e891e3bf38bd6d6f0ba6514cd75185d167d9063f14f9dc50e8fdb86f89",
+      "comparison.py": "9fc381f3ac76e52df95ff77d69b706a15e0754b76ac3cfce348eaf780db9948f",
+      "container_control.py": "f89d5c8b1a9e7efb57518a02203f26d186ca309a27b03d1c0d1a3905fcf4f66c",
+      "contracts.py": "34bfda5d0067e315da15e32fe1a8583beef224a7a817d0a3cc4d8c1bfba157c3",
+      "datasets.py": "f5b2e0be9c4ac8126122c63d30e9471b51ddb7d9e8dfb3fca29e98090284759d",
+      "evaluation_campaign.py": "c56f9f137fec4abeb052aa27ec29e4aa4d91e6d7fe07541dcebaff75ff4a2c82",
+      "extraction.py": "d22a29dd3f562c74be5129669fc99fd11b8611c52c2077f03900699c0ea552e3",
+      "file_judge.py": "339c7772457405571f201197c7224f2a18159d76980393d40ce6865cfd4bab87",
+      "identity.py": "8080d0bca990a35b0709309ea0bf7cf8cba49227c7463918679bfaef5b4c007c",
+      "instruction_wire.py": "4fa022be3f7d7ff3f7263ec02458f07f78042da0a1affdf58c2f9a49d97d4ab4",
+      "judge.py": "486aeabb82004d419e4e1623bd4ef8a3e879c5e6d3e713810dfe7e8da8118831",
+      "judge_process.py": "141b38651ad70d8362f3812879bd578131d582b4958be2625a2d47dc905a985f",
+      "ledger.py": "96ee5c92599178c44950f31f01de78b18dab5d87ce8a1f39323b06a7523e1904",
+      "ledger_evidence.py": "89cc5b03fb5b03c5d3d1e2ecf6ca8bb725e6cc12baff8924c7a833468ebfac57",
+      "model_discovery.py": "0497c4437a787a45d3dbae9b6ab851462912de32e1c11bba0998897e3c300e5e",
+      "oracle_review.py": "ff30c71459f1fc6901a8474dc92f525f56a2dfe5d95933e29e7d0c5b47c8e0ed",
+      "oracles.py": "548722c12e5ce3bd5565b4ff1084cdd3df5f0f7671485282b0f28e7fe34bf74a",
+      "preparation_wire.py": "67d53d3debc503fbdb5e40a8e5dd227a36eccb17ad020329af5018a5a8628599",
+      "provenance.py": "b6705d7ca5e19706cf8901e0c11731e3a267275f45787ec56e0a9bfed627ce3c",
+      "providers.py": "30ee4955ebaa8b9003999bb06fbbf6dbed8694a2d440160ce0aa98917a4d1a59",
+      "qpy_decoder.py": "c1a3dc5f0f82d212ba88312b4057ae90e692c6ce8887fad063586f8ab9247e94",
+      "reference_scan.py": "d7437cca9bd3fde39c93a8b9f94f6c9d0a472c344dbc99e8b59aa26955c4d848",
+      "sandbox.py": "34c5a01d22c352e877d8176edf734b514d0493926e481c8cf946e7ecbc873506",
+      "scientific_wire.py": "ba37f8c22051db2a9db28342fc60dd53939342fa371058b9832e7ef893657d37",
+      "symbolic_wire.py": "c041b0903efec157c4533c6302b696af46da52d67c4139279f7cccf6fd62a9c0",
+      "transport.py": "da2f217dcc10a6b54a8bf5c733943f55dab0cdd06a7db0e637dba23811cd5ce3",
+      "upstream.py": "3601a40f852b0ad3bcacc7e669aec7ff5248ca17e4e237f6ef156af63138b051",
+      "upstream_process.py": "fdf59ac4cb6d345558356bae795cf42fd44854bb8a949b7125c223b7725bf579",
+      "value_wire.py": "95a6529973c9f52c83d7f5787fd9cde0bd962939965cf2027c50fda34c9f5530",
+      "worker.py": "286819fcc5ea5fdbef1cc9aaeccbde1f09f0a5a9c1b28c8a14ec076d4c795ffe"
+    }
+  },
+  "source_matches_git_bytes": false,
+  "source_matches_git_after_crlf_normalization": true,
+  "crlf_differences": [
+    "circuit_wire.py",
+    "comparison.py",
+    "instruction_wire.py",
+    "judge.py",
+    "judge_process.py",
+    "ledger.py",
+    "oracle_review.py",
+    "qpy_decoder.py",
+    "reference_scan.py",
+    "sandbox.py",
+    "upstream.py",
+    "upstream_process.py",
+    "value_wire.py"
+  ],
+  "inspection": {
+    "complete": true,
+    "pending_task": null,
+    "planned": 286,
+    "results": {
+      "normal/qiskitHumanEval/0": "pass",
+      "normal/qiskitHumanEval/1": "pass",
+      "normal/qiskitHumanEval/2": "pass",
+      "normal/qiskitHumanEval/3": "unsupported",
+      "normal/qiskitHumanEval/4": "pass",
+      "normal/qiskitHumanEval/5": "pass",
+      "normal/qiskitHumanEval/6": "pass",
+      "normal/qiskitHumanEval/7": "pass",
+      "normal/qiskitHumanEval/8": "pass",
+      "normal/qiskitHumanEval/9": "pass",
+      "normal/qiskitHumanEval/10": "pass",
+      "normal/qiskitHumanEval/11": "pass",
+      "normal/qiskitHumanEval/12": "pass",
+      "normal/qiskitHumanEval/13": "pass",
+      "normal/qiskitHumanEval/14": "pass",
+      "normal/qiskitHumanEval/15": "pass",
+      "normal/qiskitHumanEval/16": "pass",
+      "normal/qiskitHumanEval/17": "pass",
+      "normal/qiskitHumanEval/18": "pass",
+      "normal/qiskitHumanEval/19": "pass",
+      "normal/qiskitHumanEval/20": "pass",
+      "normal/qiskitHumanEval/21": "pass",
+      "normal/qiskitHumanEval/22": "pass",
+      "normal/qiskitHumanEval/23": "pass",
+      "normal/qiskitHumanEval/24": "pass",
+      "normal/qiskitHumanEval/25": "pass",
+      "normal/qiskitHumanEval/26": "unsupported",
+      "normal/qiskitHumanEval/27": "unsupported",
+      "normal/qiskitHumanEval/28": "unsupported",
+      "normal/qiskitHumanEval/29": "unsupported",
+      "normal/qiskitHumanEval/30": "unsupported",
+      "normal/qiskitHumanEval/31": "pass",
+      "normal/qiskitHumanEval/32": "pass",
+      "normal/qiskitHumanEval/33": "pass",
+      "normal/qiskitHumanEval/34": "unsupported",
+      "normal/qiskitHumanEval/35": "unsupported",
+      "normal/qiskitHumanEval/36": "pass",
+      "normal/qiskitHumanEval/37": "unsupported",
+      "normal/qiskitHumanEval/38": "pass",
+      "normal/qiskitHumanEval/39": "pass",
+      "normal/qiskitHumanEval/40": "pass",
+      "normal/qiskitHumanEval/41": "pass",
+      "normal/qiskitHumanEval/42": "pass",
+      "normal/qiskitHumanEval/44": "pass",
+      "normal/qiskitHumanEval/45": "pass",
+      "normal/qiskitHumanEval/46": "unsupported",
+      "normal/qiskitHumanEval/47": "pass",
+      "normal/qiskitHumanEval/48": "pass",
+      "normal/qiskitHumanEval/49": "pass",
+      "normal/qiskitHumanEval/50": "unsupported",
+      "normal/qiskitHumanEval/51": "unsupported",
+      "normal/qiskitHumanEval/52": "pass",
+      "normal/qiskitHumanEval/53": "pass",
+      "normal/qiskitHumanEval/54": "pass",
+      "normal/qiskitHumanEval/55": "pass",
+      "normal/qiskitHumanEval/56": "pass",
+      "normal/qiskitHumanEval/57": "pass",
+      "normal/qiskitHumanEval/58": "pass",
+      "normal/qiskitHumanEval/59": "pass",
+      "normal/qiskitHumanEval/60": "pass",
+      "normal/qiskitHumanEval/61": "pass",
+      "normal/qiskitHumanEval/62": "pass",
+      "normal/qiskitHumanEval/63": "unsupported",
+      "normal/qiskitHumanEval/64": "pass",
+      "normal/qiskitHumanEval/65": "pass",
+      "normal/qiskitHumanEval/66": "pass",
+      "normal/qiskitHumanEval/67": "pass",
+      "normal/qiskitHumanEval/68": "pass",
+      "normal/qiskitHumanEval/69": "pass",
+      "normal/qiskitHumanEval/70": "pass",
+      "normal/qiskitHumanEval/71": "pass",
+      "normal/qiskitHumanEval/72": "unsupported",
+      "normal/qiskitHumanEval/73": "unsupported",
+      "normal/qiskitHumanEval/74": "pass",
+      "normal/qiskitHumanEval/75": "pass",
+      "normal/qiskitHumanEval/76": "unsupported",
+      "normal/qiskitHumanEval/77": "pass",
+      "normal/qiskitHumanEval/78": "pass",
+      "normal/qiskitHumanEval/79": "pass",
+      "normal/qiskitHumanEval/80": "pass",
+      "normal/qiskitHumanEval/81": "pass",
+      "normal/qiskitHumanEval/82": "infrastructure_error",
+      "normal/qiskitHumanEval/83": "pass",
+      "normal/qiskitHumanEval/84": "pass",
+      "normal/qiskitHumanEval/85": "pass",
+      "normal/qiskitHumanEval/86": "unsupported",
+      "normal/qiskitHumanEval/87": "pass",
+      "normal/qiskitHumanEval/88": "unsupported",
+      "normal/qiskitHumanEval/89": "unsupported",
+      "normal/qiskitHumanEval/90": "unsupported",
+      "normal/qiskitHumanEval/91": "pass",
+      "normal/qiskitHumanEval/92": "pass",
+      "normal/qiskitHumanEval/93": "pass",
+      "normal/qiskitHumanEval/94": "pass",
+      "normal/qiskitHumanEval/95": "pass",
+      "normal/qiskitHumanEval/96": "pass",
+      "normal/qiskitHumanEval/99": "pass",
+      "normal/qiskitHumanEval/100": "pass",
+      "normal/qiskitHumanEval/101": "unsupported",
+      "normal/qiskitHumanEval/102": "pass",
+      "normal/qiskitHumanEval/103": "pass",
+      "normal/qiskitHumanEval/104": "pass",
+      "normal/qiskitHumanEval/105": "unsupported",
+      "normal/qiskitHumanEval/106": "unsupported",
+      "normal/qiskitHumanEval/107": "unsupported",
+      "normal/qiskitHumanEval/108": "pass",
+      "normal/qiskitHumanEval/109": "pass",
+      "normal/qiskitHumanEval/110": "pass",
+      "normal/qiskitHumanEval/111": "pass",
+      "normal/qiskitHumanEval/112": "pass",
+      "normal/qiskitHumanEval/113": "unsupported",
+      "normal/qiskitHumanEval/114": "unsupported",
+      "normal/qiskitHumanEval/115": "unsupported",
+      "normal/qiskitHumanEval/116": "unsupported",
+      "normal/qiskitHumanEval/117": "pass",
+      "normal/qiskitHumanEval/118": "pass",
+      "normal/qiskitHumanEval/119": "pass",
+      "normal/qiskitHumanEval/120": "unsupported",
+      "normal/qiskitHumanEval/121": "unsupported",
+      "normal/qiskitHumanEval/123": "unsupported",
+      "normal/qiskitHumanEval/124": "unsupported",
+      "normal/qiskitHumanEval/125": "pass",
+      "normal/qiskitHumanEval/126": "pass",
+      "normal/qiskitHumanEval/127": "pass",
+      "normal/qiskitHumanEval/128": "unsupported",
+      "normal/qiskitHumanEval/130": "pass",
+      "normal/qiskitHumanEval/131": "pass",
+      "normal/qiskitHumanEval/132": "pass",
+      "normal/qiskitHumanEval/135": "unsupported",
+      "normal/qiskitHumanEval/136": "pass",
+      "normal/qiskitHumanEval/137": "pass",
+      "normal/qiskitHumanEval/138": "pass",
+      "normal/qiskitHumanEval/139": "pass",
+      "normal/qiskitHumanEval/140": "pass",
+      "normal/qiskitHumanEval/141": "unsupported",
+      "normal/qiskitHumanEval/142": "pass",
+      "normal/qiskitHumanEval/143": "pass",
+      "normal/qiskitHumanEval/144": "pass",
+      "normal/qiskitHumanEval/145": "pass",
+      "normal/qiskitHumanEval/147": "unsupported",
+      "normal/qiskitHumanEval/148": "unsupported",
+      "normal/qiskitHumanEval/149": "unsupported",
+      "normal/qiskitHumanEval/150": "unsupported",
+      "hard/qiskitHumanEval/0": "pass",
+      "hard/qiskitHumanEval/1": "pass",
+      "hard/qiskitHumanEval/2": "pass",
+      "hard/qiskitHumanEval/3": "unsupported",
+      "hard/qiskitHumanEval/4": "pass",
+      "hard/qiskitHumanEval/5": "pass",
+      "hard/qiskitHumanEval/6": "pass",
+      "hard/qiskitHumanEval/7": "pass",
+      "hard/qiskitHumanEval/8": "pass",
+      "hard/qiskitHumanEval/9": "pass",
+      "hard/qiskitHumanEval/10": "pass",
+      "hard/qiskitHumanEval/11": "pass",
+      "hard/qiskitHumanEval/12": "pass",
+      "hard/qiskitHumanEval/13": "pass",
+      "hard/qiskitHumanEval/14": "pass",
+      "hard/qiskitHumanEval/15": "pass",
+      "hard/qiskitHumanEval/16": "pass",
+      "hard/qiskitHumanEval/17": "pass",
+      "hard/qiskitHumanEval/18": "pass",
+      "hard/qiskitHumanEval/19": "pass",
+      "hard/qiskitHumanEval/20": "pass",
+      "hard/qiskitHumanEval/21": "pass",
+      "hard/qiskitHumanEval/22": "pass",
+      "hard/qiskitHumanEval/23": "pass",
+      "hard/qiskitHumanEval/24": "pass",
+      "hard/qiskitHumanEval/25": "pass",
+      "hard/qiskitHumanEval/26": "unsupported",
+      "hard/qiskitHumanEval/27": "unsupported",
+      "hard/qiskitHumanEval/28": "unsupported",
+      "hard/qiskitHumanEval/29": "unsupported",
+      "hard/qiskitHumanEval/30": "unsupported",
+      "hard/qiskitHumanEval/31": "pass",
+      "hard/qiskitHumanEval/32": "pass",
+      "hard/qiskitHumanEval/33": "pass",
+      "hard/qiskitHumanEval/34": "unsupported",
+      "hard/qiskitHumanEval/35": "unsupported",
+      "hard/qiskitHumanEval/36": "pass",
+      "hard/qiskitHumanEval/37": "unsupported",
+      "hard/qiskitHumanEval/38": "pass",
+      "hard/qiskitHumanEval/39": "pass",
+      "hard/qiskitHumanEval/40": "pass",
+      "hard/qiskitHumanEval/41": "pass",
+      "hard/qiskitHumanEval/42": "pass",
+      "hard/qiskitHumanEval/44": "pass",
+      "hard/qiskitHumanEval/45": "pass",
+      "hard/qiskitHumanEval/46": "unsupported",
+      "hard/qiskitHumanEval/47": "pass",
+      "hard/qiskitHumanEval/48": "pass",
+      "hard/qiskitHumanEval/49": "pass",
+      "hard/qiskitHumanEval/50": "unsupported",
+      "hard/qiskitHumanEval/51": "unsupported",
+      "hard/qiskitHumanEval/52": "pass",
+      "hard/qiskitHumanEval/53": "pass",
+      "hard/qiskitHumanEval/54": "pass",
+      "hard/qiskitHumanEval/55": "pass",
+      "hard/qiskitHumanEval/56": "pass",
+      "hard/qiskitHumanEval/57": "pass",
+      "hard/qiskitHumanEval/58": "pass",
+      "hard/qiskitHumanEval/59": "pass",
+      "hard/qiskitHumanEval/60": "pass",
+      "hard/qiskitHumanEval/61": "pass",
+      "hard/qiskitHumanEval/62": "pass",
+      "hard/qiskitHumanEval/63": "unsupported",
+      "hard/qiskitHumanEval/64": "pass",
+      "hard/qiskitHumanEval/65": "pass",
+      "hard/qiskitHumanEval/66": "pass",
+      "hard/qiskitHumanEval/67": "pass",
+      "hard/qiskitHumanEval/68": "pass",
+      "hard/qiskitHumanEval/69": "pass",
+      "hard/qiskitHumanEval/70": "pass",
+      "hard/qiskitHumanEval/71": "pass",
+      "hard/qiskitHumanEval/72": "unsupported",
+      "hard/qiskitHumanEval/73": "unsupported",
+      "hard/qiskitHumanEval/74": "pass",
+      "hard/qiskitHumanEval/75": "pass",
+      "hard/qiskitHumanEval/76": "unsupported",
+      "hard/qiskitHumanEval/77": "pass",
+      "hard/qiskitHumanEval/78": "pass",
+      "hard/qiskitHumanEval/79": "pass",
+      "hard/qiskitHumanEval/80": "pass",
+      "hard/qiskitHumanEval/81": "pass",
+      "hard/qiskitHumanEval/82": "infrastructure_error",
+      "hard/qiskitHumanEval/83": "pass",
+      "hard/qiskitHumanEval/84": "pass",
+      "hard/qiskitHumanEval/85": "pass",
+      "hard/qiskitHumanEval/86": "unsupported",
+      "hard/qiskitHumanEval/87": "pass",
+      "hard/qiskitHumanEval/88": "unsupported",
+      "hard/qiskitHumanEval/89": "unsupported",
+      "hard/qiskitHumanEval/90": "unsupported",
+      "hard/qiskitHumanEval/91": "pass",
+      "hard/qiskitHumanEval/92": "pass",
+      "hard/qiskitHumanEval/93": "pass",
+      "hard/qiskitHumanEval/94": "pass",
+      "hard/qiskitHumanEval/95": "pass",
+      "hard/qiskitHumanEval/96": "pass",
+      "hard/qiskitHumanEval/99": "pass",
+      "hard/qiskitHumanEval/100": "pass",
+      "hard/qiskitHumanEval/101": "unsupported",
+      "hard/qiskitHumanEval/102": "pass",
+      "hard/qiskitHumanEval/103": "pass",
+      "hard/qiskitHumanEval/104": "pass",
+      "hard/qiskitHumanEval/105": "unsupported",
+      "hard/qiskitHumanEval/106": "unsupported",
+      "hard/qiskitHumanEval/107": "unsupported",
+      "hard/qiskitHumanEval/108": "pass",
+      "hard/qiskitHumanEval/109": "pass",
+      "hard/qiskitHumanEval/110": "pass",
+      "hard/qiskitHumanEval/111": "pass",
+      "hard/qiskitHumanEval/112": "pass",
+      "hard/qiskitHumanEval/113": "unsupported",
+      "hard/qiskitHumanEval/114": "unsupported",
+      "hard/qiskitHumanEval/115": "unsupported",
+      "hard/qiskitHumanEval/116": "unsupported",
+      "hard/qiskitHumanEval/117": "pass",
+      "hard/qiskitHumanEval/118": "pass",
+      "hard/qiskitHumanEval/119": "pass",
+      "hard/qiskitHumanEval/120": "unsupported",
+      "hard/qiskitHumanEval/121": "unsupported",
+      "hard/qiskitHumanEval/123": "unsupported",
+      "hard/qiskitHumanEval/124": "unsupported",
+      "hard/qiskitHumanEval/125": "pass",
+      "hard/qiskitHumanEval/126": "pass",
+      "hard/qiskitHumanEval/127": "pass",
+      "hard/qiskitHumanEval/128": "unsupported",
+      "hard/qiskitHumanEval/130": "pass",
+      "hard/qiskitHumanEval/131": "pass",
+      "hard/qiskitHumanEval/132": "pass",
+      "hard/qiskitHumanEval/135": "unsupported",
+      "hard/qiskitHumanEval/136": "pass",
+      "hard/qiskitHumanEval/137": "pass",
+      "hard/qiskitHumanEval/138": "pass",
+      "hard/qiskitHumanEval/139": "pass",
+      "hard/qiskitHumanEval/140": "pass",
+      "hard/qiskitHumanEval/141": "unsupported",
+      "hard/qiskitHumanEval/142": "pass",
+      "hard/qiskitHumanEval/143": "pass",
+      "hard/qiskitHumanEval/144": "pass",
+      "hard/qiskitHumanEval/145": "pass",
+      "hard/qiskitHumanEval/147": "unsupported",
+      "hard/qiskitHumanEval/148": "unsupported",
+      "hard/qiskitHumanEval/149": "unsupported",
+      "hard/qiskitHumanEval/150": "unsupported"
+    },
+    "chain_head": "b88c1575a67d6435b83be6c581790f2883482e0792b2c607a9a8a4aa1c291205",
+    "purpose": "reference interface calibration; not model scoring",
+    "file_sha256": "6aa32f51356cca814af5d1d8bed9ac48d0f39d243bdce7fe2869bd8cbcc65dcd"
+  },
+  "excluded": {
+    "hard/qiskitHumanEval/122": "1d73d2ef3cda8bcf372dda39720146dedb4479fb4db96162c9e6f283cf60a94e",
+    "hard/qiskitHumanEval/129": "2d7e6ee89929ca2409d70de42d8fea7482dc28ccd2e0064c9fbb51508a65e562",
+    "hard/qiskitHumanEval/133": "a29794b6f11914cadeac17891bc861263cc03f929a8926f2f6dc08ce43f6f202",
+    "hard/qiskitHumanEval/134": "783dbf33790878d4b298b38a996f25a7b43fa91ef48df14fbf7ee334f48d74e5",
+    "hard/qiskitHumanEval/146": "5a40928f07094e5d9bea0953b85f7ff3427b8185f725344bc03b684c650b0e39",
+    "hard/qiskitHumanEval/43": "fcd71152fc025516172b1e4311fb27b4bd0ec7de021800e6163d202d067bff1c",
+    "hard/qiskitHumanEval/97": "35add8e4506256c303c91d7027df745a4dd3b454759c10b14fb5b6c9f155bba4",
+    "hard/qiskitHumanEval/98": "171a3997f9ea79c2cdce9be2b40680c4ecdeb85f3443d87babe4fe654c770e0e",
+    "normal/qiskitHumanEval/122": "810a3ae07ca3dbabe1733bd57a1588b4ee2faa4acd683b30940ab11448340eb4",
+    "normal/qiskitHumanEval/129": "ffd0a964cdbea792091b72cfb446d2aab280e48c9d3d2f2d9bc038eb360ca54f",
+    "normal/qiskitHumanEval/133": "a5609330e15b8e79a276f9e898653881c8a25a4958b5ff532e91074e3980b863",
+    "normal/qiskitHumanEval/134": "483dc2693a5a3cee2a13f4a6bbd03937f96bb42d03eae4c1994b17172c326646",
+    "normal/qiskitHumanEval/146": "a312814ffd2ff96e70ace69c715dda8f52c4371ec52ba7b1cdd2739b888d4c77",
+    "normal/qiskitHumanEval/43": "f9e685747ed07aedf5377251fcede9b2330acf2bcb7b762b60393db84f2cd170",
+    "normal/qiskitHumanEval/97": "ce864913d4585666d2f5ecd32e9600b854166931e4edf3f8c384053c0c8c0dc3",
+    "normal/qiskitHumanEval/98": "8de10a9805a5322894fca2c4af33c863fb87b62837e7cf2a8c908206bcb520c2"
+  },
+  "suites": {
+    "normal": {
+      "attempted": 143,
+      "outcomes": {
+        "pass": 103,
+        "unsupported": 39,
+        "infrastructure_error": 1
+      },
+      "changes_from_0a45d6a": [
+        {
+          "task": "qiskitHumanEval/45",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/78",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/91",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/92",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/100",
+          "before": "candidate_error",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/108",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/109",
+          "before": "timeout",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/112",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/119",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/125",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/145",
+          "before": "unsupported",
+          "after": "pass"
+        }
+      ],
+      "unresolved": [
+        {
+          "task": "qiskitHumanEval/3",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/26",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/27",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/28",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/29",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/30",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/34",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/35",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/37",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PrimitiveResult"
+        },
+        {
+          "task": "qiskitHumanEval/46",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: linear_function"
+        },
+        {
+          "task": "qiskitHumanEval/50",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/51",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/63",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/72",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/73",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/76",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: HXHPass"
+        },
+        {
+          "task": "qiskitHumanEval/82",
+          "outcome": "infrastructure_error",
+          "detail": "[Errno 2] No such file or directory: 'bell.qpy'"
+        },
+        {
+          "task": "qiskitHumanEval/86",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: linear_function"
+        },
+        {
+          "task": "qiskitHumanEval/88",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/89",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cch"
+        },
+        {
+          "task": "qiskitHumanEval/90",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cccircuit-41"
+        },
+        {
+          "task": "qiskitHumanEval/101",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: graph_state"
+        },
+        {
+          "task": "qiskitHumanEval/105",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/106",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/107",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: ScalarOp"
+        },
+        {
+          "task": "qiskitHumanEval/113",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PropertySet"
+        },
+        {
+          "task": "qiskitHumanEval/114",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CouplingMap"
+        },
+        {
+          "task": "qiskitHumanEval/115",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Target"
+        },
+        {
+          "task": "qiskitHumanEval/116",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: hamiltonian"
+        },
+        {
+          "task": "qiskitHumanEval/120",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: diagonal"
+        },
+        {
+          "task": "qiskitHumanEval/121",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/123",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/124",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/128",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/135",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/141",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: SparsePauliOp"
+        },
+        {
+          "task": "qiskitHumanEval/147",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: c4y"
+        },
+        {
+          "task": "qiskitHumanEval/148",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: FakeKyiv"
+        },
+        {
+          "task": "qiskitHumanEval/149",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: BitArray"
+        },
+        {
+          "task": "qiskitHumanEval/150",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: for_loop"
+        }
+      ]
+    },
+    "hard": {
+      "attempted": 143,
+      "outcomes": {
+        "pass": 103,
+        "unsupported": 39,
+        "infrastructure_error": 1
+      },
+      "changes_from_0a45d6a": [
+        {
+          "task": "qiskitHumanEval/45",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/78",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/91",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/92",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/100",
+          "before": "candidate_error",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/108",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/109",
+          "before": "timeout",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/112",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/119",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/125",
+          "before": "unsupported",
+          "after": "pass"
+        },
+        {
+          "task": "qiskitHumanEval/145",
+          "before": "unsupported",
+          "after": "pass"
+        }
+      ],
+      "unresolved": [
+        {
+          "task": "qiskitHumanEval/3",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/26",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/27",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/28",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/29",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/30",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/34",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/35",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/37",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PrimitiveResult"
+        },
+        {
+          "task": "qiskitHumanEval/46",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: linear_function"
+        },
+        {
+          "task": "qiskitHumanEval/50",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/51",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/63",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/72",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/73",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/76",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: HXHPass"
+        },
+        {
+          "task": "qiskitHumanEval/82",
+          "outcome": "infrastructure_error",
+          "detail": "[Errno 2] No such file or directory: 'bell.qpy'"
+        },
+        {
+          "task": "qiskitHumanEval/86",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: linear_function"
+        },
+        {
+          "task": "qiskitHumanEval/88",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/89",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cch"
+        },
+        {
+          "task": "qiskitHumanEval/90",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cccircuit-41"
+        },
+        {
+          "task": "qiskitHumanEval/101",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: graph_state"
+        },
+        {
+          "task": "qiskitHumanEval/105",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/106",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/107",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: ScalarOp"
+        },
+        {
+          "task": "qiskitHumanEval/113",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PropertySet"
+        },
+        {
+          "task": "qiskitHumanEval/114",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CouplingMap"
+        },
+        {
+          "task": "qiskitHumanEval/115",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Target"
+        },
+        {
+          "task": "qiskitHumanEval/116",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: hamiltonian"
+        },
+        {
+          "task": "qiskitHumanEval/120",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: diagonal"
+        },
+        {
+          "task": "qiskitHumanEval/121",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/123",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/124",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/128",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/135",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/141",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: SparsePauliOp"
+        },
+        {
+          "task": "qiskitHumanEval/147",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: c4y"
+        },
+        {
+          "task": "qiskitHumanEval/148",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: FakeKyiv"
+        },
+        {
+          "task": "qiskitHumanEval/149",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: BitArray"
+        },
+        {
+          "task": "qiskitHumanEval/150",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: for_loop"
+        }
+      ]
+    }
+  }
+}

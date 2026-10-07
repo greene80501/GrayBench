@@ -1,0 +1,140 @@
+{
+  "kind": "graybench_task119_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "a470209d071bc5f8c1ff179349d5a52dd7ef4fc3a2a0019eddd97ffe889666f9",
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "e8baecd81ac8f59bccc68fef255586961cd8c9fe9cf37599fe12c355db483780",
+      "case": "reference",
+      "candidate_sha256": "169bb6146dfc9e39a68acc3eff4fe0b78b9cc69792dd4abf6d63b8065f50f14e",
+      "outcome": "pass",
+      "assertion": null,
+      "public_input_controls": {}
+    },
+    {
+      "suite": "normal",
+      "task_digest": "e8baecd81ac8f59bccc68fef255586961cd8c9fe9cf37599fe12c355db483780",
+      "case": "three_only_no_half",
+      "candidate_sha256": "19f030c18b4ad3fe69c52f96bbb7ba93882b0c5e35ef5752de38765d6a31ae70",
+      "outcome": "pass",
+      "assertion": null,
+      "public_input_controls": {
+        "half_at_three": {
+          "error": "ValueError"
+        },
+        "full_at_four": {
+          "error": "ValueError"
+        }
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "e8baecd81ac8f59bccc68fef255586961cd8c9fe9cf37599fe12c355db483780",
+      "case": "direct_adder_alternative",
+      "candidate_sha256": "fc391dcc725e5f7944c66c397c99109a33770ce162aeba513653230bfa1a6bea",
+      "outcome": "pass",
+      "assertion": null,
+      "public_input_controls": {
+        "half_at_three": {
+          "result_type": "CDKMRippleCarryAdder"
+        },
+        "full_at_four": {
+          "result_type": "CDKMRippleCarryAdder"
+        }
+      }
+    },
+    {
+      "suite": "normal",
+      "task_digest": "e8baecd81ac8f59bccc68fef255586961cd8c9fe9cf37599fe12c355db483780",
+      "case": "wrong_full_control",
+      "candidate_sha256": "266d0ca950b7d8c0b1a7cb18420b3787001ab43eafd079412cb1c9dc936c1185",
+      "outcome": "fail",
+      "assertion": "The circuit does not match the expected CDKMRippleCarryAdder for full kind",
+      "public_input_controls": {}
+    },
+    {
+      "suite": "normal",
+      "task_digest": "e8baecd81ac8f59bccc68fef255586961cd8c9fe9cf37599fe12c355db483780",
+      "case": "wrong_fixed_control",
+      "candidate_sha256": "6277e9aa5e788cb50a2c30ecf424106d2de0555389804c7525fefb98085074b2",
+      "outcome": "fail",
+      "assertion": "The circuit does not match the expected CDKMRippleCarryAdder for fixed kind",
+      "public_input_controls": {}
+    },
+    {
+      "suite": "hard",
+      "task_digest": "80548427a92f8377d593ace9a596af3d37a1025644981a1ea991c5476ebcbbfa",
+      "case": "reference",
+      "candidate_sha256": "ca6ade7739af8652846471209180672cb1611736f39802f6c53ec231800f41c0",
+      "outcome": "pass",
+      "assertion": null,
+      "public_input_controls": {}
+    },
+    {
+      "suite": "hard",
+      "task_digest": "80548427a92f8377d593ace9a596af3d37a1025644981a1ea991c5476ebcbbfa",
+      "case": "three_only_no_half",
+      "candidate_sha256": "2b9c07ad9da62e48f93b42cc3427c1bcf9e35570f6db7048cb383f6cdfad4051",
+      "outcome": "pass",
+      "assertion": null,
+      "public_input_controls": {
+        "half_at_three": {
+          "error": "ValueError"
+        },
+        "full_at_four": {
+          "error": "ValueError"
+        }
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "80548427a92f8377d593ace9a596af3d37a1025644981a1ea991c5476ebcbbfa",
+      "case": "direct_adder_alternative",
+      "candidate_sha256": "e76d41ccc7b336c4eba195a730d76650d871005d2263b53abae0e1d55d132d32",
+      "outcome": "pass",
+      "assertion": null,
+      "public_input_controls": {
+        "half_at_three": {
+          "result_type": "CDKMRippleCarryAdder"
+        },
+        "full_at_four": {
+          "result_type": "CDKMRippleCarryAdder"
+        }
+      }
+    },
+    {
+      "suite": "hard",
+      "task_digest": "80548427a92f8377d593ace9a596af3d37a1025644981a1ea991c5476ebcbbfa",
+      "case": "wrong_full_control",
+      "candidate_sha256": "1ead23404d876694cbaef52753d18c41f0bd2a7e1229f69fbbe47af97f04fa2a",
+      "outcome": "fail",
+      "assertion": "The circuit does not match the expected CDKMRippleCarryAdder for full kind",
+      "public_input_controls": {}
+    },
+    {
+      "suite": "hard",
+      "task_digest": "80548427a92f8377d593ace9a596af3d37a1025644981a1ea991c5476ebcbbfa",
+      "case": "wrong_fixed_control",
+      "candidate_sha256": "d97c8b23b5ee6b55f414d301c67f80d969d8837c0a5b9d4f0a00599d34c9ab2f",
+      "outcome": "fail",
+      "assertion": "The circuit does not match the expected CDKMRippleCarryAdder for fixed kind",
+      "public_input_controls": {}
+    }
+  ]
+}

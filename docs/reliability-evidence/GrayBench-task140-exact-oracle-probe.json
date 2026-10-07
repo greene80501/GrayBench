@@ -1,0 +1,103 @@
+{
+  "kind": "graybench_task140_exact_oracle_probe_v1",
+  "scope": "Authored exact-test diagnostic, not protected judging or a model score",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "python": "3.12.14",
+  "qiskit": "2.4.2",
+  "dataset_pins": {
+    "normal": {
+      "repo": "Qiskit/qiskit_humaneval",
+      "revision": "a0066805f7a15cb48e9d0cface2210056185be6d",
+      "sha256": "1fb8d49195a08c023cc93b489b5d2ae0c2118047a5306f6fd374e3b4e95a94e6"
+    },
+    "hard": {
+      "repo": "Qiskit/qiskit_humaneval_hard",
+      "revision": "315e167a479d5c546565d7f9f8c63a644c84cb50",
+      "sha256": "3809e1faa0d9bd3b2a366f2c25b36084705602d91318f30acffbd7e0b76df8c9"
+    }
+  },
+  "script_sha256": "db4314d61a85458add3d30c729ab6e8730439bd753793b9bd33ba52daa8b6087",
+  "invalid_total_mass": 1.6,
+  "cases": [
+    {
+      "suite": "normal",
+      "task_digest": "ceac6337eeff3fe794c61f21e2632b7159f9448eae5f20677b8d0c9c875693c2",
+      "case": "reference",
+      "candidate_sha256": "6592b02496ab42655405eeb5d57c1c61357e8c25216a24d93a7593143a696503",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "ceac6337eeff3fe794c61f21e2632b7159f9448eae5f20677b8d0c9c875693c2",
+      "case": "valid_uniform",
+      "candidate_sha256": "0ae6b6b526104623c17dd3a1cc1c162db2edabd32f27334bf8b459add8b4067f",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "ceac6337eeff3fe794c61f21e2632b7159f9448eae5f20677b8d0c9c875693c2",
+      "case": "invalid_total_mass",
+      "candidate_sha256": "95eddf15ad0c66a5f6894483dfb7e8cb3e950f8ab2028573239842a4c410df81",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "normal",
+      "task_digest": "ceac6337eeff3fe794c61f21e2632b7159f9448eae5f20677b8d0c9c875693c2",
+      "case": "wrong_length_control",
+      "candidate_sha256": "a530e7c78e12485d9e01a1923753fdcc331b1eb70bcce2357360b8cbabcc2a5e",
+      "outcome": "fail",
+      "detail": "The length of the probability vector is not 16"
+    },
+    {
+      "suite": "normal",
+      "task_digest": "ceac6337eeff3fe794c61f21e2632b7159f9448eae5f20677b8d0c9c875693c2",
+      "case": "zero_entropy_control",
+      "candidate_sha256": "769c597d80716d447c8579fac1aef4c6bba707402708efd9137339576175cff7",
+      "outcome": "fail",
+      "detail": "Shannon entropy not greater than given value"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dce7b69543ef37e11a7b2b9ac5a5c1522840ec22d283e6356344df8456b66ee7",
+      "case": "reference",
+      "candidate_sha256": "5d4ff8360fb6c07a4b2ebd95e0efaad798db237d50c4446b438dccdc229604be",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dce7b69543ef37e11a7b2b9ac5a5c1522840ec22d283e6356344df8456b66ee7",
+      "case": "valid_uniform",
+      "candidate_sha256": "92b9e5aeec39362cb4f34e5115404d75a3d91aa6c87057fe9d483f614c481b97",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dce7b69543ef37e11a7b2b9ac5a5c1522840ec22d283e6356344df8456b66ee7",
+      "case": "invalid_total_mass",
+      "candidate_sha256": "46a1bea8f301950a07a98d37d7a821a3e1b41cc02c8687fb6f459f30f258974f",
+      "outcome": "pass",
+      "detail": null
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dce7b69543ef37e11a7b2b9ac5a5c1522840ec22d283e6356344df8456b66ee7",
+      "case": "wrong_length_control",
+      "candidate_sha256": "dfd61e2719272231c0c5f5a1604209c93dd4ade23eb0fe67e03e6dbaede2f708",
+      "outcome": "fail",
+      "detail": "The length of the probability vector is not 16"
+    },
+    {
+      "suite": "hard",
+      "task_digest": "dce7b69543ef37e11a7b2b9ac5a5c1522840ec22d283e6356344df8456b66ee7",
+      "case": "zero_entropy_control",
+      "candidate_sha256": "ada51f0477e57606f9eaafbc9a7bd9cb27cf1f71c7f26893149710c804b97ef3",
+      "outcome": "fail",
+      "detail": "Shannon entropy not greater than given value"
+    }
+  ]
+}

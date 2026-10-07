@@ -1,0 +1,560 @@
+{
+  "protected_evidence": {
+    "complete": true,
+    "pending_task": null,
+    "planned": 4,
+    "results": {
+      "normal/63/constant-one": "pass",
+      "normal/63/constant-zero": "fail",
+      "hard/63/constant-one": "pass",
+      "hard/63/constant-zero": "fail"
+    },
+    "chain_head": "535c0aaa42ea075c8fca055d3b7772ac492a4ef1702dcb36708fa9e026af441e",
+    "purpose": "task63 oracle adequacy diagnostic; protected authored constants, not model scoring",
+    "file_sha256": "67c0db59275559d05cde4e2cd873140e95409f46f354253b05c2f2974e3c566d"
+  },
+  "probe_sha256": "5d6c0d1994387d390a1fb01412098aa07d204a688e20c2188df6438049269be4",
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.2.4",
+    "qiskit": "2.4.2"
+  },
+  "task_digests": {
+    "normal": "2ba17e13c1e97e2ad2b96ed3de9589a31f28f3a75553d1b2651e34abb5715ce1",
+    "hard": "c456c4772f149f8f88a28f473c4b3b7278490b820847a5dc4327246ec5d8c4af"
+  },
+  "sender_basis": [
+    1,
+    0,
+    0,
+    1,
+    1
+  ],
+  "sender_bits": [
+    0,
+    0,
+    0,
+    1,
+    1
+  ],
+  "receiver_basis_witnesses": [
+    {
+      "receiver_basis": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "matching_indices": [
+        1,
+        2
+      ],
+      "ideal_sifted_key": "00",
+      "verified_probability": 0.9999999999999998
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "matching_indices": [
+        1,
+        2,
+        4
+      ],
+      "ideal_sifted_key": "001",
+      "verified_probability": 0.9999999999999993
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "matching_indices": [
+        1,
+        2,
+        3
+      ],
+      "ideal_sifted_key": "001",
+      "verified_probability": 0.9999999999999993
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "matching_indices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "0011",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "matching_indices": [
+        1
+      ],
+      "ideal_sifted_key": "0",
+      "verified_probability": 0.9999999999999996
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "matching_indices": [
+        1,
+        4
+      ],
+      "ideal_sifted_key": "01",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "matching_indices": [
+        1,
+        3
+      ],
+      "ideal_sifted_key": "01",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "matching_indices": [
+        1,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "011",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "matching_indices": [
+        2
+      ],
+      "ideal_sifted_key": "0",
+      "verified_probability": 0.9999999999999996
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "matching_indices": [
+        2,
+        4
+      ],
+      "ideal_sifted_key": "01",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "matching_indices": [
+        2,
+        3
+      ],
+      "ideal_sifted_key": "01",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "matching_indices": [
+        2,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "011",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "matching_indices": [],
+      "ideal_sifted_key": "",
+      "verified_probability": 0.9999999999999998
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "matching_indices": [
+        4
+      ],
+      "ideal_sifted_key": "1",
+      "verified_probability": 0.9999999999999996
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "matching_indices": [
+        3
+      ],
+      "ideal_sifted_key": "1",
+      "verified_probability": 0.9999999999999996
+    },
+    {
+      "receiver_basis": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "matching_indices": [
+        3,
+        4
+      ],
+      "ideal_sifted_key": "11",
+      "verified_probability": 0.999999999999999
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "matching_indices": [
+        0,
+        1,
+        2
+      ],
+      "ideal_sifted_key": "000",
+      "verified_probability": 0.9999999999999993
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "matching_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "ideal_sifted_key": "0001",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "matching_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "ideal_sifted_key": "0001",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "matching_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "00011",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "matching_indices": [
+        0,
+        1
+      ],
+      "ideal_sifted_key": "00",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "matching_indices": [
+        0,
+        1,
+        4
+      ],
+      "ideal_sifted_key": "001",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "matching_indices": [
+        0,
+        1,
+        3
+      ],
+      "ideal_sifted_key": "001",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "matching_indices": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "0011",
+      "verified_probability": 0.9999999999999989
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "matching_indices": [
+        0,
+        2
+      ],
+      "ideal_sifted_key": "00",
+      "verified_probability": 0.9999999999999992
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "matching_indices": [
+        0,
+        2,
+        4
+      ],
+      "ideal_sifted_key": "001",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "matching_indices": [
+        0,
+        2,
+        3
+      ],
+      "ideal_sifted_key": "001",
+      "verified_probability": 0.9999999999999991
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "matching_indices": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "0011",
+      "verified_probability": 0.9999999999999989
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "matching_indices": [
+        0
+      ],
+      "ideal_sifted_key": "0",
+      "verified_probability": 0.9999999999999996
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "matching_indices": [
+        0,
+        4
+      ],
+      "ideal_sifted_key": "01",
+      "verified_probability": 0.999999999999999
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "matching_indices": [
+        0,
+        3
+      ],
+      "ideal_sifted_key": "01",
+      "verified_probability": 0.999999999999999
+    },
+    {
+      "receiver_basis": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "matching_indices": [
+        0,
+        3,
+        4
+      ],
+      "ideal_sifted_key": "011",
+      "verified_probability": 0.9999999999999987
+    }
+  ],
+  "key_counts_out_of_32_equally_likely_receiver_bases": {
+    "": 1,
+    "0": 3,
+    "00": 3,
+    "000": 1,
+    "0001": 2,
+    "00011": 1,
+    "001": 6,
+    "0011": 3,
+    "01": 6,
+    "011": 3,
+    "1": 2,
+    "11": 1
+  },
+  "upstream_seed_receiver_basis": [
+    0,
+    1,
+    1,
+    1,
+    0
+  ],
+  "upstream_seed_key": "1",
+  "interpretation": "For this ideal fixture and independent uniform receiver bases, the upstream required key occurs with probability 2/32. This is exhaustive basis enumeration with native statevector checks, not empirical provider or canonical sampling."
+}

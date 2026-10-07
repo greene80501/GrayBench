@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "captured_on_utc": "2026-09-28",
+  "source_digest": "bcd6b4379ee62c3c8a15be4d6368e961467ab7506d6787a39ede36d60782a70d",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "log": {
+    "path": "control.jsonl",
+    "bytes": 282649,
+    "sha256": "902fd1fe09c2cd54cca73845687be90513b82ae0845f879e63d7633dd0291292"
+  }
+}

@@ -1,0 +1,553 @@
+{
+  "purpose": "reference interface calibration, not model scoring",
+  "source_commit": "0a45d6a249cba758b9da8cf42aa98b7ded49c72d",
+  "source_matches_git": true,
+  "complete": true,
+  "evidence_sha256": "e7ec009b9ce3da1caff25e3a192ac6bb83d211c24b607dcfc74fafee63092115",
+  "external_tasks_not_run": [
+    43,
+    97,
+    98,
+    122,
+    129,
+    133,
+    134,
+    146
+  ],
+  "suites": {
+    "normal": {
+      "attempted": 143,
+      "outcomes": {
+        "pass": 92,
+        "unsupported": 48,
+        "infrastructure_error": 1,
+        "candidate_error": 1,
+        "timeout": 1
+      },
+      "unresolved": [
+        {
+          "task": "qiskitHumanEval/3",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/26",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/27",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/28",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/29",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/30",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/34",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/35",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/37",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PrimitiveResult"
+        },
+        {
+          "task": "qiskitHumanEval/45",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Clifford"
+        },
+        {
+          "task": "qiskitHumanEval/46",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LinearFunction"
+        },
+        {
+          "task": "qiskitHumanEval/50",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/51",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: _SingletonXGate"
+        },
+        {
+          "task": "qiskitHumanEval/63",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/72",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: _SingletonCXGate"
+        },
+        {
+          "task": "qiskitHumanEval/73",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/76",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: HXHPass"
+        },
+        {
+          "task": "qiskitHumanEval/78",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: IQFT"
+        },
+        {
+          "task": "qiskitHumanEval/82",
+          "outcome": "infrastructure_error",
+          "detail": "[Errno 2] No such file or directory: 'bell.qpy'"
+        },
+        {
+          "task": "qiskitHumanEval/86",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: linear_function"
+        },
+        {
+          "task": "qiskitHumanEval/88",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/89",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cch"
+        },
+        {
+          "task": "qiskitHumanEval/90",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cccircuit-41"
+        },
+        {
+          "task": "qiskitHumanEval/91",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Instruction"
+        },
+        {
+          "task": "qiskitHumanEval/92",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: StabilizerState"
+        },
+        {
+          "task": "qiskitHumanEval/100",
+          "outcome": "candidate_error",
+          "detail": "Candidate output limit exceeded"
+        },
+        {
+          "task": "qiskitHumanEval/101",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: graph_state"
+        },
+        {
+          "task": "qiskitHumanEval/105",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/106",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/107",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: ScalarOp"
+        },
+        {
+          "task": "qiskitHumanEval/108",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Choi"
+        },
+        {
+          "task": "qiskitHumanEval/109",
+          "outcome": "timeout",
+          "detail": "Candidate did not accept call input before the deadline"
+        },
+        {
+          "task": "qiskitHumanEval/112",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: circuit-42"
+        },
+        {
+          "task": "qiskitHumanEval/113",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PropertySet"
+        },
+        {
+          "task": "qiskitHumanEval/114",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CouplingMap"
+        },
+        {
+          "task": "qiskitHumanEval/115",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Target"
+        },
+        {
+          "task": "qiskitHumanEval/116",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: hamiltonian"
+        },
+        {
+          "task": "qiskitHumanEval/119",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: CDKMRippleCarryAdder"
+        },
+        {
+          "task": "qiskitHumanEval/120",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: Diagonal"
+        },
+        {
+          "task": "qiskitHumanEval/121",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/123",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/124",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/125",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Gate"
+        },
+        {
+          "task": "qiskitHumanEval/128",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/135",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/141",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: SparsePauliOp"
+        },
+        {
+          "task": "qiskitHumanEval/145",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: IQFT"
+        },
+        {
+          "task": "qiskitHumanEval/147",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: c4y"
+        },
+        {
+          "task": "qiskitHumanEval/148",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: FakeKyiv"
+        },
+        {
+          "task": "qiskitHumanEval/149",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: BitArray"
+        },
+        {
+          "task": "qiskitHumanEval/150",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: for_loop"
+        }
+      ]
+    },
+    "hard": {
+      "attempted": 143,
+      "outcomes": {
+        "pass": 92,
+        "unsupported": 48,
+        "infrastructure_error": 1,
+        "candidate_error": 1,
+        "timeout": 1
+      },
+      "unresolved": [
+        {
+          "task": "qiskitHumanEval/3",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/26",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/27",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: DAGCircuit"
+        },
+        {
+          "task": "qiskitHumanEval/28",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/29",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/30",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/34",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/35",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LocalRuntimeJob"
+        },
+        {
+          "task": "qiskitHumanEval/37",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PrimitiveResult"
+        },
+        {
+          "task": "qiskitHumanEval/45",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Clifford"
+        },
+        {
+          "task": "qiskitHumanEval/46",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: LinearFunction"
+        },
+        {
+          "task": "qiskitHumanEval/50",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/51",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: _SingletonXGate"
+        },
+        {
+          "task": "qiskitHumanEval/63",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/72",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: _SingletonCXGate"
+        },
+        {
+          "task": "qiskitHumanEval/73",
+          "outcome": "unsupported",
+          "detail": "Alias-aware input mutation bridge is not implemented"
+        },
+        {
+          "task": "qiskitHumanEval/76",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: HXHPass"
+        },
+        {
+          "task": "qiskitHumanEval/78",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: IQFT"
+        },
+        {
+          "task": "qiskitHumanEval/82",
+          "outcome": "infrastructure_error",
+          "detail": "[Errno 2] No such file or directory: 'bell.qpy'"
+        },
+        {
+          "task": "qiskitHumanEval/86",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: linear_function"
+        },
+        {
+          "task": "qiskitHumanEval/88",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/89",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cch"
+        },
+        {
+          "task": "qiskitHumanEval/90",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: cccircuit-41"
+        },
+        {
+          "task": "qiskitHumanEval/91",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Instruction"
+        },
+        {
+          "task": "qiskitHumanEval/92",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: StabilizerState"
+        },
+        {
+          "task": "qiskitHumanEval/100",
+          "outcome": "candidate_error",
+          "detail": "Candidate output limit exceeded"
+        },
+        {
+          "task": "qiskitHumanEval/101",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: graph_state"
+        },
+        {
+          "task": "qiskitHumanEval/105",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/106",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CNOTDihedral"
+        },
+        {
+          "task": "qiskitHumanEval/107",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: ScalarOp"
+        },
+        {
+          "task": "qiskitHumanEval/108",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Choi"
+        },
+        {
+          "task": "qiskitHumanEval/109",
+          "outcome": "timeout",
+          "detail": "Candidate sample active-time limit exceeded"
+        },
+        {
+          "task": "qiskitHumanEval/112",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: circuit-42"
+        },
+        {
+          "task": "qiskitHumanEval/113",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: PropertySet"
+        },
+        {
+          "task": "qiskitHumanEval/114",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: CouplingMap"
+        },
+        {
+          "task": "qiskitHumanEval/115",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Target"
+        },
+        {
+          "task": "qiskitHumanEval/116",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: hamiltonian"
+        },
+        {
+          "task": "qiskitHumanEval/119",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: CDKMRippleCarryAdder"
+        },
+        {
+          "task": "qiskitHumanEval/120",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: Diagonal"
+        },
+        {
+          "task": "qiskitHumanEval/121",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/123",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Figure"
+        },
+        {
+          "task": "qiskitHumanEval/124",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/125",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: Gate"
+        },
+        {
+          "task": "qiskitHumanEval/128",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: if_else"
+        },
+        {
+          "task": "qiskitHumanEval/135",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported wire value: NoiseModel"
+        },
+        {
+          "task": "qiskitHumanEval/141",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: SparsePauliOp"
+        },
+        {
+          "task": "qiskitHumanEval/145",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: IQFT"
+        },
+        {
+          "task": "qiskitHumanEval/147",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: c4y"
+        },
+        {
+          "task": "qiskitHumanEval/148",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: FakeKyiv"
+        },
+        {
+          "task": "qiskitHumanEval/149",
+          "outcome": "unsupported",
+          "detail": "Unsupported wire value: BitArray"
+        },
+        {
+          "task": "qiskitHumanEval/150",
+          "outcome": "unsupported",
+          "detail": "WireError: Unsupported instruction: for_loop"
+        }
+      ]
+    }
+  }
+}

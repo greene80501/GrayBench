@@ -1,0 +1,46 @@
+{
+  "schema_version": "1",
+  "captured_on_utc": "2026-09-28",
+  "source_revision": "2e9854d4063291198e4aa5b6dc778418ec2258f4",
+  "source_digest": "be85d5ff6a9c61b3777b6083b183f5f3411cb06b4d484ebcabc9f28b22593cc0",
+  "image": "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd",
+  "task_ids": [
+    62,
+    63,
+    100,
+    109
+  ],
+  "repeats_per_suite": 3,
+  "files": [
+    {
+      "path": "hard-repeat-1.jsonl",
+      "bytes": 26198,
+      "sha256": "2e7bc8a39db37e8ac582929be967dbbe50109ec9b2d7d1caa91e0ba93e5c2485"
+    },
+    {
+      "path": "hard-repeat-2.jsonl",
+      "bytes": 26198,
+      "sha256": "05122eebffce3938d57209401fecedce2523b8409eceb17706323e5e0f94cc3f"
+    },
+    {
+      "path": "hard-repeat-3.jsonl",
+      "bytes": 26198,
+      "sha256": "62d80d8edddabcb2da0e484203f303a99effae152b172abbb20988ff27c24fae"
+    },
+    {
+      "path": "normal-repeat-1.jsonl",
+      "bytes": 26586,
+      "sha256": "40c67e58f23de1dd2680d0d4c2fb1945e527cf9343b2445f60d11e801288e2cd"
+    },
+    {
+      "path": "normal-repeat-2.jsonl",
+      "bytes": 26586,
+      "sha256": "79c8ce64182787bfc1c29ff4a4ccc57afd65d0f95f55ec8b2db3420cd8ecf982"
+    },
+    {
+      "path": "normal-repeat-3.jsonl",
+      "bytes": 26586,
+      "sha256": "ad5671473b4167f8e626443297eb09064768fad0234edba15fc02aa21efcd204"
+    }
+  ]
+}

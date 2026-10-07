@@ -1,0 +1,63 @@
+"""Trusted authored fixtures against exact task109 tests; not protected scoring."""
+from pathlib import Path
+import ast
+import hashlib
+import importlib.metadata
+import json
+import platform
+import sys
+from graybench.datasets import load_suite
+from graybench.extraction import extract
+from graybench.identity import identity
+from graybench.judge import Judgment
+from graybench.reference_scan import run_evidence_cases
+from qiskit.quantum_info import Statevector, Pauli
+
+fixtures = {
+    'slow-full-circle': "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\ndef circuit():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    qc.rz(Parameter('phi') / 1000, 0)\n    return qc\n",
+    'fourfold-full-circle': "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\ndef circuit():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    qc.rz(4 * Parameter('phi'), 0)\n    return qc\n",
+    'sine-short-arc': "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\ndef circuit():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    qc.rz(Parameter('phi').sin(), 0)\n    return qc\n",
+    'phase-alternative': "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\ndef circuit():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    qc.p(Parameter('phi'), 0)\n    return qc\n",
+    'fixed-plus': "from qiskit import QuantumCircuit\ndef circuit():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    return qc\n",
+    'global-phase-only': "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\ndef circuit():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    qc.global_phase = Parameter('phi')\n    return qc\n",
+}
+tasks = [t for suite in ('normal', 'hard') for t in load_suite(suite, Path('../../GrayBench/data/datasets')) if t.public.family_id == 'qhe/109']
+assert len(tasks) == 2
+manifest = {'probe_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), 'python': platform.python_version(), 'packages': {p: importlib.metadata.version(p) for p in ('qiskit', 'numpy')}, 'execution': 'native trusted authored fixtures; exact pinned private test, no isolation claim', 'repetitions': 'unmodified upstream 1000 calls; no injected RNG seed'}
+items = []
+for task in tasks:
+    for name, code in {'canonical':task.canonical_solution, **fixtures}.items():
+        items.append((f'{task.public.suite}/109/{name}', identity({'task':task.digest,'code':code}), (task,name,code)))
+
+def evaluate(case):
+    task,name,code = case
+    scope = {}
+    extracted = extract(code, task.public)
+    assert extracted.error is None
+    exec(compile(extracted.public_prefix, '<public-prefix>', 'exec'), scope)
+    exec(compile(extracted.code, '<trusted-authored-fixture>', 'exec'), scope)
+    factory = scope['circuit']
+    calls = 0
+    def counted():
+        nonlocal calls
+        calls += 1
+        return factory()
+    scope['circuit'] = counted
+    outcome, detail = 'pass', None
+    try:
+        tree = ast.parse(task.upstream_test)
+        tree.body = [n for n in tree.body if not (isinstance(n, ast.Expr) and isinstance(n.value, ast.Call) and isinstance(n.value.func, ast.Name) and n.value.func.id == 'check')]
+        exec(compile(tree, '<pinned-upstream-test>', 'exec'), scope)
+        scope['check'](counted)
+    except Exception as exc:
+        outcome, detail = 'fail', {'type':type(exc).__name__, 'message':str(exc)}
+    assert calls == 1000, f'Unexpected call count: {calls}'
+    witnesses = []
+    for angle in (0.0, 1.5707963267948966, 3.141592653589793, 4.71238898038469):
+        qc = factory()
+        qc.assign_parameters([angle] * qc.num_parameters, inplace=True)
+        sv = Statevector(qc)
+        witnesses.append({'angle':angle,'bloch':[float(sv.expectation_value(Pauli(p)).real) for p in ('X','Y','Z')]})
+    return Judgment(outcome, identity(manifest), {'manifest':manifest,'task_digest':task.digest,'fixture':name,'completion':code,'upstream_calls':calls,'detail':detail,'bloch_witnesses':witnesses,'expected_public_contract': 'reject' if name in ('fixed-plus','global-phase-only','sine-short-arc') else 'positive control; full minimal-resource contract not certified'})
+
+print(json.dumps(run_evidence_cases(items, evaluate, Path(sys.argv[1]), purpose='task109 parameterization fairness diagnostic; trusted native fixtures, not model scoring', selection={'families':[109],'suites':['normal','hard'],'fixtures':['canonical',*fixtures]})))

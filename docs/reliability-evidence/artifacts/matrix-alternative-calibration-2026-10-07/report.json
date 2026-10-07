@@ -1,0 +1,36 @@
+{
+  "absolute_entry_threshold": 5e-12,
+  "diagonal": {
+    "cases": 80,
+    "maximum_entry_error": 1.6504651808933464e-15,
+    "seed": 251,
+    "widths": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "engine_source_digest": "4770bfec384cfe4f52a1fcd4cb832bed65f012a9234462f4dd25f531ab8cf90d",
+  "fixture_source_sha256": "d65b7f9fbe1b0f62a21afd12f39670f9026a25ea2c8f231113765f68b6ef571b",
+  "kind": "graybench_authored_matrix_alternative_calibration_v1",
+  "pauli": {
+    "cases": 1020,
+    "maximum_entry_error": 6.661338147750939e-16,
+    "times": [
+      0.0,
+      -0.23,
+      0.71
+    ],
+    "widths": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "phase_alignment": false,
+  "publication_eligible": false,
+  "scope": "Trusted authored algorithms; no graph, container, provider or model call"
+}

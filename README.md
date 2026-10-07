@@ -1,5 +1,40 @@
 # GrayBench 2
 
+**Replacement in progress:** the fresh Python 3.12 engine is in [engine/](engine/README.md).
+The V2 implementation below is retained for historical pilot reproduction. Its judge has a
+reproduced verdict-forgery vulnerability and its upstream oracles have known false acceptances;
+V2 scores are not certified. See the [reliability plan and evidence](docs/RELIABILITY_PLAN.md).
+The [complete normal/hard pair audit](docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/README.md)
+records a contradictory task-41 prompt and undisclosed judge requirements; task admission remains unfinished.
+The [full contract review queue](docs/reliability-evidence/qhe-full-contract-review-queue-2026-10-07.md)
+tracks public obligations, unresolved choices and proposed controls for all 151 families.
+The [Task 11 state-action condition](docs/reliability-evidence/task11-statevector-action-development.md)
+rejects a fixed-example shortcut under a separate source-bound development contract.
+
+The separate [Task 12 complete-operator condition](docs/reliability-evidence/task12-explicit-operator.md)
+resolves an ambiguous Bell-preparation prompt with an explicit full-matrix contract.
+It uses logical numeric values without hidden array-ownership requirements and
+publicly specifies phase alignment. Host controls pass; isolated qualification
+and independent admission remain pending, so it is release-ineligible.
+
+The separate [Task 41 subsystem condition](docs/reliability-evidence/task41-explicit-subsystems.md)
+resolves conflicting Pauli labels and a previously undisclosed qubit placement.
+It checks the complete operator and dimensions under a public value contract;
+its host evidence passes, while isolated qualification and independent admission
+remain pending.
+
+The separate [Task 66 symmetric-state condition](docs/reliability-evidence/task66-symmetric-w.md)
+checks the complete W-state density and terminal measurement map under a public
+contract. All 84 authored controls now transfer and agree with direct judgments,
+including both correct initialization constructions. The [initialization transport
+evidence](docs/reliability-evidence/initialize-transport.md) preserves the earlier
+unsupported observations; isolated qualification and independent admission remain pending.
+
+The [Bell-shot diagnostic](docs/reliability-evidence/bell-shot-diagnostics.md)
+quantifies shot-count sensitivity and checks missing output obligations in Tasks
+1, 14, 15 and 31. It preserves original tasks and distinguishes conditional
+arithmetic and trusted-data findings from actual sampler execution.
+
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
 See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.

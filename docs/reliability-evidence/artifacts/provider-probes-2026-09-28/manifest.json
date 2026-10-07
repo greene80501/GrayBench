@@ -1,0 +1,52 @@
+{
+  "schema_version": "1",
+  "recorded_on_utc": "2026-09-28",
+  "source_revision": "ae60bd4824e268610ee172827404c11589754e6c",
+  "files": [
+    {
+      "path": "gemini-2.5-flash-capability-probe.json",
+      "bytes": 3913,
+      "sha256": "c5f838293016a834fbc94a2ecf14e7f629fdfcda550bbe3c54553a2e41b65016"
+    },
+    {
+      "path": "gemini-2.5-flash-discovery.json",
+      "bytes": 3903,
+      "sha256": "c03041bac383427652924b1907c46dfa11e68eafc18669d8a081ef4f3ddaf013"
+    },
+    {
+      "path": "gemini-2.5-flash-model.json",
+      "bytes": 257,
+      "sha256": "a8e3ec5742fd4cb804a05757fc14c4238ad6f5083c908526428e0d1c48bc6ff9"
+    },
+    {
+      "path": "gemini-3.8-flash-capability-probe.json",
+      "bytes": 5835,
+      "sha256": "ebd26d7a3eb0082fdbc0139778cf8764e1ab79df2b2f152f777050c35b284555"
+    },
+    {
+      "path": "gemini-3.8-flash-discovery.json",
+      "bytes": 3677,
+      "sha256": "1901e7d9f653cf186a995b4089c3e2fc767aa37ddd9b812018c9f6d365ec4623"
+    },
+    {
+      "path": "gemini-3.8-flash-model.json",
+      "bytes": 257,
+      "sha256": "25423a5411d1b7bc54d27e086e8d4a88b9117ec66b1df3208fe62445623a6acb"
+    },
+    {
+      "path": "gpt-4o-mini-2024-07-18-capability-probe.json",
+      "bytes": 5260,
+      "sha256": "d8c19e05886e96ae2bf07488d858cc53d7fa76c03150c91d7c88218b74236c0b"
+    },
+    {
+      "path": "gpt-4o-mini-2024-07-18-discovery.json",
+      "bytes": 3078,
+      "sha256": "0186e1f751048bdc8607b453a1df32d62ab77937cb453e5080315bd4547eba4a"
+    },
+    {
+      "path": "gpt-4o-mini-2024-07-18-model.json",
+      "bytes": 248,
+      "sha256": "da96e46ed7206bb31afc4a60614326561a4e4010de6c1c3d1de8cfeef53f364d"
+    }
+  ]
+}
