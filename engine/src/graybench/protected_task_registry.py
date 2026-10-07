@@ -3,6 +3,7 @@
 from collections.abc import Callable
 
 from graybench.datasets import JudgeTask
+from graybench.evolution_value import TASK116_ORACLE
 from graybench.protected_semantic_judge import (
     TASK2_ORACLE,
     TASK20_ORACLE,
@@ -15,6 +16,7 @@ from graybench.protected_semantic_judge import (
 from graybench.protected_task2 import task2_value_task
 from graybench.protected_task20 import task20_value_task, task20_value_task_v2
 from graybench.protected_task62 import task62_value_task, task62_value_task_v2
+from graybench.protected_task116 import task116_value_task
 from graybench.protected_task139 import task139_value_task
 
 VALUE_TASKS: dict[str, Callable[[JudgeTask], ProtectedSemanticTask]] = {
@@ -22,6 +24,7 @@ VALUE_TASKS: dict[str, Callable[[JudgeTask], ProtectedSemanticTask]] = {
     "qiskitHumanEval/20": task20_value_task_v2,
     "qiskitHumanEval/62": task62_value_task_v2,
     "qiskitHumanEval/139": task139_value_task,
+    "qiskitHumanEval/116": task116_value_task,
 }
 
 
@@ -34,6 +37,7 @@ def revised_value_task(source: JudgeTask, *, oracle: str | None = None) -> Prote
             ("qiskitHumanEval/62", TASK62_ORACLE): task62_value_task,
             ("qiskitHumanEval/62", TASK62_ORACLE_V2): task62_value_task_v2,
             ("qiskitHumanEval/139", TASK139_ORACLE): task139_value_task,
+            ("qiskitHumanEval/116", TASK116_ORACLE): task116_value_task,
         }
         try:
             return historical[(source.public.task_id, oracle)](source)

@@ -15,6 +15,11 @@ from pydantic import Field, model_validator
 
 from graybench.contracts import Contract
 from graybench.datasets import JudgeTask
+from graybench.evolution_value import (
+    TASK116_ORACLE,
+    check_evolution_matrix,
+    evolution_case_inputs,
+)
 from graybench.identity import identity
 from graybench.judgment_evidence import completion_binding
 from graybench.protected_value_contract import ProtectedValueContract, ValueCall
@@ -101,6 +106,7 @@ class ProtectedSemanticTask(Contract):
         "task62-bb84-sender-amplitudes-v1",
         "task62-bb84-sender-amplitudes-all-inputs-v2",
         "task139-four-qubit-schmidt-terms-v1",
+        "task116-pauli-evolution-matrix-values-v1",
     ] = TASK20_ORACLE
     cases: tuple[SemanticCase, ...] = Field(min_length=1, max_length=1364)
     release_eligible: Literal[False] = False
@@ -114,6 +120,7 @@ class ProtectedSemanticTask(Contract):
             TASK62_ORACLE: "qiskitHumanEval/62",
             TASK62_ORACLE_V2: "qiskitHumanEval/62",
             TASK139_ORACLE: "qiskitHumanEval/139",
+            TASK116_ORACLE: "qiskitHumanEval/116",
         }[self.oracle]
         if self.contract.public.task_id != expected_task:
             raise ValueError("Semantic oracle and public task identity differ")
@@ -175,6 +182,14 @@ class ProtectedSemanticTask(Contract):
             observed = tuple((case.case_id, case.call.args) for case in self.cases)
             if observed != expected:
                 raise ValueError("Protected task-139 requires its full frozen case set")
+        if self.oracle == TASK116_ORACLE:
+            expected = tuple(
+                (f"evolution-{index}-{label}", ValueCall(args=(label, time)).digest)
+                for index, (label, time) in enumerate(evolution_case_inputs())
+            )
+            observed = tuple((case.case_id, case.call.digest) for case in self.cases)
+            if observed != expected:
+                raise ValueError("Protected task-116 requires its full frozen case set")
         return self
 
 
@@ -406,8 +421,13 @@ class ProtectedSemanticJudge:
             TASK62_ORACLE: ("protected_task62.py", "task62_contract_code_sha256"),
             TASK62_ORACLE_V2: ("protected_task62.py", "task62_contract_code_sha256"),
             TASK139_ORACLE: ("protected_task139.py", "task139_contract_code_sha256"),
+            TASK116_ORACLE: ("protected_task116.py", "task116_contract_code_sha256"),
         }[task.oracle]
         manifest[label] = hashlib.sha256(Path(__file__).with_name(module).read_bytes()).hexdigest()
+        if task.oracle == TASK116_ORACLE:
+            manifest["task116_oracle_code_sha256"] = hashlib.sha256(
+                Path(__file__).with_name("evolution_value.py").read_bytes()
+            ).hexdigest()
         return manifest
 
     def evaluate(
@@ -449,6 +469,8 @@ class ProtectedSemanticJudge:
                 result = _task62_bb84_value(*case.call.args, value)
             elif task.oracle == TASK139_ORACLE:
                 result = _task139_schmidt_value(*case.call.args, value)
+            elif task.oracle == TASK116_ORACLE:
+                result = check_evolution_matrix(*case.call.args, value)
             else:
                 result = _task20_ghz_value(case.call.args[0], value)
             case_results.append({"case_id": case.case_id, **result})

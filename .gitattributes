@@ -162,3 +162,6 @@ docs/reliability-evidence/artifacts/matrix-alternative-calibration-2026-10-07/*.
 docs/reliability-evidence/artifacts/current-release-audit-2026-10-07-v3/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/canonical_evolution_transport.py text eol=lf
 docs/reliability-evidence/artifacts/canonical-evolution-transport-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/evolution_value_calibration.py text eol=lf
+docs/reliability-evidence/artifacts/evolution-value-calibration-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/current-release-audit-2026-10-07-v4/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol

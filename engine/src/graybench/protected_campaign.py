@@ -1,7 +1,7 @@
 """Frozen, single-suite development campaigns for reviewed value interfaces.
 
-Only tasks 2 and 20 have development contracts today. Every other pinned
-suite task is explicitly excluded; no run here is a publication score.
+Available task contracts are declared in protected_task_registry. Every other
+pinned suite task is explicitly excluded; no run here is a publication score.
 """
 
 from pathlib import Path

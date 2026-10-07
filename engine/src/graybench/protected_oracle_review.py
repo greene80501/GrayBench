@@ -8,7 +8,9 @@ from pathlib import Path
 from textwrap import dedent
 
 from graybench.datasets import JudgeTask, load_suite
+from graybench.evolution_value import TASK116_ORACLE
 from graybench.oracle_review import Probe, inspect_oracle_review, run_review
+from graybench.protected_evolution_controls import evolution_probes
 from graybench.protected_semantic_judge import (
     TASK62_ORACLE,
     TASK62_ORACLE_V2,
@@ -121,6 +123,10 @@ def _task139_numpy_completion(mode: str = "ordinary") -> str:
 
 
 def protected_probes(source: JudgeTask, *, oracle: str | None = None) -> tuple[Probe, ...]:
+    if source.public.task_id == "qiskitHumanEval/116":
+        if oracle not in (None, TASK116_ORACLE):
+            raise ValueError("Unknown task-116 protected oracle for controls")
+        return evolution_probes(source)
     if source.public.task_id == "qiskitHumanEval/139":
         if oracle not in (None, TASK139_ORACLE):
             raise ValueError("Unknown task-139 protected oracle for controls")
@@ -418,6 +424,7 @@ def run_protected_review(
                 "qiskitHumanEval/20",
                 "qiskitHumanEval/62",
                 "qiskitHumanEval/139",
+                "qiskitHumanEval/116",
             }
             for task_id in task_ids
         )

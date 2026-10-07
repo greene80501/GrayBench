@@ -65,6 +65,14 @@ uv run --locked graybench oracle-review-inspect TASK62.jsonl CACHE
 The task-62 result is a protected amplitude-value condition, not a native
 `QuantumCircuit` score. It remains development-only and publication-ineligible.
 
+The separate [task-116 evolution matrix-value condition](../docs/reliability-evidence/protected-task116-evolution-value.md)
+supports explicit `--task 116` control selection in both suites and task-116
+selection in protected plans. It checks complex matrix values while permitting
+equivalent algorithms; it changes the original circuit-return contract and
+does not attest native objects or synthesis routines. Its authored local
+controls and mathematical calibration are development evidence. Isolated
+qualification and independent admission remain pending.
+
 Inventories written now use schema 3: they freeze the known-finding registry
 and its digest alongside the historical creator-source digest. Validation
 re-reads exact pinned task bytes and checks every card against that frozen
