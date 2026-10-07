@@ -40,3 +40,9 @@ that the *implementation method* must call `TwoQubitBasisDecomposer` needs
 separate treatment because black-box circuit equivalence cannot prove a
 particular internal call. Historical upstream tests remain unchanged, and task
 117 is not admitted for a verified score.
+
+A separately selected [unitary and expanded-basis development condition](task117-unitary-basis-development.md)
+now checks the supplied operator across varied inputs without requiring an unnecessary CX
+for identity. Its value/basis contract does not attest the original requested internal
+method. Local authored checks and codec round trips are separate from pending isolated
+controls and independent task admission; the original diagnostic is unchanged.

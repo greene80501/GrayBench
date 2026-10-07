@@ -155,3 +155,4 @@ docs/reliability-evidence/artifacts/task110-protected-controls-2026-10-06/revisi
 docs/reliability-evidence/artifacts/current-release-audit-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task50_protected_graph.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/task108_protected_graph.py text eol=lf
+docs/reliability-evidence/task117_protected_graph.py text eol=lf

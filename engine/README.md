@@ -123,7 +123,7 @@ it still admits no task and publishes no score.
 | `qhe-pinned-native-v1` | Candidate and original pinned test run in one isolated Python/Qiskit process | Preserves native semantics, but same-process candidate code can inspect or tamper with tests; development-only |
 
 There is no automatic fallback between these conditions. Semantic revisions
-currently cover tasks 0, 2, 50, 63, 82, 108, 113, 116, 120, 141 and 149. See
+currently cover tasks 0, 2, 50, 63, 82, 108, 113, 116, 117, 120, 141 and 149. See
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md),
 [gate revisions](../docs/reliability-evidence/gate-semantics-revisions.md), and
 [the registry](src/graybench/evaluation_recipes.py) for exact names and family checks.
@@ -140,6 +140,14 @@ computed channel adjoints and compositions. Its public numerical rules and
 resource bounds are frozen before requests. It retains full graph history,
 uses delta transport, and remains development-only pending isolated controls
 and independent admission. Select `qhe108-choi-values-graph-v1` explicitly.
+
+The [task-117 unitary condition](../docs/reliability-evidence/task117-unitary-basis-development.md)
+checks the supplied operator and expanded CX basis across 15 inputs, permits
+global phase and equivalent decompositions, and does not require CX for identity.
+Its 48 authored controls include an independent QR/Givens implementation. The
+judge evaluates supplied definitions without synthesizing opaque two-qubit
+matrix instructions. Select `qhe117-unitary-basis-graph-v1` explicitly; isolated
+controls, resource calibration and independent admission remain pending.
 
 The graph bridge is implemented and opt-in. It uses separate persistent arenas in
 candidate and trusted judge containers; the host relays bounded data without
