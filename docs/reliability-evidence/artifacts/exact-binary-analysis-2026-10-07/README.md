@@ -62,5 +62,18 @@ Bounded review reproduced the corrected regression and found no further
 important issue. This is code review, not independent human task admission.
 
 Ruff lint and formatting pass for 240 engine/calibration files. No full-suite
-validation of this final source or clean-machine qualification is claimed here.
+validation of this final source or independent-machine qualification is claimed here.
 Original benchmark results and historical source-bound reports are unchanged.
+
+A clean checkout of implementation commit
+`f494546b5903a46b56e726e8471960897a463bb6`, with separately installed locked
+dependencies on the same host, reproduced the same six selected test files:
+[93 passed, two Docker groups skipped](clean-related.xml), zero failures/errors.
+Pytest wall time was 36.31 seconds; JUnit records 36.275 seconds. The same 12
+Windows cleanup warnings appeared. All 20 new binary tests passed again.
+The complete calibration report recreated exactly. The engine imported from the
+clean checkout, its source digest matched, lint/formatting passed for all 240
+files, and the checkout stayed unchanged. This is same-host reproduction, not
+a full clean-suite run, isolated qualification or independent task admission.
+Clean JUnit: 13,759 bytes, SHA-256
+`77b434de34ad0e44d800720c4d6dbf1c0d964f6097f685a745621a00042b56de`.
