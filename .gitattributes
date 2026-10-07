@@ -177,3 +177,6 @@ docs/reliability-evidence/task11_controls.py text eol=lf
 docs/reliability-evidence/task11_local_verification.py text eol=lf
 docs/reliability-evidence/artifacts/task11-statevector-action-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task11-statevector-action-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/binary_analysis_calibration.py text eol=lf
+docs/reliability-evidence/artifacts/exact-binary-analysis-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/exact-binary-analysis-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol

@@ -3,9 +3,21 @@
 import argparse
 import hashlib
 import json
+from contextlib import ExitStack
 from pathlib import Path
 
 from graybench.admission_bundle import verify_admission_bundle
+from graybench.binary_comparison import (
+    BinaryComparisonPlan,
+    BinaryContrast,
+    BinaryStudyPlan,
+    BinaryStudyRun,
+    compare_binary_study,
+    load_binary_json,
+    make_binary_plan,
+    make_binary_study,
+    verify_binary_study,
+)
 from graybench.campaign_setup import CampaignSetup, build_setup, execution_context, validate_host
 from graybench.capability_probe import CapabilityProbe, capture_probe, verify_accepted_probe
 from graybench.comparison import ComparisonPlan, compare_runs, make_plan
@@ -15,7 +27,7 @@ from graybench.evaluation_campaign import UpstreamCampaign
 from graybench.evaluation_recipes import RECIPES
 from graybench.extraction import EXTRACTION_POLICIES
 from graybench.identity import canonical, identity
-from graybench.ledger import Ledger
+from graybench.ledger import Ledger, StateError
 from graybench.model_discovery import observe_run
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import NATIVE_EXCEPTION_POLICIES, freeze_native_cohort, task_key
@@ -66,6 +78,56 @@ def _comparison_tasks(setup, cache: Path):
     return setup.tasks(cache)
 
 
+def _comparison_ledger_tasks(plan, left, left_run, right, right_run, cache):
+    if plan.left.track == "upstream":
+        return tuple(
+            task
+            for suite in ("normal", "hard")
+            for task in load_suite(suite, cache)
+            if f"{suite}/{task.public.task_id}" in plan.left.task_keys
+        )
+    setups = [
+        _comparison_setup(canonical(book.context(run)["setup"]))
+        for book, run in ((left, left_run), (right, right_run))
+    ]
+    for setup, expected in zip(setups, (plan.left, plan.right), strict=True):
+        if setup.protocol != expected:
+            raise StateError("Stored setup differs from comparison protocol")
+        _comparison_tasks(setup, cache)
+    return _comparison_tasks(setups[0], cache)
+
+
+def _binary_study_analysis(plan, run_file, cache, report=...):
+    raw = load_binary_json(run_file.read_bytes())
+    if not isinstance(raw, dict) or set(raw) != {c.contrast_id for c in plan.contrasts}:
+        raise StateError("Study requires every planned contrast and no extras")
+    runs = {key: BinaryStudyRun.model_validate_json(canonical(value)) for key, value in raw.items()}
+    paths = {
+        key: tuple(
+            (run_file.parent / value).resolve() for value in (run.left_ledger, run.right_ledger)
+        )
+        for key, run in runs.items()
+    }
+    if any(not path.is_file() for pair in paths.values() for path in pair):
+        raise StateError("Comparison ledgers must already exist")
+    # Resolve all declared files before opening; never initialize or write evidence ledgers.
+    with ExitStack() as stack:
+        books = {}
+        for path in {path for pair in paths.values() for path in pair}:
+            books[path] = Ledger(path, readonly=True)
+            stack.callback(books[path].close)
+        inputs, tasks = {}, {}
+        for contrast in plan.contrasts:
+            key = contrast.contrast_id
+            run = runs[key]
+            left, right = (books[path] for path in paths[key])
+            inputs[key] = (left, run.left_run, right, run.right_run)
+            tasks[key] = _comparison_ledger_tasks(contrast.plan, *inputs[key], cache)
+        if report is not ...:
+            return verify_binary_study(report, plan, inputs, tasks=tasks)
+        return compare_binary_study(plan, inputs, tasks=tasks)
+
+
 def main():
     parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -91,6 +153,31 @@ def main():
     comparison.add_argument("right_run")
     comparison.add_argument("cache", type=Path)
     comparison.add_argument("output", type=Path)
+    binary_plan = commands.add_parser(
+        "binary-comparison-plan", help="Freeze one sample per independent task family"
+    )
+    for name in ("left_setup", "right_setup", "cache", "output"):
+        binary_plan.add_argument(name, type=Path)
+    binary_plan.add_argument("--configuration-comparison", required=True)
+    binary_plan.add_argument(
+        "--independence-basis",
+        required=True,
+        help="Declare justification for pairing, independence and the conditional discordance null",
+    )
+    binary_study_plan = commands.add_parser(
+        "binary-study-plan", help="Freeze all planned exact binary contrasts and Holm alpha"
+    )
+    binary_study_plan.add_argument("contrasts", type=Path)
+    binary_study_plan.add_argument("output", type=Path)
+    binary_study_plan.add_argument("--purpose", required=True)
+    binary_study_plan.add_argument("--alpha", type=float, default=0.05)
+    for name, help_text in (
+        ("binary-study", "Analyze every planned contrast from read-only ledgers"),
+        ("binary-study-verify", "Recompute and verify a saved complete binary study"),
+    ):
+        command = commands.add_parser(name, help=help_text)
+        for argument in ("plan", "runs", "cache", "report"):
+            command.add_argument(argument, type=Path)
     reference = commands.add_parser(
         "reference-scan", help="Calibrate pinned references; never a model score"
     )
@@ -307,6 +394,70 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "binary-comparison-plan":
+        left = _comparison_setup(args.left_setup.read_bytes())
+        right = _comparison_setup(args.right_setup.read_bytes())
+        tasks = _comparison_tasks(left, args.cache)
+        _comparison_tasks(right, args.cache)
+        plan = make_binary_plan(
+            left.protocol,
+            right.protocol,
+            tasks,
+            configuration_comparison=args.configuration_comparison,
+            independence_basis=args.independence_basis,
+        )
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command == "binary-study-plan":
+        raw = load_binary_json(args.contrasts.read_bytes())
+        if (
+            not isinstance(raw, dict)
+            or not 1 <= len(raw) <= 100
+            or any(not isinstance(value, str) for value in raw.values())
+        ):
+            raise StateError("Contrasts must map planned IDs to binary plan filenames")
+        contrasts = [
+            BinaryContrast(
+                contrast_id=key,
+                plan=BinaryComparisonPlan.model_validate_json(
+                    canonical(load_binary_json((args.contrasts.parent / value).read_bytes()))
+                ),
+            )
+            for key, value in raw.items()
+        ]
+        plan = make_binary_study(contrasts, purpose=args.purpose, alpha=args.alpha)
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command in ("binary-study", "binary-study-verify"):
+        plan = BinaryStudyPlan.model_validate_json(
+            canonical(load_binary_json(args.plan.read_bytes()))
+        )
+        if args.command == "binary-study-verify":
+            result = _binary_study_analysis(
+                plan, args.runs, args.cache, load_binary_json(args.report.read_bytes())
+            )
+        else:
+            if args.report.exists():
+                raise FileExistsError(args.report)
+            report = _binary_study_analysis(plan, args.runs, args.cache)
+            with args.report.open("xb") as stream:
+                stream.write(canonical(report))
+            result = {
+                "output": str(args.report),
+                "status": report["status"],
+                "holm": report["holm"],
+                "publication_eligible": False,
+            }
     elif args.command == "comparison-plan":
         left = _comparison_setup(args.left_setup.read_bytes())
         right = _comparison_setup(args.right_setup.read_bytes())

@@ -163,21 +163,7 @@ def compare_runs(plan, left_ledger, left_run, right_ledger, right_run, *, tasks)
     )
     if bound.digest != plan.digest:
         raise StateError("Comparison family mapping differs from the bound task records")
-    reports = []
-    for ledger, run, expected in (
-        (left_ledger, left_run, plan.left),
-        (right_ledger, right_run, plan.right),
-    ):
-        ledger.db.execute("BEGIN")
-        try:
-            if ledger.protocol(run).digest != expected.digest:
-                raise StateError("Run does not match its comparison plan")
-            report = ledger.summary(run)
-            ledger.db.execute("COMMIT")
-        except BaseException:
-            ledger.db.execute("ROLLBACK")
-            raise
-        reports.append(report)
+    reports = verified_comparison_reports(plan, left_ledger, left_run, right_ledger, right_run)
     result = {
         "plan_digest": plan.digest,
         "plan": plan.model_dump(mode="json"),
@@ -215,3 +201,23 @@ def compare_runs(plan, left_ledger, left_run, right_ledger, right_run, *, tasks)
             rows, seed=plan.seed, resamples=plan.resamples, confidence=plan.confidence
         ),
     }
+
+
+def verified_comparison_reports(plan, left_ledger, left_run, right_ledger, right_run):
+    """Read each protocol-bound, verified summary inside its ledger snapshot."""
+    reports = []
+    for ledger, run, expected in (
+        (left_ledger, left_run, plan.left),
+        (right_ledger, right_run, plan.right),
+    ):
+        ledger.db.execute("BEGIN")
+        try:
+            if ledger.protocol(run).digest != expected.digest:
+                raise StateError("Run does not match its comparison plan")
+            report = ledger.summary(run)
+            ledger.db.execute("COMMIT")
+        except BaseException:
+            ledger.db.execute("ROLLBACK")
+            raise
+        reports.append(report)
+    return reports

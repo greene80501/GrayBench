@@ -416,6 +416,15 @@ remain development-only and do not certify equivalent provider settings. See
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
 [comparisons](../docs/reliability-evidence/paired-comparisons.md) and the
 [dual-track comparison audit](../docs/reliability-evidence/dual-track-comparison.md).
+The opt-in `binary-comparison-plan`, `binary-study-plan`, `binary-study` and
+`binary-study-verify` commands add exact conditional McNemar tests and planned
+Holm correction. They require one sample and one task per independently declared
+family, retain every planned contrast, withhold corrected results if any contrast
+is incomplete, and replay reports from read-only ledgers. Repeats and related
+normal/hard records require cluster-aware analysis. See
+[exact binary comparisons](../docs/reliability-evidence/exact-binary-comparisons.md)
+for assumptions, computational bounds and input formats. These reports do not
+establish independence, preregistration timing or publication eligibility.
 Ledger verification requires each stored artifact's exact canonical JSON bytes;
 a duplicate-key or differently encoded blob cannot pass by hashing to the
 same parsed value.

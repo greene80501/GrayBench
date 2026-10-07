@@ -26,8 +26,8 @@ certainty from a collapsed interval, a p-value, or a universal ranking.
 
 This is **task-family resampling uncertainty conditional on observed generations**.
 It assumes exchangeable families; the benchmark is not a probability sample of all
-possible tasks. Independent generation variability, multiple comparisons, coverage
-calibration and alternative interval methods remain required work. Small or unusual
+possible tasks. Independent generation variability, bootstrap multiple comparisons,
+coverage calibration and alternative interval methods remain required work. Small or unusual
 samples can have poor percentile-bootstrap coverage. Reports remain development-only.
 
 The paired-index construction and percentile procedure follow the
@@ -41,7 +41,12 @@ sign reversal, seed/order reproducibility, degenerate intervals, family identity
 incompatible protocols, unsupported cohorts and CLI creation without overwriting.
 Synthetic fixture results are not model benchmark scores.
 
-Validation:269 tests pass with Docker enabled, zero failures/errors/skips; lint,
+The separate [exact binary study](exact-binary-comparisons.md) supports planned
+Holm correction only for single independent paired observations. It cannot be
+applied to these clustered bootstrap intervals or repeated/related task records.
+
+Historical validation of the original bootstrap addition:269 tests passed with
+Docker enabled, zero failures/errors/skips; lint,
 format and credential-value checks pass. An offline plan from the real pinned
 datasets contains302 tasks in151 two-variant families. Its digest is
 `8bfdde50f033ddf759eed4ce183e03df42d16b0918bfc7261e29f77147ac72c9`.

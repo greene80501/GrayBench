@@ -130,7 +130,16 @@ def now() -> str:
 
 
 class Ledger:
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, *, readonly: bool = False):
+        if readonly:
+            if not path.is_file():
+                raise FileNotFoundError(path)
+            self.db = sqlite3.connect(
+                path.resolve().as_uri() + "?mode=ro", uri=True, isolation_level=None, timeout=30
+            )
+            self.db.row_factory = sqlite3.Row
+            self.db.execute("PRAGMA query_only=ON")
+            return
         path.parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(path, isolation_level=None, timeout=30)
         self.db.row_factory = sqlite3.Row
