@@ -105,7 +105,12 @@ def test_recipe_rejects_wrong_family_and_legacy_bridge():
 
 
 def test_pinned_task_source_identity_and_resume_when_cache_is_available(model):
-    cache = Path(__file__).resolve().parents[3] / "GrayBench/data/datasets"
+    configured_cache = os.environ.get("GRAYBENCH_TEST_CACHE")
+    cache = (
+        Path(configured_cache)
+        if configured_cache
+        else Path(__file__).resolve().parents[3] / "GrayBench/data/datasets"
+    )
     if not all(
         (cache / suite / pin["revision"][:12] / "data/test-00000-of-00001.parquet").exists()
         for suite, pin in PINS.items()
