@@ -47,6 +47,15 @@ Diagonal deprecations. Python 3.12.14 and the locked Qiskit 2.4.2 host environme
 were used with the verified pinned cache. Ruff lint and formatting pass for 261
 files. No immutable test images were configured; isolated groups remain skipped.
 
+The clean checkout of `34445e9afdf650268c150611e9dd18222328eeac` passes 36
+selected diagnostic/source-audit tests with zero failures/errors/skips in 7.50
+wall seconds. Its separately installed locked environment on the same Windows
+host exactly recreates the diagnostic and passes lint/formatting. All 113 engine
+source files plus selected tests/scripts/lock and saved main evidence match main,
+clean and Git bytes; the checkout remains unchanged. Raw `clean.xml` and
+`clean-verification.json` preserve scope and hashes. This is not a full clean-suite
+or independent-machine reproduction.
+
 The read-only AI review found no actionable defects and independently checked
 all eight sources, pointwise count-vector agreement, exact arithmetic and
 fail-closed replay. The extra generic-Bell cases were also rechecked. AI review
