@@ -1,0 +1,110 @@
+{
+  "status": "source-experiment-unqualified",
+  "engine_behavior_changed": false,
+  "historical_results_changed": false,
+  "engine_source_unchanged": "f868915bdbe72c14fe3f8fb0be3e7228cda7be41dfb7b9255775347823d64410",
+  "source_archives": {
+    "qiskit_sdist": {
+      "bytes": 4089826,
+      "filename": "qiskit-2.4.2.tar.gz",
+      "sha256": "b9844e28336fdbed0d53f8cf82a681d0365574dd68d04ef877d1619971462ad6",
+      "url": "https://files.pythonhosted.org/packages/86/32/36d51b8f79b86e82fa41d402b4175a204140bbc1c75bdadca980fdaf70e9/qiskit-2.4.2.tar.gz"
+    },
+    "qiskit_tag_lock_sha256": "02460712f52341f3b9e45522fbbf3a0d30407234d146b00843a39ef4f6dd4d6f",
+    "rust_numpy": {
+      "checksum": "778da78c64ddc928ebf5ad9df5edf0789410ff3bdbf3619aed51cd789a6af1e2",
+      "dependencies": [
+        "libc",
+        "nalgebra",
+        "ndarray",
+        "num-complex",
+        "num-integer",
+        "num-traits",
+        "pyo3",
+        "pyo3-build-config",
+        "rustc-hash 2.1.1"
+      ],
+      "name": "numpy",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "version": "0.28.0"
+    }
+  },
+  "source_files": {
+    "native/patch_qiskit_rust.py": {
+      "bytes": 6250,
+      "sha256": "dbd14e83744eae7d50504a33087413e8e37190aa1709a54f76d994aed477ebaf"
+    },
+    "native/rust_storage.rs": {
+      "bytes": 14972,
+      "sha256": "7ba965fc4ef8eef9a9dcf0c29d11cdb537a33a7279e82f3507f21112ae074523"
+    },
+    "native/tests/test_qiskit_rust_patch.py": {
+      "bytes": 5006,
+      "sha256": "d0e5b3f6e8960b4c19b6ecb1456dc0571854778f589abba4b0197b3a5709ce79"
+    },
+    "native/tests/test_rust_storage.py": {
+      "bytes": 6748,
+      "sha256": "f259ee078d66a5de70b8aa8b6636497e70c0bf58dfa98dbaf75f25b751da2b4e"
+    }
+  },
+  "patch_controls": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "junit_sha256": "326503867484fbc3af90992d7bfb26b060865d547ce5dcf4061bc14749319e78",
+    "junit_seconds": "0.224"
+  },
+  "required_native_controls": {
+    "collected": 35,
+    "passed": null,
+    "status": "unrun"
+  },
+  "stock_missing_helper_control": {
+    "exit_code": 1,
+    "sha256": "5abb7fe69b3f90b5b0adfc67bfb378ae7ddd24df0e7826786aff59a11e374a51"
+  },
+  "python": "3.12.14 (main, Sep  1 2026, 14:17:39) [MSC v.1944 64 bit (AMD64)]",
+  "python_packages": {
+    "qiskit": "2.4.2",
+    "numpy": "2.2.4",
+    "scipy": "1.18.1",
+    "pytest": "9.1.1"
+  },
+  "stock_qiskit_extension_sha256": "4221aafbf6d3a4463a3530a8136f2f7fd573ba280dd569025bdefa415e7c2024",
+  "attempted_build": {
+    "kind": "separate-allocator-harness-not-qiskit-extension",
+    "rustc": {
+      "exit_code": 0,
+      "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\n",
+      "stderr": ""
+    },
+    "cargo": {
+      "exit_code": 0,
+      "stdout": "cargo 1.98.1 (797e8a9bc 2026-08-05)\n",
+      "stderr": ""
+    },
+    "harness_lock_sha256": "c7101d260cff30275dd3243bcc6bd89e0d5a79dea4cd9b40c648bb15baaeb0ac",
+    "exit_code": 1,
+    "observed_error": "An Application Control policy has blocked this file. (os error 4551)",
+    "blocked_step": "pyo3 v0.28.2 generated build-script-build could not execute",
+    "native_type_check_completed": false,
+    "native_compilation_completed": false,
+    "actual_qiskit_build_attempted": false,
+    "wheel_produced": false,
+    "note": "First draft attempted; later source changes have syntax/source checks only. No policy bypass or second build attempt."
+  },
+  "source_review": {
+    "findings": "No actionable source findings",
+    "scope": "Read-only source/API and syntax checks; not compiled or sanitizer qualification"
+  },
+  "qualification": {
+    "native_controls": false,
+    "graph_integration": false,
+    "canonical_transport_support": false,
+    "sanitizer": false,
+    "isolated_controls": false,
+    "independent_runtime_admission": false,
+    "benchmark_scores": false
+  },
+  "source_patch_manifest_sha256": "266901d8ec244a6d517a289c9450231667512d89bb5ca1d82b5565deb585e610"
+}

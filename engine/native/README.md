@@ -1,5 +1,15 @@
 # Experimental registered native storage
 
+There is also a separate **uncompiled Rust NumPy source experiment** in
+`patch_qiskit_rust.py` and `rust_storage.rs`. It addresses Qiskit's
+`PySliceContainer`, which the SciPy experiment below cannot support. Its eight
+source-patch tests pass; its 35 native controls remain unrun after Windows
+Application Control blocked the first allocator harness build. It is not loaded
+by the engine and provides no graph transport support. See the
+[source evidence and pending gates](../../docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/README.md)
+before attempting a separate build. Original installed environments and
+historical results must be preserved.
+
 This directory is an **unadmitted runtime experiment**, not a scoring backend.
 It instruments the two allocation-return sites in SciPy 1.18.1's matrix-function
 module. It leaves arithmetic unchanged but changes allocation lifetime and

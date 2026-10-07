@@ -1,0 +1,18 @@
+E
+=================================== ERRORS ====================================
+_ ERROR at setup of test_numeric_allocator_identity_and_initialized_bytes[vec-f] _
+
+    @pytest.fixture
+    def native():
+        module = importlib.import_module(
+            os.environ.get("GRAYBENCH_RUST_TEST_MODULE", "qiskit._accelerate")
+        )
+>       assert getattr(module, "_graybench_rust_storage_profile", None) == "rust-numpy-storage-v1"
+E       AssertionError: assert None == 'rust-numpy-storage-v1'
+E        +  where None = getattr(<module 'qiskit._accelerate' from 'C:\\Users\\wyatts_tower_pc\\Documents\\Codex\\gb-qiskit-20261007\\Lib\\site-packages\\qiskit\\_accelerate.pyd'>, '_graybench_rust_storage_profile', None)
+
+native\tests\test_rust_storage.py:22: AssertionError
+=========================== short test summary info ===========================
+ERROR native/tests/test_rust_storage.py::test_numeric_allocator_identity_and_initialized_bytes[vec-f]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 0.83s

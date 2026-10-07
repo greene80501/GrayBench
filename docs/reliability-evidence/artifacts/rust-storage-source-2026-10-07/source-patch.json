@@ -1,0 +1,27 @@
+{
+  "profile": "rust-numpy-storage-v1",
+  "patch_script_sha256": "dbd14e83744eae7d50504a33087413e8e37190aa1709a54f76d994aed477ebaf",
+  "original_qiskit": {
+    "Cargo.toml": "88e89b78915ff253cac600ca67f5b62b171e39a5047d7054827ce59b0dd6d08f",
+    "Cargo.lock": "02460712f52341f3b9e45522fbbf3a0d30407234d146b00843a39ef4f6dd4d6f",
+    "crates/pyext/Cargo.toml": "996c72ed40ce2a1cd379df98b3e7f99c4eb5c937bb743a29383141bc0c8a5db5",
+    "crates/pyext/src/lib.rs": "e6359f459d1dd1a26b04bd5e13bc31a7a6abbbc3e46271acbce57905ee4110de"
+  },
+  "original_rust_numpy": {
+    "src/slice_container.rs": "c97ae5a37b53ca5177f12141c7526a20644c13e0751aab70da34a1eb3b21963a",
+    "src/array.rs": "d456fae84c380497218fb87c9c63263936c6a1c9c2c7feed90d3ae1229cada30",
+    "src/lib.rs": "b23036673ab97fcdcd95b5a95dc982a3b55d3845a778ff3edcd426986d325eea"
+  },
+  "patched_qiskit": {
+    "Cargo.toml": "2dbf67fb02aa14cb68c0e44259018f8da33bffec056a0d2b4834bf9ff1433ca4",
+    "Cargo.lock": "02460712f52341f3b9e45522fbbf3a0d30407234d146b00843a39ef4f6dd4d6f",
+    "crates/pyext/Cargo.toml": "3a086fa810d595c3a8c3cb2dff5f0e8acb9e574314a89a1f48c1ffba5607d912",
+    "crates/pyext/src/lib.rs": "744a526edc84cc9dba43c2cb08e6151ca9d23ce0b154116d8c609fc5d1ed1f1f"
+  },
+  "patched_rust_numpy": {
+    "src/slice_container.rs": "516ecbedb0077b5997a56092228c26c3dec37b3677ea34614cca197ff8b7dc9f",
+    "src/array.rs": "97d686e1b52f56a8fa7956f80b12ac444a33f1e9418db353ba734d3c3afb35d8",
+    "src/lib.rs": "c6883fb8b15053f6e0f3268c31879bfa8aeb9bea0eb210ac2267d1b0929a5d22",
+    "src/graybench_storage.rs": "7ba965fc4ef8eef9a9dcf0c29d11cdb537a33a7279e82f3507f21112ae074523"
+  }
+}
