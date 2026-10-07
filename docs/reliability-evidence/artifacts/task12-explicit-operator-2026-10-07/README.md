@@ -63,3 +63,21 @@ Full JUnit: 388,261 bytes, SHA-256
 `adbac7157a8bdd34a46a9acec8185d7c194fe33db11e41ba82d1a9aef78b43c5`.
 Verification: 13,586 bytes, SHA-256
 `7e78ccd90d860088c1e8967dc9c5b6bcfb878dba208081033767663d238b9ace`.
+
+A clean checkout of `88f16b444501cda5116fdf544a300d19b2025e5b`, with separately
+installed locked dependencies on the same host and shared verified cache, exactly
+recreated the host report. Its [related JUnit run](clean-related.xml) passed 121
+tests, skipped six isolated groups and had zero failures/errors in 11.167 JUnit
+seconds (11.17 wall seconds). The selected tests cover Task12, its historical
+ambiguity diagnostic, recipe/campaign reconstruction, oracle review and provider
+preparation. Lint and formatting pass for the same 247 files. Six source/lockfile
+records and five saved evidence files match the main checkout and committed bytes.
+The clean checkout stayed unchanged. This is a second dependency environment on
+one host, not an independent machine, isolated qualification, human admission or
+a full clean-suite run. [clean-verification.json](clean-verification.json) records
+its source, environment, byte comparison and explicit limitations.
+
+Clean related JUnit: 18,557 bytes, SHA-256
+`f906e2e9aae094bd9010e8b7370f776856d585e0b53fb23c7274ac73bb336c1a`.
+Clean verification: 2,083 bytes, SHA-256
+`86ad12bc837556cb54cb219d681876d3ae347e1d2e96d001a4c4d4d2ab275b00`.

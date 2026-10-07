@@ -1,0 +1,66 @@
+{
+  "checkout_head": "88f16b444501cda5116fdf544a300d19b2025e5b",
+  "checkout_unchanged": true,
+  "clean_junit": {
+    "bytes": 18557,
+    "errors": 0,
+    "failures": 0,
+    "junit_seconds": 11.167,
+    "passed": 121,
+    "sha256": "f906e2e9aae094bd9010e8b7370f776856d585e0b53fb23c7274ac73bb336c1a",
+    "skipped": 6,
+    "tests": 127
+  },
+  "engine_source_digest": "b7287999383c9e8338ae873f8eb970a9def184236aed0b27ed93f8659112bce5",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "pytest": "9.1.1",
+      "qiskit": "2.4.2",
+      "ruff": "0.16.7",
+      "scipy": "1.18.1"
+    },
+    "python": "3.12.14"
+  },
+  "evidence_bytes_match": 5,
+  "full_clean_suite": false,
+  "host_report_exact_recreation": true,
+  "independent_human_admission": false,
+  "kind": "graybench_task12_clean_reproduction_v1",
+  "model_generations": 0,
+  "release_eligible": false,
+  "runtime_qualified": false,
+  "same_host": true,
+  "separate_dependency_environment": true,
+  "shared_verified_source_cache": true,
+  "source_file_hashes_match": {
+    "docs/reliability-evidence/task12_controls.py": {
+      "bytes": 8260,
+      "sha256": "586f36eb6a382cfa720b3415b7439ef5a5f78d89d21343edf1a8d687a6b8f6a4"
+    },
+    "docs/reliability-evidence/task12_local_verification.py": {
+      "bytes": 8036,
+      "sha256": "2199847437ae8a9a4f51fbdeae6f107b3f80fba6aa2523b544a91bcb06019e79"
+    },
+    "engine/src/graybench/evaluation_recipes.py": {
+      "bytes": 6588,
+      "sha256": "729c6ba4bc4e2c7e7cb26f0da97be96495dd702fa7dcead8e528eb4152c15d84"
+    },
+    "engine/src/graybench/task12_revision.py": {
+      "bytes": 7755,
+      "sha256": "70796c79a802bf94d6f8610cfdd701c920da69fe32488201fa4b29af0120461f"
+    },
+    "engine/tests/test_task12_revision.py": {
+      "bytes": 11718,
+      "sha256": "629b4becf12f35cbebd5515d0085eaa99ffad22892e868f929cd4c62072748bd"
+    },
+    "engine/uv.lock": {
+      "bytes": 68888,
+      "sha256": "b0789c7a994abdd96b3172563ae58a420c60e80c33ba05447257e1d35174524d"
+    }
+  },
+  "static_checks": {
+    "format": "247 files passed",
+    "lint": "passed"
+  }
+}

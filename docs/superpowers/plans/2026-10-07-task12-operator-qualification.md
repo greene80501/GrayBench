@@ -54,9 +54,9 @@ and independently admitted evidence.
 
 - [x] Pass focused tests and exact host evidence recreation after both review fixes.
 - [x] Pass static checks for all engine source/tests and the two evidence scripts.
-- [ ] Finish full offline regressions against the final engine source, preserving JUnit.
-- [ ] Commit named implementation/evidence files under the greene80501-linked author.
-- [ ] Reproduce related tests and exact host evidence from a clean checkout with
+- [x] Finish full offline regressions against the final engine source, preserving JUnit.
+- [x] Commit named implementation/evidence files under the greene80501-linked author.
+- [x] Reproduce related tests and exact host evidence from a clean checkout with
   separately installed locked dependencies; compare source and artifact bytes.
 - [ ] Publish source-bound verification and update the draft PR without CI launches.
 
