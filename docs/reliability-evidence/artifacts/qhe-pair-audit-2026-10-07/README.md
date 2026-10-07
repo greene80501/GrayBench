@@ -90,3 +90,11 @@ Lint and formatting passed for 234 engine/audit files. Code review reproduced
 the pair audit and found no actionable issue; it is not human task admission.
 These are focused checks; the prior 1,621-pass full-suite result belongs to the
 earlier engine source, not this finding-registry revision.
+
+A clean checkout of `64cd028` with separately installed locked dependencies on
+the same Windows host reproduced all 40 focused tests in 12.47 seconds, with
+zero failures/skips and the same 12 cleanup warnings. Exact report recreation,
+lint and formatting passed; the clean checkout stayed unchanged. The
+[clean JUnit record](clean-related.xml) has SHA-256
+`4b69cbaf94c63599de177088dfb934d704d7c4bbf7c9fd8d86ce78cc592669fa`.
+This is not a second-machine, full-suite or container reproduction.
