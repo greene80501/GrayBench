@@ -25,6 +25,7 @@ Control script SHA-256:
 Oracle text SHA-256:
 `3256bf2f5e3ac32cbf780b8d1a473bac0aa9e3847d17d9661818142d05f5450c`.
 
+Check out `ddead72b1ed38713d2c949bdd2d4a5254dea091e` with its locked dependencies.
 From `engine/`, reproduce exactly:
 
 ```powershell
@@ -45,3 +46,15 @@ passed, as did Ruff lint/formatting for 241 engine/audit files. These are local
 development checks, not isolated runtime qualification or independent admission.
 Full JUnit SHA-256:
 `e3127b093c2187e34091ed35081bf285d104428911477a5d7f971cc6a3af59be`.
+
+A clean checkout of that commit, with separately installed locked dependencies
+on the same host, exactly recreated the report. Its [focused run](clean-related.xml)
+passed 64 tests, skipped one isolated group and had zero failures/errors in
+89.14 seconds, with 12 Windows cleanup warnings. It covers Task 11 and related
+diagnostic/admission/historical-bundle handling. All 430 correct retained-graph
+call pairs passed again. Lint/formatting passed for 241 files, the imported engine
+path was the clean checkout, its source digest matched, and the checkout stayed
+unchanged. This is a second environment on one machine, not independent admission
+or isolated qualification; no full clean-suite claim is made.
+Clean JUnit SHA-256:
+`0b02349d4236949503207d37a58faa27a2d2d4479a363a066ae2bfe4251e2689`.
