@@ -60,3 +60,19 @@ related.xml: 3,100 bytes, SHA-256
 
 verification.json: 12,840 bytes, SHA-256
 `3875195c452e6c3c83d8ea300d28506e2cf38eb8659636f68b4e3d061fbee587`.
+
+A clean checkout of `c9c16d1a2a4b31a286f1b15d1c4d1a7a8b5f516f`, with a separately installed locked dependency
+environment on the same host and shared verified cache, exactly recreates the
+report. Its [related JUnit record](clean-related.xml) has 20 passes, zero
+failures/errors/skips and 4.430 JUnit seconds (4.47 wall seconds).
+Three source/lockfile records and four saved evidence files match main and Git
+bytes. Imports resolve to the clean checkout, which stays unchanged. Ruff checks
+pass for 253 files. This is not a full clean-suite run, independent machine,
+actual sampler calibration, runtime qualification or human admission.
+[clean-verification.json](clean-verification.json) binds that scope.
+
+clean-related.xml: 3,100 bytes, SHA-256
+`aac4094c355cf626db2fed64bedc03d6ec5c943fdad5ba4bbaed3db4334f55a8`.
+
+clean-verification.json: 2,519 bytes, SHA-256
+`34e0cf67b7c8e3a7f46843dcb7d7db06d1d4baab4a4358960e2156ca32f0c275`.
