@@ -1,6 +1,7 @@
 """A current-source control log can refresh evidence without inventing reviews."""
 
 import importlib.util
+import json
 import os
 import shutil
 from pathlib import Path
@@ -8,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from graybench.admission_bundle import verify_admission_bundle
+from graybench.task_admission import AdmissionInventory
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
@@ -32,7 +34,7 @@ def test_historical_successor_preserves_six_value_cards_without_claiming_current
     assert report["publication_eligible"] is False
     assert verify_admission_bundle(bundle, cache) == report
     destination = tmp_path / "successor"
-    with pytest.raises(ValueError, match="Current protected controls differ"):
+    with pytest.raises(ValueError, match="current finding registry"):
         module.build(cache, destination)
     assert not destination.exists()
 
@@ -47,6 +49,16 @@ def test_current_admission_successor_refuses_changed_control_log(tmp_path, monke
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
 
+    # Exercise the historical byte guard under its own frozen registry.
+    # The preceding test separately proves current use rejects that registry.
+    manifest = json.loads((module.PREDECESSOR / "manifest.json").read_bytes())
+    historical = AdmissionInventory.model_validate_json(
+        module.read_pinned(module.PREDECESSOR / "inventory.json", manifest["inventory"])
+    )
+    monkeypatch.setattr(
+        "graybench.task_admission.KNOWN_FINDINGS",
+        {int(key): list(value) for key, value in historical.finding_registry.items()},
+    )
     changed = tmp_path / "changed.jsonl"
     shutil.copyfile(module.CONTROLS, changed)
     with changed.open("ab") as stream:

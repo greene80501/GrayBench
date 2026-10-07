@@ -4,6 +4,8 @@
 The V2 implementation below is retained for historical pilot reproduction. Its judge has a
 reproduced verdict-forgery vulnerability and its upstream oracles have known false acceptances;
 V2 scores are not certified. See the [reliability plan and evidence](docs/RELIABILITY_PLAN.md).
+The [complete normal/hard pair audit](docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/README.md)
+records a contradictory task-41 prompt and undisclosed judge requirements; task admission remains unfinished.
 
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 

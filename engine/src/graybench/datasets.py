@@ -82,6 +82,10 @@ KNOWN_FINDINGS_V2 = MappingProxyType(
 )
 KNOWN_FINDINGS = {
     **{number: list(findings) for number, findings in KNOWN_FINDINGS_V2.items()},
+    41: [
+        "Normal requests both XZ and Pauli YX while hard requests YX; "
+        "both upstream judges require undisclosed qargs [0, 2]"
+    ],
     62: [
         "Upstream accepts a fixed BB84 sender circuit that ignores state and basis",
         "Protected BB84 amplitude value-v1 omits valid inputs; a wrong answer passes its 124 cases",

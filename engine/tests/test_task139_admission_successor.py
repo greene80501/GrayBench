@@ -30,7 +30,7 @@ def test_historical_task139_successor_binds_controls_without_reviews(tmp_path):
     bundle = module.HERE / "artifacts/admission-task139-current-2026-10-06"
     _check_successor(module, cache, bundle)
     destination = tmp_path / "successor"
-    with pytest.raises(ValueError, match="Predecessor source differs"):
+    with pytest.raises(ValueError, match="current finding registry"):
         module.build(cache, destination)
     assert not destination.exists()
 

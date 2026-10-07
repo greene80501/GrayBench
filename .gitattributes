@@ -167,3 +167,6 @@ docs/reliability-evidence/artifacts/evolution-value-calibration-2026-10-07/*.jso
 docs/reliability-evidence/artifacts/current-release-audit-2026-10-07-v4/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/loopback-campaign-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/loopback-campaign-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/qhe_pair_audit.py text eol=lf
+docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol

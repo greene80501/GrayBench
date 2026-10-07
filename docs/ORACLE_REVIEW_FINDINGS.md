@@ -90,6 +90,18 @@ promising oracle boundary, not completed task admission or proof of numerical
 stability and native parity.
 
 
+## Normal/hard specification mismatch
+
+The [complete pinned pair audit](reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/README.md)
+finds a task-41 wording mismatch: normal requests both XZ and `Pauli('YX')`,
+while hard requests YX. Both upstream judges additionally require the
+undisclosed positions `[0, 2]`. Four fixed authored operator examples reproduce
+the resulting acceptance/rejection differences in the exact pinned check
+functions. The current finding registry flags both cards without changing the
+original tasks or historical registry snapshots. A strengthened revision must
+declare the Pauli and positions before generation. The paired audit does not
+establish semantic adequacy for the other 150 families.
+
 ## Object-identity fidelity blocker
 
 Six [native-versus-protected identity probes](reliability-evidence/alias-boundary.md)
