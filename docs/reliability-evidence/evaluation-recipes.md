@@ -17,6 +17,7 @@ the default. These selections are development evaluations, not certified scores.
 | `qhe120-diagonal-semantics-v1` | Task 120 | Explicit diagonal, global-phase allowance and no-mutation contract |
 | `qhe63-explicit-bases-v1` | Task 63 | New three-argument BB84 task with receiver bases supplied publicly |
 | `qhe149-most-common-bitstring-v1` | Task 149 | Explicit unique-most-common BitArray string contract with varied counts and insertion orders |
+| `qhe50-remove-position-graph-v1` | Exact pinned task 50 | Position-sensitive circuit editing with both input mutation and copied results allowed; graph protocol 4 |
 
 Select exact tasks; a revision rejects other families rather than filtering or
 falling back. From `engine/`, with a model specification and an inspected immutable

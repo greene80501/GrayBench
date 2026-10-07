@@ -8,8 +8,10 @@ from collections import Counter
 from pathlib import Path
 
 import pytest
+from native_evidence_fixtures import synthetic_current_native
 
 from graybench.identity import canonical, identity
+from graybench.provenance import source_manifest
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "docs/reliability-evidence/native_literal_mutant_screen.py"
@@ -35,7 +37,15 @@ def test_literal_mutants_share_current_reference_cohorts():
     cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
     cases, _, cohorts = module.plan(cache)
     assert len(cases) == len({item[0] for item in cases}) == 572
-    assert {suite: cohort.digest for suite, cohort in cohorts.items()} == {
+    assert all(cohort.source_digest == source_manifest()["digest"] for cohort in cohorts.values())
+    assert {
+        suite: cohort.model_copy(
+            update={
+                "source_digest": "0daeaf62640237d5a4af2645c75f4f71a9645c78490781cd30ae79787833b924"
+            }
+        ).digest
+        for suite, cohort in cohorts.items()
+    } == {
         "normal": "a3fbe24e4f69fa75f4ee2f713298b2578b8242b9cb28ce27249da8bf73347adb",
         "hard": "000fbb069089ea49609ad1864d12a89532aeb4c979426bad05a6c0f9a8b9cdbd",
     }
@@ -68,7 +78,10 @@ def test_literal_mutant_scored_policy_changes_only_declared_cohort_condition():
 def test_literal_mutant_results_and_rehashed_outcome_tamper(tmp_path):
     module = load_script()
     cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
-    report = module.verify(cache, ARTIFACT)
+    with pytest.raises(ValueError, match="frozen plan"):
+        module.verify(cache, ARTIFACT)
+    fixture = synthetic_current_native(cache, ARTIFACT, tmp_path / "synthetic-current.jsonl")
+    report = module.verify(cache, fixture)
     assert report["complete"] is True
     assert report["planned"] == 572
     assert report["publication_eligible"] is False
@@ -81,7 +94,7 @@ def test_literal_mutant_results_and_rehashed_outcome_tamper(tmp_path):
         for number in (110, 139)
     ]
 
-    records = [json.loads(line) for line in ARTIFACT.read_bytes().splitlines()]
+    records = [json.loads(line) for line in fixture.read_bytes().splitlines()]
     changed = False
     previous = "0" * 64
     for record in records:
@@ -105,7 +118,8 @@ def test_literal_mutant_results_and_rehashed_outcome_tamper(tmp_path):
 def test_literal_mutant_verifier_rejects_rehashed_nonpass_change(tmp_path):
     module = load_script()
     cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
-    records = [json.loads(line) for line in ARTIFACT.read_bytes().splitlines()]
+    fixture = synthetic_current_native(cache, ARTIFACT, tmp_path / "synthetic-current.jsonl")
+    records = [json.loads(line) for line in fixture.read_bytes().splitlines()]
     changed = False
     previous = "0" * 64
     for record in records:
@@ -127,11 +141,15 @@ def test_literal_mutant_verifier_rejects_rehashed_nonpass_change(tmp_path):
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
-def test_literal_mutant_policy_comparison_is_paired_and_source_bound():
+def test_literal_mutant_policy_comparison_is_paired_and_source_bound(tmp_path):
     module = load_script()
     cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
-    conservative = module.verify(cache, ARTIFACT)
-    scored = module.verify(cache, SCORED_ARTIFACT)
+    conservative = module.verify(
+        cache, synthetic_current_native(cache, ARTIFACT, tmp_path / "synthetic-conservative.jsonl")
+    )
+    scored = module.verify(
+        cache, synthetic_current_native(cache, SCORED_ARTIFACT, tmp_path / "synthetic-scored.jsonl")
+    )
     assert conservative["exception_policy"] == "conservative_unattributed_v1"
     assert scored["exception_policy"] == "test_exception_is_failure_v1"
     assert conservative["source_digest"] == scored["source_digest"]
@@ -172,8 +190,10 @@ def test_literal_mutant_policy_comparison_is_paired_and_source_bound():
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
 def test_scored_literal_chain_survives_future_probe_edits(tmp_path, monkeypatch):
     module = load_script()
+    cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
+    fixture = synthetic_current_native(cache, SCORED_ARTIFACT, tmp_path / "synthetic-scored.jsonl")
     changed = tmp_path / "future_probe.py"
     changed.write_bytes(SCRIPT.read_bytes() + b"\n# A later diagnostic revision\n")
     monkeypatch.setattr(module, "__file__", str(changed))
-    report = module.verify(Path(os.environ["GRAYBENCH_TEST_CACHE"]), SCORED_ARTIFACT)
+    report = module.verify(cache, fixture)
     assert report["outcomes"] == {"fail": 568, "pass": 4}

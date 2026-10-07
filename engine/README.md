@@ -116,10 +116,16 @@ it still admits no task and publishes no score.
 | `qhe-pinned-native-v1` | Candidate and original pinned test run in one isolated Python/Qiskit process | Preserves native semantics, but same-process candidate code can inspect or tamper with tests; development-only |
 
 There is no automatic fallback between these conditions. Semantic revisions
-currently cover tasks 0, 2, 63, 82, 113, 116, 120 and 141. See
+currently cover tasks 0, 2, 50, 63, 82, 113, 116, 120, 141 and 149. See
 [evaluation recipes](../docs/reliability-evidence/evaluation-recipes.md),
 [gate revisions](../docs/reliability-evidence/gate-semantics-revisions.md), and
 [the registry](src/graybench/evaluation_recipes.py) for exact names and family checks.
+
+The [task-50 circuit editing condition](../docs/reliability-evidence/task50-position-removal-development.md)
+freezes the revised public requirement before generation, permits both copied
+and modified input circuits, and tests every position across 25 authored inputs.
+It uses graph protocol 4 and remains development-only pending isolated controls
+and independent admission; it does not replace the pinned native test.
 
 The graph bridge is implemented and opt-in. It uses separate persistent arenas in
 candidate and trusted judge containers; the host relays bounded data without

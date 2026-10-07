@@ -8,6 +8,7 @@ from graybench.bell_revision import BellStatevectorJudge
 from graybench.file_judge import QpyFileJudge
 from graybench.gate_semantics import GateSemanticsJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
+from graybench.task50_revision import RemoveInstructionJudge
 from graybench.task149_revision import MostCommonBitstringJudge
 from graybench.upstream import UpstreamJudge
 
@@ -26,6 +27,7 @@ EvaluationRecipe = Literal[
     "qhe63-explicit-bases-v1",
     "qhe63-explicit-bases-v2",
     "qhe149-most-common-bitstring-v1",
+    "qhe50-remove-position-graph-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -46,6 +48,7 @@ class RevisionJudge:
             "qhe63-explicit-bases-v2",
             "qhe2-bell-statevector-v1",
             "qhe149-most-common-bitstring-v1",
+            "qhe50-remove-position-graph-v1",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -90,6 +93,8 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = BB84BatchJudge(**kwargs)
     elif recipe == "qhe149-most-common-bitstring-v1":
         inner = MostCommonBitstringJudge(**kwargs)
+    elif recipe == "qhe50-remove-position-graph-v1":
+        inner = RemoveInstructionJudge(**kwargs)
     elif recipe in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
         inner = QpyFileJudge(
             track=recipe, parser_timeout=parser_timeout, parser_image=parser_image, **kwargs

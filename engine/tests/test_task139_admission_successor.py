@@ -4,7 +4,6 @@ import importlib.util
 import json
 import os
 import shutil
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -25,28 +24,28 @@ def _module():
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
-def test_task139_successor_binds_controls_without_reviews():
+def test_historical_task139_successor_binds_controls_without_reviews(tmp_path):
     module = _module()
     cache = Path(os.environ["GRAYBENCH_TEST_CACHE"])
-    with tempfile.TemporaryDirectory(prefix="gb139-admission-") as temporary:
-        _check_successor(module, cache, Path(temporary) / "successor")
+    bundle = module.HERE / "artifacts/admission-task139-current-2026-10-06"
+    _check_successor(module, cache, bundle)
+    destination = tmp_path / "successor"
+    with pytest.raises(ValueError, match="Predecessor source differs"):
+        module.build(cache, destination)
+    assert not destination.exists()
 
 
 def _check_successor(module, cache, bundle):
-    report = module.build(cache, bundle)
+    report = verify_admission_bundle(bundle, cache)
     assert report == verify_admission_bundle(bundle, cache)
     assert report["verified"] is True
-    assert report["inventory_source_matches_running_source"] is True
+    assert report["inventory_source_matches_running_source"] is False
     assert report["control_count"] == 82
     assert report["covered_task_count"] == 12
     assert report["uncovered_task_count"] == 290
     assert report["inventory_source_bound_control_count"] == 64
     assert report["false_pass_count"] == 8
     assert report["publication_eligible"] is False
-    committed = module.HERE / "artifacts/admission-task139-current-2026-10-06"
-    for name in ("inventory.json", "audit.json", "manifest.json"):
-        assert (bundle / name).read_bytes() == (committed / name).read_bytes()
-
     inventory = AdmissionInventory.model_validate_json((bundle / "inventory.json").read_bytes())
     predecessor_inventory = AdmissionInventory.model_validate_json(
         (module.PREDECESSOR / "inventory.json").read_bytes()
@@ -90,14 +89,12 @@ def _check_successor(module, cache, bundle):
 
 
 @pytest.mark.skipif(not os.environ.get("GRAYBENCH_TEST_CACHE"), reason="Pinned cache required")
-def test_task139_successor_refuses_changed_control_log(tmp_path, monkeypatch):
+def test_historical_task139_bundle_refuses_changed_control_log(tmp_path):
     module = _module()
-    changed = tmp_path / "changed.jsonl"
-    shutil.copyfile(module.CONTROLS, changed)
+    bundle = tmp_path / "changed-bundle"
+    shutil.copytree(module.HERE / "artifacts/admission-task139-current-2026-10-06", bundle)
+    changed = bundle / "protected-task139-current.jsonl"
     with changed.open("ab") as stream:
         stream.write(b" ")
-    monkeypatch.setattr(module, "CONTROLS", changed)
-    destination = tmp_path / "rejected"
-    with pytest.raises(ValueError, match="control bytes differ"):
-        module.build(Path(os.environ["GRAYBENCH_TEST_CACHE"]), destination)
-    assert not destination.exists()
+    with pytest.raises(ValueError, match="file size or digest mismatch"):
+        verify_admission_bundle(bundle, Path(os.environ["GRAYBENCH_TEST_CACHE"]))

@@ -167,9 +167,14 @@ def test_schmidt_controls_freeze_distinct_correct_and_wrong_answer_styles():
 
 
 @pytest.mark.skipif(not CACHE, reason="Pinned source cache required")
-def test_schmidt_control_log_binds_current_source_and_distinguishes_empty_answer():
+def test_historical_schmidt_control_log_distinguishes_empty_answer_without_current_source_claim():
     report = inspect_oracle_review(ARTIFACT, Path(CACHE))
-    assert report["source_digest"] == source_manifest()["digest"]
+    assert (
+        report["source_digest"]
+        == "0daeaf62640237d5a4af2645c75f4f71a9645c78490781cd30ae79787833b924"
+    )
+    assert report["source_digest"] != source_manifest()["digest"]
+    assert report["source_matches_running_source"] is False
     assert report["control_count"] == report["controls_matching_expectation"] == 22
     assert (report["expected_passes"], report["expected_failures"]) == (10, 10)
     assert report["expected_candidate_errors"] == 2
