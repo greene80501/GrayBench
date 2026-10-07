@@ -11,6 +11,12 @@ unitary input circuits against independently derived states and permits equivale
 phase and input mutation. The original fixed-example false pass remains archived;
 this development condition still needs isolated qualification and independent admission.
 
+The separate [Task 12 complete-operator condition](../docs/reliability-evidence/task12-explicit-operator.md)
+resolves an ambiguous Bell-preparation prompt with an explicit full-matrix contract.
+It uses logical numeric values without hidden array-ownership requirements and
+publicly specifies phase alignment. Host controls pass; isolated qualification
+and independent admission remain pending, so it is release-ineligible.
+
 New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
 The runner, ledger writer and report verifier bind each verdict to its stored
 answer and frozen task/judge cohort, and check declared trusted terminal captures.

@@ -188,3 +188,8 @@ docs/reliability-evidence/artifacts/run-abandonment-2026-10-07/*.xml -text white
 docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/*.txt -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+docs/reliability-evidence/task12_controls.py text eol=lf
+docs/reliability-evidence/task12_local_verification.py text eol=lf
+docs/reliability-evidence/artifacts/task12-explicit-operator-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task12-explicit-operator-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol

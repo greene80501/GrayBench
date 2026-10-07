@@ -11,6 +11,12 @@ tracks public obligations, unresolved choices and proposed controls for all 151 
 The [Task 11 state-action condition](docs/reliability-evidence/task11-statevector-action-development.md)
 rejects a fixed-example shortcut under a separate source-bound development contract.
 
+The separate [Task 12 complete-operator condition](docs/reliability-evidence/task12-explicit-operator.md)
+resolves an ambiguous Bell-preparation prompt with an explicit full-matrix contract.
+It uses logical numeric values without hidden array-ownership requirements and
+publicly specifies phase alignment. Host controls pass; isolated qualification
+and independent admission remain pending, so it is release-ineligible.
+
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
 See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.
