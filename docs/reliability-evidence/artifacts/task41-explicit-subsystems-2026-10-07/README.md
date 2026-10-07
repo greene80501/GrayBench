@@ -70,3 +70,21 @@ verification.json: 13,673 bytes, SHA-256
 `5f47eb548db19a505f244f71693647257da379e13c408249211f45d09948085e`.
 
 Independent admission, isolated runtime/resource and adversarial encoder qualification remain pending. This resolves one family's development contract, not the full benchmark review or the overhaul.
+
+A clean checkout of `27ee1f1fca56b82387d0f6b29863c1eaaa571631`, using separately installed locked
+dependencies on the same host and shared verified cache, exactly recreates the
+host evidence. Its [related JUnit run](clean-related.xml) passes 147 tests, skips
+seven isolated groups and has zero failures/errors in 13.179 JUnit seconds
+(13.18 wall seconds). The selected tests cover Task41, Task12, recipes/campaign
+restoration, provider preparation, oracle review and the pinned pair audit.
+Six source/lockfile records and five saved evidence files match the main checkout
+and committed bytes. The checkout stays unchanged; Ruff checks pass for 251 files.
+This is not a full clean-suite run, independent machine, runtime qualification or
+human admission. [clean-verification.json](clean-verification.json) binds this scope.
+
+clean-related.xml: 22,402 bytes, SHA-256
+`563682d684fa87c279a592e55b742e58c76f14758ea25e2aba600fd399c87ea4`.
+
+clean-verification.json: 3,239 bytes, SHA-256
+`544681fdc8d5b59f52c2f33d9409f459113729c47fce2ec7feac0edb13109d9d`.
+
