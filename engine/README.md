@@ -5,6 +5,13 @@ This engine is under development and is **not certified for model ranking**.
 The root-level V2 package and its pilot results remain historical evidence.
 Engine version 3 and graph protocol 4 are different version identifiers.
 
+New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
+The runner, ledger writer and report verifier bind each verdict to its stored
+answer and frozen task/judge cohort, and check declared trusted terminal captures.
+An inconsistent returned verdict remains an unscored infrastructure error with
+its rejected evidence preserved. Historical bare judgments stay visibly unbound;
+this consistency check does not certify an oracle or authenticate a ledger owner.
+
 ## Start here
 
 Run from this directory:

@@ -16,6 +16,7 @@ from pydantic import Field, model_validator
 from graybench.contracts import Contract
 from graybench.datasets import JudgeTask
 from graybench.identity import identity
+from graybench.judgment_evidence import completion_binding
 from graybench.protected_value_contract import ProtectedValueContract, ValueCall
 from graybench.protected_value_runner import ValueRunner
 
@@ -392,6 +393,7 @@ class ProtectedSemanticJudge:
             "source_task_digest": task.contract.source_task_digest,
             "public_contract_digest": task.contract.digest,
             "private_case_digest": identity([case.model_dump(mode="json") for case in task.cases]),
+            "case_ids": [case.case_id for case in task.cases],
             "oracle": task.oracle,
             "oracle_code_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             "runner": self.runner.manifest(task.contract),
@@ -415,6 +417,7 @@ class ProtectedSemanticJudge:
         digest = identity(manifest)
         evidence = {
             "manifest": manifest,
+            **completion_binding(completion),
             "origin_claim": "candidate_submitted_value_only",
             "native_object_attested": False,
             "pass_manager_use_attested": False,

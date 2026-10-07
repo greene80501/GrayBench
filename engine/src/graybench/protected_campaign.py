@@ -24,6 +24,7 @@ from graybench.contracts import (
 )
 from graybench.datasets import PINS, JudgeTask, load_suite
 from graybench.identity import canonical, identity
+from graybench.judgment_evidence import POLICY, validate_judgment_result
 from graybench.ledger import Ledger, StateError
 from graybench.protected_semantic_judge import ProtectedSemanticJudge, ProtectedSemanticTask
 from graybench.protected_task_registry import revised_value_task
@@ -248,6 +249,7 @@ def build_protected_setup(
     setup_stub = ProtectedCampaignSetup(
         protocol=Protocol(
             schema_version="3.3",
+            judgment_evidence_policy=POLICY,
             name=name,
             track=cohort.track,
             protected_cohort_digest=cohort.digest,
@@ -375,17 +377,31 @@ class ProtectedCampaign:
                 continue
             generation = Generation.model_validate_json(canonical(self.ledger.blob(row["content"])))
             self.ledger.claim_judgment(row["id"], protocol.judge_digest)
+            result = None
             try:
                 result = self.judge.evaluate(
                     tasks[row["task_key"]], self.pinned[row["task_key"]], generation.text
                 )
                 if result.judge_digest != self.binding["judges"][row["task_key"]]:
                     raise StateError("Protected judge changed after cohort validation")
+                validate_judgment_result(
+                    result.outcome,
+                    result.evidence,
+                    result.judge_digest,
+                    completion=generation.text,
+                    require_completion=protocol.judgment_evidence_policy is not None,
+                )
                 outcome = result.outcome
                 evidence = {"task_judge_digest": result.judge_digest, "judgment": result.evidence}
             except Exception as exc:
                 outcome = "infrastructure_error"
                 evidence = {"error_type": type(exc).__name__}
+                if result is not None:
+                    evidence["rejected_judgment"] = {
+                        "outcome": result.outcome,
+                        "judge_digest": result.judge_digest,
+                        "evidence": result.evidence,
+                    }
             evidence["cohort"] = self.binding
             evidence["generation_digest"] = row["content"]
             self.ledger.judge(row["id"], protocol.judge_digest, outcome, evidence)

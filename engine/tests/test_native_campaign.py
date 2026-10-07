@@ -20,6 +20,9 @@ from graybench.contracts import (
     Protocol,
     RetryPolicy,
 )
+from graybench.evaluation_campaign import cohort_identities
+from graybench.identity import canonical, identity
+from graybench.judgment_evidence import completion_binding
 from graybench.ledger import StateError
 from graybench.native_campaign import NativeCampaign, NativeCampaignSetup, build_native_setup
 from graybench.native_cohort import freeze_native_cohort
@@ -550,7 +553,33 @@ def test_native_verifier_rejects_unclaimed_judgment(native_cache, ledger, monkey
         assert campaign.step()["state"] == "dispatched"
     sample = ledger.samples(run)[0]["id"]
     monkeypatch.setattr(ledger, "_require_native_judge_claim", lambda *_: None)
-    ledger.judge(sample, setup.protocol.judge_digest, "pass", {})
+    # Synthetic valid evidence isolates the missing-claim branch; no worker ran.
+    judge = setup.judge(native_cache, campaign.tasks)
+    _, manifest = judge.configuration(campaign.tasks[0])
+    generation = ledger.db.execute(
+        "SELECT content FROM generations WHERE sample_id=?", (sample,)
+    ).fetchone()[0]
+    ledger.judge(
+        sample,
+        setup.protocol.judge_digest,
+        "pass",
+        {
+            "cohort": cohort_identities(campaign.tasks, judge),
+            "generation_digest": generation,
+            "task_judge_digest": identity(manifest),
+            "judgment": {
+                "manifest": manifest,
+                **completion_binding(ledger.blob(generation)["text"]),
+                "worker_result": {"completed": True, "status": "pass", "phase": "test"},
+                "result_artifact": {
+                    "name": "result.json",
+                    "capture": "isolated-ephemeral-host-bind-v1",
+                    "sha256": identity({"completed": True, "status": "pass", "phase": "test"}),
+                    "size": len(canonical({"completed": True, "status": "pass", "phase": "test"})),
+                },
+            },
+        },
+    )
     with pytest.raises(ValueError, match="prior durable claim"):
         ledger.verify()
 

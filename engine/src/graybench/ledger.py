@@ -24,6 +24,7 @@ from graybench.contracts import (
     require_credential_scope_for_new_run,
 )
 from graybench.identity import canonical, identity
+from graybench.judgment_evidence import campaign_judgment_binding
 from graybench.ledger_evidence import event_records, verify_records
 from graybench.provenance import source_manifest
 from graybench.providers import adapter
@@ -757,6 +758,27 @@ class Ledger:
             self._require_model_observation_for_judgment(sample_id)
             row = self.db.execute("SELECT run_id FROM samples WHERE id=?", (sample_id,)).fetchone()
             protocol = self.protocol(row["run_id"])
+            generation = self.db.execute(
+                "SELECT content FROM generations WHERE sample_id=?", (sample_id,)
+            ).fetchone()
+            if generation is None:
+                raise StateError("Judgment requires a returned generation")
+            sample = self.db.execute(
+                "SELECT task_key FROM samples WHERE id=?", (sample_id,)
+            ).fetchone()
+            try:
+                campaign_judgment_binding(
+                    protocol,
+                    sample["task_key"],
+                    generation["content"],
+                    outcome,
+                    evidence,
+                    completion=Generation.model_validate_json(
+                        canonical(self.blob(generation["content"]))
+                    ).text,
+                )
+            except ValueError as exc:
+                raise StateError(str(exc)) from exc
             reject_model_credential(
                 protocol.model, {"outcome": outcome, "evidence": evidence}, "judgment"
             )
@@ -883,7 +905,7 @@ class Ledger:
         protocol = self.protocol(run_id)
         recorded_protocol_digest = self.protocol_manifest_digest(run_id)
         rows = self.db.execute(
-            "SELECT s.task_key,s.replicate,g.content,j.outcome FROM samples s "
+            "SELECT s.task_key,s.replicate,g.content,j.outcome,j.evidence FROM samples s "
             "LEFT JOIN generations g ON s.id=g.sample_id "
             "LEFT JOIN judgments j ON j.sample_id=s.id AND j.judge_digest=? WHERE s.run_id=? "
             "ORDER BY s.task_key,s.replicate",
@@ -895,6 +917,20 @@ class Ledger:
         observed = {(row["task_key"], row["replicate"]) for row in rows}
         scored = {"pass", "fail", "candidate_error", "timeout"}
         outcomes = [r["outcome"] for r in rows]
+        judgment_binding = {"bound": 0, "legacy_unbound": 0}
+        for row in rows:
+            if row["outcome"] is not None:
+                status = campaign_judgment_binding(
+                    protocol,
+                    row["task_key"],
+                    row["content"],
+                    row["outcome"],
+                    self.blob(row["evidence"]),
+                    completion=Generation.model_validate_json(
+                        canonical(self.blob(row["content"]))
+                    ).text,
+                )
+                judgment_binding[status] += 1
         request_binding = {"bound": 0, "unbound": 0}
         for row in self.db.execute(
             "SELECT a.request,d.evidence FROM attempts a "
@@ -1017,6 +1053,8 @@ class Ledger:
             "score_blockers": blockers,
             "outcome_counts": counts,
             "request_evidence_binding": request_binding,
+            "judgment_evidence_policy": protocol.judgment_evidence_policy,
+            "judgment_evidence_binding": judgment_binding,
             "cohort": {
                 "missing": [list(slot) for slot in sorted(expected - observed)],
                 "unexpected": [list(slot) for slot in sorted(observed - expected)],
@@ -1036,6 +1074,7 @@ class Ledger:
                 ),
                 "provider_effective_settings_not_attested",
                 *(["request_evidence_unbound"] if request_binding["unbound"] else []),
+                *(["judgment_evidence_unbound"] if judgment_binding["legacy_unbound"] else []),
                 *(
                     ["model_discovery_unverified"]
                     if discovery["status"] != "stable_observed"

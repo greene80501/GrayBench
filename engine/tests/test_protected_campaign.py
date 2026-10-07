@@ -15,11 +15,14 @@ from graybench.cli import main
 from graybench.comparison import ComparisonPlan, validate_plan
 from graybench.contracts import CapabilityProfile, ModelSpec, Protocol, RetryPolicy
 from graybench.datasets import load_suite
+from graybench.identity import identity
+from graybench.judgment_evidence import completion_binding
 from graybench.ledger import StateError
 from graybench.protected_campaign import (
     ProtectedCampaign,
     ProtectedCampaignSetup,
     build_protected_setup,
+    cohort_identities,
     freeze_protected_cohort,
     validate_protected_cohort,
 )
@@ -681,6 +684,27 @@ def test_verifier_rejects_protected_judgment_without_claim(ledger, monkeypatch):
         assert campaign.step()["state"] == "dispatched"
     sample = ledger.samples(run)[0]["id"]
     monkeypatch.setattr(ledger, "_require_native_judge_claim", lambda *_: None)
-    ledger.judge(sample, frozen.protocol.judge_digest, "pass", {})
+    # Synthetic host-oracle evidence isolates the claim gate, not semantic quality.
+    manifest = campaign.judge.manifest(frozen.tasks[0])
+    generation = ledger.db.execute(
+        "SELECT content FROM generations WHERE sample_id=?", (sample,)
+    ).fetchone()[0]
+    ledger.judge(
+        sample,
+        frozen.protocol.judge_digest,
+        "pass",
+        {
+            "cohort": cohort_identities(frozen.tasks, campaign.pinned, campaign.judge),
+            "generation_digest": generation,
+            "task_judge_digest": identity(manifest),
+            "judgment": {
+                "manifest": manifest,
+                **completion_binding(ledger.blob(generation)["text"]),
+                "case_results": [
+                    {"case_id": case.case_id, "passed": True} for case in frozen.tasks[0].cases
+                ],
+            },
+        },
+    )
     with pytest.raises(ValueError, match="prior durable claim"):
         ledger.verify()

@@ -4,8 +4,9 @@ import json
 from collections import Counter
 from datetime import datetime, timedelta
 
-from graybench.contracts import PreparedRequest, Protocol
+from graybench.contracts import Generation, PreparedRequest, Protocol
 from graybench.identity import identity
+from graybench.judgment_evidence import campaign_judgment_binding
 from graybench.request_evidence import request_evidence_binding
 
 TABLES = (
@@ -285,6 +286,25 @@ def verify_records(db, events):
                 claimed.add(key)
             elif key in all_claims and key not in claimed:
                 raise ValueError("Judgment precedes its durable claim")
+            if kind == "judgment_recorded":
+                judgment = records["judgments"][0]
+                generation = db.execute(
+                    "SELECT content FROM generations WHERE sample_id=?", (event["sample_id"],)
+                ).fetchone()
+                evidence = db.execute(
+                    "SELECT content FROM blobs WHERE digest=?", (judgment["evidence"],)
+                ).fetchone()
+                generation_blob = db.execute(
+                    "SELECT content FROM blobs WHERE digest=?", (generation["content"],)
+                ).fetchone()
+                campaign_judgment_binding(
+                    protocol,
+                    sample["task_key"],
+                    generation["content"],
+                    judgment["outcome"],
+                    json.loads(evidence["content"]),
+                    completion=Generation.model_validate_json(generation_blob["content"]).text,
+                )
         for table, rows in records.items():
             observed[table].update(identity(row) for row in rows)
     for table in TABLES:

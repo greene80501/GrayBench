@@ -19,6 +19,7 @@ from graybench.contracts import (
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import UpstreamCampaign, cohort_identities, validate_cohort
 from graybench.identity import identity
+from graybench.judgment_evidence import POLICY
 from graybench.ledger import StateError
 from graybench.native_cohort import NativeCohort, task_key, validate_native_cohort
 from graybench.native_judge import NativeJudge
@@ -172,6 +173,7 @@ def build_native_setup(
     source = source_manifest()["digest"]
     protocol = Protocol(
         schema_version="3.3",
+        judgment_evidence_policy=POLICY,
         name=name,
         track=cohort.track,
         native_cohort_digest=cohort.digest,

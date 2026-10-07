@@ -7,6 +7,7 @@ remain separate requirements; a bound development cohort does not become certifi
 from graybench.contracts import Generation, Protocol
 from graybench.datasets import JudgeTask
 from graybench.identity import canonical, identity
+from graybench.judgment_evidence import validate_judgment_result
 from graybench.ledger import Ledger, StateError
 from graybench.providers import adapter
 from graybench.upstream import UpstreamJudge
@@ -94,15 +95,29 @@ class JudgmentRunner:
                 continue
             generation = Generation.model_validate_json(canonical(self.ledger.blob(row["content"])))
             self.ledger.claim_judgment(row["id"], protocol.judge_digest)
+            result = None
             try:
                 result = self.judge.evaluate(tasks[row["task_key"]], generation.text)
                 if result.judge_digest != binding["judges"][row["task_key"]]:
                     raise StateError("Judge changed after cohort validation")
+                validate_judgment_result(
+                    result.outcome,
+                    result.evidence,
+                    result.judge_digest,
+                    completion=generation.text,
+                    require_completion=protocol.judgment_evidence_policy is not None,
+                )
                 outcome = result.outcome
                 evidence = {"task_judge_digest": result.judge_digest, "judgment": result.evidence}
             except Exception as exc:
                 outcome = "infrastructure_error"
                 evidence = {"error_type": type(exc).__name__}
+                if result is not None:
+                    evidence["rejected_judgment"] = {
+                        "outcome": result.outcome,
+                        "judge_digest": result.judge_digest,
+                        "evidence": result.evidence,
+                    }
             evidence["cohort"] = binding
             evidence["generation_digest"] = row["content"]
             self.ledger.judge(row["id"], protocol.judge_digest, outcome, evidence)

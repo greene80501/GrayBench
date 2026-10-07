@@ -2,13 +2,16 @@ import os
 from pathlib import Path
 
 import pytest
+from test_campaign_judgment_binding import captured
 
 from graybench.comparison import compare_runs, family_bootstrap, make_plan, validate_plan
 from graybench.contracts import Generation
 from graybench.datasets import JudgeTask
+from graybench.evaluation_campaign import cohort_identities
 from graybench.identity import identity
 from graybench.ledger import Ledger, StateError
 from graybench.providers import Ollama
+from graybench.upstream import UpstreamJudge
 
 PINNED_CACHE = os.environ.get("GRAYBENCH_TEST_CACHE")
 
@@ -117,7 +120,20 @@ def fill(ledger, protocol, tasks, outcomes):
                 usage={},
             ),
         )
-        ledger.judge(sample["id"], protocol.judge_digest, outcome, {})
+        evidence = {}
+        if protocol.judgment_evidence_policy is not None:
+            # Synthetic trusted messages for analysis tests, not observed executions.
+            judge = UpstreamJudge(image="sha256:" + protocol.runtime_digest)
+            task = keyed[sample["task_key"]]
+            evidence = {
+                "cohort": cohort_identities(tasks, judge),
+                "generation_digest": ledger.db.execute(
+                    "SELECT content FROM generations WHERE sample_id=?", (sample["id"],)
+                ).fetchone()[0],
+                "task_judge_digest": identity(judge.configuration(task)[1]),
+                "judgment": captured(judge, task, outcome, completion="fixture"),
+            }
+        ledger.judge(sample["id"], protocol.judge_digest, outcome, evidence)
     return run
 
 

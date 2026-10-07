@@ -330,6 +330,9 @@ class Protocol(Contract):
     runtime_digest: str = Field(pattern="^[0-9a-f]{64}$")
     judge_digest: str = Field(pattern="^[0-9a-f]{64}$")
     analysis_digest: str = Field(pattern="^[0-9a-f]{64}$")
+    judgment_evidence_policy: Literal["cohort-bound-v1"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
 
     @field_validator("adapter_code_manifest")
     @classmethod

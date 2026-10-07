@@ -21,6 +21,7 @@ from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
 from graybench.evaluation_recipes import EvaluationRecipe, recipe_judge, revised_tasks
 from graybench.identity import identity
+from graybench.judgment_evidence import POLICY
 from graybench.ledger import StateError
 from graybench.provenance import environment, source_manifest
 from graybench.providers import adapter
@@ -184,6 +185,7 @@ def build_setup(
         adapter_code_manifest=adapter_manifest,
         # Conservatively bind all engine sources, including summary/metric implementation.
         analysis_digest=source,
+        judgment_evidence_policy=POLICY,
     )
     setup = CampaignSetup(
         protocol=protocol,

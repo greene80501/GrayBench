@@ -18,6 +18,7 @@ from pathlib import Path
 
 from graybench.extraction import extract
 from graybench.identity import canonical, identity
+from graybench.judgment_evidence import completion_binding
 from graybench.protected_value_contract import (
     ProtectedValueContract,
     ValueCall,
@@ -221,7 +222,11 @@ class ValueRunner:
         self, contract: ProtectedValueContract, completion: str, calls: tuple[ValueCall, ...]
     ) -> ValueExecution:
         manifest = self.manifest(contract)
-        evidence = {"manifest": manifest, "origin_claim": "candidate_submitted_value_only"}
+        evidence = {
+            "manifest": manifest,
+            "origin_claim": "candidate_submitted_value_only",
+            **completion_binding(completion),
+        }
         try:
             payload = value_payload(contract, completion, calls)
             wire = canonical(payload)
