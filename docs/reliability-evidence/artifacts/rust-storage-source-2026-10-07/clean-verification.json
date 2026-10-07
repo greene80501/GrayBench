@@ -1,0 +1,41 @@
+{
+  "checkout_head": "798e9fb4d9ee9bd16a3367ff5c5c3f46bbc45dbc",
+  "same_host": true,
+  "separate_dependency_environment": true,
+  "shared_verified_source_cache": true,
+  "source_file_hashes_match": {
+    "native/patch_qiskit_rust.py": {
+      "bytes": 6250,
+      "sha256": "dbd14e83744eae7d50504a33087413e8e37190aa1709a54f76d994aed477ebaf"
+    },
+    "native/rust_storage.rs": {
+      "bytes": 14972,
+      "sha256": "7ba965fc4ef8eef9a9dcf0c29d11cdb537a33a7279e82f3507f21112ae074523"
+    },
+    "native/tests/test_qiskit_rust_patch.py": {
+      "bytes": 5006,
+      "sha256": "d0e5b3f6e8960b4c19b6ecb1456dc0571854778f589abba4b0197b3a5709ce79"
+    },
+    "native/tests/test_rust_storage.py": {
+      "bytes": 6748,
+      "sha256": "f259ee078d66a5de70b8aa8b6636497e70c0bf58dfa98dbaf75f25b751da2b4e"
+    }
+  },
+  "engine_source_digest": "f868915bdbe72c14fe3f8fb0be3e7228cda7be41dfb7b9255775347823d64410",
+  "source_patch_manifest_byte_identical": true,
+  "historical_evidence_bytes_preserved": true,
+  "passed": 8,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "junit_seconds": "0.220",
+  "junit_sha256": "ae08e42a7b28086d317264f59a7acba4c8576696d3e07728299fd9214cc3b88d",
+  "python": "3.12.14 (main, Sep  1 2026, 14:17:39) [MSC v.1944 64 bit (AMD64)]",
+  "pytest": "9.1.1",
+  "lint": "passed",
+  "python_format": "246 files passed",
+  "rust_format_syntax": "passed",
+  "checkout_unchanged": true,
+  "native_compilation_or_execution": false,
+  "independent_runtime_admission": false
+}
