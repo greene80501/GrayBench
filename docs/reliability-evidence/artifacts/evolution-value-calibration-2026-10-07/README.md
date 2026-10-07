@@ -61,3 +61,12 @@ seconds. Ruff lint and formatting passed for 231 files across engine source,
 tests and this evidence script, when run from `engine/`. Running lint from the
 legacy root changes package classification and is not the engine lint command.
 These checks verify offline implementation behavior, not runtime admission.
+
+A clean checkout of `31cf4fd`, with separately installed locked dependencies on
+the same host, reproduced this report byte-for-byte, including source hashes,
+worker responses and all calibration results. Its task-116, semantic-judge,
+protected-campaign and control-review tests passed **47**, skipped **11**, and
+reported 12 Windows cleanup warnings in 19.76 seconds. The same 231-file lint
+and formatting checks passed. The checkout was clean before and after
+verification. This is a focused clean reproduction, not a new full clean-suite
+run, an independently administered experiment or an admission attestation.
