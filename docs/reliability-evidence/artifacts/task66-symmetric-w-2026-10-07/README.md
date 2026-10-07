@@ -44,6 +44,15 @@ the verified pinned cache. Ruff lint and formatting pass for 258 files. No
 immutable test-image settings were enabled; these results do not include Docker
 qualification.
 
+The clean checkout of `d564d98a40a71fd5ace487a3e3ccf0cbd2b4d18b`, with its
+separately installed locked environment on the same host, passes 218 selected
+related tests and skips seven isolated groups in 32.26 wall seconds. It exactly
+recreates the saved host projection and passes both static checks. All 113 engine
+source files, the selected scripts/test/lock and saved main evidence match main,
+clean and Git bytes. The checkout remains unchanged. Raw `clean.xml` and
+`clean-verification.json` record these checks; this is not a full clean-suite,
+independent-machine, isolated-runtime or human-admission claim.
+
 The complete isolated roster is predeclared by:
 
 ```sh
