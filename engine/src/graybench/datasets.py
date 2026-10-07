@@ -82,6 +82,10 @@ KNOWN_FINDINGS_V2 = MappingProxyType(
 )
 KNOWN_FINDINGS = {
     **{number: list(findings) for number, findings in KNOWN_FINDINGS_V2.items()},
+    12: [
+        "Upstream requires an unstated Bell preparation operator "
+        "and rejects other phi-plus preparations"
+    ],
     41: [
         "Normal requests both XZ and Pauli YX while hard requests YX; "
         "both upstream judges require undisclosed qargs [0, 2]"

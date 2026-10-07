@@ -6,6 +6,8 @@ reproduced verdict-forgery vulnerability and its upstream oracles have known fal
 V2 scores are not certified. See the [reliability plan and evidence](docs/RELIABILITY_PLAN.md).
 The [complete normal/hard pair audit](docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/README.md)
 records a contradictory task-41 prompt and undisclosed judge requirements; task admission remains unfinished.
+The [full contract review queue](docs/reliability-evidence/qhe-full-contract-review-queue-2026-10-07.md)
+tracks public obligations, unresolved choices and proposed controls for all 151 families.
 
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 

@@ -90,6 +90,17 @@ promising oracle boundary, not completed task admission or proof of numerical
 stability and native parity.
 
 
+## Bell preparation operator gap
+
+Task 12 has a separate [operator specification diagnostic](reliability-evidence/artifacts/task12-operator-ambiguity-2026-10-07/README.md).
+Both public variants ask for a unitary of a phi-plus Bell circuit without
+declaring its gate sequence. Two authored alternative phi-plus preparations
+are rejected by both exact pinned check functions, which compare the full
+operator with H0 then CX(0,1). A state does not specify all columns of its
+preparation unitary. Both task-12 cards now retain this unresolved finding;
+the original task, checks and historical evidence remain unchanged. A
+strengthened revision must disclose its operator/preparation choice.
+
 ## Normal/hard specification mismatch
 
 The [complete pinned pair audit](reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/README.md)

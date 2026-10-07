@@ -53,6 +53,14 @@ Do not combine these tracks into one overall leaderboard. Normal and hard are re
 
 Create a task card for every normal/hard pair, including the eight service-dependent tasks. Record identity and ancestry, accepted input domain, return contract, side effects, semantic requirements, runtime compatibility, randomness, resource expectations, external dependencies and ambiguous language. Distinguish mandatory implementation techniques from techniques merely used by the canonical answer.
 
+The [full 151-family contract review queue](reliability-evidence/qhe-full-contract-review-queue-2026-10-07.md)
+now records public behavioral obligations, unresolved choices/process requirements
+and proposed falsification controls for every pinned family. It is a source-bound
+authored draft, not completed task cards, observed mutant results or independent
+admission. Its coverage includes the service-dependent families and preserves
+normal/hard ancestry. Turn every proposed scored clause into reviewed case and
+control evidence before release.
+
 Map every scored requirement to a test and to a deliberately wrong implementation that should fail. A correct reference passing is necessary but insufficient. Add an independently implemented correct alternative where feasible, so the judge does not reward only the reference's style. Two Qiskit-competent reviewers should resolve ambiguous cases without model labels or aggregate standings. LLMs may propose cases, but their agreement or generated reference is not the final authority.
 
 The 151-task inventory is a full review obligation. Eligibility must not become whatever happened to pass preflight. Declare expected task IDs before preflight; an unexpected reference failure blocks that release for investigation. Distinguish defective tasks, unsupported runtimes, missing infrastructure and service dependence. Publish every exclusion and its rationale.

@@ -170,3 +170,6 @@ docs/reliability-evidence/artifacts/loopback-campaign-2026-10-07/*.xml -text whi
 docs/reliability-evidence/qhe_pair_audit.py text eol=lf
 docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/qhe-pair-audit-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/task12_operator_ambiguity.py text eol=lf
+docs/reliability-evidence/artifacts/task12-operator-ambiguity-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task12-operator-ambiguity-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
