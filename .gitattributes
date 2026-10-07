@@ -185,3 +185,6 @@ docs/reliability-evidence/artifacts/sample-metrics-2026-10-07/*.json -text white
 docs/reliability-evidence/artifacts/sample-metrics-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/run-abandonment-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/run-abandonment-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/rust-storage-source-2026-10-07/*.txt -text whitespace=trailing-space,space-before-tab,cr-at-eol
