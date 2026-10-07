@@ -61,3 +61,13 @@ diagnostics plus inventory/historical-bundle handling. It does not replace the
 older full-suite results with a current-source claim.
 JUnit SHA-256:
 `42b2f335830b6bf695e8aa92c72acf3580642023dc2ea6e45de99ac4f5c383fa`.
+
+A clean checkout of `b2dc4d8fb369de3887c24613d62a887a6db4fb03`, with
+separately installed locked dependencies on the same host, reproduced the
+report exactly. Its [focused regression run](clean-related.xml) passed all
+42 tests with zero failures/errors/skips in 12.69 seconds and the same 12
+Windows cleanup warnings. Ruff lint and formatting passed for 236 engine/audit
+files, and the clean checkout remained unchanged. This is a second environment
+on the same machine, not an independent reviewer or isolated runtime.
+Clean JUnit SHA-256:
+`c14512231955d6c7ebc6419b5de5ffcf2aae149b2820d4bf40c8a9d08e37426d`.
