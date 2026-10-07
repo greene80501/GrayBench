@@ -11,3 +11,5 @@ uv run --extra qiskit python ../docs/reliability-evidence/matrix_alternative_cal
 ```
 
 This executes only trusted authored fixture algorithms. It does not run model code, contact a provider, exercise the graph boundary or start Docker. It calibrates finite inputs and does not prove continuous-domain correctness or independently admit the benchmark tasks. The separate canonical evolution storage qualification remains pending.
+
+A clean checkout at `11abc1a` with separately installed locked dependencies on the same Windows host reproduced the report exactly, including engine and fixture source hashes and both maximum errors. This establishes checkout reproduction, not independent review or runtime qualification.
