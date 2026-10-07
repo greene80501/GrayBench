@@ -23,6 +23,12 @@ It checks the complete operator and dimensions under a public value contract;
 its host evidence passes, while isolated qualification and independent admission
 remain pending.
 
+The separate [Task 66 symmetric-state condition](../docs/reliability-evidence/task66-symmetric-w.md)
+is selected with `qhe66-symmetric-w-measurement-graph-v1`. It checks the complete
+W-state density and terminal measurement map under a public contract. Its authored
+host controls agree, but two correct initialization constructions remain
+unsupported in graph transport; qualification is unfinished.
+
 New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
 The runner, ledger writer and report verifier bind each verdict to its stored
 answer and frozen task/judge cohort, and check declared trusted terminal captures.

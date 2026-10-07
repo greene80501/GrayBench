@@ -202,3 +202,8 @@ docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/*.xml 
 docs/reliability-evidence/task66_sampling_diagnostic.py text eol=lf
 docs/reliability-evidence/artifacts/task66-sampling-diagnostic-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task66-sampling-diagnostic-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+docs/reliability-evidence/task66_state_controls.py text eol=lf
+docs/reliability-evidence/task66_state_verification.py text eol=lf
+docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol

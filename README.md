@@ -23,6 +23,11 @@ It checks the complete operator and dimensions under a public value contract;
 its host evidence passes, while isolated qualification and independent admission
 remain pending.
 
+The separate [Task 66 symmetric-state condition](docs/reliability-evidence/task66-symmetric-w.md)
+checks the complete W-state density and terminal measurement map under a public
+contract. Its authored host controls agree, but two correct initialization
+constructions remain unsupported in graph transport; qualification is unfinished.
+
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
 See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.
