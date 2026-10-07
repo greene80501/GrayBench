@@ -41,7 +41,7 @@
 - [x] Write failing tests for rehashed completion, case, manifest, transcript, and outcome changes.
 - [x] Reconstruct exact authored cases and source bindings in a dedicated verifier.
 - [ ] Generate new Docker control evidence only after Docker is healthy, and verify it from a fresh clone.
-- [ ] Update the PR with current-source and historical evidence scopes; commit under greene80501 with `[skip ci]`.
+- [x] Update the PR with current-source and historical evidence scopes; commit under greene80501 with `[skip ci]`.
 
 Ruling: Existing user authorization covers implementation and pushing the same PR. No additional approval gate is needed for these changes. Docker startup currently fails on the previously rejected socket-removal action; offline work continues while the user's cleanup request is pending.
 
@@ -50,3 +50,5 @@ Ruling: Existing user authorization covers implementation and pushing the same P
 The independent code review found four missing checks: dropped captures on trusted errors, dropped wrapped evidence, nested graph session/sequence/protocol changes, and non-object trusted stdout. Each received a failing regression before its fix. The follow-up review found no remaining correctness blockers and reproduced 49 passing focused tests with 10 skipped live/cache-dependent cases. Current-log fixtures synthesize terminal captures solely for verifier unit tests; they are not observed Docker evidence. The archived October 6 revision and log retain their exact bytes and historical source identities. Local hashes and captured bytes establish consistency, not author authenticity or oracle quality.
 
 Final offline full-suite verification: 1,277 passed, 377 skipped, 12 Windows temporary-directory cleanup warnings, zero failures in 141.07 seconds. Neither the Docker image nor the dataset-cache test environment variable was enabled for that run. Ruff lint and formatting checks passed using the engine configuration. The [October 7 release audit](../../reliability-evidence/artifacts/current-release-audit-2026-10-07/README.md) preserves all 1,510 prepared public prompts and explicitly reports the prior inventory's source mismatch. Docker-dependent tests and fresh observed task-110 controls remain pending.
+
+A fresh clone of `8e380fd` installed the locked Python 3.12 dependencies and reproduced 49 focused passing tests with 10 skipped cases, the exact audit report hash, and the archived development-module hash. Ruff lint and formatting also passed from that clone's `engine/` directory with the engine configuration. PR #3 now identifies the new source digest and distinguishes current offline verification from historical Docker evidence. Both implementation and this ledger use the user's Git identity and `[skip ci]`.
