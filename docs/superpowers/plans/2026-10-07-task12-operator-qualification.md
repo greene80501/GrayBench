@@ -58,7 +58,7 @@ and independently admitted evidence.
 - [x] Commit named implementation/evidence files under the greene80501-linked author.
 - [x] Reproduce related tests and exact host evidence from a clean checkout with
   separately installed locked dependencies; compare source and artifact bytes.
-- [ ] Publish source-bound verification and update the draft PR without CI launches.
+- [x] Publish source-bound verification and update the draft PR without CI launches.
 
 ## Task 2: Qualify isolated semantics and resource behavior
 
