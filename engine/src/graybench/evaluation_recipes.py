@@ -11,6 +11,7 @@ from graybench.matrix_semantics import CircuitMatrixJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
 from graybench.task11_revision import StatevectorActionJudge
 from graybench.task12_revision import BellOperatorJudge
+from graybench.task41_revision import PauliSubsystemJudge
 from graybench.task50_revision import RemoveInstructionJudge
 from graybench.task108_revision import ChoiValuesJudge
 from graybench.task117_revision import UnitaryBasisJudge
@@ -41,6 +42,7 @@ EvaluationRecipe = Literal[
     "qhe125-gate-action-graph-v1",
     "qhe11-statevector-action-graph-v1",
     "qhe12-explicit-bell-operator-values-v1",
+    "qhe41-explicit-pauli-subsystems-values-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -89,6 +91,7 @@ class RevisionJudge:
             "qhe125-gate-action-graph-v1",
             "qhe11-statevector-action-graph-v1",
             "qhe12-explicit-bell-operator-values-v1",
+            "qhe41-explicit-pauli-subsystems-values-v1",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -145,6 +148,8 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = StatevectorActionJudge(**kwargs)
     elif recipe == "qhe12-explicit-bell-operator-values-v1":
         inner = BellOperatorJudge(**kwargs)
+    elif recipe == "qhe41-explicit-pauli-subsystems-values-v1":
+        inner = PauliSubsystemJudge(**kwargs)
     elif recipe == "qhe108-choi-values-graph-v1":
         inner = ChoiValuesJudge(**kwargs)
     elif recipe in ("qhe117-unitary-basis-graph-v1", "qhe117-unitary-basis-graph-v2"):

@@ -193,3 +193,8 @@ docs/reliability-evidence/task12_controls.py text eol=lf
 docs/reliability-evidence/task12_local_verification.py text eol=lf
 docs/reliability-evidence/artifacts/task12-explicit-operator-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task12-explicit-operator-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+docs/reliability-evidence/task41_controls.py text eol=lf
+docs/reliability-evidence/task41_local_verification.py text eol=lf
+docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/task41-explicit-subsystems-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol

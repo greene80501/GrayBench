@@ -17,6 +17,12 @@ It uses logical numeric values without hidden array-ownership requirements and
 publicly specifies phase alignment. Host controls pass; isolated qualification
 and independent admission remain pending, so it is release-ineligible.
 
+The separate [Task 41 subsystem condition](../docs/reliability-evidence/task41-explicit-subsystems.md)
+resolves conflicting Pauli labels and a previously undisclosed qubit placement.
+It checks the complete operator and dimensions under a public value contract;
+its host evidence passes, while isolated qualification and independent admission
+remain pending.
+
 New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
 The runner, ledger writer and report verifier bind each verdict to its stored
 answer and frozen task/judge cohort, and check declared trusted terminal captures.

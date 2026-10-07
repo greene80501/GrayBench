@@ -17,6 +17,12 @@ It uses logical numeric values without hidden array-ownership requirements and
 publicly specifies phase alignment. Host controls pass; isolated qualification
 and independent admission remain pending, so it is release-ineligible.
 
+The separate [Task 41 subsystem condition](docs/reliability-evidence/task41-explicit-subsystems.md)
+resolves conflicting Pauli labels and a previously undisclosed qubit placement.
+It checks the complete operator and dimensions under a public value contract;
+its host evidence passes, while isolated qualification and independent admission
+remain pending.
+
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
 See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.
