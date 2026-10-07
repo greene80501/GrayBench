@@ -276,3 +276,14 @@ def test_nested_capture_completion_hash_cannot_disagree_with_saved_answer(protoc
             completion="def answer(x): return x+1",
             require_completion=True,
         )
+
+
+@pytest.mark.parametrize("outcome", ["candidate_error", "timeout"])
+def test_scored_error_cannot_omit_judged_completion_binding(ledger, protocol, task, outcome):
+    protocol, task, judge = configured(protocol, task)
+    protocol = protocol.model_copy(update={"judgment_evidence_policy": "cohort-bound-v1"})
+    run = saved_answer(ledger, protocol, task)
+    sample, evidence = bound_result(ledger, run, task, judge, outcome)
+    evidence["judgment"].pop("completion_sha256")
+    with pytest.raises(StateError, match="completion"):
+        ledger.judge(sample, protocol.judge_digest, outcome, evidence)

@@ -64,7 +64,11 @@ def validate_judgment_result(
     verify_review_judgment(outcome, evidence)
     if completion is not None:
         found = _completion_matches(evidence, completion)
-        if require_completion and outcome in {"pass", "fail"} and not found:
+        if (
+            require_completion
+            and outcome in {"pass", "fail", "candidate_error", "timeout"}
+            and not found
+        ):
             raise ValueError("Scored judgment lacks its judged completion binding")
     elif require_completion:
         raise ValueError("Missing returned completion text")
