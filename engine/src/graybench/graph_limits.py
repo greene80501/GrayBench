@@ -19,8 +19,8 @@ class GraphLimits:
             nodes=100_000,
             edges=100_000,
             message_bytes=16_777_216,
-            array_bytes=524_288,
-            matrix_bytes=524_288,
+            array_bytes=16_777_216,
+            matrix_bytes=16_777_216,
             depth=32,
         )
         if any(

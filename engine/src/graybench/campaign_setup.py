@@ -19,7 +19,12 @@ from graybench.contracts import (
 )
 from graybench.datasets import JudgeTask, load_suite
 from graybench.evaluation_campaign import cohort_identities, validate_cohort
-from graybench.evaluation_recipes import EvaluationRecipe, recipe_judge, revised_tasks
+from graybench.evaluation_recipes import (
+    EvaluationRecipe,
+    recipe_judge,
+    recipe_output_limit,
+    revised_tasks,
+)
 from graybench.identity import identity
 from graybench.judgment_evidence import POLICY
 from graybench.ledger import StateError
@@ -147,7 +152,11 @@ def build_setup(
     """Freeze exactly the supplied tasks and public requests without provider access."""
     require_credential_scope_for_new_run(model, system_prompt=system_prompt)
     judge = recipe_judge(
-        evaluation_recipe, image=image, parser_image=parser_image, extraction=extraction
+        evaluation_recipe,
+        image=image,
+        parser_image=parser_image,
+        extraction=extraction,
+        output_limit=recipe_output_limit(evaluation_recipe),
     )
     tasks = revised_tasks(tasks, judge)
     binding = cohort_identities(tasks, judge)
@@ -193,6 +202,7 @@ def build_setup(
         image=image,
         parser_image=parser_image,
         evaluation_recipe=evaluation_recipe,
+        output_limit=recipe_output_limit(evaluation_recipe),
     )
     reject_model_credential(model, setup.model_dump(mode="json"), "campaign setup")
     validate_cohort(protocol, tasks, setup.judge())

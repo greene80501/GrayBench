@@ -50,6 +50,7 @@ class UpstreamJudge:
         protocol=3,
         graph_transport="snapshot-v1",
         graph_state_limit=None,
+        graph_limits=None,
         graph_batch="none",
         extraction: ExtractionPolicy = "raw_or_single_python_fence_v1",
     ):
@@ -59,13 +60,14 @@ class UpstreamJudge:
             raise ValueError("Unknown extraction policy")
         self.extraction = extraction
         self.protocol = protocol
-        from graybench.graph_limits import transport_record
+        from graybench.graph_limits import GraphLimits, transport_record
 
         if graph_batch not in ("none", "positional-batch-v1"):
             raise ValueError("Unknown graph batch mode")
         if protocol != 4 and (
             graph_transport != "snapshot-v1"
             or graph_state_limit is not None
+            or graph_limits is not None
             or graph_batch != "none"
         ):
             raise ValueError("Graph transport settings require protocol4")
@@ -75,6 +77,15 @@ class UpstreamJudge:
             if protocol == 4
             else None
         )
+        self.graph_limits = None
+        if protocol == 4:
+            if graph_limits is not None and type(graph_limits) is not GraphLimits:
+                raise ValueError("Expected an explicit GraphLimits resource contract")
+            self.graph_limits = graph_limits or GraphLimits(
+                message_bytes=self.graph_transport["state_bytes"]
+            )
+            if self.graph_limits.message_bytes != self.graph_transport["state_bytes"]:
+                raise ValueError("Graph resource and transport state limits differ")
         # Use the same immutable-image/resource validation as the fixed-oracle judge.
         ProtectedJudge(image=image, docker=docker, timeout=timeout, output_limit=output_limit)
         self.image, self.docker, self.timeout = image, docker, float(timeout)
@@ -98,11 +109,7 @@ class UpstreamJudge:
             "entry_point": task.public.entry_point,
         }
         if self.protocol == 4:
-            from graybench.graph_limits import GraphLimits
-
-            payload["graph_limits"] = GraphLimits(
-                message_bytes=self.graph_transport["state_bytes"]
-            ).record()
+            payload["graph_limits"] = self.graph_limits.record()
             payload["graph_transport"] = dict(self.graph_transport)
             if self.graph_batch != "none":
                 payload["graph_batch"] = self.graph_batch
@@ -383,6 +390,7 @@ class UpstreamJudge:
                                         "graph_manifest": message["graph"]["anchors"],
                                         "graph_transport": self.graph_transport["mode"],
                                         "graph_state_limit": self.graph_transport["state_bytes"],
+                                        "graph_limits": self.graph_limits,
                                         "graph_batch": self.graph_batch,
                                     }
                                     if self.protocol == 4

@@ -77,6 +77,7 @@ class Candidate:
         graph_manifest: dict | None = None,
         graph_transport: str = "snapshot-v1",
         graph_state_limit: int | None = None,
+        graph_limits=None,
         graph_batch: str = "none",
     ):
         if type(protocol) is not int or protocol not in (3, 4):
@@ -88,13 +89,14 @@ class Candidate:
         ):
             raise ValueError("Graph protocol requires session and bootstrap manifest")
         self.protocol, self.graph_session = protocol, graph_session
-        from graybench.graph_limits import transport_record
+        from graybench.graph_limits import GraphLimits, transport_record
 
         if graph_batch not in ("none", "positional-batch-v1"):
             raise ValueError("Unknown graph batch mode")
         if protocol != 4 and (
             graph_transport != "snapshot-v1"
             or graph_state_limit is not None
+            or graph_limits is not None
             or graph_batch != "none"
         ):
             raise ValueError("Graph transport settings require protocol4")
@@ -104,6 +106,13 @@ class Candidate:
             if protocol == 4
             else None
         )
+        limits = None
+        if protocol == 4:
+            if graph_limits is not None and type(graph_limits) is not GraphLimits:
+                raise ValueError("Expected an explicit GraphLimits resource contract")
+            limits = graph_limits or GraphLimits(message_bytes=transport["state_bytes"])
+            if limits.message_bytes != transport["state_bytes"]:
+                raise ValueError("Graph resource and transport state limits differ")
         if opaque_input is not None and (
             type(opaque_input) is not bytes or len(opaque_input) > MAX_ARTIFACT_BYTES
         ):
@@ -142,7 +151,6 @@ class Candidate:
         worker = "graph_worker.py" if protocol == 4 else "worker.py"
         shutil.copyfile(Path(__file__).with_name(worker), directory / "worker.py")
         if protocol == 4:
-            from graybench.graph_limits import GraphLimits
             from graybench.graph_runtime import stage_graph
 
             stage_graph(directory)
@@ -151,7 +159,7 @@ class Candidate:
                     {
                         "session": graph_session,
                         "anchors": graph_manifest,
-                        "limits": GraphLimits(message_bytes=transport["state_bytes"]).record(),
+                        "limits": limits.record(),
                         "transport": transport,
                         **({"graph_batch": graph_batch} if graph_batch != "none" else {}),
                     }

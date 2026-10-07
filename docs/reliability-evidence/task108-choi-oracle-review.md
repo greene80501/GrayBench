@@ -30,3 +30,8 @@ specified values, while accepting mathematically equivalent constructions.
 The pinned tests remain unchanged for historical native reproduction. Both
 task variants remain release-ineligible until independent review and a
 defensible protected value contract are complete.
+
+The later [all-value development condition](task108-protected-graph-design.md)
+implements a separately selected public contract and indexed-block oracle.
+It preserves these exact native diagnostics. Local authored controls and graph
+round trips do not replace protected execution or independent task admission.
