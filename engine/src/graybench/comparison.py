@@ -205,19 +205,21 @@ def compare_runs(plan, left_ledger, left_run, right_ledger, right_run, *, tasks)
 
 def verified_comparison_reports(plan, left_ledger, left_run, right_ledger, right_run):
     """Read each protocol-bound, verified summary inside its ledger snapshot."""
-    reports = []
-    for ledger, run, expected in (
-        (left_ledger, left_run, plan.left),
-        (right_ledger, right_run, plan.right),
-    ):
-        ledger.db.execute("BEGIN")
-        try:
-            if ledger.protocol(run).digest != expected.digest:
-                raise StateError("Run does not match its comparison plan")
-            report = ledger.summary(run)
-            ledger.db.execute("COMMIT")
-        except BaseException:
-            ledger.db.execute("ROLLBACK")
-            raise
-        reports.append(report)
-    return reports
+    return [
+        verified_run_report(plan.left, left_ledger, left_run),
+        verified_run_report(plan.right, right_ledger, right_run),
+    ]
+
+
+def verified_run_report(protocol, ledger, run):
+    """Bind one verified summary to its expected protocol in a single snapshot."""
+    ledger.db.execute("BEGIN")
+    try:
+        if ledger.protocol(run).digest != protocol.digest:
+            raise StateError("Run does not match its frozen analysis protocol")
+        report = ledger.summary(run)
+        ledger.db.execute("COMMIT")
+    except BaseException:
+        ledger.db.execute("ROLLBACK")
+        raise
+    return report

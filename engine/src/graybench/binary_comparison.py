@@ -22,7 +22,7 @@ def load_binary_json(payload):
         result = {}
         for key, value in pairs:
             if key in result:
-                raise StateError("Duplicate JSON keys are not permitted in binary analysis")
+                raise StateError("Duplicate JSON keys are not permitted in frozen analysis")
             result[key] = value
         return result
 

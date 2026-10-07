@@ -416,6 +416,13 @@ remain development-only and do not certify equivalent provider settings. See
 [row bindings](../docs/reliability-evidence/event-row-bindings.md), and
 [comparisons](../docs/reliability-evidence/paired-comparisons.md) and the
 [dual-track comparison audit](../docs/reliability-evidence/dual-track-comparison.md).
+`metrics-plan`, `metrics` and `metrics-verify` freeze and replay repeated-sample
+reports, keeping pass@1 distinct from pass@k opportunity metrics. They require
+enough planned samples for every k and withhold all scores for incomplete
+cohorts. Global averages use equal task weights; descriptive family breakdowns
+retain actual record counts. See
+[repeated-sample metrics](../docs/reliability-evidence/repeated-sample-metrics.md)
+for assumptions, exact arithmetic, separate-track behavior and input commands.
 The opt-in `binary-comparison-plan`, `binary-study-plan`, `binary-study` and
 `binary-study-verify` commands add exact conditional McNemar tests and planned
 Holm correction. They require one sample and one task per independently declared

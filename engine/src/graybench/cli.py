@@ -47,6 +47,12 @@ from graybench.reference_scan import (
     run_native_reference_scan,
     run_reference_scan,
 )
+from graybench.sample_metrics import (
+    SampleMetricsPlan,
+    make_metrics_plan,
+    sample_metrics_report,
+    verify_sample_metrics,
+)
 from graybench.task_admission import (
     AdmissionInventory,
     admission_blockers,
@@ -79,22 +85,23 @@ def _comparison_tasks(setup, cache: Path):
 
 
 def _comparison_ledger_tasks(plan, left, left_run, right, right_run, cache):
-    if plan.left.track == "upstream":
+    tasks = _run_tasks(plan.left, left, left_run, cache)
+    _run_tasks(plan.right, right, right_run, cache)
+    return tasks
+
+
+def _run_tasks(protocol, ledger, run, cache):
+    if protocol.track == "upstream":
         return tuple(
             task
             for suite in ("normal", "hard")
             for task in load_suite(suite, cache)
-            if f"{suite}/{task.public.task_id}" in plan.left.task_keys
+            if f"{suite}/{task.public.task_id}" in protocol.task_keys
         )
-    setups = [
-        _comparison_setup(canonical(book.context(run)["setup"]))
-        for book, run in ((left, left_run), (right, right_run))
-    ]
-    for setup, expected in zip(setups, (plan.left, plan.right), strict=True):
-        if setup.protocol != expected:
-            raise StateError("Stored setup differs from comparison protocol")
-        _comparison_tasks(setup, cache)
-    return _comparison_tasks(setups[0], cache)
+    setup = _comparison_setup(canonical(ledger.context(run)["setup"]))
+    if setup.protocol != protocol:
+        raise StateError("Stored setup differs from frozen analysis protocol")
+    return _comparison_tasks(setup, cache)
 
 
 def _binary_study_analysis(plan, run_file, cache, report=...):
@@ -132,6 +139,27 @@ def main():
     parser = argparse.ArgumentParser(description="GrayBench 3 replacement engine (development)")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor", help="Record relevant runtime and source provenance")
+    metrics_plan = commands.add_parser(
+        "metrics-plan", help="Freeze equal-task pass@1 and requested pass@k opportunity metrics"
+    )
+    for name in ("setup", "cache", "output"):
+        metrics_plan.add_argument(name, type=Path)
+    metrics_plan.add_argument(
+        "--k",
+        type=int,
+        action="append",
+        help="Distinct requested k, repeatable; pass@1 is always included",
+    )
+    for name, help_text in (
+        ("metrics", "Report all frozen repeated samples from a read-only ledger"),
+        ("metrics-verify", "Replay a frozen repeated-sample metric report"),
+    ):
+        command = commands.add_parser(name, help=help_text)
+        command.add_argument("plan", type=Path)
+        command.add_argument("ledger", type=Path)
+        command.add_argument("run_id")
+        command.add_argument("cache", type=Path)
+        command.add_argument("report", type=Path)
     comparison_plan = commands.add_parser(
         "comparison-plan", help="Freeze an explicit paired family analysis"
     )
@@ -394,6 +422,45 @@ def main():
     args = parser.parse_args()
     if args.command == "doctor":
         result = environment()
+    elif args.command == "metrics-plan":
+        setup = _comparison_setup(args.setup.read_bytes())
+        tasks = _comparison_tasks(setup, args.cache)
+        plan = make_metrics_plan(setup.protocol, tasks, ks=tuple(args.k or (1,)))
+        with args.output.open("xb") as stream:
+            stream.write(canonical(plan.model_dump(mode="json")))
+        result = {
+            "plan_digest": plan.digest,
+            "ks": plan.ks,
+            "output": str(args.output),
+            "publication_eligible": False,
+        }
+    elif args.command in ("metrics", "metrics-verify"):
+        plan = SampleMetricsPlan.model_validate_json(
+            canonical(load_binary_json(args.plan.read_bytes()))
+        )
+        if not args.ledger.is_file():
+            raise StateError("Metric ledger must already exist")
+        if args.command == "metrics" and args.report.exists():
+            raise FileExistsError(args.report)
+        book = Ledger(args.ledger, readonly=True)
+        try:
+            tasks = _run_tasks(plan.protocol, book, args.run_id, args.cache)
+            if args.command == "metrics-verify":
+                result = verify_sample_metrics(
+                    load_binary_json(args.report.read_bytes()), plan, book, args.run_id, tasks=tasks
+                )
+            else:
+                report = sample_metrics_report(plan, book, args.run_id, tasks=tasks)
+                with args.report.open("xb") as stream:
+                    stream.write(canonical(report))
+                result = {
+                    "output": str(args.report),
+                    "status": report["status"],
+                    "metrics": report["metrics"],
+                    "publication_eligible": False,
+                }
+        finally:
+            book.close()
     elif args.command == "binary-comparison-plan":
         left = _comparison_setup(args.left_setup.read_bytes())
         right = _comparison_setup(args.right_setup.read_bytes())
