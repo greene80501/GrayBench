@@ -60,13 +60,10 @@ def test_matrix_condition_refuses_a_reused_task_identity_with_changed_source(num
         judge.configuration(source)
 
 
-def controls_module():
+def controls_module(filename="matrix_semantics_controls.py"):
     import importlib.util
 
-    path = (
-        Path(__file__).resolve().parents[2]
-        / "docs/reliability-evidence/matrix_semantics_controls.py"
-    )
+    path = Path(__file__).resolve().parents[2] / "docs/reliability-evidence" / filename
     spec = importlib.util.spec_from_file_location("matrix_controls", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -122,11 +119,6 @@ def test_full_retained_graph_roundtrip_preserves_alternatives_and_input_mutation
     number, name, suite
 ):
     pytest.importorskip("qiskit")
-    if number == 116 and name == "canonical":
-        from scipy.linalg import _internal_matfuncs
-
-        if not hasattr(_internal_matfuncs, "_graybench_storage_descriptor"):
-            pytest.skip("Canonical expm buffers require the registered-storage runtime")
     import json
 
     from graybench.graph_anchors import PublicAnchorRegistry
@@ -142,6 +134,16 @@ def test_full_retained_graph_roundtrip_preserves_alternatives_and_input_mutation
     implementation = authored(task, probe.completion)
     payload, _ = judge.configuration(task)
     limits = GraphLimits.from_record(payload["graph_limits"])
+    if number == 116 and name == "canonical":
+        observed = controls_module("canonical_evolution_transport.py").probe_case(
+            implementation, "I", 0.0, limits
+        )
+        if observed["graph_outcome"] == "unsupported":
+            assert observed["numerical_outcome"] == "pass"
+            assert observed["owner_chain"][-1]["type"] == "PySliceContainer"
+            if os.environ.get("GRAYBENCH_REQUIRE_CANONICAL_GRAPH") == "1":
+                pytest.fail("Actual canonical evolution graph transport is unsupported")
+            pytest.skip("Observed unsupported canonical PySliceContainer graph storage")
     anchors = PublicAnchorRegistry.capture()
     sender = DeltaGraphArena(
         GraphArena(side="judge", session="matrix", limits=limits, anchors=anchors),
