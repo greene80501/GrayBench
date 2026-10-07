@@ -13,6 +13,7 @@ from graybench.judge import Judgment
 from graybench.provenance import source_manifest
 from graybench.reference_scan import inspect_reference_scan, run_evidence_cases
 from graybench.upstream import UpstreamJudge
+from graybench.upstream_evidence import verify_review_judgment
 
 SIZE_CHECK = """def check(candidate):
     from qiskit import QuantumCircuit
@@ -284,6 +285,7 @@ def inspect_oracle_review(path: Path, cache: Path) -> dict:
         judgment = evidence["judgment"]
         if not isinstance(judgment, dict):
             raise ValueError("Oracle-review judgment evidence must be an object")
+        verify_review_judgment(result["outcome"], judgment)
         manifest = judgment.get("manifest")
         manifest_verified = "manifest" in judgment
         judge_track = None

@@ -3,21 +3,15 @@
 import argparse
 import hashlib
 import json
-import re
 from pathlib import Path
 
 from graybench.contracts import PublicTask
 from graybench.datasets import JudgeTask, load_suite
-from graybench.extraction import extract
-from graybench.fs_paths import readable_path
-from graybench.identity import canonical, identity
+from graybench.identity import identity
 from graybench.judge import Judgment
-from graybench.oracle_review import Probe, inspect_oracle_review, run_review
+from graybench.oracle_review import Probe, run_review
 from graybench.provenance import source_manifest
 from graybench.upstream import UpstreamJudge
-from graybench.upstream_evidence import verify_judgment
-
-IMAGE = "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd"
 
 SOURCE_DIGESTS = {
     "normal": "da6ad9bb17b1f7437d7b709e9905b6e8e7fa82c282b76bd25466e89f3cc337d1",
@@ -217,141 +211,12 @@ def probes(source: JudgeTask) -> tuple[Probe, ...]:
     )
 
 
-def verify(cache: Path, path: Path) -> dict:
-    """Reconstruct the authored plan and bind each completed result to captured bytes."""
-    report = inspect_oracle_review(path, cache)
-    with readable_path(path).open("rb") as stream:
-        raw = stream.read(64 * 1024 * 1024 + 1)
-    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != report["file_sha256"]:
-        raise ValueError("Task-110 log changed during verification or exceeds the byte limit")
-    events = [json.loads(line)["event"] for line in raw.splitlines()]
-    header = events[0]
-    sources = tuple(load_suite(suite, cache)[110] for suite in ("normal", "hard"))
-    judge = Task110GraphJudge(image=IMAGE)
-    cases = {
-        f"{source.public.suite}/{source.public.task_id}/{probe.name}": (source, probe)
-        for source in sources
-        for probe in probes(source)
-    }
-    metadata = {
-        key: {
-            "task_digest": source.digest,
-            "expectation": probe.expectation,
-            "rationale": probe.rationale,
-            "completion": probe.completion,
-        }
-        for key, (source, probe) in cases.items()
-    }
-    declared = {
-        f"{source.public.suite}/{source.public.task_id}": judge.configuration(source)[1]
-        for source in sources
-    }
-    selection = {
-        "review": "local authored probes; not independent certification",
-        "cases": metadata,
-        "declared_judges": declared,
-    }
-    if (
-        header["source"] != source_manifest()
-        or canonical(header["selection"]) != canonical(selection)
-        or header["tasks"] != {key: identity(value) for key, value in metadata.items()}
-    ):
-        raise ValueError("Task-110 log differs from the exact current authored plan")
-    results = {event["task_key"]: event for event in events if event["kind"] == "result"}
-    if set(results) != set(cases):
-        raise ValueError("Task-110 results differ from the full authored control set")
-    for key, (source, probe) in cases.items():
-        result = results[key]
-        task = revised_task(source)
-        payload, manifest = judge.configuration(source)
-        judgment = result["evidence"]["judgment"]
-        inner = judgment.get("inner")
-        extracted = extract(probe.completion, task.public, judge.inner.extraction)
-        if (
-            set(judgment) != {"manifest", "inner"}
-            or judgment["manifest"] != manifest
-            or result["judge_digest"] != identity(manifest)
-            or not isinstance(inner, dict)
-            or inner.get("manifest") != manifest["inner"]
-            or extracted.error
-            or inner.get("completion_sha256")
-            != hashlib.sha256(probe.completion.encode()).hexdigest()
-            or inner.get("extracted_code_sha256")
-            != hashlib.sha256(extracted.code.encode()).hexdigest()
-            or inner.get("extraction_method") != extracted.method
-            or inner.get("public_task_digest") != task.public.digest
-        ):
-            raise ValueError(f"Task-110 candidate or judge binding differs: {key}")
-        session = inner.get("graph_session")
-        if (
-            not isinstance(session, str)
-            or re.fullmatch(r"[0-9a-f]{32}", session) is None
-            or inner.get("runtime_task_payload_digest")
-            != identity({**payload, "graph_session": session})
-        ):
-            raise ValueError(f"Task-110 runtime payload differs: {key}")
-        terminal = verify_judgment(result["outcome"], inner)
-        transcript = inner.get("transcript")
-        calls = terminal["evidence"].get("calls")
-        if (
-            type(calls) is not int
-            or not 1 <= calls <= 5
-            or type(transcript) is not list
-            or len(transcript) != calls
-            or (result["outcome"] == "pass" and calls != 5)
-        ):
-            raise ValueError(f"Task-110 call coverage differs: {key}")
-        for index, exchange in enumerate(transcript, 1):
-            if (
-                type(exchange) is not dict
-                or set(exchange) != {"call", "response", "call_data", "response_data"}
-                or type(exchange["call_data"]) is not dict
-                or type(exchange["response_data"]) is not dict
-                or exchange["call"] != identity(exchange["call_data"])
-                or exchange["response"] != identity(exchange["response_data"])
-                or exchange["call_data"].get("kind") != "call"
-                or type(exchange["call_data"].get("sequence")) is not int
-                or type(exchange["response_data"].get("sequence")) is not int
-                or exchange["call_data"].get("sequence") != index
-                or exchange["response_data"].get("sequence") != index
-                or exchange["response_data"].get("outcome") != "returned"
-            ):
-                raise ValueError(f"Task-110 transcript identity differs: {key}")
-            response = exchange["response_data"].get("response")
-            call_graph = exchange["call_data"].get("graph")
-            returned_graph = response.get("graph") if type(response) is dict else None
-            if (
-                type(response) is not dict
-                or type(response.get("protocol")) is not int
-                or response["protocol"] != 4
-                or type(response.get("sequence")) is not int
-                or response["sequence"] != index
-                or response.get("exception") is not None
-                or any(
-                    type(graph) is not dict
-                    or graph.get("format") != "call_graph_anchors_v1"
-                    or graph.get("session") != session
-                    or type(graph.get("sequence")) is not int
-                    or graph["sequence"] != index
-                    for graph in (call_graph, returned_graph)
-                )
-            ):
-                raise ValueError(f"Task-110 graph runtime differs: {key}")
-    return {**report, "exact_control_plan_verified": True, "trusted_terminal_messages": len(cases)}
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--image", required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--verify-only", action="store_true")
     args = parser.parse_args()
-    if args.image != IMAGE:
-        raise ValueError("Expected the pinned task-110 control image")
-    if args.verify_only:
-        print(json.dumps(verify(args.cache, args.output), sort_keys=True))
-        return
     sources = tuple(load_suite(suite, args.cache)[110] for suite in ("normal", "hard"))
     judge = Task110GraphJudge(image=args.image)
     declared = {
@@ -359,14 +224,14 @@ def main() -> None:
         for source in sources
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    run_review(
+    report = run_review(
         sources,
         judge,
         args.output,
         probes_for=probes,
         declared_judges=declared,
     )
-    print(json.dumps(verify(args.cache, args.output), sort_keys=True))
+    print(json.dumps(report, sort_keys=True))
 
 
 if __name__ == "__main__":

@@ -23,6 +23,7 @@ from graybench.sandbox import (
     CandidateInterfaceError,
     SandboxInfrastructureError,
 )
+from graybench.upstream_evidence import CAPTURE, capture_judgment
 
 FILES = (
     "upstream_process.py",
@@ -114,6 +115,7 @@ class UpstreamJudge:
             "extraction.py",
             "container_control.py",
             "artifacts.py",
+            "upstream_evidence.py",
         ):
             files[name] = hashlib.sha256((source / name).read_bytes()).hexdigest()
         if self.protocol == 4:
@@ -137,6 +139,7 @@ class UpstreamJudge:
             "candidate_workspace": "isolated-local-tmpfs-volume-v1-256MiB",
             "output_limit": self.limit,
             "extraction_policy": self.extraction,
+            "trusted_judgment_capture": CAPTURE,
             "protocol": "upstream-graph-v4" if self.protocol == 4 else "upstream-proxy-v1",
             **(
                 {
@@ -168,7 +171,14 @@ class UpstreamJudge:
             return Judgment(
                 "candidate_error",
                 digest,
-                {"detail": extracted.error, "extraction_method": extracted.method},
+                {
+                    "detail": extracted.error,
+                    "extraction_method": extracted.method,
+                    "manifest": manifest,
+                    "termination_source": "host_error",
+                    "completion_sha256": hashlib.sha256(completion.encode()).hexdigest(),
+                    "public_task_digest": task.public.digest,
+                },
             )
         graph_session = uuid.uuid4().hex if self.protocol == 4 else None
         runtime_payload = (
@@ -218,13 +228,16 @@ class UpstreamJudge:
                     put(None)
                     return
 
-        def finish(outcome, evidence):
+        def finish(outcome, evidence, *, terminal=None):
             return Judgment(
                 outcome,
                 digest,
                 {
                     **evidence,
                     "manifest": manifest,
+                    "termination_source": "trusted_judgment"
+                    if terminal is not None
+                    else "host_error",
                     **(
                         {
                             "graph_session": graph_session,
@@ -244,6 +257,14 @@ class UpstreamJudge:
                     "extracted_code_sha256": hashlib.sha256(extracted.code.encode()).hexdigest(),
                     "extraction_method": extracted.method,
                     "public_task_digest": task.public.digest,
+                    **(
+                        {
+                            "trusted_judgment": terminal[0],
+                            "trusted_judgment_artifact": terminal[1],
+                        }
+                        if terminal is not None
+                        else {}
+                    ),
                 },
             )
 
@@ -329,17 +350,13 @@ class UpstreamJudge:
                             },
                         )
                     message = json.loads(raw)
+                    if type(message) is not dict:
+                        raise ValueError("Invalid trusted message envelope")
                     if message.get("kind") == "judgment":
-                        if message.get("outcome") not in {
-                            "pass",
-                            "fail",
-                            "unsupported",
-                            "timeout",
-                            "candidate_error",
-                            "infrastructure_error",
-                        }:
-                            raise ValueError("Invalid trusted judgment")
-                        return finish(message["outcome"], message["evidence"])
+                        terminal = capture_judgment(raw, limit=self.limit)
+                        return finish(
+                            terminal[0]["outcome"], terminal[0]["evidence"], terminal=terminal
+                        )
                     sequence += 1
                     if message.get("kind") != "call" or message.get("sequence") != sequence:
                         raise ValueError("Invalid trusted call")

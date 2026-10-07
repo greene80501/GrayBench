@@ -93,6 +93,121 @@ def _rewrite_chain(path, mutate):
     path.write_bytes(b"\n".join(canonical(record) for record in records) + b"\n")
 
 
+@pytest.mark.parametrize("wrapped", [False, True])
+def test_rechained_outcome_must_agree_with_captured_trusted_message(tmp_path, cache, wrapped):
+    from graybench.upstream_evidence import CAPTURE, capture_judgment
+
+    class CapturedJudge:
+        def evaluate(self, *_):
+            raw = b'{"kind":"judgment","outcome":"fail","evidence":{"calls":1}}\n'
+            message, artifact = capture_judgment(raw, limit=4096)
+            manifest = {"trusted_judgment_capture": CAPTURE, "output_limit": 4096}
+            evidence = {
+                **message["evidence"],
+                "manifest": manifest,
+                "trusted_judgment": message,
+                "trusted_judgment_artifact": artifact,
+                "termination_source": "trusted_judgment",
+            }
+            if wrapped:
+                manifest = {"track": "fixture", "inner": manifest}
+                evidence = {"manifest": manifest, "inner": evidence}
+            return Judgment("fail", identity(manifest), evidence)
+
+    output = tmp_path / "captured.jsonl"
+    run_review(
+        (load_suite("normal", cache)[0],),
+        CapturedJudge(),
+        output,
+        probes_for=lambda _: (Probe("wrong", "fail", "Deliberately wrong", "return 0"),),
+    )
+    assert inspect_oracle_review(output, cache)["controls_matching_expectation"] == 1
+
+    def mutate(records):
+        result = next(r["event"] for r in records if r["event"]["kind"] == "result")
+        result["outcome"] = "pass"
+        result["evidence"]["matches_expectation"] = False
+
+    _rewrite_chain(output, mutate)
+    with pytest.raises(ValueError, match="trusted judgment"):
+        inspect_oracle_review(output, cache)
+
+
+def test_host_failure_without_terminal_capture_remains_inspectable(tmp_path, cache):
+    from graybench.upstream_evidence import CAPTURE
+
+    class HostFailure:
+        def evaluate(self, *_):
+            manifest = {"trusted_judgment_capture": CAPTURE, "output_limit": 4096}
+            return Judgment(
+                "infrastructure_error",
+                identity(manifest),
+                {
+                    "manifest": manifest,
+                    "detail": "trusted process could not start",
+                    "termination_source": "host_error",
+                },
+            )
+
+    output = tmp_path / "host-failure.jsonl"
+    run_review(
+        (load_suite("normal", cache)[0],),
+        HostFailure(),
+        output,
+        probes_for=lambda _: (Probe("correct", "pass", "Valid control", "return 0"),),
+    )
+    report = inspect_oracle_review(output, cache)
+    assert report["controls_matching_expectation"] == 0
+    assert report["unexpected_outcomes"][0]["actual"] == "infrastructure_error"
+
+
+@pytest.mark.parametrize("edit", ["candidate-capture", "wrapped-inner"])
+def test_declared_terminal_capture_cannot_be_deleted_from_error_or_wrapper(tmp_path, cache, edit):
+    from graybench.upstream_evidence import CAPTURE, capture_judgment
+
+    outcome = "candidate_error" if edit == "candidate-capture" else "pass"
+
+    class CapturedJudge:
+        def evaluate(self, *_):
+            raw = (
+                json.dumps({"kind": "judgment", "outcome": outcome, "evidence": {"calls": 1}})
+                + "\n"
+            ).encode()
+            message, artifact = capture_judgment(raw, limit=4096)
+            inner_manifest = {"trusted_judgment_capture": CAPTURE, "output_limit": 4096}
+            inner = {
+                **message["evidence"],
+                "manifest": inner_manifest,
+                "trusted_judgment": message,
+                "trusted_judgment_artifact": artifact,
+                "termination_source": "trusted_judgment",
+            }
+            manifest = {"track": "fixture", "inner": inner_manifest}
+            return Judgment(outcome, identity(manifest), {"manifest": manifest, "inner": inner})
+
+    output = tmp_path / "capture-removed.jsonl"
+    run_review(
+        (load_suite("normal", cache)[0],),
+        CapturedJudge(),
+        output,
+        probes_for=lambda _: (Probe("control", outcome, "Declared control", "return 0"),),
+    )
+    assert inspect_oracle_review(output, cache)["controls_matching_expectation"] == 1
+
+    def mutate(records):
+        result = next(r["event"] for r in records if r["event"]["kind"] == "result")
+        judgment = result["evidence"]["judgment"]
+        if edit == "wrapped-inner":
+            del judgment["inner"]
+        else:
+            del judgment["inner"]["trusted_judgment"]
+            del judgment["inner"]["trusted_judgment_artifact"]
+
+    _rewrite_chain(output, mutate)
+    with pytest.raises(ValueError, match="trusted judgment"):
+        inspect_oracle_review(output, cache)
+
+
 def test_local_oracle_verifier_checks_pinned_ancestry_and_outcomes(tmp_path, cache):
     output = _review_log(tmp_path, cache)
     report = inspect_oracle_review(output, cache)
