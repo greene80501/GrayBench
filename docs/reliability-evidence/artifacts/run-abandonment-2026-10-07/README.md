@@ -57,3 +57,16 @@ reports and provider ledgers remain unchanged. Completed software checks do not
 establish fair effective provider settings, oracle adequacy, independent task
 admission, historical summary authenticity, untouched holdouts or publication
 eligibility. All abandonment records remain unscored and release-ineligible.
+
+The [clean-checkout JUnit](clean-related.xml) reproduces **235 focused passes,
+10 skips and zero failures/errors**, including all 31 new tests,
+from implementation commit `ecfc694037d15ed3629fc719a5f52ccea32263cf`. JUnit time is
+93.719 seconds; there were 12 warnings. Dependencies were
+installed separately from the lockfile on the same host; the pinned cache was
+shared. Selected files cover abandonment, ledger/evidence, generation and
+judgment campaigns, native/protected campaign setup, observation timing,
+summaries and repeated-sample/binary comparisons. The engine imported from the
+clean checkout, the source digest matched, lint/formatting passed for 243 files,
+and the checkout remained unchanged. This is same-host selected-test reproduction,
+not a second full-suite run, independent task admission or isolated qualification.
+Clean JUnit SHA-256: `78d1346f8479fd9d83775a94c19b97df6c198dfaf987ea704123fc9d4b64e6ba`.
