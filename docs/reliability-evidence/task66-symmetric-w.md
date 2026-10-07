@@ -85,14 +85,23 @@ deserialization or copied-value fallback is introduced by this revision. A
 decoded QuantumCircuit category is not independent proof of the candidate's
 actual native object identity or an honest candidate-side encoder.
 
-The [source-bound host bundle](artifacts/task66-symmetric-w-2026-10-07/README.md)
+The [original source-bound host bundle](artifacts/task66-symmetric-w-2026-10-07/README.md)
 predeclares 84 trusted authored controls: 32 semantically correct alternatives and
 52 violations across both suites. Direct host judgments agree with all declared
 outcomes. Graph transfer supports 82 controls: 30 pass and 52 fail with the same
 judgments. Both Initialize controls pass the mathematical checker but fail
 encoding with `Retained Python operation requires another component codec`.
-They remain correct controls and release blockers; they are not excluded,
+At that recorded source they remain correct controls and release blockers; they are not excluded,
 rescored as incorrect, or replaced with another preparation method.
+
+The newer [initialization transport bundle](artifacts/task66-initialize-transport-2026-10-07/README.md)
+at engine source `cb27140691d9c4e5fbd794cc9d02bc701790d7eacb46ec06d42353a8dcc3181d`
+supports all 84 controls, with 32 passes and 52 failures matching direct judgments.
+Only the engine source changed in the predeclared plan: public task identities,
+checker, case completions, scripts and resource limits are identical. The
+[transport change](initialize-transport.md) preserves exact Initialize and
+StatePreparation data and native insertion-time caches; it does not substitute
+another construction. The earlier bundle remains unchanged and source-bound.
 
 The diagnostic labels encoder WireError separately from an oracle result.
 Decoder, transaction and protocol errors abort verification rather than becoming

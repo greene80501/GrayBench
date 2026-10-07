@@ -26,8 +26,9 @@ remain pending.
 The separate [Task 66 symmetric-state condition](../docs/reliability-evidence/task66-symmetric-w.md)
 is selected with `qhe66-symmetric-w-measurement-graph-v1`. It checks the complete
 W-state density and terminal measurement map under a public contract. Its authored
-host controls agree, but two correct initialization constructions remain
-unsupported in graph transport; qualification is unfinished.
+host controls now all transfer and agree with direct judgments, including both
+correct initialization constructions. See the [initialization transport evidence](../docs/reliability-evidence/initialize-transport.md).
+Isolated qualification and independent admission remain pending.
 
 New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
 The runner, ledger writer and report verifier bind each verdict to its stored

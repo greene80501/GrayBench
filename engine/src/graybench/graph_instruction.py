@@ -19,6 +19,7 @@ CONTROL_ATTRS = ATTRS + tuple(
 STATE_PREPARATION_ATTRS = ATTRS + tuple(
     (key, key) for key in ("_params_arg", "_inverse", "_from_label", "_from_int")
 )
+INITIALIZE_ATTRS = ATTRS + (("_stateprep", "_stateprep"),)
 DELAY_ATTRS = ATTRS + (("_unit", "_unit"),)
 IF_ELSE_ATTRS = ATTRS + (("_condition", "_condition"),)
 UNIFORM_ROTATION_ATTRS = ATTRS + (("rot_axes", "rot_axes"),)
@@ -36,6 +37,8 @@ def attributes(selector, values=()):
         return UNIFORM_ROTATION_ATTRS
     if selector == "state_preparation":
         return STATE_PREPARATION_ATTRS
+    if selector == "initialize":
+        return INITIALIZE_ATTRS
     if selector == "delay":
         return DELAY_ATTRS
     if selector in ("if_else", "while_loop"):
@@ -61,6 +64,7 @@ def classes():
         DiagonalGate,
         GraphStateGate,
         HamiltonianGate,
+        Initialize,
         LinearFunction,
         MCXGate,
         StatePreparation,
@@ -80,6 +84,7 @@ def classes():
         "barrier": Barrier,
         "linear_function": LinearFunction,
         "state_preparation": StatePreparation,
+        "initialize": Initialize,
         "delay": Delay,
         "unitary": UnitaryGate,
         "diagonal": DiagonalGate,
@@ -139,6 +144,13 @@ class InstructionCodec:
             for key in ("_inverse", "_from_label", "_from_int"):
                 if type(state[key]) is not bool:
                     raise WireError("Invalid raw state-preparation flag")
+        if attrs is INITIALIZE_ATTRS:
+            preparation = node(state["_stateprep"], index, {"python_instruction"})
+            if (
+                type(preparation["state"]) is not dict
+                or preparation["state"].get("class") != "state_preparation"
+            ):
+                raise WireError("Invalid initialize state preparation role")
         if attrs is CONTROL_ATTRS:
             count = integer(state["_num_ctrl_qubits"], 512)
             integer(state["_ctrl_state"], (1 << count) - 1)

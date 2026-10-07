@@ -287,6 +287,15 @@ def restore_python(op, qubits, clbits, resolve):
         if "condition" in op:
             cached["_condition"] = restore_condition(op["condition"])
     replacements = [(operation, actual, cached)]
+    from qiskit.circuit.library import Initialize
+
+    if type(operation) is Initialize:
+        # Initialize.params delegates to its retained StatePreparation. Rebuild
+        # native insertion-time parameters there, then restore BOTH raw dicts.
+        preparation = actual["_stateprep"]
+        prep_actual = vars(preparation)
+        prep_cached = {**prep_actual, "_params": cached["_params"]}
+        replacements.append((preparation, prep_actual, prep_cached))
     if "base_gate" in actual:
         # Public controlled params delegate through the base chain. Cache replay
         # must temporarily supply the leaf list without replacing actual aliases.

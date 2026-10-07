@@ -324,7 +324,7 @@ def test_providers_receive_revised_public_contract_without_private_answer():
 
 @pytest.mark.skipif(not CACHE, reason="Needs pinned source")
 @pytest.mark.parametrize("suite", ["normal", "hard"])
-def test_full_authored_roster_preserves_valid_unsupported_controls(suite, monkeypatch):
+def test_full_authored_roster_transfers_all_correct_constructions(suite, monkeypatch):
     from collections import Counter
 
     from graybench.graph_anchors import PublicAnchorRegistry
@@ -348,7 +348,7 @@ def test_full_authored_roster_preserves_valid_unsupported_controls(suite, monkey
             assert graph["request_within_wire_limit"]
             assert graph["response_within_wire_limit"]
             assert graph["expanded_snapshot_within_state_limit"]
-    assert unsupported == ["initialize"]  # Retain as an explicit release blocker.
+    assert unsupported == []  # No correct construction in this roster may be dropped.
 
 
 @pytest.mark.skipif(not CACHE, reason="Needs pinned source")
@@ -394,7 +394,7 @@ def test_host_evidence_replay_and_source_changes_fail_closed(monkeypatch):
     declared = module.plan(Path(CACHE))
     report = module.build(Path(CACHE), declared)
     assert report["host_outcomes"] == {"pass": 32, "fail": 52}
-    assert report["graph_support"] == {"supported": 82, "unsupported": 2}
+    assert report["graph_support"] == {"supported": 84}
     assert report["density_oracle_entry_mutants_rejected"] == 128
     assert report["release_eligible"] is False
     assert module.verify(report, declared, Path(CACHE))
