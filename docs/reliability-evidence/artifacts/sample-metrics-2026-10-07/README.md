@@ -75,3 +75,15 @@ inference requires iid fixed-policy sampling. No confidence interval,
 preregistration timing certification, task admission, provider conformance or
 runtime qualification is supplied. All reports remain publication-ineligible.
 Historical source-bound evidence and original benchmark results are preserved.
+
+The [clean-checkout JUnit](clean-related.xml) reproduces all 111 focused passes
+and two Docker-dependent skips, with zero failures/errors, from implementation
+commit `cbd2d8655bb16d8f862654245134ffcb04af573d`. JUnit time is 46.524 seconds;
+12 warnings concern existing Windows temporary-directory cleanup. Dependencies
+were installed separately from the lockfile on the same host; the pinned task
+cache and fixed numerical reference file were shared. The engine imported from
+the clean checkout, its source digest matched, the complete calibration exactly
+recreated, and lint/formatting passed for 242 files. The checkout remained
+unchanged. This is same-host reproduction of selected tests, not a new full
+clean-suite run, independent task admission or Docker qualification.
+Clean JUnit SHA-256: `5ecb4e40f350ed3dda793d8f01ec3cc104177e249d2e25923749e5fda802229c`.
