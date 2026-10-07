@@ -57,3 +57,14 @@ host labels, temporary paths and ephemeral ports need not match byte-for-byte.
 Publication, provider qualification, container qualification and independent
 admission remain false. This is local integration verification with authored
 fixtures, not a model score or a native-object/isolation claim.
+
+A clean checkout of `45a62c2`, using separately installed locked dependencies
+on the same host, reproduced all **30 focused passes**, with zero failures or
+skips, in 49.33 seconds. Its 12 warnings are Windows temporary-directory
+cleanup warnings. The [clean JUnit record](clean-loopback.xml) has 5,849 bytes
+and SHA-256 `f5b04c890dc2f74af1829458d863275c7609c5d2912cdebd0a4b68011eac8cb5`.
+Its declared case roster and verdicts match the main record. Source, fixture,
+lockfile and full-JUnit hashes were checked, and lint/formatting passed for the
+same 232 files. The clean checkout had no local changes before or after the
+run. This is focused same-host reproduction, not a new full clean-suite run or
+independent runtime/provider admission.
