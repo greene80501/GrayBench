@@ -155,6 +155,12 @@ declared circuit nesting. V1 retains its historical depth ceiling of 32.
 Select `qhe117-unitary-basis-graph-v2` explicitly; resource conditions have
 different judge identities and cannot be combined in one score.
 
+The [source-bound matrix conditions](../docs/reliability-evidence/matrix-semantics-development.md)
+cover Pauli evolution, diagonal action and circuit-to-Gate action under explicit
+contracts. Select `qhe116-evolution-graph-v2`, `qhe120-diagonal-graph-v2` or
+`qhe125-gate-action-graph-v1` separately. Canonical evolution's native matrix
+storage still requires runtime qualification; these conditions remain development-only.
+
 The graph bridge is implemented and opt-in. It uses separate persistent arenas in
 candidate and trusted judge containers; the host relays bounded data without
 constructing candidate-supplied Qiskit objects. Its retained references, cycles,

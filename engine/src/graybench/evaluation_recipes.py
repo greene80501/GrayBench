@@ -7,6 +7,7 @@ from graybench.bb84_revision import BB84Judge
 from graybench.bell_revision import BellStatevectorJudge
 from graybench.file_judge import QpyFileJudge
 from graybench.gate_semantics import GateSemanticsJudge
+from graybench.matrix_semantics import CircuitMatrixJudge
 from graybench.oracle_review import BarrierMetricsJudge, CircuitSizeJudge, PauliAnticommutatorJudge
 from graybench.task50_revision import RemoveInstructionJudge
 from graybench.task108_revision import ChoiValuesJudge
@@ -33,6 +34,9 @@ EvaluationRecipe = Literal[
     "qhe108-choi-values-graph-v1",
     "qhe117-unitary-basis-graph-v1",
     "qhe117-unitary-basis-graph-v2",
+    "qhe116-evolution-graph-v2",
+    "qhe120-diagonal-graph-v2",
+    "qhe125-gate-action-graph-v1",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -47,6 +51,9 @@ def recipe_output_limit(recipe):
             "qhe108-choi-values-graph-v1",
             "qhe117-unitary-basis-graph-v1",
             "qhe117-unitary-basis-graph-v2",
+            "qhe116-evolution-graph-v2",
+            "qhe120-diagonal-graph-v2",
+            "qhe125-gate-action-graph-v1",
         }
         else 1024 * 1024
     )
@@ -72,6 +79,9 @@ class RevisionJudge:
             "qhe108-choi-values-graph-v1",
             "qhe117-unitary-basis-graph-v1",
             "qhe117-unitary-basis-graph-v2",
+            "qhe116-evolution-graph-v2",
+            "qhe120-diagonal-graph-v2",
+            "qhe125-gate-action-graph-v1",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -110,6 +120,12 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = BarrierMetricsJudge(**kwargs)
     elif recipe in ("qhe116-evolution-semantics-v1", "qhe120-diagonal-semantics-v1"):
         inner = GateSemanticsJudge(recipe, **kwargs)
+    elif recipe in (
+        "qhe116-evolution-graph-v2",
+        "qhe120-diagonal-graph-v2",
+        "qhe125-gate-action-graph-v1",
+    ):
+        inner = CircuitMatrixJudge(recipe, **kwargs)
     elif recipe == "qhe63-explicit-bases-v1":
         inner = BB84Judge(**kwargs)
     elif recipe == "qhe63-explicit-bases-v2":
