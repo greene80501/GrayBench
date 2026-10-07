@@ -16,8 +16,9 @@ object. The existing [StatePreparation representation](https://raw.githubusercon
 retains original input data, flags and definition caches. Initialize now transmits
 its raw dictionary and preparation reference through that representation. The
 decoder requires the linked exact registered StatePreparation role. It does not
-call constructors, force synthesis, normalize data, decompose the answer or
-substitute a copied value. Unsupported additional fields remain explicit.
+call Initialize or StatePreparation constructors, force synthesis, normalize data,
+decompose the answer or substitute a copied value. Unsupported additional fields
+remain explicit.
 
 Qiskit's native circuit entries cache parameters when an operation is inserted.
 Those values can differ from the retained Python operation's current parameters.

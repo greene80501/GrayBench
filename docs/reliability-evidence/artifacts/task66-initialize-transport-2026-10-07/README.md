@@ -44,6 +44,13 @@ seconds. The environment is Python 3.12.14, Qiskit 2.4.2, NumPy 2.2.4 and SciPy
 1.18.1. Ruff lint and formatting pass for 259 files. These offline results do
 not include isolated execution.
 
+The clean checkout of `bec6e18fd9c1a470a74f95a794185435aabf4f81` passes 243
+selected related tests with eight isolated skips and zero failures/errors in
+32.74 wall seconds. It exactly recreates the saved host projection, passes lint
+and formatting, and remains unchanged. All 113 engine source files plus selected
+tests/scripts/lock and saved main evidence match main, clean and Git bytes.
+`clean.xml` and `clean-verification.json` retain the actual checks and their scope.
+
 No immutable test image was configured. All isolated controls retain their cases
 and remain unrun; host checks and read-only AI review do not qualify runtime or
 encoder integrity. `runtime_qualified`, `candidate_encoder_integrity_qualified`,
