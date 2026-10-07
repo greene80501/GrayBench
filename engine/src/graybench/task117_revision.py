@@ -1,12 +1,14 @@
 """Exact-ancestry, input-sensitive two-qubit unitary development condition."""
 
 from graybench.datasets import JudgeTask
+from graybench.graph_limits import GraphLimits
 from graybench.identity import identity
 from graybench.judge import Judgment
 from graybench.provenance import source_manifest
 from graybench.upstream import UpstreamJudge
 
 TRACK = "qhe117-unitary-basis-graph-v1"
+NESTED_TRACK = "qhe117-unitary-basis-graph-v2"
 SOURCE_DIGESTS = {
     "normal": "371457d27064cad6b3ae9890a2dec222b21ed1504b71cffea37338d46582a635",
     "hard": "5592fbd731478c12c3e870d4daef0ecf88f4d873e2f17c72d196b5f2afb66a07",
@@ -198,7 +200,10 @@ def revised_task(task: JudgeTask) -> JudgeTask:
 
 
 class UnitaryBasisJudge:
-    def __init__(self, **kwargs):
+    def __init__(self, *, track=TRACK, **kwargs):
+        if track not in (TRACK, NESTED_TRACK):
+            raise ValueError("Unknown task 117 resource condition")
+        self.track = track
         if kwargs.pop("protocol", 4) != 4:
             raise ValueError("Task 117 revision requires graph protocol 4")
         if kwargs.pop("graph_transport", "delta-v1") != "delta-v1":
@@ -206,6 +211,16 @@ class UnitaryBasisJudge:
         if kwargs.pop("graph_batch", "none") != "none":
             raise ValueError("Task 117 revision requires individual calls")
         kwargs.setdefault("output_limit", 16 * 1024 * 1024)
+        if track == NESTED_TRACK:
+            limits = GraphLimits(message_bytes=kwargs["output_limit"], depth=128)
+            if kwargs.pop("graph_limits", limits) != limits:
+                raise ValueError("Task 117 v2 requires its frozen graph resource bounds")
+            kwargs["graph_limits"] = limits
+        elif (
+            isinstance(kwargs.get("graph_limits"), GraphLimits)
+            and kwargs["graph_limits"].depth > 32
+        ):
+            raise ValueError("Task 117 v1 retains its historical graph depth ceiling")
         self.inner = UpstreamJudge(protocol=4, graph_transport="delta-v1", **kwargs)
 
     def revise(self, task):
@@ -216,7 +231,7 @@ class UnitaryBasisJudge:
             raise ValueError("Revise task 117 before generation and judgment")
         payload, inner = self.inner.configuration(task)
         return payload, {
-            "track": TRACK,
+            "track": self.track,
             "release_eligible": False,
             "source": source_manifest(),
             "pinned_source_task_digest": SOURCE_DIGESTS[task.public.suite],

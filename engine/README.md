@@ -149,6 +149,12 @@ judge evaluates supplied definitions without synthesizing opaque two-qubit
 matrix instructions. Select `qhe117-unitary-basis-graph-v1` explicitly; isolated
 controls, resource calibration and independent admission remain pending.
 
+The separate [task-117 v2 resource condition](../docs/reliability-evidence/task117-nesting-resource-condition.md)
+keeps the same task and checker while freezing graph depth 128 to carry the
+declared circuit nesting. V1 retains its historical depth ceiling of 32.
+Select `qhe117-unitary-basis-graph-v2` explicitly; resource conditions have
+different judge identities and cannot be combined in one score.
+
 The graph bridge is implemented and opt-in. It uses separate persistent arenas in
 candidate and trusted judge containers; the host relays bounded data without
 constructing candidate-supplied Qiskit objects. Its retained references, cycles,

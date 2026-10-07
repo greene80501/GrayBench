@@ -6,7 +6,7 @@ from pathlib import Path
 
 from graybench.datasets import load_suite
 from graybench.oracle_review import Probe, inspect_oracle_review, run_review
-from graybench.task117_revision import UnitaryBasisJudge, revised_task
+from graybench.task117_revision import NESTED_TRACK, TRACK, UnitaryBasisJudge, revised_task
 
 IMAGE = "sha256:2fc74bd3dd29a28154c566e21610072e24cda279c3d03f3ab8cd27f33c9b27bd"
 DIRECT = "qc = TwoQubitBasisDecomposer(CXGate())(unitary)\n"
@@ -86,8 +86,8 @@ return output
 
 
 class Task117GraphJudge:
-    def __init__(self, *, image, docker="docker"):
-        self.inner = UnitaryBasisJudge(image=image, docker=docker)
+    def __init__(self, *, image, docker="docker", track=TRACK):
+        self.inner = UnitaryBasisJudge(image=image, docker=docker, track=track)
 
     def configuration(self, source):
         return self.inner.configuration(revised_task(source))
@@ -241,22 +241,62 @@ def probes(source):
     return tuple(output)
 
 
+def nested_probes(source):
+    """The original controls plus every allowed circuit-definition depth."""
+    original = probes(source)
+    output = []
+    for levels in range(16):
+        body = DIRECT + (
+            "from qiskit.circuit import Gate\n"
+            f"for index in range({levels}):\n"
+            "    gate = Gate('supplied-level-' + str(index), 2, [])\n"
+            "    gate.definition = qc\n"
+            "    wrapper = QuantumCircuit(2)\n"
+            "    wrapper.append(gate, [0, 1])\n"
+            "    wrapper.global_phase = 0.173\n"
+            "    qc = wrapper\n"
+            "return qc"
+        )
+        indented = "".join(f"    {line}\n" for line in body.splitlines())
+        completion = (
+            "\n" + indented
+            if source.public.suite == "normal"
+            else IMPORTS + "def decompose_unitary(unitary):\n" + indented
+        )
+        output.append(
+            Probe(
+                f"definition-depth-{levels}",
+                "pass",
+                f"{levels + 1} circuit levels retain the input operator up to global phase",
+                completion,
+            )
+        )
+    return original + tuple(output)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--image", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--evaluation-recipe", choices=(TRACK, NESTED_TRACK), default=TRACK)
     args = parser.parse_args()
     if args.image != IMAGE:
         raise ValueError("Expected the pinned task-117 image")
     sources = tuple(load_suite(suite, args.cache)[117] for suite in ("normal", "hard"))
-    judge = Task117GraphJudge(image=args.image)
+    judge = Task117GraphJudge(image=args.image, track=args.evaluation_recipe)
     declared = {
         f"{source.public.suite}/{source.public.task_id}": judge.configuration(source)[1]
         for source in sources
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    run_review(sources, judge, args.output, probes_for=probes, declared_judges=declared)
+    run_review(
+        sources,
+        judge,
+        args.output,
+        probes_for=nested_probes if args.evaluation_recipe == NESTED_TRACK else probes,
+        declared_judges=declared,
+    )
     print(json.dumps(inspect_oracle_review(args.output, args.cache), sort_keys=True))
 
 

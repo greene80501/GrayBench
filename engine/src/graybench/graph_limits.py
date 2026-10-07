@@ -21,7 +21,7 @@ class GraphLimits:
             message_bytes=16_777_216,
             array_bytes=16_777_216,
             matrix_bytes=16_777_216,
-            depth=32,
+            depth=128,
         )
         if any(
             type(getattr(self, key)) is not int or not 1 <= getattr(self, key) <= maximum

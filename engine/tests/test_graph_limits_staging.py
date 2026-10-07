@@ -2,6 +2,8 @@
 
 import io
 import json
+import subprocess
+import sys
 
 import pytest
 
@@ -13,9 +15,9 @@ from graybench.upstream import UpstreamJudge
 IMAGE = "sha256:" + "a" * 64
 
 
-@pytest.mark.parametrize("explicit", [True, False])
+@pytest.mark.parametrize("explicit,depth", [(True, 32), (True, 128), (False, 32)])
 def test_candidate_stages_the_explicit_limits_before_any_docker_call(
-    monkeypatch, tmp_path, explicit
+    monkeypatch, tmp_path, explicit, depth
 ):
     class StoppedBeforeDocker(RuntimeError):
         pass
@@ -43,6 +45,7 @@ def test_candidate_stages_the_explicit_limits_before_any_docker_call(
             message_bytes=16 * 1024 * 1024,
             array_bytes=4 * 1024 * 1024,
             matrix_bytes=4 * 1024 * 1024,
+            depth=depth,
         )
         if explicit
         else GraphLimits(message_bytes=16 * 1024 * 1024)
@@ -60,9 +63,31 @@ def test_candidate_stages_the_explicit_limits_before_any_docker_call(
         )
     config = json.loads((tmp_path / "graph_config.json").read_text(encoding="utf-8"))
     assert config["limits"] == limits.record()
+    # Load the actual staged validator in a fresh trusted process, rather than
+    # relying on the already imported host class or the evaluator image.
+    observed = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import json; from pathlib import Path; import graybench.graph_limits as m; "
+            "config=json.loads(Path('graph_config.json').read_text()); "
+            "print(json.dumps({'path':m.__file__,'limits':m.GraphLimits.from_record(config['limits']).record()}))",
+        ],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    record = json.loads(observed.stdout)
+    assert record["limits"] == limits.record()
+    from pathlib import Path
+
+    assert Path(record["path"]).resolve() == (tmp_path / "graybench/graph_limits.py").resolve()
 
 
-def test_upstream_forwards_advertised_limits_to_candidate_constructor(monkeypatch, task):
+@pytest.mark.parametrize("depth", [32, 128])
+def test_upstream_forwards_advertised_limits_to_candidate_constructor(monkeypatch, task, depth):
     observed = {}
 
     class StopCandidate(RuntimeError):
@@ -93,7 +118,10 @@ def test_upstream_forwards_advertised_limits_to_candidate_constructor(monkeypatc
         upstream_difficulty="fixture",
     )
     limits = GraphLimits(
-        message_bytes=16 * 1024 * 1024, array_bytes=4 * 1024 * 1024, matrix_bytes=4 * 1024 * 1024
+        message_bytes=16 * 1024 * 1024,
+        array_bytes=4 * 1024 * 1024,
+        matrix_bytes=4 * 1024 * 1024,
+        depth=depth,
     )
     judge = UpstreamJudge(
         image=IMAGE, protocol=4, output_limit=limits.message_bytes, graph_limits=limits

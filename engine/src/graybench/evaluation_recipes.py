@@ -32,6 +32,7 @@ EvaluationRecipe = Literal[
     "qhe50-remove-position-graph-v1",
     "qhe108-choi-values-graph-v1",
     "qhe117-unitary-basis-graph-v1",
+    "qhe117-unitary-basis-graph-v2",
 ]
 RECIPES = get_args(EvaluationRecipe)
 
@@ -45,6 +46,7 @@ def recipe_output_limit(recipe):
             "qhe63-explicit-bases-v2",
             "qhe108-choi-values-graph-v1",
             "qhe117-unitary-basis-graph-v1",
+            "qhe117-unitary-basis-graph-v2",
         }
         else 1024 * 1024
     )
@@ -69,6 +71,7 @@ class RevisionJudge:
             "qhe50-remove-position-graph-v1",
             "qhe108-choi-values-graph-v1",
             "qhe117-unitary-basis-graph-v1",
+            "qhe117-unitary-basis-graph-v2",
         ):
             return self.inner.revise(task)
         self.inner.configuration(task)  # Reject unsupported families before freezing requests.
@@ -117,8 +120,8 @@ def recipe_judge(recipe, *, parser_timeout=30, parser_image=None, **kwargs):
         inner = RemoveInstructionJudge(**kwargs)
     elif recipe == "qhe108-choi-values-graph-v1":
         inner = ChoiValuesJudge(**kwargs)
-    elif recipe == "qhe117-unitary-basis-graph-v1":
-        inner = UnitaryBasisJudge(**kwargs)
+    elif recipe in ("qhe117-unitary-basis-graph-v1", "qhe117-unitary-basis-graph-v2"):
+        inner = UnitaryBasisJudge(track=recipe, **kwargs)
     elif recipe in ("task82-file-semantic-v1", "task82-file-semantic-v2"):
         inner = QpyFileJudge(
             track=recipe, parser_timeout=parser_timeout, parser_image=parser_image, **kwargs
