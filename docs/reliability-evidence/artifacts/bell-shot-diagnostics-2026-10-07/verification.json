@@ -1,0 +1,116 @@
+{
+  "ai_review": {
+    "actionable_findings": 0,
+    "additional_pure_pointwise_source_math_and_replay_checks": true,
+    "limits": "Read-only AI review; no native candidate/sampler or filesystem-writing CLI verification by reviewer",
+    "reviewer": "bell_sampling_review"
+  },
+  "commands": {
+    "diagnostic": "python ../docs/reliability-evidence/bell_sampling_diagnostic.py ../../../outputs/pinned-qhe-cache ../docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/report.json",
+    "focused": "python -m pytest tests/test_bell_sampling_diagnostic.py tests/test_task66_sampling_diagnostic.py --basetemp ../../../outputs/bell-sampling-focused-final --junitxml ../docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/focused.xml -q",
+    "full": "python -m pytest --basetemp ../../../outputs/bell-sampling-full-final --junitxml ../docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/full.xml -q",
+    "replay": "same diagnostic command with --check",
+    "static": "Ruff check and format --check with engine pyproject.toml, src/tests and eight scoped reliability scripts"
+  },
+  "container_test_image_settings": "unset; isolated groups skipped",
+  "engine_source_digest": "cb27140691d9c4e5fbd794cc9d02bc701790d7eacb46ec06d42353a8dcc3181d",
+  "environment": {
+    "packages": {
+      "numpy": "2.2.4",
+      "pytest": "9.1.1",
+      "qiskit": "2.4.2",
+      "ruff": "0.16.7",
+      "scipy": "1.18.1"
+    },
+    "python": "3.12.14"
+  },
+  "exact_replay": true,
+  "full_warning_category": "Original Qiskit Diagonal deprecation",
+  "full_warning_count": 48,
+  "independent_human_admission": false,
+  "isolated_sampler_executed": false,
+  "kind": "graybench_bell_sampling_verification_v1",
+  "limitations": [
+    "Complete exact check functions on trusted data, not full native candidate implementations",
+    "Conditional independent-shot arithmetic,not observed sampler behavior",
+    "Task15 noise-model ambiguity remains unadjudicated and its event probability is not the complete check failure rate",
+    "Task31 seed42 behavior unexecuted",
+    "No original task,judge,threshold or score changed"
+  ],
+  "model_generations": 0,
+  "publication_eligible": false,
+  "raw_evidence": {
+    "focused.xml": {
+      "bytes": 4165,
+      "sha256": "fa12ea4f18440e834ca696cce3ad098fdf51a97e3c2317227c39988906ff81ce"
+    },
+    "full.xml": {
+      "bytes": 405234,
+      "sha256": "8c84b98a3afca91e956820346175b68499e4a6e4b8a3e314c67cd4782fd3ea71"
+    },
+    "plan.json": {
+      "bytes": 29046,
+      "sha256": "94ac79b85a0c9e209166d6b03356ae4b166ff43e5abf7d9e1bb41d8ff45ed33c"
+    },
+    "report.json": {
+      "bytes": 116097,
+      "sha256": "ad5ac8584c39bc819e2ecc7625685ebc2bb51c88024931babc52b2da1019b857"
+    },
+    "runtime-source-review.json": {
+      "bytes": 2210,
+      "sha256": "494aa593bb2530a859d8b037834b57ac7ca5749f9f83853fdff35b0b25205fd1"
+    }
+  },
+  "red_green": [
+    "18 tests first failed for missing diagnostic",
+    "Generic Bell-variant probes first failed for absent cases; explicit fixtures added and verified"
+  ],
+  "runtime_qualified": false,
+  "runtime_source_unchanged_from_initialize_bundle": true,
+  "source_and_tests": {
+    "docs/reliability-evidence/bell_sampling_diagnostic.py": {
+      "bytes": 16113,
+      "sha256": "3e65c5f87c762938c9935589bc9d1b2415fd742a41643882e3547bb27f786209"
+    },
+    "engine/tests/test_bell_sampling_diagnostic.py": {
+      "bytes": 6647,
+      "sha256": "c749951009fce48d852b0cff5b9999fda153b3cd284a10a794f628ef57fc6cd3"
+    },
+    "engine/uv.lock": {
+      "bytes": 68888,
+      "sha256": "b0789c7a994abdd96b3172563ae58a420c60e80c33ba05447257e1d35174524d"
+    }
+  },
+  "static_checks": {
+    "format": "261 files passed",
+    "lint": "passed"
+  },
+  "tests": {
+    "focused": {
+      "bytes": 4165,
+      "errors": 0,
+      "failures": 0,
+      "junit_seconds": 6.755,
+      "passed": 28,
+      "sha256": "fa12ea4f18440e834ca696cce3ad098fdf51a97e3c2317227c39988906ff81ce",
+      "skipped": 0,
+      "tests": 28,
+      "timestamp": "2026-10-07T14:23:54.141349-06:00"
+    },
+    "full": {
+      "bytes": 405234,
+      "errors": 0,
+      "failures": 0,
+      "junit_seconds": 642.902,
+      "passed": 1859,
+      "sha256": "8c84b98a3afca91e956820346175b68499e4a6e4b8a3e314c67cd4782fd3ea71",
+      "skipped": 297,
+      "tests": 2156,
+      "timestamp": "2026-10-07T14:23:41.534445-06:00"
+    }
+  },
+  "wall_seconds": {
+    "focused": 6.8,
+    "full": 642.93
+  }
+}

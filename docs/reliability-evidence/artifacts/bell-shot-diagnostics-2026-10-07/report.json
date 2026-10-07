@@ -1,0 +1,3707 @@
+{
+  "control_outcomes": {
+    "error": 6,
+    "fail": 26,
+    "pass": 28
+  },
+  "controls": [
+    {
+      "case_id": "balanced_1000",
+      "interpretation": "Valid balanced sample data",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "two_shot_balance",
+      "interpretation": "Shot count is not public",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "lower_boundary",
+      "interpretation": "Strict lower boundary",
+      "judgment": {
+        "calls": 1,
+        "detail": "Value outside expected range",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "upper_boundary",
+      "interpretation": "Strict upper boundary",
+      "judgment": {
+        "calls": 1,
+        "detail": "Value outside expected range",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "all_00",
+      "interpretation": "Possible ideal shot tail",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "negative_counts",
+      "interpretation": "Invalid negative counts",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "fractional_counts",
+      "interpretation": "Invalid fractional counts",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "zero_total",
+      "interpretation": "Empty count total",
+      "judgment": {
+        "calls": 1,
+        "detail": "division by zero",
+        "exception": "ZeroDivisionError",
+        "outcome": "error"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "invalid_bitstring",
+      "interpretation": "Invalid count label",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "not_dict",
+      "interpretation": "Wrong return type",
+      "judgment": {
+        "calls": 1,
+        "detail": "Expected dict instance, got list",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 1
+    },
+    {
+      "case_id": "100_balanced_shots",
+      "interpretation": "Requested shot count",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "two_shots",
+      "interpretation": "Violates public 100-shot requirement",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "99_shots",
+      "interpretation": "Too few shots",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "101_shots",
+      "interpretation": "Too many shots",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "100_identical_shots",
+      "interpretation": "Possible ideal shot tail",
+      "judgment": {
+        "calls": 1,
+        "detail": "Sets do not match",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "invalid_bitstring",
+      "interpretation": "Outside ideal Bell support",
+      "judgment": {
+        "calls": 1,
+        "detail": "Sets do not match",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "empty",
+      "interpretation": "No returned shots",
+      "judgment": {
+        "calls": 1,
+        "detail": "Expected length > 0, got 0",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 14
+    },
+    {
+      "case_id": "ideal_bell_counts",
+      "interpretation": "Noise model/rate is not specified in prose",
+      "judgment": {
+        "calls": 1,
+        "detail": "Expected noisy results with errors",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "psi_bell_counts",
+      "interpretation": "Bell variant is not specified in prose",
+      "judgment": {
+        "calls": 1,
+        "detail": "'00'",
+        "exception": "KeyError",
+        "outcome": "error"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "one_error_count",
+      "interpretation": "Positive outside event",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "negative_error_count",
+      "interpretation": "Negative count",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "fractional_counts",
+      "interpretation": "Fractional counts",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "invalid_bitstring",
+      "interpretation": "Invalid bit label",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "missing_key",
+      "interpretation": "Possible ideal one-shot output lacks 00",
+      "judgment": {
+        "calls": 1,
+        "detail": "'00'",
+        "exception": "KeyError",
+        "outcome": "error"
+      },
+      "suite": "normal",
+      "task_id": 15
+    },
+    {
+      "case_id": "pinned_counts",
+      "interpretation": "Exact private snapshot",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 31
+    },
+    {
+      "case_id": "other_total",
+      "interpretation": "Shots are not public; seed not executed",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 31
+    },
+    {
+      "case_id": "swapped_counts",
+      "interpretation": "Seed behavior is not inferred",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 31
+    },
+    {
+      "case_id": "psi_bell_counts",
+      "interpretation": "Bell variant is not specified in prose",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 31
+    },
+    {
+      "case_id": "floating_counts",
+      "interpretation": "Count types not validated",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "normal",
+      "task_id": 31
+    },
+    {
+      "case_id": "extra_entry",
+      "interpretation": "Exact dictionary comparison",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "normal",
+      "task_id": 31
+    },
+    {
+      "case_id": "balanced_1000",
+      "interpretation": "Valid balanced sample data",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "two_shot_balance",
+      "interpretation": "Shot count is not public",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "lower_boundary",
+      "interpretation": "Strict lower boundary",
+      "judgment": {
+        "calls": 1,
+        "detail": "Value outside expected range",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "upper_boundary",
+      "interpretation": "Strict upper boundary",
+      "judgment": {
+        "calls": 1,
+        "detail": "Value outside expected range",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "all_00",
+      "interpretation": "Possible ideal shot tail",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "negative_counts",
+      "interpretation": "Invalid negative counts",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "fractional_counts",
+      "interpretation": "Invalid fractional counts",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "zero_total",
+      "interpretation": "Empty count total",
+      "judgment": {
+        "calls": 1,
+        "detail": "division by zero",
+        "exception": "ZeroDivisionError",
+        "outcome": "error"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "invalid_bitstring",
+      "interpretation": "Invalid count label",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "not_dict",
+      "interpretation": "Wrong return type",
+      "judgment": {
+        "calls": 1,
+        "detail": "Expected dict instance, got list",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 1
+    },
+    {
+      "case_id": "100_balanced_shots",
+      "interpretation": "Requested shot count",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "two_shots",
+      "interpretation": "Violates public 100-shot requirement",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "99_shots",
+      "interpretation": "Too few shots",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "101_shots",
+      "interpretation": "Too many shots",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "100_identical_shots",
+      "interpretation": "Possible ideal shot tail",
+      "judgment": {
+        "calls": 1,
+        "detail": "Sets do not match",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "invalid_bitstring",
+      "interpretation": "Outside ideal Bell support",
+      "judgment": {
+        "calls": 1,
+        "detail": "Sets do not match",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "empty",
+      "interpretation": "No returned shots",
+      "judgment": {
+        "calls": 1,
+        "detail": "Expected length > 0, got 0",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 14
+    },
+    {
+      "case_id": "ideal_bell_counts",
+      "interpretation": "Noise model/rate is not specified in prose",
+      "judgment": {
+        "calls": 1,
+        "detail": "Expected noisy results with errors",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "psi_bell_counts",
+      "interpretation": "Bell variant is not specified in prose",
+      "judgment": {
+        "calls": 1,
+        "detail": "'00'",
+        "exception": "KeyError",
+        "outcome": "error"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "one_error_count",
+      "interpretation": "Positive outside event",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "negative_error_count",
+      "interpretation": "Negative count",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "fractional_counts",
+      "interpretation": "Fractional counts",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "invalid_bitstring",
+      "interpretation": "Invalid bit label",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "missing_key",
+      "interpretation": "Possible ideal one-shot output lacks 00",
+      "judgment": {
+        "calls": 1,
+        "detail": "'00'",
+        "exception": "KeyError",
+        "outcome": "error"
+      },
+      "suite": "hard",
+      "task_id": 15
+    },
+    {
+      "case_id": "pinned_counts",
+      "interpretation": "Exact private snapshot",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 31
+    },
+    {
+      "case_id": "other_total",
+      "interpretation": "Shots are not public; seed not executed",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 31
+    },
+    {
+      "case_id": "swapped_counts",
+      "interpretation": "Seed behavior is not inferred",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 31
+    },
+    {
+      "case_id": "psi_bell_counts",
+      "interpretation": "Bell variant is not specified in prose",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 31
+    },
+    {
+      "case_id": "floating_counts",
+      "interpretation": "Count types not validated",
+      "judgment": {
+        "calls": 1,
+        "detail": null,
+        "exception": null,
+        "outcome": "pass"
+      },
+      "suite": "hard",
+      "task_id": 31
+    },
+    {
+      "case_id": "extra_entry",
+      "interpretation": "Exact dictionary comparison",
+      "judgment": {
+        "calls": 1,
+        "detail": "Unexpected result value",
+        "exception": "AssertionError",
+        "outcome": "fail"
+      },
+      "suite": "hard",
+      "task_id": 31
+    }
+  ],
+  "engine_source_digest": "cb27140691d9c4e5fbd794cc9d02bc701790d7eacb46ec06d42353a8dcc3181d",
+  "environment": {
+    "python": "3.12.14"
+  },
+  "independent_human_admission": false,
+  "isolated_sampler_executed": false,
+  "kind": "graybench_bell_sampling_diagnostic_v1",
+  "limitations": [
+    "Trusted returned-data fixtures do not satisfy or attest a sampler/pass-manager process",
+    "Conditional iid arithmetic is not an observed sampler false-rejection rate",
+    "Task15 no-outside-event probability describes that event only, not the complete check failure rate or a backend noise model",
+    "Task31 exact seeded counts depend on shots/runtime/generator details; no seed behavior or failure rate is inferred",
+    "No original task, judge, threshold or score is changed; strengthened conditions need independent contract admission"
+  ],
+  "model_generations": 0,
+  "plan_digest": "323e3781cb3b4d3d7091fbac60b59249f8faa6a34cffee9f0c470dde129b0ff9",
+  "publication_eligible": false,
+  "runtime_qualified": false,
+  "script_sha256": "3e65c5f87c762938c9935589bc9d1b2415fd742a41643882e3547bb27f786209",
+  "task14_all_identical_100_shots": {
+    "denominator": 633825300114114700748351602688,
+    "numerator": 1
+  },
+  "task15_no_outside_event": [
+    {
+      "no_outside_event_probability": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "outside_probability": {
+        "denominator": 1,
+        "numerator": 0
+      },
+      "shots": 100
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "numerator": 904792147113709042032214606239950347800488416333469929276204638572786486592967687651442293753075422163470827543775910358772483632664400945560381166977421367930719070025493287934646681492648403959754575431541487824089366478208362425806884425205853497846463239410463810703487931177116401063304949900001
+      },
+      "outside_probability": {
+        "denominator": 1000,
+        "numerator": 1
+      },
+      "shots": 100
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "numerator": 36603234127322950493061602657251738618971207663892369140595737269931704475072474818719654351002695040066156910065284327471823569680179941585710535449170757427389035006098270837114978219916760849490001
+      },
+      "outside_probability": {
+        "denominator": 100,
+        "numerator": 1
+      },
+      "shots": 100
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "numerator": 265613988875874769338781322035779626829233452653394495974574961739092490901302182994384699044001
+      },
+      "outside_probability": {
+        "denominator": 10,
+        "numerator": 1
+      },
+      "shots": 100
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "outside_probability": {
+        "denominator": 1,
+        "numerator": 0
+      },
+      "shots": 1000
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "numerator": 367695424770964044626806139220461343972499893805315851451303661815588583691171759298573769740890670043472653912332306494739262796258521801874186549810173710460094500869774399801954246480044957117687300046018997049105032109898925723303702453593233106363521952907688474297759756929064685952104655860693664597955977901676425182829020154056558385702328807819757315437800287075049734753848613963373849815660354668611795203298553587101737612329604187837585764275912106285657301722404248157114176765834106825786149527154743047554930019914422226371680727931484942058979026491105045001557465626949630850576351219407226199931867073523374874793768363273981564287948605027863075184699323389465555247568649841949610514181880318654849814463616623583368881889706150855112487760027102007864168772513848853859955215420654276973633218274220683530470018881658338147664786626331053813203452828022868846955769433332220784844660655726540071457732296242976173636297668590060053518999197076499203840816279411226854445668159015063882820313058345169116254526237737952990035245419734770715445579422066237182008762095718104349261981651643631734536901141476879167355620776893872753485475076299554429239978436664205543797847930558876276068920780473162847300273183371056322972894534456618363131659140590825116021886656393370329338562314310937052945280140058461042400473893689992523704077982580883692159398903351985328043991421228395956593020814592316931877543166782343695497046390524797719667497855390985602046093480070159463534630129323975503294399884704877692175542066069480539944175183706070337559996272330713180884275699508252037339295002559389971046010688483693779922025122141901313481760568753666932632816998153715960117243750768641781558322116884878488909585819326941343380402181206955162039895971182762388468535156116052277808946252781355366287902954417838250783083529993497186833456879290822073788665193003090897750554116313700849730681717053640874985480118471324141762202183729354918987005420885902032117507087565426626556872547581523199300227897754970293850888265084304172273180438109432037210924034782813290028620901367576103832332845329869057638650840502504209817933651401061612294094779048911460976978004863886539885664375829446659285506273301553130284075067588834799387099377704150410777177474522993561532850500593203565091259184757751104007291367732823040170270717587917765302644389554726239830734560001174619602243822725121237421600534716841552676660698055061866221550048990382217590546686375492273807380977014781169931232864007980560021131599259134487144826138932721516508511730341233405920956163411202899092343370188802996172596561754823840067363135125619677521797324318705161502444223245131573691041634885279859407143207310986540561917885814979121847827504415683182050882521046098658120426067370320718753874821954110023232820376077051127906071017361777648564103897065809417313632765514043574725614216344733398248357840268445800593027639893978067727873389139362985035981492682873895139380741666758583499499000001
+      },
+      "outside_probability": {
+        "denominator": 1000,
+        "numerator": 1
+      },
+      "shots": 1000
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "numerator": 4317124741065825098863282863525973921087690621486440204082173119115768560385045841476515219256509432450858177422719479349408745150999984126860284515523565895538777094886418668690283689615024997331397100476519440365126874967421682237770871519385987595055325452576359387827748265011330935286638470573172835390325933820084297945463872099804238506329383970454227628061679128089294327848410961343466156060484530319505767163421263991554219714446700968289884705512439793283256680522698096450424585442027547195245441485930707215732579599305739490887824656192854689412646746706065748874095201037887249024987672925935164557609912472222066875422601249198479387965696844096956982211448106663678270953699877795878247381370095302902172061829639511454463670511200942795727405017124319510455662909824455248397685273175210561664389214918841354776920512166056382255198516052292302169816739037446948326622349364450676930921835721249333338301616340124777778877684174879317931564185709870123934545519245192428559895696745586161001544128487798037876458662965301588099499652025720712389802346322753167234397638709287230242238399949473913365127459896202709285113227102044278534521875949535353150165270391386780035365645550332472057413878620497779361317756123394224793081507185334439150107489839652991186174113820918634235692884726209205658522994309488252550749532497715198103914844821734922463870279207530155077356064905121760252898943568928808613666677146754357904890201518917973565721416201746582024041489913518584647488229358938545000017456677226035727871695600338058432425723694606652178831825653114822212931089366079836919761972573310782597071342170734726304693265128980727676822296259824289099006051880283224898755662591015440214056297852156199522926799905294204579269440561353991241663131495565273642555733174575214747066322572064139323423482419282856707145086141416929330251287986935054394753414206275377737038003241670167157536848050743945827080387150477614648490997596703651126431477473515432170544312994900001
+      },
+      "outside_probability": {
+        "denominator": 100,
+        "numerator": 1
+      },
+      "shots": 1000
+    },
+    {
+      "no_outside_event_probability": {
+        "denominator": 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "numerator": 1747871251722651609659974619164660570529062487435188517811888011810686266227275489291486469864681111075608950696145276588771368435875508647514414202093638481872912380089977179381529628478320523519319142681504424059410890214500500647813935818925701905402605484098137956979368551025825239411318643997916523677044769662628646406540335627975329619264245079750470862462474091105444437355302146151475348090755330153269067933091699479889089824650841795567478606396975664557143737657027080403239977757865296846740093712377915770536094223688049108023244139183027962484411078464439516845227961935221269814753416782576455507316073751985374046064592546796043150737808314501684679758056905948759246368644416151863138085276603595816410945157599742077617618911601185155602080771746785959359879490191933389965271275403127925432247963269675912646103156343954375442792688936047041533537523137941310690833949767764290081333900380310406154723157882112449991673819054110440001
+      },
+      "outside_probability": {
+        "denominator": 10,
+        "numerator": 1
+      },
+      "shots": 1000
+    }
+  ],
+  "task1_exact_check_count_vectors": 20820,
+  "task1_shot_curve": [
+    {
+      "ideal_acceptance": {
+        "denominator": 1,
+        "numerator": 0
+      },
+      "ideal_rejection": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "ideal_rejection_approximation": 1.0,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1,
+          "numerator": 0
+        },
+        {
+          "denominator": 1,
+          "numerator": 0
+        }
+      ],
+      "shots": 1
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2,
+        "numerator": 1
+      },
+      "ideal_rejection": {
+        "denominator": 2,
+        "numerator": 1
+      },
+      "ideal_rejection_approximation": 0.5,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2,
+          "numerator": 1
+        },
+        {
+          "denominator": 2,
+          "numerator": 1
+        }
+      ],
+      "shots": 2
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1,
+        "numerator": 0
+      },
+      "ideal_rejection": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "ideal_rejection_approximation": 1.0,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1,
+          "numerator": 0
+        },
+        {
+          "denominator": 1,
+          "numerator": 0
+        }
+      ],
+      "shots": 3
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 8,
+        "numerator": 3
+      },
+      "ideal_rejection": {
+        "denominator": 8,
+        "numerator": 5
+      },
+      "ideal_rejection_approximation": 0.625,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 8,
+          "numerator": 3
+        },
+        {
+          "denominator": 8,
+          "numerator": 3
+        }
+      ],
+      "shots": 4
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1,
+        "numerator": 0
+      },
+      "ideal_rejection": {
+        "denominator": 1,
+        "numerator": 1
+      },
+      "ideal_rejection_approximation": 1.0,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1,
+          "numerator": 0
+        },
+        {
+          "denominator": 1,
+          "numerator": 0
+        }
+      ],
+      "shots": 5
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 16,
+        "numerator": 5
+      },
+      "ideal_rejection": {
+        "denominator": 16,
+        "numerator": 11
+      },
+      "ideal_rejection_approximation": 0.6875,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 16,
+          "numerator": 5
+        },
+        {
+          "denominator": 16,
+          "numerator": 5
+        }
+      ],
+      "shots": 6
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 64,
+        "numerator": 35
+      },
+      "ideal_rejection": {
+        "denominator": 64,
+        "numerator": 29
+      },
+      "ideal_rejection_approximation": 0.453125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 64,
+          "numerator": 35
+        },
+        {
+          "denominator": 64,
+          "numerator": 35
+        }
+      ],
+      "shots": 7
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 128,
+        "numerator": 35
+      },
+      "ideal_rejection": {
+        "denominator": 128,
+        "numerator": 93
+      },
+      "ideal_rejection_approximation": 0.7265625,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 128,
+          "numerator": 35
+        },
+        {
+          "denominator": 128,
+          "numerator": 35
+        }
+      ],
+      "shots": 8
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 128,
+        "numerator": 63
+      },
+      "ideal_rejection": {
+        "denominator": 128,
+        "numerator": 65
+      },
+      "ideal_rejection_approximation": 0.5078125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 128,
+          "numerator": 63
+        },
+        {
+          "denominator": 128,
+          "numerator": 63
+        }
+      ],
+      "shots": 9
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 256,
+        "numerator": 63
+      },
+      "ideal_rejection": {
+        "denominator": 256,
+        "numerator": 193
+      },
+      "ideal_rejection_approximation": 0.75390625,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 256,
+          "numerator": 63
+        },
+        {
+          "denominator": 256,
+          "numerator": 63
+        }
+      ],
+      "shots": 10
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 512,
+        "numerator": 231
+      },
+      "ideal_rejection": {
+        "denominator": 512,
+        "numerator": 281
+      },
+      "ideal_rejection_approximation": 0.548828125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 512,
+          "numerator": 231
+        },
+        {
+          "denominator": 512,
+          "numerator": 231
+        }
+      ],
+      "shots": 11
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1024,
+        "numerator": 627
+      },
+      "ideal_rejection": {
+        "denominator": 1024,
+        "numerator": 397
+      },
+      "ideal_rejection_approximation": 0.3876953125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1024,
+          "numerator": 627
+        },
+        {
+          "denominator": 1024,
+          "numerator": 627
+        }
+      ],
+      "shots": 12
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1024,
+        "numerator": 429
+      },
+      "ideal_rejection": {
+        "denominator": 1024,
+        "numerator": 595
+      },
+      "ideal_rejection_approximation": 0.5810546875,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1024,
+          "numerator": 429
+        },
+        {
+          "denominator": 1024,
+          "numerator": 429
+        }
+      ],
+      "shots": 13
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 8192,
+        "numerator": 4719
+      },
+      "ideal_rejection": {
+        "denominator": 8192,
+        "numerator": 3473
+      },
+      "ideal_rejection_approximation": 0.4239501953125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 8192,
+          "numerator": 4719
+        },
+        {
+          "denominator": 8192,
+          "numerator": 4719
+        }
+      ],
+      "shots": 14
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 16384,
+        "numerator": 6435
+      },
+      "ideal_rejection": {
+        "denominator": 16384,
+        "numerator": 9949
+      },
+      "ideal_rejection_approximation": 0.60723876953125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 16384,
+          "numerator": 6435
+        },
+        {
+          "denominator": 16384,
+          "numerator": 6435
+        }
+      ],
+      "shots": 15
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 32768,
+        "numerator": 17875
+      },
+      "ideal_rejection": {
+        "denominator": 32768,
+        "numerator": 14893
+      },
+      "ideal_rejection_approximation": 0.454498291015625,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 32768,
+          "numerator": 17875
+        },
+        {
+          "denominator": 32768,
+          "numerator": 17875
+        }
+      ],
+      "shots": 16
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 32768,
+        "numerator": 21879
+      },
+      "ideal_rejection": {
+        "denominator": 32768,
+        "numerator": 10889
+      },
+      "ideal_rejection_approximation": 0.332305908203125,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 32768,
+          "numerator": 21879
+        },
+        {
+          "denominator": 32768,
+          "numerator": 21879
+        }
+      ],
+      "shots": 17
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 32768,
+        "numerator": 17017
+      },
+      "ideal_rejection": {
+        "denominator": 32768,
+        "numerator": 15751
+      },
+      "ideal_rejection_approximation": 0.480682373046875,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 32768,
+          "numerator": 17017
+        },
+        {
+          "denominator": 32768,
+          "numerator": 17017
+        }
+      ],
+      "shots": 18
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 32768,
+        "numerator": 20995
+      },
+      "ideal_rejection": {
+        "denominator": 32768,
+        "numerator": 11773
+      },
+      "ideal_rejection_approximation": 0.359283447265625,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 32768,
+          "numerator": 20995
+        },
+        {
+          "denominator": 32768,
+          "numerator": 20995
+        }
+      ],
+      "shots": 19
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 262144,
+        "numerator": 130169
+      },
+      "ideal_rejection": {
+        "denominator": 262144,
+        "numerator": 131975
+      },
+      "ideal_rejection_approximation": 0.5034446716308594,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 262144,
+          "numerator": 130169
+        },
+        {
+          "denominator": 262144,
+          "numerator": 130169
+        }
+      ],
+      "shots": 20
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 524288,
+        "numerator": 323323
+      },
+      "ideal_rejection": {
+        "denominator": 524288,
+        "numerator": 200965
+      },
+      "ideal_rejection_approximation": 0.38331031799316406,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 524288,
+          "numerator": 323323
+        },
+        {
+          "denominator": 524288,
+          "numerator": 323323
+        }
+      ],
+      "shots": 21
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1048576,
+        "numerator": 748391
+      },
+      "ideal_rejection": {
+        "denominator": 1048576,
+        "numerator": 300185
+      },
+      "ideal_rejection_approximation": 0.28627872467041016,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1048576,
+          "numerator": 748391
+        },
+        {
+          "denominator": 1048576,
+          "numerator": 748391
+        }
+      ],
+      "shots": 22
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 262144,
+        "numerator": 156009
+      },
+      "ideal_rejection": {
+        "denominator": 262144,
+        "numerator": 106135
+      },
+      "ideal_rejection_approximation": 0.4048728942871094,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 262144,
+          "numerator": 156009
+        },
+        {
+          "denominator": 262144,
+          "numerator": 156009
+        }
+      ],
+      "shots": 23
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4194304,
+        "numerator": 2904739
+      },
+      "ideal_rejection": {
+        "denominator": 4194304,
+        "numerator": 1289565
+      },
+      "ideal_rejection_approximation": 0.30745625495910645,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4194304,
+          "numerator": 2904739
+        },
+        {
+          "denominator": 4194304,
+          "numerator": 2904739
+        }
+      ],
+      "shots": 24
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4194304,
+        "numerator": 2414425
+      },
+      "ideal_rejection": {
+        "denominator": 4194304,
+        "numerator": 1779879
+      },
+      "ideal_rejection_approximation": 0.42435622215270996,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4194304,
+          "numerator": 2414425
+        },
+        {
+          "denominator": 4194304,
+          "numerator": 2414425
+        }
+      ],
+      "shots": 25
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1048576,
+        "numerator": 705755
+      },
+      "ideal_rejection": {
+        "denominator": 1048576,
+        "numerator": 342821
+      },
+      "ideal_rejection_approximation": 0.32693958282470703,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1048576,
+          "numerator": 705755
+        },
+        {
+          "denominator": 1048576,
+          "numerator": 705755
+        }
+      ],
+      "shots": 26
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 67108864,
+        "numerator": 50480055
+      },
+      "ideal_rejection": {
+        "denominator": 67108864,
+        "numerator": 16628809
+      },
+      "ideal_rejection_approximation": 0.24778856337070465,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 67108864,
+          "numerator": 50480055
+        },
+        {
+          "denominator": 67108864,
+          "numerator": 50480055
+        }
+      ],
+      "shots": 27
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 134217728,
+        "numerator": 87922215
+      },
+      "ideal_rejection": {
+        "denominator": 134217728,
+        "numerator": 46295513
+      },
+      "ideal_rejection_approximation": 0.34492845088243484,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 134217728,
+          "numerator": 87922215
+        },
+        {
+          "denominator": 134217728,
+          "numerator": 87922215
+        }
+      ],
+      "shots": 28
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 134217728,
+        "numerator": 98659305
+      },
+      "ideal_rejection": {
+        "denominator": 134217728,
+        "numerator": 35558423
+      },
+      "ideal_rejection_approximation": 0.26493089646101,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 134217728,
+          "numerator": 98659305
+        },
+        {
+          "denominator": 134217728,
+          "numerator": 98659305
+        }
+      ],
+      "shots": 29
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 536870912,
+        "numerator": 342741285
+      },
+      "ideal_rejection": {
+        "denominator": 536870912,
+        "numerator": 194129627
+      },
+      "ideal_rejection_approximation": 0.361594608053565,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 536870912,
+          "numerator": 342741285
+        },
+        {
+          "denominator": 536870912,
+          "numerator": 342741285
+        }
+      ],
+      "shots": 30
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1073741824,
+        "numerator": 771975795
+      },
+      "ideal_rejection": {
+        "denominator": 1073741824,
+        "numerator": 301766029
+      },
+      "ideal_rejection_approximation": 0.28104151505976915,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1073741824,
+          "numerator": 771975795
+        },
+        {
+          "denominator": 1073741824,
+          "numerator": 771975795
+        }
+      ],
+      "shots": 31
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2147483648,
+        "numerator": 1685072115
+      },
+      "ideal_rejection": {
+        "denominator": 2147483648,
+        "numerator": 462411533
+      },
+      "ideal_rejection_approximation": 0.21532714972272515,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2147483648,
+          "numerator": 1685072115
+        },
+        {
+          "denominator": 2147483648,
+          "numerator": 1685072115
+        }
+      ],
+      "shots": 32
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2147483648,
+        "numerator": 1511385315
+      },
+      "ideal_rejection": {
+        "denominator": 2147483648,
+        "numerator": 636098333
+      },
+      "ideal_rejection_approximation": 0.296206368599087,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2147483648,
+          "numerator": 1511385315
+        },
+        {
+          "denominator": 2147483648,
+          "numerator": 1511385315
+        }
+      ],
+      "shots": 33
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2147483648,
+        "numerator": 1654676925
+      },
+      "ideal_rejection": {
+        "denominator": 2147483648,
+        "numerator": 492806723
+      },
+      "ideal_rejection_approximation": 0.22948101302608848,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2147483648,
+          "numerator": 1654676925
+        },
+        {
+          "denominator": 2147483648,
+          "numerator": 1654676925
+        }
+      ],
+      "shots": 34
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1073741824,
+        "numerator": 740339985
+      },
+      "ideal_rejection": {
+        "denominator": 1073741824,
+        "numerator": 333401839
+      },
+      "ideal_rejection_approximation": 0.31050465907901525,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1073741824,
+          "numerator": 740339985
+        },
+        {
+          "denominator": 1073741824,
+          "numerator": 740339985
+        }
+      ],
+      "shots": 35
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4294967296,
+        "numerator": 3251354865
+      },
+      "ideal_rejection": {
+        "denominator": 4294967296,
+        "numerator": 1043612431
+      },
+      "ideal_rejection_approximation": 0.2429849540349096,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4294967296,
+          "numerator": 3251354865
+        },
+        {
+          "denominator": 4294967296,
+          "numerator": 3251354865
+        }
+      ],
+      "shots": 36
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 268435456,
+        "numerator": 218038965
+      },
+      "ideal_rejection": {
+        "denominator": 268435456,
+        "numerator": 50396491
+      },
+      "ideal_rejection_approximation": 0.18774155899882317,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 268435456,
+          "numerator": 218038965
+        },
+        {
+          "denominator": 268435456,
+          "numerator": 218038965
+        }
+      ],
+      "shots": 37
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 8589934592,
+        "numerator": 6391984395
+      },
+      "ideal_rejection": {
+        "denominator": 8589934592,
+        "numerator": 2197950197
+      },
+      "ideal_rejection_approximation": 0.2558750795433298,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 8589934592,
+          "numerator": 6391984395
+        },
+        {
+          "denominator": 8589934592,
+          "numerator": 6391984395
+        }
+      ],
+      "shots": 38
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2147483648,
+        "numerator": 1718865525
+      },
+      "ideal_rejection": {
+        "denominator": 2147483648,
+        "numerator": 428618123
+      },
+      "ideal_rejection_approximation": 0.19959086691960692,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2147483648,
+          "numerator": 1718865525
+        },
+        {
+          "denominator": 2147483648,
+          "numerator": 1718865525
+        }
+      ],
+      "shots": 39
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 274877906944,
+        "numerator": 201159156705
+      },
+      "ideal_rejection": {
+        "denominator": 274877906944,
+        "numerator": 73718750239
+      },
+      "ideal_rejection_approximation": 0.26818725105476915,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 274877906944,
+          "numerator": 201159156705
+        },
+        {
+          "denominator": 274877906944,
+          "numerator": 201159156705
+        }
+      ],
+      "shots": 40
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 549755813888,
+        "numerator": 433744364235
+      },
+      "ideal_rejection": {
+        "denominator": 549755813888,
+        "numerator": 116011449653
+      },
+      "ideal_rejection_approximation": 0.21102359760880063,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 549755813888,
+          "numerator": 433744364235
+        },
+        {
+          "denominator": 549755813888,
+          "numerator": 433744364235
+        }
+      ],
+      "shots": 41
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1099511627776,
+        "numerator": 919027451823
+      },
+      "ideal_rejection": {
+        "denominator": 1099511627776,
+        "numerator": 180484175953
+      },
+      "ideal_rejection_approximation": 0.16414940178310644,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1099511627776,
+          "numerator": 919027451823
+        },
+        {
+          "denominator": 1099511627776,
+          "numerator": 919027451823
+        }
+      ],
+      "shots": 42
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 549755813888,
+        "numerator": 427680985017
+      },
+      "ideal_rejection": {
+        "denominator": 549755813888,
+        "numerator": 122074828871
+      },
+      "ideal_rejection_approximation": 0.2220528201560228,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 549755813888,
+          "numerator": 427680985017
+        },
+        {
+          "denominator": 549755813888,
+          "numerator": 427680985017
+        }
+      ],
+      "shots": 43
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4398046511104,
+        "numerator": 3632033704515
+      },
+      "ideal_rejection": {
+        "denominator": 4398046511104,
+        "numerator": 766012806589
+      },
+      "ideal_rejection_approximation": 0.17417114727072658,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4398046511104,
+          "numerator": 3632033704515
+        },
+        {
+          "denominator": 4398046511104,
+          "numerator": 3632033704515
+        }
+      ],
+      "shots": 44
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2199023255552,
+        "numerator": 1687325515137
+      },
+      "ideal_rejection": {
+        "denominator": 2199023255552,
+        "numerator": 511697740415
+      },
+      "ideal_rejection_approximation": 0.23269319190831084,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2199023255552,
+          "numerator": 1687325515137
+        },
+        {
+          "denominator": 2199023255552,
+          "numerator": 1687325515137
+        }
+      ],
+      "shots": 45
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 8796093022208,
+        "numerator": 7178273184283
+      },
+      "ideal_rejection": {
+        "denominator": 8796093022208,
+        "numerator": 1617819837925
+      },
+      "ideal_rejection_approximation": 0.18392482137699062,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 8796093022208,
+          "numerator": 7178273184283
+        },
+        {
+          "denominator": 8796093022208,
+          "numerator": 7178273184283
+        }
+      ],
+      "shots": 46
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 35184372088832,
+        "numerator": 30122569286547
+      },
+      "ideal_rejection": {
+        "denominator": 35184372088832,
+        "numerator": 5061802802285
+      },
+      "ideal_rejection_approximation": 0.14386508844054902,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 35184372088832,
+          "numerator": 30122569286547
+        },
+        {
+          "denominator": 35184372088832,
+          "numerator": 30122569286547
+        }
+      ],
+      "shots": 47
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 70368744177664,
+        "numerator": 56758538687699
+      },
+      "ideal_rejection": {
+        "denominator": 70368744177664,
+        "numerator": 13610205489965
+      },
+      "ideal_rejection_approximation": 0.19341265286193732,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 70368744177664,
+          "numerator": 56758538687699
+        },
+        {
+          "denominator": 70368744177664,
+          "numerator": 56758538687699
+        }
+      ],
+      "shots": 48
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 70368744177664,
+        "numerator": 59644000661819
+      },
+      "ideal_rejection": {
+        "denominator": 70368744177664,
+        "numerator": 10724743515845
+      },
+      "ideal_rejection_approximation": 0.15240777196147803,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 70368744177664,
+          "numerator": 59644000661819
+        },
+        {
+          "denominator": 70368744177664,
+          "numerator": 59644000661819
+        }
+      ],
+      "shots": 49
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 35184372088832,
+        "numerator": 28054654871761
+      },
+      "ideal_rejection": {
+        "denominator": 35184372088832,
+        "numerator": 7129717217071
+      },
+      "ideal_rejection_approximation": 0.20263875106454066,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 35184372088832,
+          "numerator": 28054654871761
+        },
+        {
+          "denominator": 35184372088832,
+          "numerator": 28054654871761
+        }
+      ],
+      "shots": 50
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 140737488355328,
+        "numerator": 118109771017539
+      },
+      "ideal_rejection": {
+        "denominator": 140737488355328,
+        "numerator": 22627717337789
+      },
+      "ideal_rejection_approximation": 0.16077960181198847,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 140737488355328,
+          "numerator": 118109771017539
+        },
+        {
+          "denominator": 140737488355328,
+          "numerator": 118109771017539
+        }
+      ],
+      "shots": 51
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 281474976710656,
+        "numerator": 245911436488473
+      },
+      "ideal_rejection": {
+        "denominator": 281474976710656,
+        "numerator": 35563540222183
+      },
+      "ideal_rejection_approximation": 0.12634707581392135,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 281474976710656,
+          "numerator": 245911436488473
+        },
+        {
+          "denominator": 281474976710656,
+          "numerator": 245911436488473
+        }
+      ],
+      "shots": 52
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 281474976710656,
+        "numerator": 233911948117603
+      },
+      "ideal_rejection": {
+        "denominator": 281474976710656,
+        "numerator": 47563028593053
+      },
+      "ideal_rejection_approximation": 0.16897782228771874,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 281474976710656,
+          "numerator": 233911948117603
+        },
+        {
+          "denominator": 281474976710656,
+          "numerator": 233911948117603
+        }
+      ],
+      "shots": 53
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9007199254740992,
+        "numerator": 7803168781591351
+      },
+      "ideal_rejection": {
+        "denominator": 9007199254740992,
+        "numerator": 1204030473149641
+      },
+      "ideal_rejection_approximation": 0.13367423536410528,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9007199254740992,
+          "numerator": 7803168781591351
+        },
+        {
+          "denominator": 9007199254740992,
+          "numerator": 7803168781591351
+        }
+      ],
+      "shots": 54
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 18014398509481984,
+        "numerator": 14825825387786567
+      },
+      "ideal_rejection": {
+        "denominator": 18014398509481984,
+        "numerator": 3188573121695417
+      },
+      "ideal_rejection_approximation": 0.17700136477035816,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 18014398509481984,
+          "numerator": 14825825387786567
+        },
+        {
+          "denominator": 18014398509481984,
+          "numerator": 14825825387786567
+        }
+      ],
+      "shots": 55
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 36028797018963968,
+        "numerator": 30952504401233359
+      },
+      "ideal_rejection": {
+        "denominator": 36028797018963968,
+        "numerator": 5076292617730609
+      },
+      "ideal_rejection_approximation": 0.14089542359848076,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 36028797018963968,
+          "numerator": 30952504401233359
+        },
+        {
+          "denominator": 36028797018963968,
+          "numerator": 30952504401233359
+        }
+      ],
+      "shots": 56
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 36028797018963968,
+        "numerator": 32023795622365309
+      },
+      "ideal_rejection": {
+        "denominator": 36028797018963968,
+        "numerator": 4005001396598659
+      },
+      "ideal_rejection_approximation": 0.11116111910399348,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 36028797018963968,
+          "numerator": 32023795622365309
+        },
+        {
+          "denominator": 36028797018963968,
+          "numerator": 32023795622365309
+        }
+      ],
+      "shots": 57
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9007199254740992,
+        "numerator": 7674081516436321
+      },
+      "ideal_rejection": {
+        "denominator": 9007199254740992,
+        "numerator": 1333117738304671
+      },
+      "ideal_rejection_approximation": 0.14800580076020597,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9007199254740992,
+          "numerator": 7674081516436321
+        },
+        {
+          "denominator": 9007199254740992,
+          "numerator": 7674081516436321
+        }
+      ],
+      "shots": 58
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 36028797018963968,
+        "numerator": 31796229412659019
+      },
+      "ideal_rejection": {
+        "denominator": 36028797018963968,
+        "numerator": 4232567606304949
+      },
+      "ideal_rejection_approximation": 0.11747735024505848,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 36028797018963968,
+          "numerator": 31796229412659019
+        },
+        {
+          "denominator": 36028797018963968,
+          "numerator": 31796229412659019
+        }
+      ],
+      "shots": 59
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 576460752303423488,
+        "numerator": 487108238113240849
+      },
+      "ideal_rejection": {
+        "denominator": 576460752303423488,
+        "numerator": 89352514190182639
+      },
+      "ideal_rejection_approximation": 0.1550019040032606,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 576460752303423488,
+          "numerator": 487108238113240849
+        },
+        {
+          "denominator": 576460752303423488,
+          "numerator": 487108238113240849
+        }
+      ],
+      "shots": 60
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1152921504606846976,
+        "numerator": 1010268863708654123
+      },
+      "ideal_rejection": {
+        "denominator": 1152921504606846976,
+        "numerator": 142652640898192853
+      },
+      "ideal_rejection_approximation": 0.12373144253809217,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1152921504606846976,
+          "numerator": 1010268863708654123
+        },
+        {
+          "denominator": 1152921504606846976,
+          "numerator": 1010268863708654123
+        }
+      ],
+      "shots": 61
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2305843009213693952,
+        "numerator": 2079975447320349271
+      },
+      "ideal_rejection": {
+        "denominator": 2305843009213693952,
+        "numerator": 225867561893344681
+      },
+      "ideal_rejection_approximation": 0.09795444051950737,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2305843009213693952,
+          "numerator": 2079975447320349271
+        },
+        {
+          "denominator": 2305843009213693952,
+          "numerator": 2079975447320349271
+        }
+      ],
+      "shots": 62
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 72057594037927936,
+        "numerator": 62696021082518075
+      },
+      "ideal_rejection": {
+        "denominator": 72057594037927936,
+        "numerator": 9361572955409861
+      },
+      "ideal_rejection_approximation": 0.1299179230225525,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 72057594037927936,
+          "numerator": 62696021082518075
+        },
+        {
+          "denominator": 72057594037927936,
+          "numerator": 62696021082518075
+        }
+      ],
+      "shots": 63
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9223372036854775808,
+        "numerator": 8269473576395238067
+      },
+      "ideal_rejection": {
+        "denominator": 9223372036854775808,
+        "numerator": 953898460459537741
+      },
+      "ideal_rejection_approximation": 0.10342187831608089,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9223372036854775808,
+          "numerator": 8269473576395238067
+        },
+        {
+          "denominator": 9223372036854775808,
+          "numerator": 8269473576395238067
+        }
+      ],
+      "shots": 64
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9223372036854775808,
+        "numerator": 7968694649831638723
+      },
+      "ideal_rejection": {
+        "denominator": 9223372036854775808,
+        "numerator": 1254677387023137085
+      },
+      "ideal_rejection_approximation": 0.13603239487789212,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9223372036854775808,
+          "numerator": 7968694649831638723
+        },
+        {
+          "denominator": 9223372036854775808,
+          "numerator": 7968694649831638723
+        }
+      ],
+      "shots": 65
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9223372036854775808,
+        "numerator": 8219343755301304843
+      },
+      "ideal_rejection": {
+        "denominator": 9223372036854775808,
+        "numerator": 1004028281553470965
+      },
+      "ideal_rejection_approximation": 0.1088569644097161,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9223372036854775808,
+          "numerator": 8219343755301304843
+        },
+        {
+          "denominator": 9223372036854775808,
+          "numerator": 8219343755301304843
+        }
+      ],
+      "shots": 66
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 144115188075855872,
+        "numerator": 131658269801777803
+      },
+      "ideal_rejection": {
+        "denominator": 144115188075855872,
+        "numerator": 12456918274078069
+      },
+      "ideal_rejection_approximation": 0.08643723427347086,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 144115188075855872,
+          "numerator": 131658269801777803
+        },
+        {
+          "denominator": 144115188075855872,
+          "numerator": 131658269801777803
+        }
+      ],
+      "shots": 67
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 18446744073709551616,
+        "numerator": 16339124115929936755
+      },
+      "ideal_rejection": {
+        "denominator": 18446744073709551616,
+        "numerator": 2107619957779614861
+      },
+      "ideal_rejection_approximation": 0.11425430684992328,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 18446744073709551616,
+          "numerator": 16339124115929936755
+        },
+        {
+          "denominator": 18446744073709551616,
+          "numerator": 16339124115929936755
+        }
+      ],
+      "shots": 68
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 18446744073709551616,
+        "numerator": 16764650219240159901
+      },
+      "ideal_rejection": {
+        "denominator": 18446744073709551616,
+        "numerator": 1682093854469391715
+      },
+      "ideal_rejection_approximation": 0.09118649056701152,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 18446744073709551616,
+          "numerator": 16764650219240159901
+        },
+        {
+          "denominator": 18446744073709551616,
+          "numerator": 16764650219240159901
+        }
+      ],
+      "shots": 69
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 73786976294838206464,
+        "numerator": 64961365082074539813
+      },
+      "ideal_rejection": {
+        "denominator": 73786976294838206464,
+        "numerator": 8825611212763666651
+      },
+      "ideal_rejection_approximation": 0.11960933562988493,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 73786976294838206464,
+          "numerator": 64961365082074539813
+        },
+        {
+          "denominator": 73786976294838206464,
+          "numerator": 64961365082074539813
+        }
+      ],
+      "shots": 70
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 147573952589676412928,
+        "numerator": 133418123155625912611
+      },
+      "ideal_rejection": {
+        "denominator": 147573952589676412928,
+        "numerator": 14155829434050500317
+      },
+      "ideal_rejection_approximation": 0.09592363141082376,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 147573952589676412928,
+          "numerator": 133418123155625912611
+        },
+        {
+          "denominator": 147573952589676412928,
+          "numerator": 133418123155625912611
+        }
+      ],
+      "shots": 71
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 295147905179352825856,
+        "numerator": 272607709157643805267
+      },
+      "ideal_rejection": {
+        "denominator": 295147905179352825856,
+        "numerator": 22540196021709020589
+      },
+      "ideal_rejection_approximation": 0.07636915467183139,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 295147905179352825856,
+          "numerator": 272607709157643805267
+        },
+        {
+          "denominator": 295147905179352825856,
+          "numerator": 272607709157643805267
+        }
+      ],
+      "shots": 72
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 295147905179352825856,
+        "numerator": 265443134589708933487
+      },
+      "ideal_rejection": {
+        "denominator": 295147905179352825856,
+        "numerator": 29704770589643892369
+      },
+      "ideal_rejection_approximation": 0.1006436775202357,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 295147905179352825856,
+          "numerator": 265443134589708933487
+        },
+        {
+          "denominator": 295147905179352825856,
+          "numerator": 265443134589708933487
+        }
+      ],
+      "shots": 73
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 590295810358705651712,
+        "numerator": 542772949712582540609
+      },
+      "ideal_rejection": {
+        "denominator": 590295810358705651712,
+        "numerator": 47522860646123111103
+      },
+      "ideal_rejection_approximation": 0.08050685743008212,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 590295810358705651712,
+          "numerator": 542772949712582540609
+        },
+        {
+          "denominator": 590295810358705651712,
+          "numerator": 542772949712582540609
+        }
+      ],
+      "shots": 74
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1180591620717411303424,
+        "numerator": 1056225420776692219585
+      },
+      "ideal_rejection": {
+        "denominator": 1180591620717411303424,
+        "numerator": 124366199940719083839
+      },
+      "ideal_rejection_approximation": 0.10534226887460488,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1180591620717411303424,
+          "numerator": 1056225420776692219585
+        },
+        {
+          "denominator": 1180591620717411303424,
+          "numerator": 1056225420776692219585
+        }
+      ],
+      "shots": 75
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2361183241434822606848,
+        "numerator": 2161318305967505875225
+      },
+      "ideal_rejection": {
+        "denominator": 2361183241434822606848,
+        "numerator": 199864935467316731623
+      },
+      "ideal_rejection_approximation": 0.08464609267083592,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2361183241434822606848,
+          "numerator": 2161318305967505875225
+        },
+        {
+          "denominator": 2361183241434822606848,
+          "numerator": 2161318305967505875225
+        }
+      ],
+      "shots": 76
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 590295810358705651712,
+        "numerator": 550421770229575461035
+      },
+      "ideal_rejection": {
+        "denominator": 590295810358705651712,
+        "numerator": 39874040129130190677
+      },
+      "ideal_rejection_approximation": 0.06754925145902678,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 590295810358705651712,
+          "numerator": 550421770229575461035
+        },
+        {
+          "denominator": 590295810358705651712,
+          "numerator": 550421770229575461035
+        }
+      ],
+      "shots": 77
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4722366482869645213696,
+        "numerator": 4303103333733013700975
+      },
+      "ideal_rejection": {
+        "denominator": 4722366482869645213696,
+        "numerator": 419263149136631512721
+      },
+      "ideal_rejection_approximation": 0.08878242522208006,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4722366482869645213696,
+          "numerator": 4303103333733013700975
+        },
+        {
+          "denominator": 4722366482869645213696,
+          "numerator": 4303103333733013700975
+        }
+      ],
+      "shots": 78
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 147573952589676412928,
+        "numerator": 137072087088757748305
+      },
+      "ideal_rejection": {
+        "denominator": 147573952589676412928,
+        "numerator": 10501865500918664623
+      },
+      "ideal_rejection_approximation": 0.07116340869529117,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 147573952589676412928,
+          "numerator": 137072087088757748305
+        },
+        {
+          "denominator": 147573952589676412928,
+          "numerator": 137072087088757748305
+        }
+      ],
+      "shots": 79
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 302231454903657293676544,
+        "numerator": 274150561562304363190625
+      },
+      "ideal_rejection": {
+        "denominator": 302231454903657293676544,
+        "numerator": 28080893341352930485919
+      },
+      "ideal_rejection_approximation": 0.09291188222054621,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 302231454903657293676544,
+          "numerator": 274150561562304363190625
+        },
+        {
+          "denominator": 302231454903657293676544,
+          "numerator": 274150561562304363190625
+        }
+      ],
+      "shots": 80
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 604462909807314587353088,
+        "numerator": 559256244450394568611275
+      },
+      "ideal_rejection": {
+        "denominator": 604462909807314587353088,
+        "numerator": 45206665356920018741813
+      },
+      "ideal_rejection_approximation": 0.07478815428283367,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 604462909807314587353088,
+          "numerator": 559256244450394568611275
+        },
+        {
+          "denominator": 604462909807314587353088,
+          "numerator": 559256244450394568611275
+        }
+      ],
+      "shots": 81
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1208925819614629174706176,
+        "numerator": 1136621975174026958051775
+      },
+      "ideal_rejection": {
+        "denominator": 1208925819614629174706176,
+        "numerator": 72303844440602216654401
+      },
+      "ideal_rejection_approximation": 0.05980833833431617,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1208925819614629174706176,
+          "numerator": 1136621975174026958051775
+        },
+        {
+          "denominator": 1208925819614629174706176,
+          "numerator": 1136621975174026958051775
+        }
+      ],
+      "shots": 82
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 604462909807314587353088,
+        "numerator": 557061155205153620631975
+      },
+      "ideal_rejection": {
+        "denominator": 604462909807314587353088,
+        "numerator": 47401754602160966721113
+      },
+      "ideal_rejection_approximation": 0.07841962481580761,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 604462909807314587353088,
+          "numerator": 557061155205153620631975
+        },
+        {
+          "denominator": 604462909807314587353088,
+          "numerator": 557061155205153620631975
+        }
+      ],
+      "shots": 83
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4835703278458516698824704,
+        "numerator": 4531188128656778424791379
+      },
+      "ideal_rejection": {
+        "denominator": 4835703278458516698824704,
+        "numerator": 304515149801738274033325
+      },
+      "ideal_rejection_approximation": 0.06297225703616971,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4835703278458516698824704,
+          "numerator": 4531188128656778424791379
+        },
+        {
+          "denominator": 4835703278458516698824704,
+          "numerator": 4531188128656778424791379
+        }
+      ],
+      "shots": 84
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1208925819614629174706176,
+        "numerator": 1109728258232921978926563
+      },
+      "ideal_rejection": {
+        "denominator": 1208925819614629174706176,
+        "numerator": 99197561381707195779613
+      },
+      "ideal_rejection_approximation": 0.08205429958748713,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1208925819614629174706176,
+          "numerator": 1109728258232921978926563
+        },
+        {
+          "denominator": 1208925819614629174706176,
+          "numerator": 1109728258232921978926563
+        }
+      ],
+      "shots": 85
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9671406556917033397649408,
+        "numerator": 9031617892071860013221049
+      },
+      "ideal_rejection": {
+        "denominator": 9671406556917033397649408,
+        "numerator": 639788664845173384428359
+      },
+      "ideal_rejection_approximation": 0.06615259746138928,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9671406556917033397649408,
+          "numerator": 9031617892071860013221049
+        },
+        {
+          "denominator": 9671406556917033397649408,
+          "numerator": 9031617892071860013221049
+        }
+      ],
+      "shots": 86
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 38685626227668133590597632,
+        "numerator": 36635167608823195423481691
+      },
+      "ideal_rejection": {
+        "denominator": 38685626227668133590597632,
+        "numerator": 2050458618844938167115941
+      },
+      "ideal_rejection_approximation": 0.05300311301096222,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 38685626227668133590597632,
+          "numerator": 36635167608823195423481691
+        },
+        {
+          "denominator": 38685626227668133590597632,
+          "numerator": 36635167608823195423481691
+        }
+      ],
+      "shots": 87
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 77371252455336267181195264,
+        "numerator": 72005862202600370354335323
+      },
+      "ideal_rejection": {
+        "denominator": 77371252455336267181195264,
+        "numerator": 5365390252735896826859941
+      },
+      "ideal_rejection_approximation": 0.06934604368506442,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 77371252455336267181195264,
+          "numerator": 72005862202600370354335323
+        },
+        {
+          "denominator": 77371252455336267181195264,
+          "numerator": 72005862202600370354335323
+        }
+      ],
+      "shots": 88
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 77371252455336267181195264,
+        "numerator": 73055613384902726989724655
+      },
+      "ideal_rejection": {
+        "denominator": 77371252455336267181195264,
+        "numerator": 4315639070433540191470609
+      },
+      "ideal_rejection_approximation": 0.05577832765373429,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 77371252455336267181195264,
+          "numerator": 73055613384902726989724655
+        },
+        {
+          "denominator": 77371252455336267181195264,
+          "numerator": 73055613384902726989724655
+        }
+      ],
+      "shots": 89
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 154742504910672534362390528,
+        "numerator": 143516008569113516741959017
+      },
+      "ideal_rejection": {
+        "denominator": 154742504910672534362390528,
+        "numerator": 11226496341559017620431511
+      },
+      "ideal_rejection_approximation": 0.07254953219246181,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 154742504910672534362390528,
+          "numerator": 143516008569113516741959017
+        },
+        {
+          "denominator": 154742504910672534362390528,
+          "numerator": 143516008569113516741959017
+        }
+      ],
+      "shots": 90
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 309485009821345068724781056,
+        "numerator": 291357380806046928879735189
+      },
+      "ideal_rejection": {
+        "denominator": 309485009821345068724781056,
+        "numerator": 18127629015298139845045867
+      },
+      "ideal_rejection_approximation": 0.05857352841018888,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 309485009821345068724781056,
+          "numerator": 291357380806046928879735189
+        },
+        {
+          "denominator": 309485009821345068724781056,
+          "numerator": 291357380806046928879735189
+        }
+      ],
+      "shots": 91
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 618970019642690137449562112,
+        "numerator": 589871272407941321050731489
+      },
+      "ideal_rejection": {
+        "denominator": 618970019642690137449562112,
+        "numerator": 29098747234748816398830623
+      },
+      "ideal_rejection_approximation": 0.047011561644854,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 618970019642690137449562112,
+          "numerator": 589871272407941321050731489
+        },
+        {
+          "denominator": 618970019642690137449562112,
+          "numerator": 589871272407941321050731489
+        }
+      ],
+      "shots": 92
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 618970019642690137449562112,
+        "numerator": 580973988715806636958893351
+      },
+      "ideal_rejection": {
+        "denominator": 618970019642690137449562112,
+        "numerator": 37996030926883500490668761
+      },
+      "ideal_rejection_approximation": 0.06138589870445953,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 618970019642690137449562112,
+          "numerator": 580973988715806636958893351
+        },
+        {
+          "denominator": 618970019642690137449562112,
+          "numerator": 580973988715806636958893351
+        }
+      ],
+      "shots": 93
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 4951760157141521099596496896,
+        "numerator": 4706895294252776354281214439
+      },
+      "ideal_rejection": {
+        "denominator": 4951760157141521099596496896,
+        "numerator": 244864862888744745315282457
+      },
+      "ideal_rejection_approximation": 0.04945006525317994,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 4951760157141521099596496896,
+          "numerator": 4706895294252776354281214439
+        },
+        {
+          "denominator": 4951760157141521099596496896,
+          "numerator": 4706895294252776354281214439
+        }
+      ],
+      "shots": 94
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 9903520314283042199192993792,
+        "numerator": 9267587479414121489895419475
+      },
+      "ideal_rejection": {
+        "denominator": 9903520314283042199192993792,
+        "numerator": 635932834868920709297574317
+      },
+      "ideal_rejection_approximation": 0.06421280662713101,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 9903520314283042199192993792,
+          "numerator": 9267587479414121489895419475
+        },
+        {
+          "denominator": 9903520314283042199192993792,
+          "numerator": 9267587479414121489895419475
+        }
+      ],
+      "shots": 95
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 18778846807313961677569187955
+      },
+      "ideal_rejection": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 1028193821252122720816799629
+      },
+      "ideal_rejection_approximation": 0.05191052214883845,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18778846807313961677569187955
+        },
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18778846807313961677569187955
+        }
+      ],
+      "shots": 96
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 18980506268129728875730580235
+      },
+      "ideal_rejection": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 826534360436355522655407349
+      },
+      "ideal_rejection_approximation": 0.04172932120128598,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18980506268129728875730580235
+        },
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18980506268129728875730580235
+        }
+      ],
+      "shots": 97
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 18729724630961403001093977015
+      },
+      "ideal_rejection": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 1077315997604681397292010569
+      },
+      "ideal_rejection_approximation": 0.054390558277088406,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18729724630961403001093977015
+        },
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18729724630961403001093977015
+        }
+      ],
+      "shots": 98
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 18938000905897809235961664435
+      },
+      "ideal_rejection": {
+        "denominator": 19807040628566084398385987584,
+        "numerator": 869039722668275162424323149
+      },
+      "ideal_rejection_approximation": 0.0438752935870152,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18938000905897809235961664435
+        },
+        {
+          "denominator": 19807040628566084398385987584,
+          "numerator": 18938000905897809235961664435
+        }
+      ],
+      "shots": 99
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 79228162514264337593543950336,
+        "numerator": 74721036062656026081251605011
+      },
+      "ideal_rejection": {
+        "denominator": 79228162514264337593543950336,
+        "numerator": 4507126451608311512292345325
+      },
+      "ideal_rejection_approximation": 0.05688793364098079,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 79228162514264337593543950336,
+          "numerator": 74721036062656026081251605011
+        },
+        {
+          "denominator": 79228162514264337593543950336,
+          "numerator": 74721036062656026081251605011
+        }
+      ],
+      "shots": 100
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 158456325028528675187087900672,
+        "numerator": 151160351393537403600161631237
+      },
+      "ideal_rejection": {
+        "denominator": 158456325028528675187087900672,
+        "numerator": 7295973634991271586926269435
+      },
+      "ideal_rejection_approximation": 0.046044066929342806,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 158456325028528675187087900672,
+          "numerator": 151160351393537403600161631237
+        },
+        {
+          "denominator": 158456325028528675187087900672,
+          "numerator": 151160351393537403600161631237
+        }
+      ],
+      "shots": 101
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 316912650057057350374175801344,
+        "numerator": 305165722559054487449560976289
+      },
+      "ideal_rejection": {
+        "denominator": 316912650057057350374175801344,
+        "numerator": 11746927498002862924614825055
+      },
+      "ideal_rejection_approximation": 0.037066767438560536,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 316912650057057350374175801344,
+          "numerator": 305165722559054487449560976289
+        },
+        {
+          "denominator": 316912650057057350374175801344,
+          "numerator": 305165722559054487449560976289
+        }
+      ],
+      "shots": 102
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 79228162514264337593543950336,
+        "numerator": 75406698881404087150737052581
+      },
+      "ideal_rejection": {
+        "denominator": 79228162514264337593543950336,
+        "numerator": 3821463632860250442806897755
+      },
+      "ideal_rejection_approximation": 0.04823365217099702,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 79228162514264337593543950336,
+          "numerator": 75406698881404087150737052581
+        },
+        {
+          "denominator": 79228162514264337593543950336,
+          "numerator": 75406698881404087150737052581
+        }
+      ],
+      "shots": 103
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1267650600228229401496703205376,
+        "numerator": 1218265552568405017031183644341
+      },
+      "ideal_rejection": {
+        "denominator": 1267650600228229401496703205376,
+        "numerator": 49385047659824384465519561035
+      },
+      "ideal_rejection_approximation": 0.03895793340131187,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1267650600228229401496703205376,
+          "numerator": 1218265552568405017031183644341
+        },
+        {
+          "denominator": 1267650600228229401496703205376,
+          "numerator": 1218265552568405017031183644341
+        }
+      ],
+      "shots": 104
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1267650600228229401496703205376,
+        "numerator": 1203707570086765484264318840571
+      },
+      "ideal_rejection": {
+        "denominator": 1267650600228229401496703205376,
+        "numerator": 63943030141463917232384364805
+      },
+      "ideal_rejection_approximation": 0.05044215663996967,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1267650600228229401496703205376,
+          "numerator": 1203707570086765484264318840571
+        },
+        {
+          "denominator": 1267650600228229401496703205376,
+          "numerator": 1203707570086765484264318840571
+        }
+      ],
+      "shots": 105
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 633825300114114700748351602688,
+        "numerator": 607919611077399214118353088523
+      },
+      "ideal_rejection": {
+        "denominator": 633825300114114700748351602688,
+        "numerator": 25905689036715486629998514165
+      },
+      "ideal_rejection_approximation": 0.04087197060775484,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 633825300114114700748351602688,
+          "numerator": 607919611077399214118353088523
+        },
+        {
+          "denominator": 633825300114114700748351602688,
+          "numerator": 607919611077399214118353088523
+        }
+      ],
+      "shots": 106
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 81129638414606681695789005144064,
+        "numerator": 78456687777512845437685724164119
+      },
+      "ideal_rejection": {
+        "denominator": 81129638414606681695789005144064,
+        "numerator": 2672950637093836258103280979945
+      },
+      "ideal_rejection_approximation": 0.03294666029982694,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 81129638414606681695789005144064,
+          "numerator": 78456687777512845437685724164119
+        },
+        {
+          "denominator": 81129638414606681695789005144064,
+          "numerator": 78456687777512845437685724164119
+        }
+      ],
+      "shots": 107
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 162259276829213363391578010288128,
+        "numerator": 155313408139262555404036364952663
+      },
+      "ideal_rejection": {
+        "denominator": 162259276829213363391578010288128,
+        "numerator": 6945868689950807987541645335465
+      },
+      "ideal_rejection_approximation": 0.04280722079922561,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 162259276829213363391578010288128,
+          "numerator": 155313408139262555404036364952663
+        },
+        {
+          "denominator": 162259276829213363391578010288128,
+          "numerator": 155313408139262555404036364952663
+        }
+      ],
+      "shots": 108
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 162259276829213363391578010288128,
+        "numerator": 156642611838511929487914741910833
+      },
+      "ideal_rejection": {
+        "denominator": 162259276829213363391578010288128,
+        "numerator": 5616664990701433903663268377295
+      },
+      "ideal_rejection_approximation": 0.03461537053818671,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 162259276829213363391578010288128,
+          "numerator": 156642611838511929487914741910833
+        },
+        {
+          "denominator": 162259276829213363391578010288128,
+          "numerator": 156642611838511929487914741910833
+        }
+      ],
+      "shots": 109
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 649037107316853453566312041152512,
+        "numerator": 619984847207766728172443372714217
+      },
+      "ideal_rejection": {
+        "denominator": 649037107316853453566312041152512,
+        "numerator": 29052260109086725393868668438295
+      },
+      "ideal_rejection_approximation": 0.04476209415697353,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 649037107316853453566312041152512,
+          "numerator": 619984847207766728172443372714217
+        },
+        {
+          "denominator": 649037107316853453566312041152512,
+          "numerator": 619984847207766728172443372714217
+        }
+      ],
+      "shots": 110
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1298074214633706907132624082305024,
+        "numerator": 1250945694659335105976912736976959
+      },
+      "ideal_rejection": {
+        "denominator": 1298074214633706907132624082305024,
+        "numerator": 47128519974371801155711345328065
+      },
+      "ideal_rejection_approximation": 0.03630649114131785,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1298074214633706907132624082305024,
+          "numerator": 1250945694659335105976912736976959
+        },
+        {
+          "denominator": 1298074214633706907132624082305024,
+          "numerator": 1250945694659335105976912736976959
+        }
+      ],
+      "shots": 111
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2596148429267413814265248164610048,
+        "numerator": 2520075509125565482239719280847743
+      },
+      "ideal_rejection": {
+        "denominator": 2596148429267413814265248164610048,
+        "numerator": 76072920141848332025528883762305
+      },
+      "ideal_rejection_approximation": 0.02930222297163292,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2596148429267413814265248164610048,
+          "numerator": 2520075509125565482239719280847743
+        },
+        {
+          "denominator": 2596148429267413814265248164610048,
+          "numerator": 2520075509125565482239719280847743
+        }
+      ],
+      "shots": 112
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2596148429267413814265248164610048,
+        "numerator": 2497446382254762479217273654490983
+      },
+      "ideal_rejection": {
+        "denominator": 2596148429267413814265248164610048,
+        "numerator": 98702047012651335047974510119065
+      },
+      "ideal_rejection_approximation": 0.038018645582796384,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2596148429267413814265248164610048,
+          "numerator": 2497446382254762479217273654490983
+        },
+        {
+          "denominator": 2596148429267413814265248164610048,
+          "numerator": 2497446382254762479217273654490983
+        }
+      ],
+      "shots": 113
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1298074214633706907132624082305024,
+        "numerator": 1258124262217089840128991076430469
+      },
+      "ideal_rejection": {
+        "denominator": 1298074214633706907132624082305024,
+        "numerator": 39949952416617067003633005874555
+      },
+      "ideal_rejection_approximation": 0.03077632385440321,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1298074214633706907132624082305024,
+          "numerator": 1258124262217089840128991076430469
+        },
+        {
+          "denominator": 1298074214633706907132624082305024,
+          "numerator": 1258124262217089840128991076430469
+        }
+      ],
+      "shots": 114
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 5192296858534827628530496329220096,
+        "numerator": 4985900435641108036197686722805031
+      },
+      "ideal_rejection": {
+        "denominator": 5192296858534827628530496329220096,
+        "numerator": 206396422893719592332809606415065
+      },
+      "ideal_rejection_approximation": 0.03975050512654258,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 5192296858534827628530496329220096,
+          "numerator": 4985900435641108036197686722805031
+        },
+        {
+          "denominator": 5192296858534827628530496329220096,
+          "numerator": 4985900435641108036197686722805031
+        }
+      ],
+      "shots": 115
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 10384593717069655257060992658440192,
+        "numerator": 10049461893327634946259169417138137
+      },
+      "ideal_rejection": {
+        "denominator": 10384593717069655257060992658440192,
+        "numerator": 335131823742020310801823241302055
+      },
+      "ideal_rejection_approximation": 0.032272020733093106,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 10384593717069655257060992658440192,
+          "numerator": 10049461893327634946259169417138137
+        },
+        {
+          "denominator": 10384593717069655257060992658440192,
+          "numerator": 10049461893327634946259169417138137
+        }
+      ],
+      "shots": 116
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 5192296858534827628530496329220096,
+        "numerator": 5056904798654062435158871611059271
+      },
+      "ideal_rejection": {
+        "denominator": 5192296858534827628530496329220096,
+        "numerator": 135392059880765193371624718160825
+      },
+      "ideal_rejection_approximation": 0.02607556223566354,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 5192296858534827628530496329220096,
+          "numerator": 5056904798654062435158871611059271
+        },
+        {
+          "denominator": 5192296858534827628530496329220096,
+          "numerator": 5056904798654062435158871611059271
+        }
+      ],
+      "shots": 117
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 20769187434139310514121985316880384,
+        "numerator": 20067434484707370567979036759498629
+      },
+      "ideal_rejection": {
+        "denominator": 20769187434139310514121985316880384,
+        "numerator": 701752949431939946142948557381755
+      },
+      "ideal_rejection_approximation": 0.033788175471825874,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 20769187434139310514121985316880384,
+          "numerator": 20067434484707370567979036759498629
+        },
+        {
+          "denominator": 20769187434139310514121985316880384,
+          "numerator": 20067434484707370567979036759498629
+        }
+      ],
+      "shots": 118
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1298074214633706907132624082305024,
+        "numerator": 1262534107657435899219403293418989
+      },
+      "ideal_rejection": {
+        "denominator": 1298074214633706907132624082305024,
+        "numerator": 35540106976271007913220788886035
+      },
+      "ideal_rejection_approximation": 0.027379102500930414,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1298074214633706907132624082305024,
+          "numerator": 1262534107657435899219403293418989
+        },
+        {
+          "denominator": 1298074214633706907132624082305024,
+          "numerator": 1262534107657435899219403293418989
+        }
+      ],
+      "shots": 119
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 664613997892457936451903530140172288,
+        "numerator": 641137384020746895558921654134049633
+      },
+      "ideal_rejection": {
+        "denominator": 664613997892457936451903530140172288,
+        "numerator": 23476613871711040892981876006122655
+      },
+      "ideal_rejection_approximation": 0.035323682537769574,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 664613997892457936451903530140172288,
+          "numerator": 641137384020746895558921654134049633
+        },
+        {
+          "denominator": 664613997892457936451903530140172288,
+          "numerator": 641137384020746895558921654134049633
+        }
+      ],
+      "shots": 120
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1329227995784915872903807060280344576,
+        "numerator": 1291074899874594265853531361762220491
+      },
+      "ideal_rejection": {
+        "denominator": 1329227995784915872903807060280344576,
+        "numerator": 38153095910321607050275698518124085
+      },
+      "ideal_rejection_approximation": 0.02870319917373694,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1329227995784915872903807060280344576,
+          "numerator": 1291074899874594265853531361762220491
+        },
+        {
+          "denominator": 1329227995784915872903807060280344576,
+          "numerator": 1291074899874594265853531361762220491
+        }
+      ],
+      "shots": 121
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2658455991569831745807614120560689152,
+        "numerator": 2596736319636930414488134702603737807
+      },
+      "ideal_rejection": {
+        "denominator": 2658455991569831745807614120560689152,
+        "numerator": 61719671932901331319479417956951345
+      },
+      "ideal_rejection_approximation": 0.023216360221353732,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2658455991569831745807614120560689152,
+          "numerator": 2596736319636930414488134702603737807
+        },
+        {
+          "denominator": 2658455991569831745807614120560689152,
+          "numerator": 2596736319636930414488134702603737807
+        }
+      ],
+      "shots": 122
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 1329227995784915872903807060280344576,
+        "numerator": 1289288795398544239390542956160673941
+      },
+      "ideal_rejection": {
+        "denominator": 1329227995784915872903807060280344576,
+        "numerator": 39939200386371633513264104119670635
+      },
+      "ideal_rejection_approximation": 0.030046914835545075,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 1329227995784915872903807060280344576,
+          "numerator": 1289288795398544239390542956160673941
+        },
+        {
+          "denominator": 1329227995784915872903807060280344576,
+          "numerator": 1289288795398544239390542956160673941
+        }
+      ],
+      "shots": 123
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 10633823966279326983230456482242756608,
+        "numerator": 10374675867169450079772100438602525603
+      },
+      "ideal_rejection": {
+        "denominator": 10633823966279326983230456482242756608,
+        "numerator": 259148099109876903458356043640231005
+      },
+      "ideal_rejection_approximation": 0.024370170122399566,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 10633823966279326983230456482242756608,
+          "numerator": 10374675867169450079772100438602525603
+        },
+        {
+          "denominator": 10633823966279326983230456482242756608,
+          "numerator": 10374675867169450079772100438602525603
+        }
+      ],
+      "shots": 124
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 5316911983139663491615228241121378304,
+        "numerator": 5149911321116445417804441009924639675
+      },
+      "ideal_rejection": {
+        "denominator": 5316911983139663491615228241121378304,
+        "numerator": 167000662023218073810787231196738629
+      },
+      "ideal_rejection_approximation": 0.0314093335667,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 5316911983139663491615228241121378304,
+          "numerator": 5149911321116445417804441009924639675
+        },
+        {
+          "denominator": 5316911983139663491615228241121378304,
+          "numerator": 5149911321116445417804441009924639675
+        }
+      ],
+      "shots": 125
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 21267647932558653966460912964485513216,
+        "numerator": 20724400659360047078156461404287302455
+      },
+      "ideal_rejection": {
+        "denominator": 21267647932558653966460912964485513216,
+        "numerator": 543247273198606888304451560198210761
+      },
+      "ideal_rejection_approximation": 0.02554336402978297,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 21267647932558653966460912964485513216,
+          "numerator": 20724400659360047078156461404287302455
+        },
+        {
+          "denominator": 21267647932558653966460912964485513216,
+          "numerator": 20724400659360047078156461404287302455
+        }
+      ],
+      "shots": 126
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 85070591730234615865843651857942052864,
+        "numerator": 83311265196300120977738368457627675955
+      },
+      "ideal_rejection": {
+        "denominator": 85070591730234615865843651857942052864,
+        "numerator": 1759326533934494888105283400314376909
+      },
+      "ideal_rejection_approximation": 0.020680784018917542,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 85070591730234615865843651857942052864,
+          "numerator": 83311265196300120977738368457627675955
+        },
+        {
+          "denominator": 85070591730234615865843651857942052864,
+          "numerator": 83311265196300120977738368457627675955
+        }
+      ],
+      "shots": 127
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 170141183460469231731687303715884105728,
+        "numerator": 165592429510733350809020062390926622515
+      },
+      "ideal_rejection": {
+        "denominator": 170141183460469231731687303715884105728,
+        "numerator": 4548753949735880922667241324957483213
+      },
+      "ideal_rejection_approximation": 0.02673517285597548,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 170141183460469231731687303715884105728,
+          "numerator": 165592429510733350809020062390926622515
+        },
+        {
+          "denominator": 170141183460469231731687303715884105728,
+          "numerator": 165592429510733350809020062390926622515
+        }
+      ],
+      "shots": 128
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 2678771517965668302371062622650004526403512029263834018609375970925877627812340306232995947039239645318986682293882867062967863214230785108996144393674643700983641943706057746355268651265592785469488545538261618745895485316849691889791385986519265728642799119421635541915107457913156096709301417017344,
+        "numerator": 2678771517234775095465074194671349353392989471489541146662266213179006808847473561938563036069622822075024639437219431541928975698299620021159404439221536185672683057793366445163743763113032520604523036715501779104925953727789075401400066694777906652843715536418078771769420841431579702201277247045455
+      },
+      "ideal_rejection": {
+        "denominator": 2678771517965668302371062622650004526403512029263834018609375970925877627812340306232995947039239645318986682293882867062967863214230785108996144393674643700983641943706057746355268651265592785469488545538261618745895485316849691889791385986519265728642799119421635541915107457913156096709301417017344,
+        "numerator": 730893206905988427978655173010522557774292871947109757746870818964866744294432910969616823243962042856663435521038887515931165087836739954453107515310958885912691301191524888152560264864965508822759839640969531589060616488391319291741359075799083583003556770145686616481576394508024169971889
+      },
+      "ideal_rejection_approximation": 2.7284641560660184e-10,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 2678771517965668302371062622650004526403512029263834018609375970925877627812340306232995947039239645318986682293882867062967863214230785108996144393674643700983641943706057746355268651265592785469488545538261618745895485316849691889791385986519265728642799119421635541915107457913156096709301417017344,
+          "numerator": 2678771517234775095465074194671349353392989471489541146662266213179006808847473561938563036069622822075024639437219431541928975698299620021159404439221536185672683057793366445163743763113032520604523036715501779104925953727789075401400066694777906652843715536418078771769420841431579702201277247045455
+        },
+        {
+          "denominator": 2678771517965668302371062622650004526403512029263834018609375970925877627812340306232995947039239645318986682293882867062967863214230785108996144393674643700983641943706057746355268651265592785469488545538261618745895485316849691889791385986519265728642799119421635541915107457913156096709301417017344,
+          "numerator": 2678771517234775095465074194671349353392989471489541146662266213179006808847473561938563036069622822075024639437219431541928975698299620021159404439221536185672683057793366445163743763113032520604523036715501779104925953727789075401400066694777906652843715536418078771769420841431579702201277247045455
+        }
+      ],
+      "shots": 1000
+    },
+    {
+      "ideal_acceptance": {
+        "denominator": 89884656743115795386465259539451236680898848947115328636715040578866337902750481566354238661203768010560056939935696678829394884407208311246423715319737062188883946712432742638151109800623047059726541476042502884419075341171231440736956555270413618581675255342293149119973622969239858152417678164812112068608,
+        "numerator": 89884656731450824499520564825237378650713579523899243926983082128566209125959619451809847415767960039408541533603888653034004702392294495941787678943441996020439879507991992229584661429886588886862577342933187822836461941631176172501749778524675557091427272316678539089406373489993291554052548339878029558835
+      },
+      "ideal_rejection": {
+        "denominator": 89884656743115795386465259539451236680898848947115328636715040578866337902750481566354238661203768010560056939935696678829394884407208311246423715319737062188883946712432742638151109800623047059726541476042502884419075341171231440736956555270413618581675255342293149119973622969239858152417678164812112068608,
+        "numerator": 11664970886944694714213858030185269423216084709731958450300128776790862114544391245435807971151515406331808025795390182014913815304636036376295066168444067204440750408566448370736458172863964133109315061582613399540055268235206776745738061490247983025614610030567249479246566598365129824934082509773
+      },
+      "ideal_rejection_approximation": 1.29777108903941e-10,
+      "normal_hard_check_acceptance": [
+        {
+          "denominator": 89884656743115795386465259539451236680898848947115328636715040578866337902750481566354238661203768010560056939935696678829394884407208311246423715319737062188883946712432742638151109800623047059726541476042502884419075341171231440736956555270413618581675255342293149119973622969239858152417678164812112068608,
+          "numerator": 89884656731450824499520564825237378650713579523899243926983082128566209125959619451809847415767960039408541533603888653034004702392294495941787678943441996020439879507991992229584661429886588886862577342933187822836461941631176172501749778524675557091427272316678539089406373489993291554052548339878029558835
+        },
+        {
+          "denominator": 89884656743115795386465259539451236680898848947115328636715040578866337902750481566354238661203768010560056939935696678829394884407208311246423715319737062188883946712432742638151109800623047059726541476042502884419075341171231440736956555270413618581675255342293149119973622969239858152417678164812112068608,
+          "numerator": 89884656731450824499520564825237378650713579523899243926983082128566209125959619451809847415767960039408541533603888653034004702392294495941787678943441996020439879507991992229584661429886588886862577342933187822836461941631176172501749778524675557091427272316678539089406373489993291554052548339878029558835
+        }
+      ],
+      "shots": 1024
+    }
+  ],
+  "task31_private_total": 1024,
+  "task31_seeded_behavior_attested": false
+}

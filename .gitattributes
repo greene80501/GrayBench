@@ -210,3 +210,7 @@ docs/reliability-evidence/artifacts/task66-symmetric-w-2026-10-07/*.xml -text wh
 
 docs/reliability-evidence/artifacts/task66-initialize-transport-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/reliability-evidence/artifacts/task66-initialize-transport-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+docs/reliability-evidence/bell_sampling_diagnostic.py text eol=lf
+docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/reliability-evidence/artifacts/bell-shot-diagnostics-2026-10-07/*.xml -text whitespace=trailing-space,space-before-tab,cr-at-eol

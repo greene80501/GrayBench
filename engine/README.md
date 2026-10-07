@@ -30,6 +30,11 @@ host controls now all transfer and agree with direct judgments, including both
 correct initialization constructions. See the [initialization transport evidence](../docs/reliability-evidence/initialize-transport.md).
 Isolated qualification and independent admission remain pending.
 
+The [Bell-shot diagnostic](../docs/reliability-evidence/bell-shot-diagnostics.md)
+quantifies shot-count sensitivity and missing obligations in Tasks 1, 14, 15 and
+31. It runs source-bound checks on trusted data, preserves original tasks, and
+does not attest sampler execution or seeded runtime behavior.
+
 New campaign plans also freeze a [judgment evidence policy](../docs/reliability-evidence/campaign-judgment-binding.md).
 The runner, ledger writer and report verifier bind each verdict to its stored
 answer and frozen task/judge cohort, and check declared trusted terminal captures.

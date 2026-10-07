@@ -30,6 +30,11 @@ including both correct initialization constructions. The [initialization transpo
 evidence](docs/reliability-evidence/initialize-transport.md) preserves the earlier
 unsupported observations; isolated qualification and independent admission remain pending.
 
+The [Bell-shot diagnostic](docs/reliability-evidence/bell-shot-diagnostics.md)
+quantifies shot-count sensitivity and checks missing output obligations in Tasks
+1, 14, 15 and 31. It preserves original tasks and distinguishes conditional
+arithmetic and trusted-data findings from actual sampler execution.
+
 Reproducible evaluation of Qiskit code generation on the official **Qiskit HumanEval normal and hard** suites. These are not Humanity's Last Exam or the generic Python HumanEval benchmark.
 
 See [evaluation methodology](docs/METHODOLOGY.md) and [published comparison references](docs/COMPARISONS.md). Scores describe success on a particular dataset and environment; no benchmark can promise 100% correctness or eliminate unknown training contamination.
